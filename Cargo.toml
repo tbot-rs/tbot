@@ -1,0 +1,11 @@
+[package]
+name = "tbot"
+version = "0.1.0"
+authors = [
+  "SnejUgal <snejugal@icloud.com>",
+]
+
+[dependencies]
+hyper = "0.12.11"
+tokio = "0.1.11"
+futures = "0.1.24"
