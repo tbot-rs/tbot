@@ -7,7 +7,7 @@ pub enum ChatTypes {
     Channel,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct User {
     id: i64,
     is_bot: bool,
@@ -137,7 +137,7 @@ pub struct MessageEntity {
     user: Option<User>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct PhotoSize {
     file_id: String,
     width: i64,
@@ -177,10 +177,21 @@ pub struct Video {
 }
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct Animation {
+    file_id: String,
+    width: i64,
+    height: i64,
+    duration: i64,
+    thumb: Option<PhotoSize>,
+    mime_type: Option<String>,
+    file_size: Option<i64>
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct Voice {
+    file_id: String,
+    duration: i64,
+    mime_type: Option<String>,
+    file_size: Option<i64>
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
@@ -341,26 +352,233 @@ pub enum InputMedia {
     },
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Sticker {
+    file_id: String,
+    width: i64,
+    heigth: i64,
+    thumb: Option<PhotoSize>,
+    emoji: Option<String>,
+    set_name: Option<String>,
+    mask_position: Option<MaskPosition>,
+    file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
+pub enum MaskPositionPoint {
+    Forehead,
+    Eyes,
+    Mouth,
+    Chin,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct MaskPosition {
+    point: MaskPositionPoint,
+    x_shift: f64,
+    y_shift: f64,
+    scale: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct StickerSet {
+    name: String,
+    title: String,
+    contains_masks: bool,
+    stickers: Vec<Sticker>,
+}
+
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct LabeledPrice {
+    label: String,
+    amount: u64,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Invoice {
+    title: String,
+    description: String,
+    start_parameter: String,
+    currency: String, //TODO: Maybe change to CurrencyCode later
+    total_amount: u64,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct ShippingAddress {
+    country_code: String,
+    state: String,
+    city: String,
+    street_line1: String,
+    street_line2: String,
+    post_code: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct OrderInfo {
+    name: Option<String>,
+    phone_number: Option<String>,
+    email: Option<String>,
+    shipping_address: Option<ShippingAddress>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct ShippingOption {
+    id: String,
+    title: String,
+    prices: Vec<LabeledPrice>,
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct SuccessfulPayment {
+    currency: String,
+    total_amount: u64,
+    invoice_payload: String,
+    shipping_option_id: Option<String>,
+    order_info: Option<OrderInfo>,
+    telegram_payment_charge_id: String,
+    provider_payment_charge_id: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct ShippingQuery {
+    id: String,
+    from: User,
+    invoice_payload: String,
+    shipping_address: ShippingAddress,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+pub struct PreCheckoutQuery {
+    id: String,
+    from: User,
+    currency: String,
+    total_amount: u64,
+    invoice_payload: String,
+    shipping_option_id: Option<String>,
+    order_info: Option<OrderInfo>,
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct PassportData {
-}
-
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct CallbackGame {
+    data: Vec<EncryptedPassportElement>,
+    credentails: EncryptedCredentails,
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
+pub struct PassportFile {
+    file_id: String,
+    file_size: u64,
+    file_date: u64,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Clone)]
+pub enum EncryptedPassportElementType {
+    PersonalDetails,
+    Passport,
+    DriverLicense,
+    IdentityCard,
+    InternalPassport,
+    Address,
+    UtilityBill,
+    BankStatement,
+    RentalAgreement,
+    PassportRegistration,
+    TemporaryRegistration,
+    PhoneNumber,
+    Email,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Clone)]
+pub struct EncryptedPassportElement {
+    element_type: EncryptedPassportElementType,
+    data: Option<String>,
+    phone_number: Option<String>,
+    email: Option<String>,
+    files: Option<Vec<PassportFile>>,
+    front_side: Option<PassportFile>,
+    reverse_side: Option<PassportFile>,
+    selfie: Option<PassportFile>,
+    translation: Option<Vec<PassportFile>>,
+    hash: String,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Clone)]
+pub struct EncryptedCredentails {
+    data: String,
+    hash: String,
+    secret: String,
+}
+
+//manual Deserialize source
+#[derive(Deserialize, Debug, PartialEq, Clone)]
+pub enum PassportElementError {
+    DataField {
+        field_type: String,
+        field_name: EncryptedPassportElementType,
+        data_hash: String,
+        message: String,
+    },
+    FrontSide {
+        field_type: EncryptedPassportElementType,
+        file_hash: String,
+        message: String,
+    },
+    ReverseSide {
+        field_type: EncryptedPassportElementType,
+        file_hash: String,
+        message: String,
+    },
+    Selfie {
+        field_type: EncryptedPassportElementType,
+        file_hash: String,
+        message: String,
+    },
+    File {
+        field_type: EncryptedPassportElementType,
+        file_hash: String,
+        message: String,
+    },
+    Files {
+        field_type: EncryptedPassportElementType,
+        file_hashes: Vec<String>,
+        message: String,
+    },
+    TranslationFile {
+        field_type: EncryptedPassportElementType,
+        file_hash: String,
+        message: String,
+    },
+    TranslationFiles {
+        field_type: EncryptedPassportElementType,
+        file_hashes: Vec<String>,
+        message: String,
+    },
+    Unspecified {
+        field_type: EncryptedPassportElementType,
+        element_hash: String,
+        message: String,
+    },
+}
+
+/// A placeholder, currently holds no information, according to the [API docs].
+/// [API docs]: https://core.telegram.org/bots/api#callbackgame
+#[derive(Serialize, Debug, PartialEq, Clone)]
+pub struct CallbackGame;
+
+#[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct Game {
+    title: String,
+    description: String,
+    photo: Vec<PhotoSize>,
+    text: Option<String>,
+    text_entities: Option<Vec<MessageEntity>>,
+    animation: Option<Animation>,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Clone)]
+pub struct GameHighScore {
+    position: u64,
+    user: User,
+    score: u64,
 }
