@@ -11,6 +11,7 @@ extern crate hyper_proxy;
 
 mod updates;
 mod bot;
+mod ser_mutlipart;
 pub mod types;
 
 pub use updates::*;
