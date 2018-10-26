@@ -1,5 +1,6 @@
 use super::*;
 
+/// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot<'a> {
     token: &'a str,
 }
@@ -24,7 +25,7 @@ impl<'a> Bot<'a> {
         unimplemented!();
     }
 
-    /// Sets a proxy through which requests to Telegram's servers will be sent.
+    /// Sets a proxy through which requests to Telegram will be sent.
     #[cfg(feature = "proxy")]
     pub fn set_proxy(&mut self, proxy: hyper_proxy::Proxy) {
         unimplemented!();
