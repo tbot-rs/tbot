@@ -20,3 +20,8 @@ pub mod types;
 pub use bot::*;
 pub use tokio::{run, spawn};
 pub use updates::*;
+
+pub mod prelude {
+    //! Re-exports some traits the compile may demand when working with `tbot`.
+    pub use futures::Future;
+}
