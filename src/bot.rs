@@ -35,4 +35,8 @@ impl<'a> Bot<'a> {
     pub fn set_proxy(&mut self, proxy: hyper_proxy::Proxy) {
         unimplemented!();
     }
+
+    pub fn get_me(&self) -> methods::GetMe {
+        methods::GetMe::new(self.token)
+    }
 }
