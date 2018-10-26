@@ -14,11 +14,6 @@ impl<'a> Bot<'a> {
 
     /// Starts webhook.
     ///
-    /// # Panics
-    ///
-    /// Panics if `max_connections` is out of range `[1, 100]` as per the
-    /// [API docs][setWebhook].
-    ///
     /// [setWebook]: https://core.telegram.org/bots/api#setwebhook
     pub fn start_webhook(
         &mut self,
@@ -26,7 +21,6 @@ impl<'a> Bot<'a> {
         certificate: &str,
         max_connections: u8,
     ) -> ! {
-        assert!(1 <= max_connections && max_connections <= 100);
         unimplemented!();
     }
 
