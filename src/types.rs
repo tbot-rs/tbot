@@ -16,6 +16,7 @@ impl<'a> serde::Serialize for ChatId<'a> {
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
+#[serde(rename_all = "snake_case")]
 pub enum ChatTypes {
     Private,
     Group,
@@ -62,7 +63,7 @@ pub struct ChatPhoto {
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct Chat {
     pub id: i64,
-    // from `type`
+    #[serde(rename = "type")]
     pub chat_type: ChatTypes,
     pub title: Option<String>,
     pub username: Option<String>,
@@ -126,6 +127,7 @@ pub struct Message {
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
+#[serde(rename_all = "snake_case")]
 pub enum MessageEntityTypes {
     Mention,
     Hashtag,
@@ -144,7 +146,7 @@ pub enum MessageEntityTypes {
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct MessageEntity {
-    // from `type`
+    #[serde(rename = "type")]
     pub entity_type: MessageEntityTypes,
     pub offset: i64,
     pub length: i64,
@@ -316,9 +318,9 @@ pub struct ResponseParameters {
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone)]
-pub enum ParseModes {
+pub enum ParseMode {
     Markdown,
-    // must serialized to `HTML`
+    #[serde(rename = "HTML")]
     Html,
 }
 
@@ -329,13 +331,13 @@ pub enum InputMedia {
     Photo {
         media: String,
         caption: Option<String>,
-        parse_mode: Option<ParseModes>,
+        parse_mode: Option<ParseMode>,
     },
     Video {
         media: String,
         thumb: Option<String>,
         caption: Option<String>,
-        parse_mode: Option<ParseModes>,
+        parse_mode: Option<ParseMode>,
         width: Option<i64>,
         height: Option<i64>,
         duration: Option<i64>,
@@ -345,7 +347,7 @@ pub enum InputMedia {
         media: String,
         thumb: Option<String>,
         caption: Option<String>,
-        parse_mode: Option<ParseModes>,
+        parse_mode: Option<ParseMode>,
         width: Option<i64>,
         height: Option<i64>,
         duration: Option<i64>,
@@ -354,7 +356,7 @@ pub enum InputMedia {
         media: String,
         thumb: Option<String>,
         caption: Option<String>,
-        parse_mode: Option<ParseModes>,
+        parse_mode: Option<ParseMode>,
         duration: Option<i64>,
         performer: Option<String>,
         title: Option<String>,
@@ -380,6 +382,7 @@ pub struct Sticker {
 }
 
 #[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
+#[serde(rename_all = "snake_case")]
 pub enum MaskPositionPoint {
     Forehead,
     Eyes,
@@ -487,6 +490,7 @@ pub struct PassportFile {
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
+#[serde(rename_all = "snake_case")]
 pub enum EncryptedPassportElementType {
     PersonalDetails,
     Passport,
