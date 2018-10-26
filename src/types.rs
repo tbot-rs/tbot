@@ -1,5 +1,20 @@
 //! Contains types used in Telegram Bots API.
 
+#[derive(Debug, PartialEq, Clone)]
+pub enum ChatId<'a> {
+    Id(i64),
+    Username(&'a str),
+}
+
+impl<'a> serde::Serialize for ChatId<'a> {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        match self {
+            ChatId::Id(id) => serializer.serialize_i64(*id),
+            ChatId::Username(username) => serializer.serialize_str(username),
+        }
+    }
+}
+
 #[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
 pub enum ChatTypes {
     Private,
