@@ -24,7 +24,7 @@ impl<'a> Bot<'a> {
         unimplemented!();
     }
 
-    /// Sets a proxy throug which requests to Telegram's servers will be sent.
+    /// Sets a proxy through which requests to Telegram's servers will be sent.
     #[cfg(feature = "proxy")]
     pub fn set_proxy(&mut self, proxy: hyper_proxy::Proxy) {
         unimplemented!();
