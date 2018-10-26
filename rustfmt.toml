@@ -1,0 +1,12 @@
+use_small_heuristics = "Off"
+force_explicit_abi = true
+hard_tabs = false
+max_width = 80
+merge_derives = true
+newline_style = "Windows"
+remove_nested_parens = true
+reorder_imports = true
+reorder_modules = true
+tab_spaces = 4
+use_field_init_shorthand = true
+use_try_shorthand = true
