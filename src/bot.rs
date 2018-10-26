@@ -31,6 +31,10 @@ impl<'a> Bot<'a> {
         unimplemented!();
     }
 
+    /// Creates [`GetMe`] inferring `token`.
+    ///
+    /// [`GetMe`]: ./methods/struct.GetMe.html
+    #[must_use]
     pub fn get_me(&self) -> methods::GetMe {
         methods::GetMe::new(self.token)
     }
