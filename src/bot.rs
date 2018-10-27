@@ -43,7 +43,11 @@ impl<'a> Bot<'a> {
     ///
     /// [`SendMessage`]: ./methods/struct.SendMessage.html
     #[must_use]
-    pub fn send_message<'b, 'c: 'b>(&'c self, chat_id: &'b types::ChatId, text: &'b str) -> methods::SendMessage<'b> {
+    pub fn send_message<'b, 'c: 'b>(
+        &'c self,
+        chat_id: &'b types::ChatId,
+        text: &'b str,
+    ) -> methods::SendMessage<'b> {
         methods::SendMessage::new(self.token, chat_id, text)
     }
 }
