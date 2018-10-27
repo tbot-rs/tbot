@@ -50,4 +50,22 @@ impl<'a> Bot<'a> {
     ) -> methods::SendMessage<'b> {
         methods::SendMessage::new(self.token, chat_id, text)
     }
+
+    /// Creates [`ForwardMessage`] inferring `token`.
+    ///
+    /// [`ForwardMessage`]: ./methods/struct.ForwardMessage.html
+    #[must_use]
+    pub fn forward_message<'b, 'c: 'b>(
+        &'c self,
+        chat_id: &'a types::ChatId,
+        from_chat_id: &'a types::ChatId,
+        message_id: u64,
+    ) -> methods::ForwardMessage<'b> {
+        methods::ForwardMessage::new(
+            self.token,
+            chat_id,
+            from_chat_id,
+            message_id,
+        )
+    }
 }

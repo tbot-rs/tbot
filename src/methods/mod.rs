@@ -36,9 +36,11 @@
 
 use super::*;
 
+mod forward_message;
 mod get_me;
 mod send_message;
 
+pub use self::forward_message::*;
 pub use self::get_me::*;
 pub use self::send_message::*;
 
