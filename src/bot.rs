@@ -5,9 +5,9 @@ pub struct Bot<'a> {
     token: &'a str,
 }
 
-impl<'a> Bot<'a> {
+impl<'bot> Bot<'bot> {
     /// Creates a new `Bot`.
-    pub fn new<'b: 'a>(token: &'b str) -> Bot<'a> {
+    pub fn new<'a: 'bot>(token: &'a str) -> Bot<'bot> {
         Bot {
             token,
         }
@@ -43,11 +43,11 @@ impl<'a> Bot<'a> {
     ///
     /// [`SendMessage`]: ./methods/struct.SendMessage.html
     #[must_use]
-    pub fn send_message<'b, 'c: 'b>(
-        &'c self,
-        chat_id: &'b types::ChatId,
-        text: &'b str,
-    ) -> methods::SendMessage<'b> {
+    pub fn send_message<'a, 'b: 'a>(
+        &'b self,
+        chat_id: &'a types::ChatId,
+        text: &'a str,
+    ) -> methods::SendMessage<'a> {
         methods::SendMessage::new(self.token, chat_id, text)
     }
 
@@ -55,12 +55,12 @@ impl<'a> Bot<'a> {
     ///
     /// [`ForwardMessage`]: ./methods/struct.ForwardMessage.html
     #[must_use]
-    pub fn forward_message<'b, 'c: 'b>(
-        &'c self,
-        chat_id: &'b types::ChatId,
-        from_chat_id: &'b types::ChatId,
+    pub fn forward_message<'a, 'b: 'a>(
+        &'b self,
+        chat_id: &'a types::ChatId,
+        from_chat_id: &'a types::ChatId,
         message_id: u64,
-    ) -> methods::ForwardMessage<'b> {
+    ) -> methods::ForwardMessage<'a> {
         methods::ForwardMessage::new(
             self.token,
             chat_id,
