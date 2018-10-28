@@ -57,8 +57,8 @@ impl<'a> Bot<'a> {
     #[must_use]
     pub fn forward_message<'b, 'c: 'b>(
         &'c self,
-        chat_id: &'a types::ChatId,
-        from_chat_id: &'a types::ChatId,
+        chat_id: &'b types::ChatId,
+        from_chat_id: &'b types::ChatId,
         message_id: u64,
     ) -> methods::ForwardMessage<'b> {
         methods::ForwardMessage::new(
