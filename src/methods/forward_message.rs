@@ -42,10 +42,7 @@ impl<'a> ForwardMessage<'a> {
     #[must_use]
     pub fn get_request(
         &self,
-    ) -> Result<
-        impl Future<Item = types::Message, Error = DeliveryError>,
-        hyper_tls::Error,
-    > {
+    ) -> impl Future<Item = types::Message, Error = DeliveryError> {
         send_method::<types::Message>(
             self.token,
             "forwardMessage",

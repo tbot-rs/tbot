@@ -10,7 +10,6 @@ fn main() {
     let request = bot
         .get_me()
         .get_request()
-        .unwrap()
         .map_err(|error| println!("Oops, an error happened: {:#?}", error))
         .map(|me| println!("Here I am: {:#?}", me));
 

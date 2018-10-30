@@ -95,8 +95,8 @@ fn send_method<'a, T: serde::de::DeserializeOwned + std::fmt::Debug>(
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
-) -> Result<impl Future<Item = T, Error = DeliveryError>, hyper_tls::Error> {
-    let https = hyper_tls::HttpsConnector::new(1)?;
+) -> impl Future<Item = T, Error = DeliveryError> {
+    let https = hyper_tls::HttpsConnector::new(1).unwrap();
 
     let mut request = hyper::Request::new(hyper::Body::from(body));
     *request.method_mut() = hyper::Method::POST;
@@ -151,5 +151,5 @@ fn send_method<'a, T: serde::de::DeserializeOwned + std::fmt::Debug>(
             }
         });
 
-    Ok(client)
+    client
 }
