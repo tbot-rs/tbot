@@ -14,7 +14,6 @@ extern crate serde_derive;
 extern crate hyper_proxy;
 
 mod bot;
-mod ser_mutlipart;
 mod updates;
 
 pub mod methods;
