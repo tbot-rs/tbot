@@ -47,11 +47,17 @@ pub use self::send_message::*;
 use futures::{Future, Stream};
 
 #[derive(Deserialize)]
+pub struct ResponseParameters {
+    pub migrate_to_chat_id: Option<i64>,
+    pub retry_after: Option<u64>,
+}
+
+#[derive(Deserialize)]
 struct Response<T> {
     result: Option<T>,
     description: Option<String>,
     error_code: Option<i64>,
-    parameters: Option<types::ResponseParameters>,
+    parameters: Option<ResponseParameters>,
 }
 
 /// An error happened during request. Different errors may happen, so this is

@@ -67,8 +67,8 @@ impl<'a> SendMessage<'a> {
     #[must_use]
     pub fn get_request(
         &self,
-    ) -> impl Future<Item = types::Message, Error = DeliveryError> {
-        send_method::<types::Message>(
+    ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
+        send_method::<types::raw::Message>(
             self.token,
             "sendMessage",
             None,
