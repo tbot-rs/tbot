@@ -72,7 +72,7 @@ impl<'a> SendMessage<'a> {
             self.token,
             "sendMessage",
             None,
-            serde_json::to_string(&self).unwrap().into_bytes(),
+            serde_json::to_vec(&self).unwrap(),
         )
     }
 }

@@ -47,7 +47,7 @@ impl<'a> ForwardMessage<'a> {
             self.token,
             "forwardMessage",
             None,
-            serde_json::to_string(&self).unwrap().into_bytes(),
+            serde_json::to_vec(&self).unwrap(),
         )
     }
 }
