@@ -7,7 +7,7 @@ use super::*;
 pub struct SendMessage<'a> {
     #[serde(skip)]
     token: &'a str,
-    chat_id: &'a types::ChatId<'a>,
+    chat_id: types::ChatId<'a>,
     text: &'a str,
     parse_mode: Option<types::ParseMode>,
     disable_web_page_preview: Option<bool>,
@@ -21,12 +21,12 @@ impl<'a> SendMessage<'a> {
     #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,
-        chat_id: &'a types::ChatId,
+        chat_id: impl Into<types::ChatId<'b>>,
         text: &'a str,
     ) -> SendMessage<'a> {
         SendMessage {
             token,
-            chat_id,
+            chat_id: chat_id.into(),
             text,
             parse_mode: None,
             disable_web_page_preview: None,

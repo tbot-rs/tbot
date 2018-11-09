@@ -45,7 +45,7 @@ impl<'bot> Bot<'bot> {
     #[must_use]
     pub fn send_message<'a, 'b: 'a>(
         &'b self,
-        chat_id: &'a types::ChatId,
+        chat_id: impl Into<types::ChatId<'a>>,
         text: &'a str,
     ) -> methods::SendMessage<'a> {
         methods::SendMessage::new(self.token, chat_id, text)
@@ -57,7 +57,7 @@ impl<'bot> Bot<'bot> {
     #[must_use]
     pub fn forward_message<'a, 'b: 'a>(
         &'b self,
-        chat_id: &'a types::ChatId,
+        chat_id: impl Into<types::ChatId<'a>>,
         from_chat_id: &'a types::ChatId,
         message_id: u64,
     ) -> methods::ForwardMessage<'a> {

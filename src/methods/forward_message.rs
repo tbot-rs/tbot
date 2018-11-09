@@ -7,7 +7,7 @@ use super::*;
 pub struct ForwardMessage<'a> {
     #[serde(skip)]
     token: &'a str,
-    chat_id: &'a types::ChatId<'a>,
+    chat_id: types::ChatId<'a>,
     from_chat_id: &'a types::ChatId<'a>,
     message_id: u64,
     disable_notification: Option<bool>,
@@ -18,13 +18,13 @@ impl<'a> ForwardMessage<'a> {
     #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,
-        chat_id: &'a types::ChatId,
+        chat_id: impl Into<types::ChatId<'b>>,
         from_chat_id: &'a types::ChatId,
         message_id: u64,
     ) -> ForwardMessage<'a> {
         ForwardMessage {
             token,
-            chat_id,
+            chat_id: chat_id.into(),
             from_chat_id,
             message_id,
             disable_notification: None,

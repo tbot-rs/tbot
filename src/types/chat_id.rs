@@ -18,3 +18,15 @@ impl<'a> serde::Serialize for ChatId<'a> {
         }
     }
 }
+
+impl<'a> From<i64> for ChatId<'a> {
+    fn from(id: i64) -> ChatId<'a> {
+        ChatId::Id(id)
+    }
+}
+
+impl<'a> From<&'a str> for ChatId<'a> {
+    fn from(username: &'a str) -> ChatId<'a> {
+        ChatId::Username(username)
+    }
+}
