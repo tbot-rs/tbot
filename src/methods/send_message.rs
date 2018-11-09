@@ -9,9 +9,13 @@ pub struct SendMessage<'a> {
     token: &'a str,
     chat_id: types::ChatId<'a>,
     text: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<types::ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u64>,
     // TODO: Implement `reply_markup`
 }

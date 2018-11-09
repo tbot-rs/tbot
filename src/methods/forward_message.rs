@@ -10,6 +10,7 @@ pub struct ForwardMessage<'a> {
     chat_id: types::ChatId<'a>,
     from_chat_id: &'a types::ChatId<'a>,
     message_id: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
 }
 
