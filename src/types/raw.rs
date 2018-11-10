@@ -1,3 +1,6 @@
+// There are many types that will be changed, unrawed and documented only later.
+#![allow(missing_docs)]
+
 use super::*;
 
 #[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
@@ -566,4 +569,22 @@ pub struct GameHighScore {
     pub position: u64,
     pub user: User,
     pub score: u64,
+}
+
+pub enum Keyboard<'o, 'i: 'o, 'b: 'i> {
+    Inline(InlineKeyboard<'o, 'i, 'b>),
+    ReplyMarkup(ReplyKeyboard<'o, 'i, 'b>),
+    ReplyRemove(ReplyKeyboardRemove),
+    ForceReply(ForceReply),
+}
+
+impl<'o, 'i: 'o, 'b: 'i> serde::Serialize for Keyboard<'o, 'i, 'b> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        match self {
+            Keyboard::Inline(keyboard) => keyboard.serialize(s),
+            Keyboard::ReplyMarkup(keyboard) => keyboard.serialize(s),
+            Keyboard::ReplyRemove(keyboard) => keyboard.serialize(s),
+            Keyboard::ForceReply(keyboard) => keyboard.serialize(s),
+        }
+    }
 }

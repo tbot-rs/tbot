@@ -1,11 +1,16 @@
 /// Represents a file to be sent.
 #[derive(Debug, PartialEq, Clone)]
 pub enum File<'a> {
+    /// Represents a file to be uploaded.
     File {
+        /// Represents the file's name.
         name: &'a str,
+        /// Represents the file's contents.
         bytes: &'a [u8],
     },
+    /// Represents a file to be downloaded from a remote resource by Telegram.
     Url(&'a str),
+    /// Represents the ID of a file already existing on Telegram's servers.
     Id(&'a str),
 }
 

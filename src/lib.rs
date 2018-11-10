@@ -1,5 +1,35 @@
+//! A crate for easy working with Telegram Bots API. `tbot`'s API is simple,
+//! but lets you do many things. Here's a simple echo bot:
+//!
+//! ```ignore (would timeout)
+//! use tbot::{prelude::*, Bot};
+//!
+//! let token = std::env::var("BOT_TOKEN").unwrap();
+//! let mut bot = Bot::new(&token);
+//!
+//! bot.on_message(|context| {
+//!     let reply = context
+//!         .send_message(context.message)
+//!         .into_future()
+//!         .map_err(|err| eprintln!("Couldn't send a message: {:#?}", err));
+//!
+//!     tbot::spawn(reply);
+//! });
+//!
+//! bot.start_polling();
+//! ```
+//!
+//! If you're a newcomer to `tbot`, we recommend you doing the [tutorial] first.
+//! We also have several how-to's for you to see how to implement different
+//! features using `tbot`. If you face a problem, feel free to fill an issue on
+//! [our Gitlab repository][gitlab].
+//!
+//! [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
+//! [gitlab]: https://gitlab.com/SnejUgal/tbot
+
 #![deny(future_incompatible)]
 #![deny(nonstandard_style)]
+#![deny(missing_docs)]
 
 extern crate futures;
 extern crate hyper;

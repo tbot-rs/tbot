@@ -46,7 +46,7 @@ pub use self::send_message::*;
 use futures::{Future, Stream};
 
 #[derive(Deserialize)]
-pub struct ResponseParameters {
+struct ResponseParameters {
     pub migrate_to_chat_id: Option<i64>,
     pub retry_after: Option<u64>,
 }
