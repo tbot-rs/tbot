@@ -19,7 +19,7 @@ impl<'a> GetMe<'a> {
     /// Prepares the request and returns a `Future`.
     #[must_use]
     pub fn into_future(
-        &self,
+        self,
     ) -> impl Future<Item = types::raw::User, Error = DeliveryError> {
         send_method::<types::raw::User>(self.token, "getMe", None, Vec::new())
     }
