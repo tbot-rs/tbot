@@ -17,7 +17,8 @@ pub struct SendMessage<'a> {
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u64>,
-    // TODO: Implement `reply_markup`
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
 impl<'a> SendMessage<'a> {
@@ -36,6 +37,7 @@ impl<'a> SendMessage<'a> {
             disable_web_page_preview: None,
             disable_notification: None,
             reply_to_message_id: None,
+            reply_markup: None,
         }
     }
 
@@ -64,6 +66,16 @@ impl<'a> SendMessage<'a> {
     #[must_use]
     pub fn reply_to_message_id(mut self, id: u64) -> Self {
         self.reply_to_message_id = Some(id);
+        self
+    }
+
+    /// Sets `reply_markup` to `Some(markup)`.
+    #[must_use]
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<types::raw::Keyboard<'a>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 

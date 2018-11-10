@@ -571,14 +571,14 @@ pub struct GameHighScore {
     pub score: u64,
 }
 
-pub enum Keyboard<'o, 'i: 'o, 'b: 'i> {
-    Inline(InlineKeyboard<'o, 'i, 'b>),
-    ReplyMarkup(ReplyKeyboard<'o, 'i, 'b>),
+pub enum Keyboard<'a> {
+    Inline(InlineKeyboard<'a>),
+    ReplyMarkup(ReplyKeyboard<'a>),
     ReplyRemove(ReplyKeyboardRemove),
     ForceReply(ForceReply),
 }
 
-impl<'o, 'i: 'o, 'b: 'i> serde::Serialize for Keyboard<'o, 'i, 'b> {
+impl<'a> serde::Serialize for Keyboard<'a> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         match self {
             Keyboard::Inline(keyboard) => keyboard.serialize(s),
@@ -586,5 +586,29 @@ impl<'o, 'i: 'o, 'b: 'i> serde::Serialize for Keyboard<'o, 'i, 'b> {
             Keyboard::ReplyRemove(keyboard) => keyboard.serialize(s),
             Keyboard::ForceReply(keyboard) => keyboard.serialize(s),
         }
+    }
+}
+
+impl<'a> From<InlineKeyboard<'a>> for Keyboard<'a> {
+    fn from(keyboard: InlineKeyboard<'a>) -> Keyboard<'a> {
+        Keyboard::Inline(keyboard)
+    }
+}
+
+impl<'a> From<ReplyKeyboard<'a>> for Keyboard<'a> {
+    fn from(keyboard: ReplyKeyboard<'a>) -> Keyboard<'a> {
+        Keyboard::ReplyMarkup(keyboard)
+    }
+}
+
+impl<'a> From<ReplyKeyboardRemove> for Keyboard<'a> {
+    fn from(keyboard: ReplyKeyboardRemove) -> Keyboard<'a> {
+        Keyboard::ReplyRemove(keyboard)
+    }
+}
+
+impl<'a> From<ForceReply> for Keyboard<'a> {
+    fn from(keyboard: ForceReply) -> Keyboard<'a> {
+        Keyboard::ForceReply(keyboard)
     }
 }
