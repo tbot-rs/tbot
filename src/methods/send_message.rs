@@ -69,7 +69,7 @@ impl<'a> SendMessage<'a> {
 
     /// Prepares the request and returns a `Future`.
     #[must_use]
-    pub fn get_request(
+    pub fn into_futurw(
         &self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
         send_method::<types::raw::Message>(

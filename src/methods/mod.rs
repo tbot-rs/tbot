@@ -22,8 +22,7 @@
 //! let token = std::env::var("BOT_TOKEN").unwrap();
 //!
 //! let request = tbot::methods::GetMe::new(&token)
-//!     .get_request()
-//!     .unwrap()
+//!     .into_future()
 //!     .map_err(|_| ())
 //!     .map(|me| println!("Here I am: {:#?}", me));
 //!
