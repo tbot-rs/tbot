@@ -2,10 +2,12 @@
 
 pub mod raw;
 
+mod callback_game;
 mod chat_id;
 mod file;
 mod parse_mode;
 
+pub use self::callback_game::*;
 pub use self::chat_id::*;
 pub use self::file::*;
 pub use self::parse_mode::*;
