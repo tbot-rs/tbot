@@ -245,43 +245,6 @@ pub struct File {
     pub file_path: Option<String>,
 }
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct ReplyKeyboardMarkup {
-    pub keyboard: Vec<Vec<KeyboardButton>>,
-    pub resize_keyboard: Option<bool>,
-    pub one_time_keyboard: Option<bool>,
-    pub selective: Option<bool>,
-}
-
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct KeyboardButton {
-    pub text: String,
-    pub request_contact: Option<bool>,
-    pub request_location: Option<bool>,
-}
-
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct ReplyKeyboardRemove {
-    pub remove_keyboard: bool,
-    pub selective: Option<bool>,
-}
-
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct InlineKeyboardMarkup {
-    pub inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
-}
-
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct InlineKeyboardButton {
-    pub text: String,
-    pub url: Option<String>,
-    pub callback_data: Option<String>,
-    pub switch_inline_query: Option<String>,
-    pub switch_inline_query_current_chat: Option<String>,
-    pub callback_game: Option<CallbackGame>,
-    pub pay: Option<bool>,
-}
-
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct CallbackQuery {
     pub id: String,
@@ -291,12 +254,6 @@ pub struct CallbackQuery {
     pub chat_instance: String,
     pub data: Option<String>,
     pub game_short_name: Option<String>,
-}
-
-#[derive(Serialize, Debug, PartialEq, Clone)]
-pub struct ForceReply {
-    pub force_reply: bool,
-    pub selective: Option<bool>,
 }
 
 // TODO: Manual serialization or look up how to choose the right `type` value
