@@ -17,7 +17,7 @@ pub enum InlineButtonType<'a> {
     Pay(bool),
 }
 
-/// Represents an [`InlineKeyboardbutton`].
+/// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeybaordButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Serialize, Debug, PartialEq, Clone)]
