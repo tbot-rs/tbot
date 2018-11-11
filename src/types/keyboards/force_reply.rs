@@ -36,7 +36,7 @@ impl serde::Serialize for ForceReply {
 
         let mut map = s.serialize_map(Some(len))?;
 
-        map.serialize_entry("remove_keyboard", &true)?;
+        map.serialize_entry("force_reply", &true)?;
 
         if let Some(selective) = self.selective {
             map.serialize_entry("selective", &selective)?;
