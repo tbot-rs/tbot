@@ -44,13 +44,11 @@ extern crate serde_derive;
 extern crate hyper_proxy;
 
 mod bot;
-mod updates;
 
 pub mod methods;
 pub mod types;
 
 pub use self::bot::*;
-pub use self::updates::*;
 
 /// Like re-exported `tokio::run`, but doesn't require `future::Item` to be
 /// `()`.

@@ -7,9 +7,11 @@ mod chat_id;
 mod file;
 mod keyboards;
 mod parse_mode;
+mod updates;
 
 pub use self::callback_game::*;
 pub use self::chat_id::*;
 pub use self::file::*;
 pub use self::keyboards::*;
 pub use self::parse_mode::*;
+pub use self::updates::*;
