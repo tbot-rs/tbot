@@ -1,6 +1,6 @@
 use serde::ser::SerializeMap;
 
-/// Represents Telegram's [`ReplyKeyboardRemove`].
+/// Represents a [`ReplyKeyboardRemove`].
 ///
 /// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
 #[derive(Debug, PartialEq, Clone)]

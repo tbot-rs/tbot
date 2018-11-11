@@ -1,4 +1,4 @@
-/// Represents Telegram's [`KeyboardButton`].
+/// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
 #[derive(Serialize, Debug, PartialEq, Clone)]

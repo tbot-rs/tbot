@@ -1,6 +1,6 @@
 use serde::ser::SerializeMap;
 
-/// Represents Telegram's [`ForceReply`].
+/// Represents a [`ForceReply`].
 ///
 /// [`ForceReply`]: https://core.telegram.org/bots/api#forcereply
 #[derive(Debug, PartialEq, Clone)]

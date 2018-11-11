@@ -1,6 +1,10 @@
 use super::*;
 
-/// Represents different types an inline button can be. Complete descriptions
+/// Represents different types an inline button can be.
+///
+/// Complete descriptions can be found in [Bots API docs][docs].
+///
+/// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Clone)]
 pub enum InlineButtonType<'a> {
     /// Represents a URL button.
