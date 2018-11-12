@@ -5,7 +5,7 @@ use tbot::{prelude::*, Bot};
 fn main() {
     let token = std::env::var("BOT_TOKEN").unwrap();
 
-    let bot = Bot::new(&token);
+    let bot = Bot::new(token);
 
     let request = bot
         .get_me()

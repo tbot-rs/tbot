@@ -11,7 +11,7 @@ const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 fn main() {
     let token = std::env::var("BOT_TOKEN").unwrap();
 
-    let bot = Bot::new(&token);
+    let bot = Bot::new(token);
 
     let request = bot
         // put your ID here

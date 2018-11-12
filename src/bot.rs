@@ -1,13 +1,13 @@
 use super::*;
 
 /// Represents a bot and provides convenient methods to work with the API.
-pub struct Bot<'a> {
-    token: &'a str,
+pub struct Bot {
+    token: String,
 }
 
-impl<'bot> Bot<'bot> {
+impl Bot {
     /// Creates a new `Bot`.
-    pub fn new<'a: 'bot>(token: &'a str) -> Bot<'bot> {
+    pub fn new(token: String) -> Bot {
         Bot {
             token,
         }
@@ -36,7 +36,7 @@ impl<'bot> Bot<'bot> {
     /// [`GetMe`]: ./methods/struct.GetMe.html
     #[must_use]
     pub fn get_me(&self) -> methods::GetMe {
-        methods::GetMe::new(self.token)
+        methods::GetMe::new(&self.token)
     }
 
     /// Constructs a new [`SendMessage`] inferring `token`.
@@ -48,7 +48,7 @@ impl<'bot> Bot<'bot> {
         chat_id: impl Into<types::ChatId<'a>>,
         text: &'a str,
     ) -> methods::SendMessage<'a> {
-        methods::SendMessage::new(self.token, chat_id, text)
+        methods::SendMessage::new(&self.token, chat_id, text)
     }
 
     /// Constructs a new [`ForwardMessage`] inferring `token`.
@@ -62,7 +62,7 @@ impl<'bot> Bot<'bot> {
         message_id: u64,
     ) -> methods::ForwardMessage<'a> {
         methods::ForwardMessage::new(
-            self.token,
+            &self.token,
             chat_id,
             from_chat_id,
             message_id,
@@ -79,7 +79,7 @@ impl<'bot> Bot<'bot> {
         position: (f64, f64),
     ) -> methods::SendLocation<'a> {
         methods::SendLocation::new(
-            self.token,
+            &self.token,
             chat_id,
             position,
         )
@@ -95,7 +95,7 @@ impl<'bot> Bot<'bot> {
         position: (f64, f64),
     ) -> methods::EditInlineLocation<'a> {
         methods::EditInlineLocation::new(
-            self.token,
+            &self.token,
             inline_message_id,
             position,
         )
@@ -112,7 +112,7 @@ impl<'bot> Bot<'bot> {
         position: (f64, f64),
     ) -> methods::EditMessageLocation<'a> {
         methods::EditMessageLocation::new(
-            self.token,
+            &self.token,
             chat_id,
             message_id,
             position,
