@@ -44,7 +44,7 @@ fn main() {
                         println!("Whops, an error happened: {:#?}", error);
                     }).map(|_| ())
                 })
-        }).map_err(|error| println!("Whops, an error happened: {:#?}", error));
+        });
 
     tbot::run(request);
 }
