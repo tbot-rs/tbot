@@ -43,7 +43,7 @@ pub struct Chat {
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct Message {
-    pub message_id: i64,
+    pub message_id: u64,
     pub from: User,
     pub date: i64,
     pub chat: Chat,
