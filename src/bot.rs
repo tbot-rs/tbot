@@ -78,11 +78,7 @@ impl Bot {
         chat_id: impl Into<types::ChatId<'a>>,
         position: (f64, f64),
     ) -> methods::SendLocation<'a> {
-        methods::SendLocation::new(
-            &self.token,
-            chat_id,
-            position,
-        )
+        methods::SendLocation::new(&self.token, chat_id, position)
     }
 
     /// Constructs a new [`EditInlineLocation`] inferring `token`.
