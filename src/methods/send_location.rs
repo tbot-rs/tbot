@@ -33,7 +33,7 @@ impl<'a> SendLocation<'a> {
             token,
             chat_id: chat_id.into(),
             latitude,
-            longitute,
+            longitude,
             live_period: None,
             disable_notification: None,
             reply_to_message_id: None,
