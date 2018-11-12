@@ -15,7 +15,7 @@ pub struct ForwardMessage<'a> {
 }
 
 impl<'a> ForwardMessage<'a> {
-    /// Creates a new `ForwardMessage`.
+    /// Constructs a new `ForwardMessage`.
     #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,

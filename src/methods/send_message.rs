@@ -22,7 +22,7 @@ pub struct SendMessage<'a> {
 }
 
 impl<'a> SendMessage<'a> {
-    /// Creates a new `SendMessage`.
+    /// Constructs a new `SendMessage`.
     #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,

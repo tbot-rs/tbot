@@ -31,7 +31,7 @@ impl<'bot> Bot<'bot> {
         unimplemented!();
     }
 
-    /// Creates [`GetMe`] inferring `token`.
+    /// Constructs a new [`GetMe`] inferring `token`.
     ///
     /// [`GetMe`]: ./methods/struct.GetMe.html
     #[must_use]
@@ -39,7 +39,7 @@ impl<'bot> Bot<'bot> {
         methods::GetMe::new(self.token)
     }
 
-    /// Creates [`SendMessage`] inferring `token`.
+    /// Constructs a new [`SendMessage`] inferring `token`.
     ///
     /// [`SendMessage`]: ./methods/struct.SendMessage.html
     #[must_use]
@@ -51,7 +51,7 @@ impl<'bot> Bot<'bot> {
         methods::SendMessage::new(self.token, chat_id, text)
     }
 
-    /// Creates [`ForwardMessage`] inferring `token`.
+    /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./methods/struct.ForwardMessage.html
     #[must_use]
@@ -69,7 +69,7 @@ impl<'bot> Bot<'bot> {
         )
     }
 
-    /// Constructs [`SendLocation`] inferring `token`.
+    /// Constructs a new [`SendLocation`] inferring `token`.
     ///
     /// [`SendLocation`]: ./methods/struct.SendLocation.html
     #[must_use]
