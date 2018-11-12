@@ -3,25 +3,6 @@
 
 use super::*;
 
-#[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
-#[serde(rename_all = "snake_case")]
-pub enum ChatTypes {
-    Private,
-    Group,
-    Supergroup,
-    Channel,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
-pub struct User {
-    pub id: i64,
-    pub is_bot: bool,
-    pub first_name: String,
-    pub last_name: Option<String>,
-    pub username: Option<String>,
-    pub language_code: Option<String>,
-}
-
 #[derive(Deserialize, Debug, PartialEq, Clone)]
 pub struct ChatMember {
     pub user: User,
@@ -40,12 +21,6 @@ pub struct ChatMember {
     pub can_send_media_messages: Option<bool>,
     pub can_send_other_messages: Option<bool>,
     pub can_add_web_page_previews: Option<bool>,
-}
-
-#[derive(Deserialize, Debug, PartialEq, Clone)]
-pub struct ChatPhoto {
-    pub small_file_id: String,
-    pub big_file_id: String,
 }
 
 #[derive(Deserialize, Debug, PartialEq, Clone)]
