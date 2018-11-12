@@ -82,8 +82,40 @@ impl<'bot> Bot<'bot> {
             self.token,
             chat_id,
             position,
-            latitude,
-            longitude,
+        )
+    }
+
+    /// Constructs a new [`EditInlineLocation`] inferring `token`.
+    ///
+    /// [`EditInlineLocation`]: ./methods/struct.EditInlineLocation.html
+    #[must_use]
+    pub fn edit_inline_location<'a, 'b: 'a>(
+        &'b self,
+        inline_message_id: u64,
+        position: (f64, f64),
+    ) -> methods::EditInlineLocation<'a> {
+        methods::EditInlineLocation::new(
+            self.token,
+            inline_message_id,
+            position,
+        )
+    }
+
+    /// Constructs a new [`EditMessageLocation`] inferring `token`.
+    ///
+    /// [`EditMessageLocation`]: ./methods/struct.EditMessageLocation.html
+    #[must_use]
+    pub fn edit_message_location<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'b>>,
+        message_id: u64,
+        position: (f64, f64),
+    ) -> methods::EditMessageLocation<'a> {
+        methods::EditMessageLocation::new(
+            self.token,
+            chat_id,
+            message_id,
+            position,
         )
     }
 }
