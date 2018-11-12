@@ -26,8 +26,7 @@ impl<'a> SendLocation<'a> {
     pub fn new<'b: 'a>(
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
-        latitude: f64,
-        longitude: f64,
+        (latitude, longitude): (f64, f64),
     ) -> SendLocation<'a> {
         SendLocation {
             token,

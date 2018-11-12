@@ -76,12 +76,12 @@ impl<'bot> Bot<'bot> {
     pub fn send_location<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'a>>,
-        latitude: f64,
-        longitude: f64,
+        position: (f64, f64),
     ) -> methods::SendLocation<'a> {
         methods::SendLocation::new(
             self.token,
             chat_id,
+            position,
             latitude,
             longitude,
         )
