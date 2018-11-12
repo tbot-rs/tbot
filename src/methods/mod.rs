@@ -38,10 +38,12 @@ use super::*;
 mod forward_message;
 mod get_me;
 mod send_message;
+mod send_location;
 
 pub use self::forward_message::*;
 pub use self::get_me::*;
 pub use self::send_message::*;
+pub use self::send_location::*;
 
 use futures::{Future, Stream};
 

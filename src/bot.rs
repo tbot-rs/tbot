@@ -68,4 +68,22 @@ impl<'bot> Bot<'bot> {
             message_id,
         )
     }
+
+    /// Constructs [`SendLocation`] inferring `token`.
+    ///
+    /// [`SendLocation`]: ./methods/struct.SendLocation.html
+    #[must_use]
+    pub fn send_location<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        latitude: f64,
+        longitude: f64,
+    ) -> methods::SendLocation<'a> {
+        methods::SendLocation::new(
+            self.token,
+            chat_id,
+            latitude,
+            longitude,
+        )
+    }
 }
