@@ -114,4 +114,34 @@ impl Bot {
             position,
         )
     }
+
+    /// Constructs a new [`StopInlineLocation`] inferring `token`.
+    ///
+    /// [`StopInlineLocation`]: ./methods/struct.StopInlineLocation.html
+    #[must_use]
+    pub fn stop_inline_location<'a, 'b: 'a>(
+        &'b self,
+        inline_message_id: u64,
+    ) -> methods::StopInlineLocation<'a> {
+        methods::StopInlineLocation::new(
+            &self.token,
+            inline_message_id,
+        )
+    }
+
+    /// Constructs a new [`StopMessageLocation`] inferring `token`.
+    ///
+    /// [`StopMessageLocation`]: ./methods/struct.StopMessageLocation.html
+    #[must_use]
+    pub fn stop_message_location<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'b>>,
+        message_id: u64,
+    ) -> methods::StopMessageLocation<'a> {
+        methods::StopMessageLocation::new(
+            &self.token,
+            chat_id,
+            message_id,
+        )
+    }
 }
