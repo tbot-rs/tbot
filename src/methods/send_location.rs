@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`SendLocation`] method.
+/// Representation of the [`sendLocation`] method.
 ///
-/// [`SendLocation`]: https://core.telegram.org/bots/api#sendlocation
+/// [`sendLocation`]: https://core.telegram.org/bots/api#sendlocation
 #[derive(Serialize)]
 pub struct SendLocation<'a> {
     #[serde(skip)]
