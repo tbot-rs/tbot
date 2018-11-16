@@ -12,7 +12,7 @@ pub struct EditInlineLocation<'a> {
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::raw::Keyboard<'a>>,
+    reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
 impl<'a> EditInlineLocation<'a> {
@@ -36,9 +36,9 @@ impl<'a> EditInlineLocation<'a> {
     #[must_use]
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::raw::Keyboard<'a>>,
+        markup: types::InlineKeyboard<'a>,
     ) -> Self {
-        self.reply_markup = Some(markup.into());
+        self.reply_markup = Some(markup);
         self
     }
 
