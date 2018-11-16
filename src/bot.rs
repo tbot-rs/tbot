@@ -123,10 +123,7 @@ impl Bot {
         &'b self,
         inline_message_id: u64,
     ) -> methods::StopInlineLocation<'a> {
-        methods::StopInlineLocation::new(
-            &self.token,
-            inline_message_id,
-        )
+        methods::StopInlineLocation::new(&self.token, inline_message_id)
     }
 
     /// Constructs a new [`StopMessageLocation`] inferring `token`.
@@ -138,10 +135,6 @@ impl Bot {
         chat_id: impl Into<types::ChatId<'b>>,
         message_id: u64,
     ) -> methods::StopMessageLocation<'a> {
-        methods::StopMessageLocation::new(
-            &self.token,
-            chat_id,
-            message_id,
-        )
+        methods::StopMessageLocation::new(&self.token, chat_id, message_id)
     }
 }

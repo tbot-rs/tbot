@@ -37,10 +37,7 @@ impl<'a> EditMessageLocation<'a> {
 
     /// Sets `reply_markup` to `Some(markup)`.
     #[must_use]
-    pub fn reply_markup(
-        mut self,
-        markup: types::InlineKeyboard<'a>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }
