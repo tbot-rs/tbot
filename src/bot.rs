@@ -13,6 +13,16 @@ impl Bot {
         }
     }
 
+    /// Constructs a new `Bot`, getting the token from the environment.
+    pub fn from_env(env_var: &'static str) -> Bot {
+        Bot {
+            token: std::env::var(env_var).expect(&format!(
+                "The bot's token in {} was not specified",
+                env_var,
+            )),
+        }
+    }
+
     /// Starts webhook.
     ///
     /// [setWebook]: https://core.telegram.org/bots/api#setwebhook

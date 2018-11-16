@@ -9,9 +9,7 @@ use tbot::{
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 
 fn main() {
-    let token = std::env::var("BOT_TOKEN").unwrap();
-
-    let bot = Bot::new(token);
+    let bot = Bot::from_env("BOT_TOKEN");
 
     let request = bot
         // put your ID here

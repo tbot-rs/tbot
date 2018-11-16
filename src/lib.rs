@@ -4,8 +4,7 @@
 //! ```ignore (would timeout)
 //! use tbot::{prelude::*, Bot};
 //!
-//! let token = std::env::var("BOT_TOKEN").unwrap();
-//! let mut bot = Bot::new(&token);
+//! let mut bot = Bot::from_env("BOT_TOKEN");
 //!
 //! bot.on_message(|context| {
 //!     let reply = context

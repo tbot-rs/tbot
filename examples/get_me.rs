@@ -3,9 +3,7 @@ extern crate tbot;
 use tbot::{prelude::*, Bot};
 
 fn main() {
-    let token = std::env::var("BOT_TOKEN").unwrap();
-
-    let bot = Bot::new(token);
+    let bot = Bot::from_env("BOT_TOKEN");
 
     let request = bot
         .get_me()

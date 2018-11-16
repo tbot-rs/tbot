@@ -16,8 +16,7 @@ const PLACES: [(f64, f64); 6] = [
 ];
 
 fn main() {
-    let token = std::env::var("BOT_TOKEN").unwrap();
-    let bot = Bot::new(token);
+    let bot = Bot::from_env("BOT_TOKEN");
     let mut places = PLACES.iter();
 
     let request = bot
