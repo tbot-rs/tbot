@@ -137,4 +137,18 @@ impl Bot {
     ) -> methods::StopMessageLocation<'a> {
         methods::StopMessageLocation::new(&self.token, chat_id, message_id)
     }
+
+    /// Constructs a new [`SendVenue`] inferring `token`.
+    ///
+    /// [`SendVenue`]: ./methods/struct.SendVenue.html
+    #[must_use]
+    pub fn send_venue<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'b>>,
+        position: (f64, f64),
+        title: &'b str,
+        address: &'b str,
+    ) -> methods::SendVenue<'a> {
+        methods::SendVenue::new(&self.token, chat_id, position, title, address)
+    }
 }
