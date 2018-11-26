@@ -161,4 +161,22 @@ impl Bot {
     ) -> methods::SendVenue<'a> {
         methods::SendVenue::new(&self.token, chat_id, position, title, address)
     }
+
+    /// Constructs a new [`SendContact`] inferring `token`.
+    ///
+    /// [`SendContact`]: ./methods/struct.SendContact.html
+    #[must_use]
+    pub fn send_contact<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'b>>,
+        phone_number: &'b str,
+        first_name: &'b str,
+    ) -> methods::SendContact<'a> {
+        methods::SendContact::new(
+            &self.token,
+            chat_id,
+            phone_number,
+            first_name,
+        )
+    }
 }
