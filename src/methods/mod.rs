@@ -109,8 +109,8 @@ fn create_method_url(token: &str, method: &'static str) -> hyper::Uri {
 }
 
 #[must_use]
-fn send_method<'a, T: serde::de::DeserializeOwned + std::fmt::Debug>(
-    token: &'a str,
+fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
+    token: &str,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
@@ -125,24 +125,24 @@ fn send_method<'a, T: serde::de::DeserializeOwned + std::fmt::Debug>(
         let content_type =
             format!("muiltipart/form-data; boundary={}", boundary,);
 
-    request.headers_mut().insert(
-        hyper::header::CONTENT_TYPE,
+        request.headers_mut().insert(
+            hyper::header::CONTENT_TYPE,
             // disallowed characters shouldn't appear
             hyper::header::HeaderValue::from_str(&content_type).unwrap(),
         );
-        } else {
+    } else {
         request.headers_mut().insert(
             hyper::header::CONTENT_TYPE,
             // disallowed characters shouldn't appear
             hyper::header::HeaderValue::from_static("application/json"),
-    );
+        );
     }
 
-    let client = hyper::Client::builder()
+    hyper::Client::builder()
         .build::<_, hyper::Body>(https)
         .request(request)
         .and_then(|response| response.into_body().concat2())
-        .map_err(|error| DeliveryError::NetworkError(error))
+        .map_err(DeliveryError::NetworkError)
         .and_then(|response| {
             if response.starts_with(b"<") {
                 // If so, then Bots API is down and returns an HTML. Handling
@@ -177,7 +177,5 @@ fn send_method<'a, T: serde::de::DeserializeOwned + std::fmt::Debug>(
                     retry_after,
                 })
             }
-        });
-
-    client
+        })
 }

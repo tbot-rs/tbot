@@ -3,7 +3,7 @@ use serde::ser::SerializeMap;
 /// Represents a [`ForceReply`].
 ///
 /// [`ForceReply`]: https://core.telegram.org/bots/api#forcereply
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Default)]
 pub struct ForceReply {
     // force_reply is added when serialized
     selective: Option<bool>,
@@ -28,7 +28,7 @@ impl ForceReply {
 
 impl serde::Serialize for ForceReply {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let len = if let Some(_) = self.selective {
+        let len = if self.selective.is_some() {
             2
         } else {
             1

@@ -3,7 +3,7 @@ use serde::ser::SerializeMap;
 /// Represents a [`ReplyKeyboardRemove`].
 ///
 /// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Default)]
 pub struct ReplyKeyboardRemove {
     // remove_keyboard is added when serializing
     selective: Option<bool>,
@@ -28,7 +28,7 @@ impl ReplyKeyboardRemove {
 
 impl serde::Serialize for ReplyKeyboardRemove {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let len = if let Some(_) = self.selective {
+        let len = if self.selective.is_some() {
             2
         } else {
             1

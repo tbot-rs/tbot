@@ -16,10 +16,9 @@ impl Bot {
     /// Constructs a new `Bot`, getting the token from the environment.
     pub fn from_env(env_var: &'static str) -> Bot {
         Bot {
-            token: std::env::var(env_var).expect(&format!(
-                "The bot's token in {} was not specified",
-                env_var,
-            )),
+            token: std::env::var(env_var).unwrap_or_else(|_| {
+                panic!("The bot's token in {} was not specified", env_var,)
+            }),
         }
     }
 
