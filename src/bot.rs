@@ -22,18 +22,6 @@ impl Bot {
         }
     }
 
-    /// Starts webhook.
-    ///
-    /// [setWebook]: https://core.telegram.org/bots/api#setwebhook
-    pub fn start_webhook(
-        &mut self,
-        url: &str,
-        certificate: &str,
-        max_connections: u8,
-    ) -> ! {
-        unimplemented!();
-    }
-
     /// Sets a proxy through which requests to Telegram will be sent.
     #[cfg(feature = "proxy")]
     pub fn set_proxy(&mut self, proxy: hyper_proxy::Proxy) {
