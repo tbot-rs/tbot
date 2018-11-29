@@ -120,14 +120,23 @@ fn send_method<'a, T: serde::de::DeserializeOwned + std::fmt::Debug>(
     let mut request = hyper::Request::new(hyper::Body::from(body));
     *request.method_mut() = hyper::Method::POST;
     *request.uri_mut() = create_method_url(token, method);
+
+    if let Some(boundary) = boundary {
+        let content_type =
+            format!("muiltipart/form-data; boundary={}", boundary,);
+
     request.headers_mut().insert(
         hyper::header::CONTENT_TYPE,
-        hyper::header::HeaderValue::from_static(if let Some(_) = &boundary {
-            "muiltipart/form-data"
+            // disallowed characters shouldn't appear
+            hyper::header::HeaderValue::from_str(&content_type).unwrap(),
+        );
         } else {
-            "application/json"
-        }),
+        request.headers_mut().insert(
+            hyper::header::CONTENT_TYPE,
+            // disallowed characters shouldn't appear
+            hyper::header::HeaderValue::from_static("application/json"),
     );
+    }
 
     let client = hyper::Client::builder()
         .build::<_, hyper::Body>(https)
