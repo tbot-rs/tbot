@@ -33,14 +33,13 @@ impl<'a> StopInlineLocation<'a> {
 
     /// Prepares the request and returns a `Future`.
     #[must_use]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        send_method::<types::raw::Message>(
+    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
+        send_method::<bool>(
             self.token,
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
-        )
+            // It returns only `true` if suceess, handling it is meaningless.
+        ).map(|_| ())
     }
 }

@@ -41,14 +41,13 @@ impl<'a> EditInlineLocation<'a> {
 
     /// Prepares the request and returns a `Future`.
     #[must_use]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = bool, Error = DeliveryError> {
+    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
         send_method::<bool>(
             self.token,
             "editMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
-        )
+            // It returns only `true` if suceess, handling it is meaningless.
+        ).map(|_| ())
     }
 }
