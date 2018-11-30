@@ -21,8 +21,8 @@ impl<'a> StopMessageLocation<'a> {
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
         message_id: u64,
-    ) -> StopMessageLocation<'a> {
-        StopMessageLocation {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             message_id,

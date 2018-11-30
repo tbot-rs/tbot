@@ -24,8 +24,8 @@ impl<'a> EditMessageLocation<'a> {
         chat_id: impl Into<types::ChatId<'b>>,
         message_id: u64,
         (latitude, longitude): (f64, f64),
-    ) -> EditMessageLocation<'a> {
-        EditMessageLocation {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             message_id,

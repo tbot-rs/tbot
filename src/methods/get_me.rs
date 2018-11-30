@@ -10,8 +10,8 @@ pub struct GetMe<'a> {
 impl<'a> GetMe<'a> {
     /// Constructs a new `GetMe`.
     #[must_use]
-    pub fn new<'b: 'a>(token: &'b str) -> GetMe {
-        GetMe {
+    pub fn new<'b: 'a>(token: &'b str) -> Self {
+        Self {
             token,
         }
     }

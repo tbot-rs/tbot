@@ -16,11 +16,8 @@ pub struct StopInlineLocation<'a> {
 impl<'a> StopInlineLocation<'a> {
     /// Constructs a new `StopInlineLocation`.
     #[must_use]
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        inline_message_id: u64,
-    ) -> StopInlineLocation<'a> {
-        StopInlineLocation {
+    pub fn new<'b: 'a>(token: &'b str, inline_message_id: u64) -> Self {
+        Self {
             token,
             inline_message_id,
             reply_markup: None,

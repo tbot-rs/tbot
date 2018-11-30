@@ -28,8 +28,8 @@ impl<'a> SendMessage<'a> {
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
         text: &'a str,
-    ) -> SendMessage<'a> {
-        SendMessage {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             text,

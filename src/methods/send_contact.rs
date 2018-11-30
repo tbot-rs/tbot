@@ -30,8 +30,8 @@ impl<'a> SendContact<'a> {
         chat_id: impl Into<types::ChatId<'b>>,
         phone_number: &'a str,
         first_name: &'a str,
-    ) -> SendContact<'a> {
-        SendContact {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             phone_number,

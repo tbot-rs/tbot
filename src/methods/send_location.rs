@@ -27,8 +27,8 @@ impl<'a> SendLocation<'a> {
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
         (latitude, longitude): (f64, f64),
-    ) -> SendLocation<'a> {
-        SendLocation {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             latitude,

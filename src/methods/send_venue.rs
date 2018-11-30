@@ -33,8 +33,8 @@ impl<'a> SendVenue<'a> {
         (latitude, longitude): (f64, f64),
         title: &'b str,
         address: &'b str,
-    ) -> SendVenue<'a> {
-        SendVenue {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             latitude,

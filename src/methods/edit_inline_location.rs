@@ -22,8 +22,8 @@ impl<'a> EditInlineLocation<'a> {
         token: &'b str,
         inline_message_id: u64,
         (latitude, longitude): (f64, f64),
-    ) -> EditInlineLocation<'a> {
-        EditInlineLocation {
+    ) -> Self {
+        Self {
             token,
             inline_message_id,
             latitude,

@@ -22,8 +22,8 @@ impl<'a> ForwardMessage<'a> {
         chat_id: impl Into<types::ChatId<'b>>,
         from_chat_id: &'a types::ChatId,
         message_id: u64,
-    ) -> ForwardMessage<'a> {
-        ForwardMessage {
+    ) -> Self {
+        Self {
             token,
             chat_id: chat_id.into(),
             from_chat_id,
