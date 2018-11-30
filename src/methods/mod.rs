@@ -28,10 +28,6 @@
 //!
 //! tbot::run(request);
 //! ```
-//!
-//! Note that getting the request may fail when establishing an HTTPS connector
-//! under the hood, so we unwrap the returned request. You should also handle
-//! errors properly, unlike we did.
 
 use super::*;
 
