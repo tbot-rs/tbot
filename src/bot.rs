@@ -166,4 +166,16 @@ impl Bot {
             first_name,
         )
     }
+
+    /// Constructs a new [`SendChatAction`] inferring `token`.
+    ///
+    /// [`SendChatAction`]: ./methods/struct.SendChatAction.html
+    #[must_use]
+    pub fn send_chat_action<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'b>>,
+        action: types::ChatAction,
+    ) -> methods::SendChatAction<'a> {
+        methods::SendChatAction::new(&self.token, chat_id, action)
+    }
 }
