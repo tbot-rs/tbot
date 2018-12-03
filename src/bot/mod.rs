@@ -7,19 +7,17 @@ pub struct Bot {
 
 impl Bot {
     /// Creates a new `Bot`.
-    pub fn new(token: String) -> Bot {
-        Bot {
+    pub fn new(token: String) -> Self {
+        Self {
             token,
         }
     }
 
     /// Constructs a new `Bot`, getting the token from the environment.
-    pub fn from_env(env_var: &'static str) -> Bot {
-        Bot {
-            token: std::env::var(env_var).unwrap_or_else(|_| {
-                panic!("The bot's token in {} was not specified", env_var,)
-            }),
-        }
+    pub fn from_env(env_var: &'static str) -> Self {
+        Self::new(std::env::var(env_var).unwrap_or_else(|_| {
+            panic!("The bot's token in {} was not specified", env_var)
+        }))
     }
 
     /// Sets a proxy through which requests to Telegram will be sent.
