@@ -1,15 +1,19 @@
 use super::*;
 
 /// Represents a bot and provides convenient methods to work with the API.
-pub struct Bot {
+pub struct Bot<'a> {
     token: String,
+    // Wish trait alises came out soon
+    polling_error_handlers:
+        Vec<Box<dyn FnMut(methods::DeliveryError) + Send + Sync + 'a>>,
 }
 
-impl Bot {
+impl<'bot> Bot<'bot> {
     /// Creates a new `Bot`.
     pub fn new(token: String) -> Self {
         Self {
             token,
+            polling_error_handlers: Vec::new(),
         }
     }
 
@@ -18,6 +22,15 @@ impl Bot {
         Self::new(std::env::var(env_var).unwrap_or_else(|_| {
             panic!("The bot's token in {} was not specified", env_var)
         }))
+    }
+
+    /// Adds a new handler for errors that happened while sending poll
+    /// requests.
+    pub fn on_polling_error<T>(&mut self, handler: T)
+    where
+        T: FnMut(methods::DeliveryError) + Send + Sync + 'bot,
+    {
+        self.polling_error_handlers.push(Box::new(handler))
     }
 
     /// Sets a proxy through which requests to Telegram will be sent.
