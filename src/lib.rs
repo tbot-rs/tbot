@@ -48,6 +48,7 @@ pub mod methods;
 pub mod types;
 
 pub use self::bot::*;
+use self::prelude::*;
 
 /// Like re-exported `tokio::run`, but doesn't require `future::Item` to be
 /// `()`.
