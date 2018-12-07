@@ -1,14 +1,22 @@
 use super::*;
+use self::methods::GetUpdates;
+use std::time::{Duration, Instant};
+use std::sync::{Arc, Mutex};
+
+mod polling;
+pub use self::polling::*;
+
+type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
-pub struct Bot<'a> {
+pub struct Bot {
     token: String,
     // Wish trait alises came out soon
     polling_error_handlers:
-        Vec<Box<dyn FnMut(methods::DeliveryError) + Send + Sync + 'a>>,
+        Vec<Mutex<Box<PollingErrorHandler>>>,
 }
 
-impl<'bot> Bot<'bot> {
+impl Bot {
     /// Creates a new `Bot`.
     pub fn new(token: String) -> Self {
         Self {
@@ -28,9 +36,14 @@ impl<'bot> Bot<'bot> {
     /// requests.
     pub fn on_polling_error<T>(&mut self, handler: T)
     where
-        T: FnMut(methods::DeliveryError) + Send + Sync + 'bot,
+        T: FnMut(&methods::DeliveryError) + Send + Sync + 'static,
     {
-        self.polling_error_handlers.push(Box::new(handler))
+        self.polling_error_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Starts configuring polling.
+    pub fn polling<'a>(self) -> Polling<'a> {
+        Polling::new(self)
     }
 
     /// Sets a proxy through which requests to Telegram will be sent.
@@ -188,5 +201,11 @@ impl<'bot> Bot<'bot> {
         action: types::ChatAction,
     ) -> methods::SendChatAction<'a> {
         methods::SendChatAction::new(&self.token, chat_id, action)
+    }
+
+    fn handle_polling_error(&self, error: &methods::DeliveryError) {
+        for handler in &self.polling_error_handlers {
+            (&mut *handler.lock().unwrap())(&error);
+        }
     }
 }

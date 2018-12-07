@@ -1,6 +1,9 @@
+use super::*;
+
 /// Represents updates names to subscribe with Webhooks or getUpdates.
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub enum UpdateTypes {
+#[derive(Serialize, Debug, PartialEq, Clone, Copy)]
+#[serde(rename_all = "snake_case")]
+pub enum Updates {
     /// Handles messages in a chat of any kind.
     Message,
     /// Handles a message edit.
@@ -20,4 +23,13 @@ pub enum UpdateTypes {
     ShippingQuery,
     /// Handles pre-checkout query.
     PreCheckoutQuery,
+}
+
+#[derive(Deserialize, Debug)]
+pub(crate) struct Update {
+    pub update_id: u64,
+    pub message: Option<raw::Message>,
+    pub edited_message: Option<raw::Message>,
+    pub channel_post: Option<raw::Message>,
+    pub edited_channel_post: Option<raw::Message>,
 }

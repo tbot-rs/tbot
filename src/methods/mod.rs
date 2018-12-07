@@ -35,6 +35,7 @@ mod edit_inline_location;
 mod edit_message_location;
 mod forward_message;
 mod get_me;
+mod get_updates;
 mod send_chat_action;
 mod send_contact;
 mod send_location;
@@ -47,6 +48,7 @@ pub use self::edit_inline_location::*;
 pub use self::edit_message_location::*;
 pub use self::forward_message::*;
 pub use self::get_me::*;
+pub(crate) use self::get_updates::*;
 pub use self::send_chat_action::*;
 pub use self::send_contact::*;
 pub use self::send_location::*;
@@ -55,7 +57,7 @@ pub use self::send_venue::*;
 pub use self::stop_inline_location::*;
 pub use self::stop_message_location::*;
 
-use futures::{Future, Stream};
+use futures::{Stream};
 
 #[derive(Deserialize)]
 struct ResponseParameters {
