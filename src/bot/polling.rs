@@ -74,13 +74,19 @@ impl<'a> Polling<'a> {
                 self.timeout,
                 self.allowed_updates,
             )
-                .into_future()
-                .map(move |updates| {
+            .into_future()
+            .map(move |updates| {
+                let bot = on_ok;
+
+                for update in &updates {
+                    bot.handle_before_update(update);
+                }
+
                 if let Some(update) = updates.last() {
                     *new_offset.lock().unwrap() = Some(update.update_id + 1);
-                    }
-                })
-                .map_err(move |error| on_err.handle_polling_error(&error));
+                }
+            })
+            .map_err(move |error| on_err.handle_polling_error(&error));
 
             tokio::run(request);
 

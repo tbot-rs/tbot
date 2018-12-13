@@ -6,12 +6,15 @@ use std::time::{Duration, Instant};
 mod polling;
 pub use self::polling::*;
 
+// Wish trait alises came out soon
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
+type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: String,
     polling_error_handlers: Vec<Mutex<Box<PollingErrorHandler>>>,
+    before_update_handlers: Vec<Mutex<Box<BeforeUpdateHandler>>>,
 }
 
 impl Bot {
@@ -20,6 +23,7 @@ impl Bot {
         Self {
             token,
             polling_error_handlers: Vec::new(),
+            before_update_handlers: Vec::new(),
         }
     }
 
@@ -37,6 +41,14 @@ impl Bot {
         T: FnMut(&methods::DeliveryError) + Send + Sync + 'static,
     {
         self.polling_error_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for all updates run before the specialized updates.
+    pub fn before_update<T>(&mut self, handler: T)
+    where
+        T: FnMut(&types::Update) + Send + Sync + 'static,
+    {
+        self.before_update_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Starts configuring polling.
@@ -204,6 +216,12 @@ impl Bot {
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
         for handler in &self.polling_error_handlers {
             (&mut *handler.lock().unwrap())(&error);
+        }
+    }
+
+    fn handle_before_update(&self, update: &types::Update) {
+        for handler in &self.before_update_handlers {
+            (&mut *handler.lock().unwrap())(&update);
         }
     }
 }
