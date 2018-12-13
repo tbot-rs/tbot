@@ -1,5 +1,3 @@
-extern crate tbot;
-
 use tbot::{prelude::*, Bot};
 
 fn main() {

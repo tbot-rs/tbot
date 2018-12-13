@@ -57,7 +57,7 @@ pub use self::send_venue::*;
 pub use self::stop_inline_location::*;
 pub use self::stop_message_location::*;
 
-use futures::{Stream};
+use futures::Stream;
 
 #[derive(Deserialize)]
 struct ResponseParameters {
@@ -133,7 +133,6 @@ fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
     } else {
         request.headers_mut().insert(
             hyper::header::CONTENT_TYPE,
-            // disallowed characters shouldn't appear
             hyper::header::HeaderValue::from_static("application/json"),
         );
     }
@@ -154,7 +153,8 @@ fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
                     Err(error) => Err(DeliveryError::InvalidResponse(error)),
                 }
             }
-        }).and_then(|response| {
+        })
+        .and_then(|response| {
             if let Some(result) = response.result {
                 Ok(result)
             } else {

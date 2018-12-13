@@ -1,6 +1,3 @@
-extern crate tbot;
-extern crate tokio;
-
 use std::time::{Duration, Instant};
 use tbot::{prelude::*, Bot};
 use tokio::{prelude::*, timer::Interval};

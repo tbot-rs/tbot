@@ -1,5 +1,3 @@
-extern crate tbot;
-
 use tbot::{
     prelude::*,
     types::{InlineButton, InlineButtonType, InlineKeyboard},

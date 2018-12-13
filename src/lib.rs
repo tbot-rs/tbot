@@ -30,17 +30,9 @@
 #![deny(nonstandard_style)]
 #![deny(missing_docs)]
 
-extern crate futures;
-extern crate hyper;
-extern crate hyper_tls;
-extern crate serde;
-extern crate serde_json;
-extern crate tokio;
+// Doesn't seem to work without `extern crate`
 #[macro_use]
 extern crate serde_derive;
-
-#[cfg(feature = "proxy")]
-extern crate hyper_proxy;
 
 mod bot;
 

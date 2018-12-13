@@ -1,7 +1,7 @@
-use super::*;
 use self::methods::GetUpdates;
-use std::time::{Duration, Instant};
+use super::*;
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 
 mod polling;
 pub use self::polling::*;
@@ -11,9 +11,7 @@ type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: String,
-    // Wish trait alises came out soon
-    polling_error_handlers:
-        Vec<Mutex<Box<PollingErrorHandler>>>,
+    polling_error_handlers: Vec<Mutex<Box<PollingErrorHandler>>>,
 }
 
 impl Bot {

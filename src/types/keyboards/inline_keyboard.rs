@@ -45,7 +45,7 @@ impl<'a> InlineButton<'a> {
     }
 }
 
-impl<'a> serde::Serialize for InlineButton<'a> {
+impl serde::Serialize for InlineButton<'_> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(Some(2))?;
 
