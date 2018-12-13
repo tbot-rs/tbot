@@ -17,7 +17,7 @@ impl<'a> Polling<'a> {
             limit: None,
             timeout: None,
             allowed_updates: None,
-            poll_interval: 100,
+            poll_interval: 25,
         }
     }
 
