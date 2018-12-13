@@ -35,6 +35,7 @@ impl<'a> SendChatAction<'a> {
             None,
             serde_json::to_vec(&self).unwrap(),
             // It returns only `true` if suceess, handling it is meaningless.
-        ).map(|_| ())
+        )
+        .map(|_| ())
     }
 }
