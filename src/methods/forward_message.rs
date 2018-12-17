@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`forwardMessage`]: https://core.telegram.org/bots/api#forwardmessage
 #[derive(Serialize)]
+#[must_use = "methods do nothing unless turned into a future"]
 pub struct ForwardMessage<'a> {
     #[serde(skip)]
     token: &'a str,
@@ -16,7 +17,6 @@ pub struct ForwardMessage<'a> {
 
 impl<'a> ForwardMessage<'a> {
     /// Constructs a new `ForwardMessage`.
-    #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
@@ -33,14 +33,13 @@ impl<'a> ForwardMessage<'a> {
     }
 
     /// Sets `the disable_notification` field to `Some(is_disabled)`.
-    #[must_use]
     pub fn disable_notification(mut self, is_disabled: bool) -> Self {
         self.disable_notification = Some(is_disabled);
         self
     }
 
     /// Prepares the request and returns a `Future`.
-    #[must_use]
+    #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {

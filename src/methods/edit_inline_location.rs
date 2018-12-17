@@ -5,6 +5,7 @@ use super::*;
 ///
 /// [`editMessageLiveLocation`]: https://core.telegram.org/bots/api#editmessagelivelocation
 #[derive(Serialize)]
+#[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineLocation<'a> {
     #[serde(skip)]
     token: &'a str,
@@ -17,7 +18,6 @@ pub struct EditInlineLocation<'a> {
 
 impl<'a> EditInlineLocation<'a> {
     /// Constructs a new `EditInlineLocation`.
-    #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,
         inline_message_id: u64,
@@ -33,14 +33,13 @@ impl<'a> EditInlineLocation<'a> {
     }
 
     /// Sets `reply_markup` to `Some(markup)`.
-    #[must_use]
     pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }
 
     /// Prepares the request and returns a `Future`.
-    #[must_use]
+    #[must_use = "futures do nothing unless polled"]
     pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
         send_method::<bool>(
             self.token,

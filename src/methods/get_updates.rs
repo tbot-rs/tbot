@@ -2,6 +2,7 @@ use super::*;
 
 /// This method isn't meant to be used by users directly.
 #[derive(Serialize)]
+#[must_use]
 pub(crate) struct GetUpdates<'a> {
     #[serde(skip)]
     token: &'a str,
@@ -12,7 +13,6 @@ pub(crate) struct GetUpdates<'a> {
 }
 
 impl<'a> GetUpdates<'a> {
-    #[must_use]
     pub fn new(
         token: &'a str,
         offset: Option<u64>,
@@ -28,6 +28,7 @@ impl<'a> GetUpdates<'a> {
             allowed_updates,
         }
     }
+
 
     #[must_use]
     pub fn into_future(

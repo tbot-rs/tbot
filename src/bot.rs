@@ -65,7 +65,6 @@ impl Bot {
     /// Constructs a new [`GetMe`] inferring `token`.
     ///
     /// [`GetMe`]: ./methods/struct.GetMe.html
-    #[must_use]
     pub fn get_me(&self) -> methods::GetMe {
         methods::GetMe::new(&self.token)
     }
@@ -73,7 +72,6 @@ impl Bot {
     /// Constructs a new [`SendMessage`] inferring `token`.
     ///
     /// [`SendMessage`]: ./methods/struct.SendMessage.html
-    #[must_use]
     pub fn send_message<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -85,7 +83,6 @@ impl Bot {
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./methods/struct.ForwardMessage.html
-    #[must_use]
     pub fn forward_message<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -103,7 +100,6 @@ impl Bot {
     /// Constructs a new [`SendLocation`] inferring `token`.
     ///
     /// [`SendLocation`]: ./methods/struct.SendLocation.html
-    #[must_use]
     pub fn send_location<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -115,7 +111,6 @@ impl Bot {
     /// Constructs a new [`EditInlineLocation`] inferring `token`.
     ///
     /// [`EditInlineLocation`]: ./methods/struct.EditInlineLocation.html
-    #[must_use]
     pub fn edit_inline_location<'a, 'b: 'a>(
         &'b self,
         inline_message_id: u64,
@@ -131,7 +126,6 @@ impl Bot {
     /// Constructs a new [`EditMessageLocation`] inferring `token`.
     ///
     /// [`EditMessageLocation`]: ./methods/struct.EditMessageLocation.html
-    #[must_use]
     pub fn edit_message_location<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'b>>,
@@ -149,7 +143,6 @@ impl Bot {
     /// Constructs a new [`StopInlineLocation`] inferring `token`.
     ///
     /// [`StopInlineLocation`]: ./methods/struct.StopInlineLocation.html
-    #[must_use]
     pub fn stop_inline_location<'a, 'b: 'a>(
         &'b self,
         inline_message_id: u64,
@@ -160,7 +153,6 @@ impl Bot {
     /// Constructs a new [`StopMessageLocation`] inferring `token`.
     ///
     /// [`StopMessageLocation`]: ./methods/struct.StopMessageLocation.html
-    #[must_use]
     pub fn stop_message_location<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'b>>,
@@ -172,7 +164,6 @@ impl Bot {
     /// Constructs a new [`SendVenue`] inferring `token`.
     ///
     /// [`SendVenue`]: ./methods/struct.SendVenue.html
-    #[must_use]
     pub fn send_venue<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'b>>,
@@ -186,7 +177,6 @@ impl Bot {
     /// Constructs a new [`SendContact`] inferring `token`.
     ///
     /// [`SendContact`]: ./methods/struct.SendContact.html
-    #[must_use]
     pub fn send_contact<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'b>>,
@@ -204,7 +194,6 @@ impl Bot {
     /// Constructs a new [`SendChatAction`] inferring `token`.
     ///
     /// [`SendChatAction`]: ./methods/struct.SendChatAction.html
-    #[must_use]
     pub fn send_chat_action<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'b>>,

@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`sendChatAction`]: https://core.telegram.org/bots/api#sendchataction
 #[derive(Serialize)]
+#[must_use = "methods do nothing unless turned into a future"]
 pub struct SendChatAction<'a> {
     #[serde(skip)]
     token: &'a str,
@@ -13,7 +14,6 @@ pub struct SendChatAction<'a> {
 
 impl<'a> SendChatAction<'a> {
     /// Constructs a new `SendChatAction`.
-    #[must_use]
     pub fn new<'b: 'a>(
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
@@ -27,7 +27,7 @@ impl<'a> SendChatAction<'a> {
     }
 
     /// Prepares the request and returns a `Future`.
-    #[must_use]
+    #[must_use = "futures do nothing unless polled"]
     pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
         send_method::<bool>(
             self.token,
