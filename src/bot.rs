@@ -128,7 +128,7 @@ impl Bot {
     /// [`EditMessageLocation`]: ./methods/struct.EditMessageLocation.html
     pub fn edit_message_location<'a, 'b: 'a>(
         &'b self,
-        chat_id: impl Into<types::ChatId<'b>>,
+        chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
         position: (f64, f64),
     ) -> methods::EditMessageLocation<'a> {
@@ -155,7 +155,7 @@ impl Bot {
     /// [`StopMessageLocation`]: ./methods/struct.StopMessageLocation.html
     pub fn stop_message_location<'a, 'b: 'a>(
         &'b self,
-        chat_id: impl Into<types::ChatId<'b>>,
+        chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
     ) -> methods::StopMessageLocation<'a> {
         methods::StopMessageLocation::new(&self.token, chat_id, message_id)
@@ -166,10 +166,10 @@ impl Bot {
     /// [`SendVenue`]: ./methods/struct.SendVenue.html
     pub fn send_venue<'a, 'b: 'a>(
         &'b self,
-        chat_id: impl Into<types::ChatId<'b>>,
+        chat_id: impl Into<types::ChatId<'a>>,
         position: (f64, f64),
-        title: &'b str,
-        address: &'b str,
+        title: &'a str,
+        address: &'a str,
     ) -> methods::SendVenue<'a> {
         methods::SendVenue::new(&self.token, chat_id, position, title, address)
     }
@@ -179,9 +179,9 @@ impl Bot {
     /// [`SendContact`]: ./methods/struct.SendContact.html
     pub fn send_contact<'a, 'b: 'a>(
         &'b self,
-        chat_id: impl Into<types::ChatId<'b>>,
-        phone_number: &'b str,
-        first_name: &'b str,
+        chat_id: impl Into<types::ChatId<'a>>,
+        phone_number: &'a str,
+        first_name: &'a str,
     ) -> methods::SendContact<'a> {
         methods::SendContact::new(
             &self.token,
@@ -196,7 +196,7 @@ impl Bot {
     /// [`SendChatAction`]: ./methods/struct.SendChatAction.html
     pub fn send_chat_action<'a, 'b: 'a>(
         &'b self,
-        chat_id: impl Into<types::ChatId<'b>>,
+        chat_id: impl Into<types::ChatId<'a>>,
         action: types::ChatAction,
     ) -> methods::SendChatAction<'a> {
         methods::SendChatAction::new(&self.token, chat_id, action)
