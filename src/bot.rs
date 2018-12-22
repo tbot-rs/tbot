@@ -202,6 +202,16 @@ impl Bot {
         methods::SendChatAction::new(&self.token, chat_id, action)
     }
 
+    /// Constructs a new [`GetUserProfilePhotos`] inferring `token`.
+    ///
+    /// [`GetUserProfilePhotos`]: ./methods/struct.GetUserProfilePhotos.html
+    pub fn get_user_profile_photos<'a, 'b: 'a>(
+        &'b self,
+        user_id: i64,
+    ) -> methods::GetUserProfilePhotos<'a> {
+        methods::GetUserProfilePhotos::new(&self.token, user_id)
+    }
+
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
         for handler in &self.polling_error_handlers {
             (&mut *handler.lock().unwrap())(&error);
