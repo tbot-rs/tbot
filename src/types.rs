@@ -1,5 +1,7 @@
 //! Contains types used in Telegram Bots API.
 
+use super::*;
+
 pub mod raw;
 
 mod callback_game;

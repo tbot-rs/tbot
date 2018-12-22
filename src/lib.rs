@@ -30,10 +30,6 @@
 #![deny(nonstandard_style)]
 #![deny(missing_docs)]
 
-// Doesn't seem to work without `extern crate`
-#[macro_use]
-extern crate serde_derive;
-
 mod bot;
 
 pub mod methods;
@@ -41,6 +37,7 @@ pub mod types;
 
 pub use self::bot::*;
 use self::prelude::*;
+use serde::{Deserialize, Serialize};
 
 /// Like re-exported `tokio::run`, but doesn't require `future::Item` to be
 /// `()`.

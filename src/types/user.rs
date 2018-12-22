@@ -1,3 +1,5 @@
+use super::*;
+
 /// Represents a [`User`].
 ///
 /// [`User`]: https://core.telegram.org/bots/api#user

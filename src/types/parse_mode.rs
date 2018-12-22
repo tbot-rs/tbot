@@ -1,3 +1,5 @@
+use super::*;
+
 /// Represents what markup the text is in.
 #[derive(Serialize, Debug, PartialEq, Clone, Copy)]
 pub enum ParseMode {

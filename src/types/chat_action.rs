@@ -1,3 +1,5 @@
+use super::*;
+
 /// Represents possible chat actions.
 #[derive(Serialize, Debug, PartialEq, Clone, Copy)]
 #[serde(rename_all = "snake_case")]

@@ -1,3 +1,5 @@
+use super::*;
+
 /// Represents a [`ChatPhoto`].
 ///
 /// [`ChatPhoto`]: https://core.telegram.org/bots/api#chatphoto

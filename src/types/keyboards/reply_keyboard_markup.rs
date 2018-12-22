@@ -1,3 +1,5 @@
+use super::*;
+
 /// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
