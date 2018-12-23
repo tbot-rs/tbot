@@ -212,6 +212,10 @@ impl Bot {
         methods::GetUserProfilePhotos::new(&self.token, user_id)
     }
 
+    fn handle_update(&self, update: &types::Update) {
+        self.handle_before_update(update);
+    }
+
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
         for handler in &self.polling_error_handlers {
             (&mut *handler.lock().unwrap())(&error);

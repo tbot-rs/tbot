@@ -79,7 +79,7 @@ impl<'a> Polling<'a> {
                 let bot = on_ok;
 
                 for update in &updates {
-                    bot.handle_before_update(update);
+                    bot.handle_update(update);
                 }
 
                 if let Some(update) = updates.last() {
