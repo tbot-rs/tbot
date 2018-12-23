@@ -59,6 +59,9 @@ pub use self::send_venue::*;
 pub use self::stop_inline_location::*;
 pub use self::stop_message_location::*;
 
+mod methods_trait;
+pub use self::methods_trait::*;
+
 use futures::Stream;
 
 #[derive(Deserialize)]

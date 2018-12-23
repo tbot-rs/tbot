@@ -67,5 +67,6 @@ where
 
 pub mod prelude {
     //! Re-exports some traits the compiler may demand when working with `tbot`.
+    pub use super::methods::Methods;
     pub use futures::Future;
 }
