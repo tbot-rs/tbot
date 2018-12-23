@@ -84,9 +84,8 @@ impl<'de> serde::Deserialize<'de> for Update {
                             ))
                         }
                         "channel_post" => {
-                            update_type = Some(UpdateType::ChannelPost(
-                                map.next_value()?,
-                            ))
+                            update_type =
+                                Some(UpdateType::ChannelPost(map.next_value()?))
                         }
                         "edited_channel_post" => {
                             update_type = Some(UpdateType::EditedChannelPost(

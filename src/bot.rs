@@ -1,6 +1,9 @@
 use self::{contexts::*, methods::GetUpdates, types::UpdateType};
 use super::*;
-use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
+use std::{
+    sync::{Arc, Mutex},
+    time::{Duration, Instant},
+};
 
 mod polling;
 pub use self::polling::*;
@@ -81,9 +84,11 @@ impl Bot {
 
         match update.update_type {
             Some(UpdateType::Message(message)) => {
-                let message_context = MessageContext::new(mock_bot, message);
-                if let Some(context) = message_context {
+                if let Some(context) =
+                    MessageContext::try_new(mock_bot, message)
+                {
                     self.handle_message(&context);
+                    return;
                 }
             }
             _ => (), // TODO
