@@ -6,9 +6,13 @@ use super::*;
 pub(crate) struct GetUpdates<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     timeout: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     allowed_updates: Option<&'a [types::Updates]>,
 }
 
