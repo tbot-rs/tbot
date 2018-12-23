@@ -27,7 +27,7 @@ pub enum Updates {
 
 /// Represents different types of updates from Telegram.
 #[derive(Debug)]
-pub enum UpdateTypes {
+pub enum UpdateType {
     /// A new incoming message.
     Message(raw::Message),
     /// A message was edited.
@@ -44,7 +44,7 @@ pub struct Update {
     /// Update's ID.
     pub update_id: u64,
     /// Update's type.
-    pub update_type: Option<UpdateTypes>,
+    pub update_type: Option<UpdateType>,
 }
 
 impl<'de> serde::Deserialize<'de> for Update {
@@ -76,23 +76,23 @@ impl<'de> serde::Deserialize<'de> for Update {
                         "update_id" => update_id = Some(map.next_value()?),
                         "message" => {
                             update_type =
-                                Some(UpdateTypes::Message(map.next_value()?))
-                        },
+                                Some(UpdateType::Message(map.next_value()?))
+                        }
                         "edited_message" => {
-                            update_type = Some(UpdateTypes::EditedMessage(
+                            update_type = Some(UpdateType::EditedMessage(
                                 map.next_value()?,
                             ))
-                        },
+                        }
                         "channel_post" => {
-                            update_type = Some(UpdateTypes::ChannelPost(
+                            update_type = Some(UpdateType::ChannelPost(
                                 map.next_value()?,
                             ))
-                        },
+                        }
                         "edited_channel_post" => {
-                            update_type = Some(UpdateTypes::EditedChannelPost(
+                            update_type = Some(UpdateType::EditedChannelPost(
                                 map.next_value()?,
                             ))
-                        },
+                        }
                         _ => (),
                     }
                 }
