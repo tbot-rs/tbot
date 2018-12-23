@@ -8,14 +8,14 @@
 //!
 //! bot.on_message(|context| {
 //!     let reply = context
-//!         .send_message(context.message)
+//!         .send_message(&context.message)
 //!         .into_future()
 //!         .map_err(|err| eprintln!("Couldn't send a message: {:#?}", err));
 //!
 //!     tbot::spawn(reply);
 //! });
 //!
-//! bot.start_polling();
+//! bot.polling().start();
 //! ```
 //!
 //! If you're a newcomer to `tbot`, we recommend you doing the [tutorial] first.
@@ -32,6 +32,7 @@
 
 mod bot;
 
+pub mod contexts;
 pub mod methods;
 pub mod types;
 
@@ -67,6 +68,6 @@ where
 
 pub mod prelude {
     //! Re-exports some traits the compiler may demand when working with `tbot`.
-    pub use super::methods::Methods;
+    pub use super::{contexts::traits::*, methods::Methods};
     pub use futures::Future;
 }

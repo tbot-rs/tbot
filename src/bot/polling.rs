@@ -76,14 +76,12 @@ impl<'a> Polling<'a> {
             )
             .into_future()
             .map(move |updates| {
-                let bot = on_ok;
-
-                for update in &updates {
-                    bot.handle_update(update);
-                }
-
                 if let Some(update) = updates.last() {
                     *new_offset.lock().unwrap() = Some(update.update_id + 1);
+                }
+
+                for update in updates {
+                    on_ok.handle_update(update);
                 }
             })
             .map_err(move |error| on_err.handle_polling_error(&error));
@@ -94,6 +92,7 @@ impl<'a> Polling<'a> {
             let now = Instant::now();
 
             if next_timestamp > now {
+                println!("Sleeping for {:?}", next_timestamp - now);
                 std::thread::sleep(next_timestamp - now);
             }
         }

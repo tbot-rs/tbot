@@ -1,21 +1,23 @@
-use self::methods::GetUpdates;
+use self::{contexts::*, methods::GetUpdates, types::UpdateType};
 use super::*;
-use std::sync::{Arc, Mutex};
-use std::time::{Duration, Instant};
+use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
 
 mod polling;
 pub use self::polling::*;
 
 type Handlers<T> = Vec<Mutex<Box<T>>>;
+
 // Wish trait alises came out soon
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
+type MessageHandler = dyn FnMut(&MessageContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: Arc<String>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<BeforeUpdateHandler>,
+    message_handlers: Handlers<MessageHandler>,
 }
 
 impl Bot {
@@ -25,6 +27,7 @@ impl Bot {
             token: Arc::new(token),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
+            message_handlers: Vec::new(),
         }
     }
 
@@ -52,6 +55,14 @@ impl Bot {
         self.before_update_handlers.push(Mutex::new(Box::new(handler)))
     }
 
+    /// Adds a new text message handler.
+    pub fn on_message<T>(&mut self, handler: T)
+    where
+        T: FnMut(&MessageContext) + Send + Sync + 'static,
+    {
+        self.message_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
     /// Starts configuring polling.
     pub fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
@@ -63,8 +74,20 @@ impl Bot {
         unimplemented!();
     }
 
-    fn handle_update(&self, update: &types::Update) {
-        self.handle_before_update(update);
+    fn handle_update(&self, update: types::Update) {
+        self.handle_before_update(&update);
+
+        let mock_bot = Arc::new(MockBot::new(self.token.clone()));
+
+        match update.update_type {
+            Some(UpdateType::Message(message)) => {
+                let message_context = MessageContext::new(mock_bot, message);
+                if let Some(context) = message_context {
+                    self.handle_message(&context);
+                }
+            }
+            _ => (), // TODO
+        }
     }
 
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
@@ -76,6 +99,12 @@ impl Bot {
     fn handle_before_update(&self, update: &types::Update) {
         for handler in &self.before_update_handlers {
             (&mut *handler.lock().unwrap())(&update);
+        }
+    }
+
+    fn handle_message(&self, context: &MessageContext) {
+        for handler in &self.message_handlers {
+            (&mut *handler.lock().unwrap())(&context);
         }
     }
 }
