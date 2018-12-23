@@ -28,7 +28,10 @@ pub struct MessageContext {
 }
 
 impl MessageContext {
-    pub(crate) fn new(bot: Bot, message: types::raw::Message) -> Option<Self> {
+    pub(crate) fn try_new(
+        bot: Bot,
+        message: types::raw::Message,
+    ) -> Option<Self> {
         Some(Self {
             bot,
             message_id: message.message_id,
@@ -38,13 +41,13 @@ impl MessageContext {
             reply_to: message.reply_to_message,
             edit_date: message.edit_date,
             message: message.text?,
-            entities: message.entities.unwrap_or_else(|| Vec::new()),
+            entities: message.entities.unwrap_or_else(Vec::new),
         })
     }
 }
 
 impl traits::ChatMethods for MessageContext {
-    fn bot<'a>(&'a self) -> &'a MockBot {
+    fn bot(&self) -> &MockBot {
         &self.bot
     }
 

@@ -4,7 +4,7 @@ use super::*;
 pub trait ChatMethods {
     // Wish trait fields came out soon
     /// Gets the bot.
-    fn bot<'a>(&'a self) -> &'a MockBot;
+    fn bot(&self) -> &MockBot;
     /// Gets the chat ID.
     fn chat_id(&self) -> i64;
     /// Gets the message ID.
@@ -28,7 +28,7 @@ pub trait ChatMethods {
     }
 
     /// Constructs a [`SendLocation`] inferring the token and the chat ID.
-    fn send_location<'a>(&'a self, location: (f64, f64)) -> SendLocation<'a> {
+    fn send_location(&self, location: (f64, f64)) -> SendLocation<'_> {
         self.bot().send_location(self.chat_id(), location)
     }
 }
