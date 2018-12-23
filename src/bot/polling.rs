@@ -92,7 +92,6 @@ impl<'a> Polling<'a> {
             let now = Instant::now();
 
             if next_timestamp > now {
-                println!("Sleeping for {:?}", next_timestamp - now);
                 std::thread::sleep(next_timestamp - now);
             }
         }
