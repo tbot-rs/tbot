@@ -57,7 +57,10 @@ impl<'de> serde::Deserialize<'de> for Update {
         impl<'v> serde::de::Visitor<'v> for UpdateVisitor {
             type Value = Update;
 
-            fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+            fn expecting(
+                &self,
+                fmt: &mut std::fmt::Formatter,
+            ) -> std::fmt::Result {
                 write!(fmt, "struct Update")
             }
 
@@ -71,15 +74,32 @@ impl<'de> serde::Deserialize<'de> for Update {
                 while let Some(key) = map.next_key()? {
                     match key {
                         "update_id" => update_id = Some(map.next_value()?),
-                        "message" => update_type = Some(UpdateTypes::Message(map.next_value()?)),
-                        "edited_message" => update_type = Some(UpdateTypes::EditedMessage(map.next_value()?)),
-                        "channel_post" => update_type = Some(UpdateTypes::ChannelPost(map.next_value()?)),
-                        "edited_channel_post" => update_type = Some(UpdateTypes::EditedChannelPost(map.next_value()?)),
+                        "message" => {
+                            update_type =
+                                Some(UpdateTypes::Message(map.next_value()?))
+                        },
+                        "edited_message" => {
+                            update_type = Some(UpdateTypes::EditedMessage(
+                                map.next_value()?,
+                            ))
+                        },
+                        "channel_post" => {
+                            update_type = Some(UpdateTypes::ChannelPost(
+                                map.next_value()?,
+                            ))
+                        },
+                        "edited_channel_post" => {
+                            update_type = Some(UpdateTypes::EditedChannelPost(
+                                map.next_value()?,
+                            ))
+                        },
                         _ => (),
                     }
                 }
 
-                let update_id = update_id.ok_or_else(|| serde::de::Error::missing_field("update_id"))?;
+                let update_id = update_id.ok_or_else(|| {
+                    serde::de::Error::missing_field("update_id")
+                })?;
 
                 Ok(Update {
                     update_id,

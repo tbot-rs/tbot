@@ -29,7 +29,6 @@ impl<'a> GetUpdates<'a> {
         }
     }
 
-
     #[must_use]
     pub fn into_future(
         self,
