@@ -6,22 +6,23 @@ use std::time::{Duration, Instant};
 mod polling;
 pub use self::polling::*;
 
+type Handlers<T> = Vec<Mutex<Box<T>>>;
 // Wish trait alises came out soon
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
-    token: String,
-    polling_error_handlers: Vec<Mutex<Box<PollingErrorHandler>>>,
-    before_update_handlers: Vec<Mutex<Box<BeforeUpdateHandler>>>,
+    token: Arc<String>,
+    polling_error_handlers: Handlers<PollingErrorHandler>,
+    before_update_handlers: Handlers<BeforeUpdateHandler>,
 }
 
 impl Bot {
     /// Creates a new `Bot`.
     pub fn new(token: String) -> Self {
         Self {
-            token,
+            token: Arc::new(token),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
         }
