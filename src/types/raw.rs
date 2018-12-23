@@ -280,7 +280,7 @@ pub enum InputMedia {
 pub struct Sticker {
     pub file_id: String,
     pub width: i64,
-    pub heigth: i64,
+    pub height: i64,
     pub thumb: Option<PhotoSize>,
     pub emoji: Option<String>,
     pub set_name: Option<String>,
