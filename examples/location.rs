@@ -21,13 +21,13 @@ fn main() {
         .send_location(0, *places.next().unwrap())
         .live_period((PLACES.len() as u16 * INTERVAL).max(60))
         .into_future()
-        .map_err(|error| println!("Whops, an error happened: {:#?}", error))
+        .map_err(|error| eprintln!("Whops, an error happened: {:#?}", error))
         .and_then(|message| {
             Interval::new(Instant::now(), Duration::from_secs(INTERVAL as u64))
                 .take(PLACES.len() as u64)
                 .skip(1)
                 .map_err(|error| {
-                    println!("Whops, an error happened: {:#?}", error);
+                    eprintln!("Whops, an error happened: {:#?}", error);
                 })
                 .for_each(move |_| {
                     bot.edit_message_location(
@@ -39,7 +39,7 @@ fn main() {
                     )
                     .into_future()
                     .map_err(|error| {
-                        println!("Whops, an error happened: {:#?}", error);
+                        eprintln!("Whops, an error happened: {:#?}", error);
                     })
                     .map(|_| ())
                 })

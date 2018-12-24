@@ -29,7 +29,7 @@ fn main() {
             )],
         ]))
         .into_future()
-        .map_err(|error| println!("Whops, an error happened: {:#?}", error));
+        .map_err(|error| eprintln!("Whops, an error happened: {:#?}", error));
 
     tbot::run(request);
 }

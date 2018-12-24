@@ -6,7 +6,7 @@ fn main() {
     let request = bot
         .get_me()
         .into_future()
-        .map_err(|error| println!("Oops, an error happened: {:#?}", error))
+        .map_err(|error| eprintln!("Oops, an error happened: {:#?}", error))
         .map(|me| println!("Here I am: {:#?}", me));
 
     tbot::run(request);
