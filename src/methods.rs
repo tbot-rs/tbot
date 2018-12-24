@@ -17,11 +17,8 @@
 //! For example, here's how you'd call `getMe`:
 //!
 //! ```
-//! use tbot::prelude::*;
-//!
-//! let token = std::env::var("BOT_TOKEN").unwrap();
-//!
-//! let request = tbot::methods::GetMe::new(&token)
+//! # use tbot::prelude::*;
+//! let request = tbot::methods::GetMe::new(env!("BOT_TOKEN"))
 //!     .into_future()
 //!     .map_err(|_| ())
 //!     .map(|me| println!("Here I am: {:#?}", me));

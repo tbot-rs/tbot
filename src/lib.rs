@@ -43,8 +43,8 @@ use serde::{Deserialize, Serialize};
 /// Like `tokio::run`, but doesn't require `future::Item` to be `()`.
 ///
 /// Most use-caces of `tbot` do not need to use the future's `Item` value,
-/// leading to many `.map(|_| ())` in the code. This code will implicitly map
-/// `Item` to `()`. Note that it does **not** map `Error` to `()`, because
+/// leading to many `.map(|_| ())` in the code. This function will implicitly
+/// map `Item` to `()`. Note that it does **not** map `Error` to `()`, because
 /// error handling must be done on your own.
 pub fn run<F>(future: F)
 where
@@ -56,8 +56,8 @@ where
 /// Like `tokio::spawn`, but doesn't require `future::Item` to be `()`.
 ///
 /// Most use-caces of `tbot` do not need to use the future's `Item` value,
-/// leading to many `.map(|_| ())` in the code. This code will implicitly map
-/// `Item` to `()`. Note that it does **not** map `Error` to `()`, because
+/// leading to many `.map(|_| ())` in the code. This function will implicitly
+/// map `Item` to `()`. Note that it does **not** map `Error` to `()`, because
 /// error handling must be done on your own.
 pub fn spawn<F>(future: F) -> tokio::executor::Spawn
 where

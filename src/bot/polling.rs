@@ -1,6 +1,10 @@
 use super::*;
 
 /// Configures polling and runs it.
+///
+/// To construct `Polling`, use [`Bot::polling`].
+///
+/// [`Bot::polling`]: ./struct.Bot.html#method.polling
 #[must_use = "polling does nothing unless `start` is called"]
 pub struct Polling<'a> {
     bot: Bot,
@@ -21,7 +25,7 @@ impl<'a> Polling<'a> {
         }
     }
 
-    /// Configures the limit of requested updates per request.
+    /// Configures the limit of updates per request.
     pub fn limit(mut self, limit: u8) -> Self {
         self.limit = Some(limit);
         self
