@@ -82,12 +82,13 @@ impl Bot {
         let mock_bot = Arc::new(MockBot::new(self.token.clone()));
 
         match update.update_type {
-            Some(UpdateType::Message(message)) => {
-                if let Some(context) =
-                    MessageContext::try_new(mock_bot, message)
-                {
-                    self.handle_message(&context);
-                    return;
+            Some(UpdateType::Message(mut message)) => {
+                match MessageContext::try_new(mock_bot, message) {
+                    Ok(context) => {
+                        self.handle_message(&context);
+                        return;
+                    },
+                    Err(original) => message = original,
                 }
             }
             _ => (), // TODO

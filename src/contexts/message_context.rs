@@ -31,8 +31,13 @@ impl MessageContext {
     pub(crate) fn try_new(
         bot: Bot,
         message: types::raw::Message,
-    ) -> Option<Self> {
-        Some(Self {
+    ) -> Result<Self, types::raw::Message> {
+        let text = match message.text {
+            Some(text) => text,
+            None => return Err(message),
+        };
+
+        Ok(Self {
             bot,
             message_id: message.message_id,
             from: message.from,
@@ -40,7 +45,7 @@ impl MessageContext {
             chat: message.chat,
             reply_to: message.reply_to_message,
             edit_date: message.edit_date,
-            message: message.text?,
+            message: text,
             entities: message.entities.unwrap_or_else(Vec::new),
         })
     }
