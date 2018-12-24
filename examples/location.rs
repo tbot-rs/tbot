@@ -28,17 +28,20 @@ fn main() {
                 .skip(1)
                 .map_err(|error| {
                     println!("Whops, an error happened: {:#?}", error);
-                }).for_each(move |_| {
+                })
+                .for_each(move |_| {
                     bot.edit_message_location(
                         message.chat.id,
                         message.message_id,
                         // We ensured the value's existence when took the
                         // amount of iterations
                         *places.next().unwrap(),
-                    ).into_future()
+                    )
+                    .into_future()
                     .map_err(|error| {
                         println!("Whops, an error happened: {:#?}", error);
-                    }).map(|_| ())
+                    })
+                    .map(|_| ())
                 })
         });
 

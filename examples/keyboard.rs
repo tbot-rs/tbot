@@ -27,7 +27,8 @@ fn main() {
                 "I wanna get started with it!",
                 InlineButtonType::Url(TUTORIAL),
             )],
-        ])).into_future()
+        ]))
+        .into_future()
         .map_err(|error| println!("Whops, an error happened: {:#?}", error));
 
     tbot::run(request);
