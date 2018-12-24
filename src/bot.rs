@@ -43,26 +43,26 @@ impl Bot {
 
     /// Adds a new handler for errors that happened while sending poll
     /// requests.
-    pub fn on_polling_error<T>(&mut self, handler: T)
-    where
-        T: FnMut(&methods::DeliveryError) + Send + Sync + 'static,
-    {
+    pub fn on_polling_error(
+        &mut self,
+        handler: impl FnMut(&methods::DeliveryError) + Send + Sync + 'static,
+    ) {
         self.polling_error_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for all updates run before the specialized updates.
-    pub fn before_update<T>(&mut self, handler: T)
-    where
-        T: FnMut(&types::Update) + Send + Sync + 'static,
-    {
+    pub fn before_update(
+        &mut self,
+        handler: impl FnMut(&types::Update) + Send + Sync + 'static,
+    ) {
         self.before_update_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new text message handler.
-    pub fn on_message<T>(&mut self, handler: T)
-    where
-        T: FnMut(&MessageContext) + Send + Sync + 'static,
-    {
+    pub fn on_message(
+        &mut self,
+        handler: impl FnMut(&MessageContext) + Send + Sync + 'static,
+    ) {
         self.message_handlers.push(Mutex::new(Box::new(handler)))
     }
 
