@@ -29,6 +29,7 @@ pub enum InlineButtonType<'a> {
 ///
 /// [`InlineKeybaordButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Clone)]
+#[must_use]
 pub struct InlineButton<'a> {
     text: &'a str,
     button_type: InlineButtonType<'a>,
@@ -36,7 +37,6 @@ pub struct InlineButton<'a> {
 
 impl<'a> InlineButton<'a> {
     /// Constructs a new `InlineButton`.
-    #[must_use]
     pub fn new(text: &'a str, button_type: InlineButtonType<'a>) -> Self {
         Self {
             text,

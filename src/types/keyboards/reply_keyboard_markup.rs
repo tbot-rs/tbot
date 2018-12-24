@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
 #[derive(Serialize, Debug, PartialEq, Clone)]
+#[must_use]
 pub struct ReplyButton<'a> {
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14,7 +15,6 @@ pub struct ReplyButton<'a> {
 
 impl<'a> ReplyButton<'a> {
     /// Constructs a new `ReplyButton`.
-    #[must_use]
     pub fn new(text: &'a str) -> ReplyButton {
         ReplyButton {
             text,
@@ -24,14 +24,12 @@ impl<'a> ReplyButton<'a> {
     }
 
     /// Sets `request_contact` to `Some(is_requested)`.
-    #[must_use]
     pub fn request_contact(mut self, is_requested: bool) -> Self {
         self.request_contact = Some(is_requested);
         self
     }
 
     /// Sets `request_localization` to `Some(is_requested)`.
-    #[must_use]
     pub fn request_localization(mut self, is_requested: bool) -> Self {
         self.request_localization = Some(is_requested);
         self

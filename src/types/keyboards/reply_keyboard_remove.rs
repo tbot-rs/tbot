@@ -4,6 +4,7 @@ use serde::ser::SerializeMap;
 ///
 /// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
 #[derive(Debug, PartialEq, Clone, Default)]
+#[must_use]
 pub struct ReplyKeyboardRemove {
     // remove_keyboard is added when serializing
     selective: Option<bool>,
@@ -11,7 +12,6 @@ pub struct ReplyKeyboardRemove {
 
 impl ReplyKeyboardRemove {
     /// Constructs a new `ReplyKeyboardRemove`.
-    #[must_use]
     pub fn new() -> ReplyKeyboardRemove {
         ReplyKeyboardRemove {
             selective: None,
@@ -19,7 +19,6 @@ impl ReplyKeyboardRemove {
     }
 
     /// Sets `selective` to `Some(is_selective)`.
-    #[must_use]
     pub fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self

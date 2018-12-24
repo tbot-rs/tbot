@@ -1,6 +1,7 @@
 use super::*;
 
 /// Configures polling and runs it.
+#[must_use = "polling does nothing unless `start` is called"]
 pub struct Polling<'a> {
     bot: Bot,
     limit: Option<u8>,
@@ -10,7 +11,6 @@ pub struct Polling<'a> {
 }
 
 impl<'a> Polling<'a> {
-    #[must_use]
     pub(crate) fn new(bot: Bot) -> Self {
         Self {
             bot,
@@ -22,21 +22,18 @@ impl<'a> Polling<'a> {
     }
 
     /// Configures the limit of requested updates per request.
-    #[must_use]
     pub fn limit(mut self, limit: u8) -> Self {
         self.limit = Some(limit);
         self
     }
 
     /// Configures the timeout for long polling.
-    #[must_use]
     pub fn timeout(mut self, timeout: u64) -> Self {
         self.timeout = Some(timeout);
         self
     }
 
     /// Configures which updates you'd like to listen to.
-    #[must_use]
     pub fn allowed_updates(
         mut self,
         allowed_updates: &'a [types::Updates],
@@ -46,7 +43,6 @@ impl<'a> Polling<'a> {
     }
 
     /// Configures the minimal interval between making requests.
-    #[must_use]
     pub fn poll_interval(mut self, poll_interval: u64) -> Self {
         self.poll_interval = poll_interval;
         self
