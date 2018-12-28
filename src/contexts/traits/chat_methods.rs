@@ -28,7 +28,17 @@ pub trait ChatMethods {
     }
 
     /// Constructs a [`SendLocation`] inferring the token and the chat ID.
+    ///
+    /// [`SendLocation`]: ../methods/struct.SendLocation.html
     fn send_location(&self, location: (f64, f64)) -> SendLocation<'_> {
         self.bot().send_location(self.chat_id(), location)
+    }
+
+    /// Constructs a [`SendLocation`] inferring the token, chat ID and the
+    /// message ID.
+    ///
+    /// [`SendLocation`]: ../methods/struct.SendLocation.html
+    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation<'_> {
+        self.send_location(location).reply_to_message_id(self.message_id())
     }
 }
