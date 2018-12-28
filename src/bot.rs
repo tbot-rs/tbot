@@ -83,7 +83,7 @@ impl Bot {
 
         match update.update_type {
             Some(UpdateType::Message(mut message)) => {
-                match MessageContext::try_new(mock_bot, message) {
+                match MessageContext::try_new(mock_bot.clone(), message) {
                     Ok(context) => {
                         self.handle_message(&context);
                         return;
