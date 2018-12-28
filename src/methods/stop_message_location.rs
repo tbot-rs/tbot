@@ -30,7 +30,7 @@ impl<'a> StopMessageLocation<'a> {
         }
     }
 
-    /// Sets `reply_markup` to `Some(markup)`.
+    /// Configures `reply_markup`.
     pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

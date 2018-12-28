@@ -28,13 +28,13 @@ impl<'a> GetUserProfilePhotos<'a> {
         }
     }
 
-    /// Configures the `offset` parameter.
+    /// Configures `offset`.
     pub fn offset(mut self, offset: u64) -> Self {
         self.offset = Some(offset);
         self
     }
 
-    /// Configures the `limit` parameter.
+    /// Configures `limit`.
     pub fn limit(mut self, limit: u8) -> Self {
         self.limit = Some(limit);
         self

@@ -40,25 +40,25 @@ impl<'a> SendLocation<'a> {
         }
     }
 
-    /// Sets `live_period` to `Some(duration)`.
+    /// Confgiures `live_period`.
     pub fn live_period(mut self, duration: u16) -> Self {
         self.live_period = Some(duration);
         self
     }
 
-    /// Sets `disable_notification` to `Some(is_disabled)`.
+    /// Confgiures `disable_notification`.
     pub fn disable_notification(mut self, is_disabled: bool) -> Self {
         self.disable_notification = Some(is_disabled);
         self
     }
 
-    /// Sets `reply_to_message_id` to `Some(id)`.
+    /// Confgiures `reply_to_message_id`.
     pub fn reply_to_message_id(mut self, id: u64) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
-    /// Sets `reply_markup` to `Some(markup)`.
+    /// Confgiures `reply_markup`.
     pub fn reply_markup(
         mut self,
         markup: impl Into<types::raw::Keyboard<'a>>,

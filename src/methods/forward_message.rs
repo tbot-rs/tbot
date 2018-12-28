@@ -32,7 +32,7 @@ impl<'a> ForwardMessage<'a> {
         }
     }
 
-    /// Sets `the disable_notification` field to `Some(is_disabled)`.
+    /// Configures `disable_notification`.
     pub fn disable_notification(mut self, is_disabled: bool) -> Self {
         self.disable_notification = Some(is_disabled);
         self

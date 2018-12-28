@@ -44,31 +44,31 @@ impl<'a> SendContact<'a> {
         }
     }
 
-    /// Sets `last_name` to `Some(last_name)`.
+    /// Configures `last_name`.
     pub fn last_name<'b: 'a>(mut self, last_name: &'b str) -> Self {
         self.last_name = Some(last_name);
         self
     }
 
-    /// Sets `vcard` to `Some(vcard)`.
+    /// Configures `vcard`.
     pub fn vcard<'b: 'a>(mut self, vcard: &'b str) -> Self {
         self.vcard = Some(vcard);
         self
     }
 
-    /// Sets `disable_notification` to `Some(is_disabled)`.
+    /// Configures `disable_notification`.
     pub fn disable_notification(mut self, is_disabled: bool) -> Self {
         self.disable_notification = Some(is_disabled);
         self
     }
 
-    /// Sets `reply_to_message_id` to `Some(id)`.
+    /// Configures `reply_to_message_id`.
     pub fn reply_to_message_id(mut self, id: u64) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
-    /// Sets `reply_markup` to `Some(markup)`.
+    /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
         markup: impl Into<types::raw::Keyboard<'a>>,
