@@ -79,7 +79,7 @@ impl Bot {
         unimplemented!();
     }
 
-    /// Creates a new [`MockBot`].
+    /// Creates a new [`MockBot`] based on this bot.
     ///
     /// [`MockBot`]: ./struct.MockBot.html
     pub fn mock(&self) -> MockBot {
