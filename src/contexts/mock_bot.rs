@@ -9,6 +9,7 @@ use std::sync::Arc;
 /// to confusing error messages by the compiler on the user's side.
 ///
 /// [`Bot`]: ../struct.Bot.html
+#[derive(Clone)]
 pub struct MockBot {
     token: Arc<String>,
 }

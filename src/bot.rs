@@ -16,6 +16,7 @@ type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
 type MessageHandler = dyn FnMut(&MessageContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
+#[derive(Clone)]
 pub struct Bot {
     token: Arc<String>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
