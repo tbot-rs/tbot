@@ -1,13 +1,12 @@
 use super::*;
-
-type Bot = std::sync::Arc<MockBot>;
+use std::sync::Arc;
 
 /// Contants data for [text message handlers][on_message].
 ///
 /// [on_message]: ../struct.Bot.html#method.on_message
 pub struct MessageContext {
     /// A mock bot with all API methods.
-    pub bot: Bot,
+    pub bot: Arc<MockBot>,
     /// Id of the message.
     pub message_id: u64,
     /// The sender of the message.
@@ -29,7 +28,7 @@ pub struct MessageContext {
 
 impl MessageContext {
     pub(crate) fn try_new(
-        bot: Bot,
+        bot: Arc<MockBot>,
         message: types::raw::Message,
     ) -> Result<Self, types::raw::Message> {
         let text = match message.text {

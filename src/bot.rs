@@ -5,7 +5,10 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod mock_bot;
 mod polling;
+
+pub use self::mock_bot::*;
 pub use self::polling::*;
 
 type Handlers<T> = Vec<Mutex<Box<T>>>;
@@ -16,7 +19,6 @@ type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
 type MessageHandler = dyn FnMut(&MessageContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
-#[derive(Clone)]
 pub struct Bot {
     token: Arc<String>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
@@ -77,6 +79,13 @@ impl Bot {
         unimplemented!();
     }
 
+    /// Creates a new [`MockBot`].
+    ///
+    /// [`MockBot`]: ./struct.MockBot.html
+    pub fn mock(&self) -> MockBot {
+        MockBot::new(self.token.clone())
+    }
+
     fn handle_update(&self, update: types::Update) {
         self.handle_before_update(&update);
 
@@ -88,7 +97,7 @@ impl Bot {
                     Ok(context) => {
                         self.handle_message(&context);
                         return;
-                    },
+                    }
                     Err(original) => message = original,
                 }
             }

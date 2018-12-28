@@ -1,5 +1,4 @@
 use super::*;
-use std::sync::Arc;
 
 /// Struct that isn't actually a [`Bot`], but has all the methods for calling
 /// the API inferring token.
@@ -8,7 +7,7 @@ use std::sync::Arc;
 /// actually isn't. Using the real `Bot` is complicated and could actually lead
 /// to confusing error messages by the compiler on the user's side.
 ///
-/// [`Bot`]: ../struct.Bot.html
+/// [`Bot`]: ./struct.Bot.html
 #[derive(Clone)]
 pub struct MockBot {
     token: Arc<String>,
