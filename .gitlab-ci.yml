@@ -1,0 +1,15 @@
+image: "rust:latest"
+
+test:
+  before_script:
+    - rustup component add rustfmt
+    - rustup component add clippy
+  script:
+    - cargo test
+    - cargo fmt -- --check
+    - cargo clippy
+  only:
+    - branches
+
+stages:
+  - test
