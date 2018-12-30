@@ -29,7 +29,7 @@ pub trait Methods {
     fn forward_message<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'a>>,
-        from_chat_id: &'a types::ChatId,
+        from_chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
     ) -> methods::ForwardMessage<'a> {
         methods::ForwardMessage::new(

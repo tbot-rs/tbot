@@ -9,7 +9,7 @@ pub struct ForwardMessage<'a> {
     #[serde(skip)]
     token: &'a str,
     chat_id: types::ChatId<'a>,
-    from_chat_id: &'a types::ChatId<'a>,
+    from_chat_id: types::ChatId<'a>,
     message_id: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
@@ -20,13 +20,13 @@ impl<'a> ForwardMessage<'a> {
     pub fn new<'b: 'a>(
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
-        from_chat_id: &'a types::ChatId,
+        from_chat_id: impl Into<types::ChatId<'b>>,
         message_id: u64,
     ) -> Self {
         Self {
             token,
             chat_id: chat_id.into(),
-            from_chat_id,
+            from_chat_id: from_chat_id.into(),
             message_id,
             disable_notification: None,
         }
