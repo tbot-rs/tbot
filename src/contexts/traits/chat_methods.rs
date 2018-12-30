@@ -12,7 +12,7 @@ pub trait ChatMethods {
     /// Gets the sender ID.
     fn from_id(&self) -> i64;
 
-    /// Constructs a new [`ForwardMesage`] inferring the token and the
+    /// Constructs a new [`ForwardMessage`] inferring the token and the
     /// destination chat ID.
     ///
     /// [`ForwardMessage`]: ../methods/struct.ForwardMessage.html
