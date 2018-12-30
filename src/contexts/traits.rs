@@ -5,5 +5,7 @@ use super::*;
 use crate::methods::*;
 
 mod chat_methods;
+mod forwardable;
 
 pub use self::chat_methods::*;
+pub use self::forwardable::*;

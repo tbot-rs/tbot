@@ -67,3 +67,5 @@ impl traits::ChatMethods for MessageContext {
         self.from.id
     }
 }
+
+impl Forwardable for MessageContext {}
