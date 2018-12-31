@@ -125,7 +125,7 @@ fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
 
     if let Some(boundary) = boundary {
         let content_type =
-            format!("muiltipart/form-data; boundary={}", boundary);
+            format!("multipart/form-data; boundary={}", boundary);
 
         request.headers_mut().insert(
             hyper::header::CONTENT_TYPE,
