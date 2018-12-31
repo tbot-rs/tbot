@@ -31,13 +31,14 @@
 #![deny(missing_docs)]
 
 mod bot;
+mod multipart;
 
 pub mod contexts;
 pub mod methods;
 pub mod types;
 
 pub use self::bot::*;
-use self::prelude::*;
+use self::{multipart::*, prelude::*};
 use serde::{Deserialize, Serialize};
 
 /// Like `tokio::run`, but doesn't require `future::Item` to be `()`.
