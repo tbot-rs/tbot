@@ -100,6 +100,27 @@ pub trait ChatMethods {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
+    ///
+    /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
+    fn send_animation<'a>(
+        &'a self,
+        animation: types::Animation<'a>,
+    ) -> SendAnimation<'a> {
+        self.bot().send_animation(self.chat_id(), animation)
+    }
+
+    /// Constructs a [`SendAnimation`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
+    fn send_animation_in_reply<'a>(
+        &'a self,
+        animation: types::Animation<'a>,
+    ) -> SendAnimation<'a> {
+        self.send_animation(animation).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///

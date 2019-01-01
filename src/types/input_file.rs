@@ -1,8 +1,12 @@
 use rand::{distributions::Alphanumeric, rngs::SmallRng, FromEntropy, Rng};
 
+mod animation;
 mod photo;
+mod thumb;
 
+pub use self::animation::*;
 pub use self::photo::*;
+pub use self::thumb::*;
 
 pub(crate) enum InputFile<'a> {
     File {

@@ -34,6 +34,17 @@ pub trait Methods {
         methods::SendPhoto::new(self.token(), chat_id, photo)
     }
 
+    /// Constructs a new [`SendAnimation`] inferring `token`.
+    ///
+    /// [`SendAnimation`]: ./struct.SendAnimation.html
+    fn send_animation<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        animation: types::Animation<'a>,
+    ) -> methods::SendAnimation<'a> {
+        methods::SendAnimation::new(self.token(), chat_id, animation)
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html
