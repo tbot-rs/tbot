@@ -103,8 +103,7 @@ impl<'a> SendPhoto<'a> {
                     None
                 };
 
-            let reply_to_message_id = if let Some(id) = self.reply_to_message_id
-            {
+            let reply_to = if let Some(id) = self.reply_to_message_id {
                 Some(id.to_string())
             } else {
                 None
@@ -116,27 +115,15 @@ impl<'a> SendPhoto<'a> {
                 None
             };
 
-            let mut body = Multipart::new(7)
-                .field("chat_id", &chat_id)
-                .file("photo", filename, bytes);
-
-            if let Some(caption) = self.caption {
-                body = body.field("caption", caption);
-            }
-            if let Some(ref parse_mode) = parse_mode {
-                body = body.field("parse_mode", parse_mode);
-            }
-            if let Some(ref is_disabled) = is_disabled {
-                body = body.field("disable_notification", is_disabled);
-            }
-            if let Some(ref id) = reply_to_message_id {
-                body = body.field("reply_to_message_id", id);
-            }
-            if let Some(ref keyboard) = reply_markup {
-                body = body.field("reply_keyboard", keyboard);
-            }
-
-            let (boundary, body) = body.finish();
+            let (boundary, body) = Multipart::new(7)
+                .str("chat_id", &chat_id)
+                .file("photo", filename, bytes)
+                .maybe_str("caption", self.caption)
+                .maybe_string("parse_mode", &parse_mode)
+                .maybe_string("disabled_notification", &is_disabled)
+                .maybe_string("reply_to_message_id", &reply_to)
+                .maybe_string("reply_markup", &reply_markup)
+                .finish();
 
             (Some(boundary), body)
         } else {

@@ -115,107 +115,87 @@ impl<'a> SendAnimation<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        let (boundary, body) =
-            if let types::InputFile::File {
+        let (boundary, body) = if let types::InputFile::File {
+            filename,
+            bytes,
+            ..
+        } = self.animation
+        {
+            let chat_id = match self.chat_id {
+                types::ChatId::Id(id) => id.to_string(),
+                types::ChatId::Username(username) => username.into(),
+            };
+
+            let duration = if let Some(duration) = self.duration {
+                Some(duration.to_string())
+            } else {
+                None
+            };
+
+            let width = if let Some(width) = self.width {
+                Some(width.to_string())
+            } else {
+                None
+            };
+
+            let height = if let Some(height) = self.height {
+                Some(height.to_string())
+            } else {
+                None
+            };
+
+            let parse_mode = if let Some(parse_mode) = self.parse_mode {
+                serde_json::to_string(&parse_mode).ok()
+            } else {
+                None
+            };
+
+            let is_disabled =
+                if let Some(is_disabled) = self.disable_notification {
+                    Some(is_disabled.to_string())
+                } else {
+                    None
+                };
+
+            let reply_to = if let Some(id) = self.reply_to_message_id {
+                Some(id.to_string())
+            } else {
+                None
+            };
+
+            let reply_markup = if let Some(keyboard) = self.reply_markup {
+                serde_json::to_string(&keyboard).ok()
+            } else {
+                None
+            };
+
+            let mut multipart = Multipart::new(7)
+                .str("chat_id", &chat_id)
+                .file("animation", filename, bytes)
+                .maybe_string("duration", &duration)
+                .maybe_string("width", &width)
+                .maybe_string("height", &height)
+                .maybe_str("caption", self.caption)
+                .maybe_string("parse_mode", &parse_mode)
+                .maybe_string("disable_notification", &is_disabled)
+                .maybe_string("reply_to_message_id", &reply_to)
+                .maybe_string("reply_markup", &reply_markup);
+
+            if let Some(types::InputFile::File {
                 filename,
                 bytes,
                 ..
-            } = self.animation
+            }) = self.thumb
             {
-                let chat_id = match self.chat_id {
-                    types::ChatId::Id(id) => id.to_string(),
-                    types::ChatId::Username(username) => username.into(),
-                };
+                multipart = multipart.file("thumb", filename, bytes);
+            }
 
-                let duration = if let Some(duration) = self.duration {
-                    Some(duration.to_string())
-                } else {
-                    None
-                };
+            let (boundary, body) = multipart.finish();
 
-                let width = if let Some(width) = self.width {
-                    Some(width.to_string())
-                } else {
-                    None
-                };
-
-                let height = if let Some(height) = self.height {
-                    Some(height.to_string())
-                } else {
-                    None
-                };
-
-                let parse_mode = if let Some(parse_mode) = self.parse_mode {
-                    serde_json::to_string(&parse_mode).ok()
-                } else {
-                    None
-                };
-
-                let is_disabled =
-                    if let Some(is_disabled) = self.disable_notification {
-                        Some(is_disabled.to_string())
-                    } else {
-                        None
-                    };
-
-                let reply_to_message_id =
-                    if let Some(id) = self.reply_to_message_id {
-                        Some(id.to_string())
-                    } else {
-                        None
-                    };
-
-                let reply_markup = if let Some(keyboard) = self.reply_markup {
-                    serde_json::to_string(&keyboard).ok()
-                } else {
-                    None
-                };
-
-                let mut body = Multipart::new(7)
-                    .field("chat_id", &chat_id)
-                    .file("animation", filename, bytes);
-
-                if let Some(ref duration) = duration {
-                    body = body.field("duration", duration);
-                }
-                if let Some(ref width) = width {
-                    body = body.field("width", width);
-                }
-                if let Some(ref height) = height {
-                    body = body.field("height", height);
-                }
-                // It's either Some(File) or None. Some(OtherVariant) won't
-                // exist
-                if let Some(types::InputFile::File {
-                    filename,
-                    bytes,
-                    ..
-                }) = self.thumb
-                {
-                    body = body.file("thumb", filename, bytes);
-                }
-                if let Some(caption) = self.caption {
-                    body = body.field("caption", caption);
-                }
-                if let Some(ref parse_mode) = parse_mode {
-                    body = body.field("parse_mode", parse_mode);
-                }
-                if let Some(ref is_disabled) = is_disabled {
-                    body = body.field("disable_notification", is_disabled);
-                }
-                if let Some(ref id) = reply_to_message_id {
-                    body = body.field("reply_to_message_id", id);
-                }
-                if let Some(ref keyboard) = reply_markup {
-                    body = body.field("reply_keyboard", keyboard);
-                }
-
-                let (boundary, body) = body.finish();
-
-                (Some(boundary), body)
-            } else {
-                (None, serde_json::to_vec(&self).unwrap())
-            };
+            (Some(boundary), body)
+        } else {
+            (None, serde_json::to_vec(&self).unwrap())
+        };
 
         send_method::<types::raw::Message>(
             self.token,

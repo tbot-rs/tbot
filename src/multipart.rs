@@ -43,7 +43,7 @@ impl<'a> Multipart<'a> {
         }
     }
 
-    pub fn field(mut self, name: &'static str, value: &'a str) -> Self {
+    pub fn str(mut self, name: &'static str, value: &'a str) -> Self {
         self.parts.push(Part {
             header: Header::Field(name),
             body: value.as_bytes(),
@@ -51,18 +51,38 @@ impl<'a> Multipart<'a> {
         self
     }
 
+    pub fn maybe_string(
+        self,
+        name: &'static str,
+        value: &'a Option<String>,
+    ) -> Self {
+        if let Some(value) = &value {
+            self.str(name, value)
+        } else {
+            self
+        }
+    }
+
+    pub fn maybe_str(self, name: &'static str, value: Option<&'a str>) -> Self {
+        if let Some(value) = value {
+            self.str(name, value)
+        } else {
+            self
+        }
+    }
+
     pub fn file(
         mut self,
         name: &'a str,
         filename: &'a str,
-        contents: &'a [u8],
+        body: &'a [u8],
     ) -> Self {
         self.parts.push(Part {
             header: Header::File {
                 name,
                 filename,
             },
-            body: contents,
+            body,
         });
         self
     }
