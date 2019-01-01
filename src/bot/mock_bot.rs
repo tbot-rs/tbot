@@ -7,7 +7,11 @@ use super::*;
 /// actually isn't. Using the real `Bot` is complicated and could actually lead
 /// to confusing error messages by the compiler on the user's side.
 ///
+/// You can also construct it with [`Bot::mock`] whenever you feel like cloning
+/// a [`Bot`] to call API methods outside `tbot`.
+///
 /// [`Bot`]: ./struct.Bot.html
+/// [`Bot::mock`]: ./struct.Bot.html#method.mock
 #[derive(Clone)]
 pub struct MockBot {
     token: Arc<String>,
