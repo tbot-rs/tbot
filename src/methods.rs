@@ -37,13 +37,13 @@ mod get_user_profile_photos;
 mod send_animation;
 mod send_chat_action;
 mod send_contact;
+mod send_document;
 mod send_location;
 mod send_message;
 mod send_photo;
 mod send_venue;
 mod stop_inline_location;
 mod stop_message_location;
-mod send_document;
 
 pub use self::edit_inline_location::*;
 pub use self::edit_message_location::*;

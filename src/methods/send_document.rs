@@ -149,11 +149,6 @@ impl<'a> SendDocument<'a> {
             (None, serde_json::to_vec(&self).unwrap())
         };
 
-        send_method(
-            self.token,
-            "sendDocument",
-            boundary,
-            body,
-        )
+        send_method(self.token, "sendDocument", boundary, body)
     }
 }
