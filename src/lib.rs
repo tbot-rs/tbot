@@ -1,5 +1,5 @@
-//! A crate for easy working with Telegram Bots API. `tbot`'s API is simple,
-//! but lets you do many things. Here's a simple echo bot:
+//! Write Telegram bots in Rust in an ease and nice way. Here is a simple echo
+//! bot:
 //!
 //! ```no_run
 //! use tbot::{prelude::*, Bot};
@@ -10,7 +10,7 @@
 //!     let reply = context
 //!         .send_message(&context.message)
 //!         .into_future()
-//!         .map_err(|err| eprintln!("Couldn't send a message: {:#?}", err));
+//!         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
 //!
 //!     tbot::spawn(reply);
 //! });
@@ -18,13 +18,17 @@
 //! bot.polling().start();
 //! ```
 //!
-//! If you're a newcomer to `tbot`, we recommend you doing the [tutorial] first.
-//! We also have several how-to's for you to see how to implement different
-//! features using `tbot`. If you face a problem, feel free to fill an issue on
-//! [our Gitlab repository][gitlab].
+//! If you're a newcomer, we recommend you go through the [tutorial] first. We
+//! also have several [How-to guides][how-to] for you to use all the power of
+//! `tbot`.
+//!
+//! If you get stuck or find a bug, fill an issue on either our [GitLab] or
+//! [GitHub] repository.
 //!
 //! [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
-//! [gitlab]: https://gitlab.com/SnejUgal/tbot
+//! [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
+//! [GitLab]: https://gitlab.com/SnejUgal/tbot
+//! [GitHub]: https://github.com/SnejUgal/tbot
 
 #![deny(future_incompatible)]
 #![deny(nonstandard_style)]
