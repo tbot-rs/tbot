@@ -6,13 +6,13 @@
 //! like `chat_id` or `callback_query_id`.
 //!
 //! Though methods don't implement a trait like `Method` for reasons, they all
-//! have methods `new` with varying number of parameters and `get_request` that
-//! returns a `Future` which resolves with Telegram's response or an error. The
-//! design philosophy is that all required parameters are passed through `new`
-//! and all optional parameters are set with a dedicated method. Then
-//! `get_request` is called to get the `Future`, handling is done if needed and
-//! it's passed to a runner. For convenience, we re-export `tokio::{run, spawn}`
-//! as `tbot::{run, spawn}`.
+//! have methods `new` with varying number of parameters and `into_future` that
+//! returns a `Future` which resolves with either Telegram's response or an
+//! error. The design philosophy is that all required parameters are passed
+//! through `new` and all optional parameters are set with a dedicated method.
+//! Then `into_future` is called to get the `Future`, handling is done and the
+//! future is passed to a runner. For convenience, we re-export
+//! `tokio::{run, spawn}` as `tbot::{run, spawn}`.
 //!
 //! For example, here's how you'd call `getMe`:
 //!
