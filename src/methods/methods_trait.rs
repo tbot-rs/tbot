@@ -35,6 +35,17 @@ pub trait Methods {
         methods::EditMessageText::new(self.token(), chat_id, message_id, text)
     }
 
+    /// Constructs a new [`EditInlineText`] inferring `token`.
+    ///
+    /// [`EditInlineText`]: ./struct.EditInlineText.html
+    fn edit_inline_text<'a, 'b: 'a>(
+        &'b self,
+        inline_message_id: u64,
+        text: &'a str,
+    ) -> methods::EditInlineText<'a> {
+        methods::EditInlineText::new(self.token(), inline_message_id, text)
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html

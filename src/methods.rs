@@ -29,6 +29,7 @@
 use super::*;
 
 mod edit_inline_location;
+mod edit_inline_text;
 mod edit_message_location;
 mod edit_message_text;
 mod forward_message;
@@ -44,6 +45,7 @@ mod stop_inline_location;
 mod stop_message_location;
 
 pub use self::edit_inline_location::*;
+pub use self::edit_inline_text::*;
 pub use self::edit_message_location::*;
 pub use self::edit_message_text::*;
 pub use self::forward_message::*;
