@@ -169,7 +169,7 @@ impl<'a> SendAnimation<'a> {
                 None
             };
 
-            let mut multipart = Multipart::new(7)
+            let mut multipart = Multipart::new(11)
                 .str("chat_id", &chat_id)
                 .file("animation", filename, bytes)
                 .maybe_string("duration", &duration)
