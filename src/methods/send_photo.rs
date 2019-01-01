@@ -23,7 +23,7 @@ pub struct SendPhoto<'a> {
 }
 
 impl<'a> SendPhoto<'a> {
-    /// Constructs a new `SendMessage`.
+    /// Constructs a new `SendPhoto`.
     pub fn new<'b: 'a>(
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,

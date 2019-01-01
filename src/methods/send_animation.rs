@@ -31,7 +31,7 @@ pub struct SendAnimation<'a> {
 }
 
 impl<'a> SendAnimation<'a> {
-    /// Constructs a new `SendMessage`.
+    /// Constructs a new `SendAnimation`.
     pub fn new<'b: 'a>(
         token: &'b str,
         chat_id: impl Into<types::ChatId<'b>>,
