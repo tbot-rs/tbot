@@ -4,7 +4,7 @@ use tbot::{
     Bot,
 };
 
-const CHAT: i64 = 61829189;
+const CHAT: i64 = 0;
 
 fn main() {
     let bot = Bot::from_env("BOT_TOKEN");
