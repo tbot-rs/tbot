@@ -1,10 +1,10 @@
 use tbot::{
     prelude::*,
-    types::{Animation, Photo},
+    types::{Animation, Photo, Document},
     Bot,
 };
 
-const CHAT: i64 = 0;
+const CHAT: i64 = 61829189;
 
 fn main() {
     let bot = Bot::from_env("BOT_TOKEN");
@@ -22,5 +22,13 @@ fn main() {
         .into_future()
         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
 
-    tbot::run(photo.join(animation));
+    let document = bot
+        .send_document(
+            CHAT,
+            Document::file("tutorial.rs", include_bytes!("./tutorial.rs")),
+        )
+        .into_future()
+        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+
+    tbot::run(photo.join(animation).join(document));
 }

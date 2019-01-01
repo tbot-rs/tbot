@@ -1,10 +1,12 @@
 use rand::{distributions::Alphanumeric, rngs::SmallRng, FromEntropy, Rng};
 
 mod animation;
+mod document;
 mod photo;
 mod thumb;
 
 pub use self::animation::*;
+pub use self::document::*;
 pub use self::photo::*;
 pub use self::thumb::*;
 

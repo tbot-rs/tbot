@@ -43,6 +43,7 @@ mod send_photo;
 mod send_venue;
 mod stop_inline_location;
 mod stop_message_location;
+mod send_document;
 
 pub use self::edit_inline_location::*;
 pub use self::edit_message_location::*;
@@ -53,6 +54,7 @@ pub use self::get_user_profile_photos::*;
 pub use self::send_animation::*;
 pub use self::send_chat_action::*;
 pub use self::send_contact::*;
+pub use self::send_document::*;
 pub use self::send_location::*;
 pub use self::send_message::*;
 pub use self::send_photo::*;

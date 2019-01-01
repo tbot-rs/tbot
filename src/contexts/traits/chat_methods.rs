@@ -121,6 +121,27 @@ pub trait ChatMethods {
         self.send_animation(animation).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SendDocument`] inferring the token and the chat ID.
+    ///
+    /// [`SendDocument`]: ../methods/struct.SendDocument.html
+    fn send_document<'a>(
+        &'a self,
+        document: types::Document<'a>,
+    ) -> SendDocument<'a> {
+        self.bot().send_document(self.chat_id(), document)
+    }
+
+    /// Constructs a [`SendDocument`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendDocument`]: ../methods/struct.SendDocument.html
+    fn send_document_in_reply<'a>(
+        &'a self,
+        document: types::Document<'a>,
+    ) -> SendDocument<'a> {
+        self.send_document(document).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///
