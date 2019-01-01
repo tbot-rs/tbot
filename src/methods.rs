@@ -30,6 +30,7 @@ use super::*;
 
 mod edit_inline_location;
 mod edit_message_location;
+mod edit_message_text;
 mod forward_message;
 mod get_me;
 mod get_updates;
@@ -44,6 +45,7 @@ mod stop_message_location;
 
 pub use self::edit_inline_location::*;
 pub use self::edit_message_location::*;
+pub use self::edit_message_text::*;
 pub use self::forward_message::*;
 pub use self::get_me::*;
 pub(crate) use self::get_updates::*;

@@ -23,6 +23,18 @@ pub trait Methods {
         methods::SendMessage::new(self.token(), chat_id, text)
     }
 
+    /// Constructs a new [`EditMessageText`] inferring `token`.
+    ///
+    /// [`EditMessageText`]: ./struct.EditMessageText.html
+    fn edit_message_text<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        text: &'a str,
+    ) -> methods::EditMessageText<'a> {
+        methods::EditMessageText::new(self.token(), chat_id, message_id, text)
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html

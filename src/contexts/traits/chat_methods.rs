@@ -83,6 +83,17 @@ pub trait ChatMethods {
         self.bot().send_message(self.chat_id(), text)
     }
 
+    /// Constructs an [`EditMessageText`] inferring the token and the chat ID.
+    ///
+    /// [`EditMessageText`]: ../methods/struct.EditMessageText.html
+    fn edit_message_text<'a>(
+        &'a self,
+        message_id: u64,
+        text: &'a str,
+    ) -> EditMessageText<'a> {
+        self.bot().edit_message_text(self.chat_id(), message_id, text)
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///
