@@ -83,6 +83,23 @@ pub trait ChatMethods {
         self.bot().send_message(self.chat_id(), text)
     }
 
+    /// Constructs a [`SendPhoto`] inferring the token and the chat ID.
+    ///
+    /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
+    fn send_photo<'a>(&'a self, photo: types::Photo<'a>) -> SendPhoto<'a> {
+        self.bot().send_photo(self.chat_id(), photo)
+    }
+
+    /// Constructs a [`SendPhoto`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
+    fn send_photo_in_reply<'a>(
+        &'a self,
+        photo: types::Photo<'a>,
+    ) -> SendPhoto<'a> {
+        self.send_photo(photo).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///

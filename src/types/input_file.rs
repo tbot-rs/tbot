@@ -1,5 +1,9 @@
 use rand::{distributions::Alphanumeric, rngs::SmallRng, FromEntropy, Rng};
 
+mod photo;
+
+pub use self::photo::*;
+
 pub(crate) enum InputFile<'a> {
     File {
         name: String,
