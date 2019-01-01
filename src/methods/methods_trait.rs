@@ -57,6 +57,38 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`EditMessageText`] inferring `token`.
+    ///
+    /// [`EditMessageText`]: ./struct.EditMessageText.html
+    fn edit_message_text(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        text: &'a str,
+    ) -> methods::EditMessageText<'a> {
+        self.prepare_method(methods::EditMessageText::new(
+            self.token(),
+            chat_id,
+            message_id,
+            text,
+        ))
+    }
+
+    /// Constructs a new [`EditInlineText`] inferring `token`.
+    ///
+    /// [`EditInlineText`]: ./struct.EditInlineText.html
+    fn edit_inline_text(
+        &'a self,
+        inline_message_id: u64,
+        text: &'a str,
+    ) -> methods::EditInlineText<'a> {
+        self.prepare_method(methods::EditInlineText::new(
+            self.token(),
+            inline_message_id,
+            text,
+        ))
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html

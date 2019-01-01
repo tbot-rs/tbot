@@ -235,6 +235,17 @@ pub trait ChatMethods {
         self.send_media_group(media).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs an [`EditMessageText`] inferring the token and the chat ID.
+    ///
+    /// [`EditMessageText`]: ../methods/struct.EditMessageText.html
+    fn edit_message_text<'a>(
+        &'a self,
+        message_id: u64,
+        text: &'a str,
+    ) -> EditMessageText<'a> {
+        self.bot().edit_message_text(self.chat_id(), message_id, text)
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///
