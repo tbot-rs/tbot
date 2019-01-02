@@ -90,30 +90,14 @@ impl<'a> SendPhoto<'a> {
                 types::ChatId::Username(username) => username.into(),
             };
 
-            let parse_mode = if let Some(parse_mode) = self.parse_mode {
-                serde_json::to_string(&parse_mode).ok()
-            } else {
-                None
-            };
-
-            let is_disabled =
-                if let Some(is_disabled) = self.disable_notification {
-                    Some(is_disabled.to_string())
-                } else {
-                    None
-                };
-
-            let reply_to = if let Some(id) = self.reply_to_message_id {
-                Some(id.to_string())
-            } else {
-                None
-            };
-
-            let reply_markup = if let Some(keyboard) = self.reply_markup {
-                serde_json::to_string(&keyboard).ok()
-            } else {
-                None
-            };
+            let parse_mode = self
+                .parse_mode
+                .and_then(|parse_mode| serde_json::to_string(&parse_mode).ok());
+            let is_disabled = self.disable_notification.map(|x| x.to_string());
+            let reply_to = self.reply_to_message_id.map(|id| id.to_string());
+            let reply_markup = self
+                .reply_markup
+                .and_then(|markup| serde_json::to_string(&markup).ok());
 
             let (boundary, body) = Multipart::new(7)
                 .str("chat_id", &chat_id)
