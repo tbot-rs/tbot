@@ -7,7 +7,7 @@ impl<'a> Video<'a> {
     /// Constructs an `Video` from bytes.
     pub fn file(bytes: &'a [u8]) -> Self {
         Video(InputFile::File {
-            name: "animaion".into(),
+            name: "video".into(),
             filename: "video.mp4",
             bytes,
         })
