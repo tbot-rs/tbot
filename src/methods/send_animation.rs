@@ -55,7 +55,7 @@ impl<'a> SendAnimation<'a> {
 
     /// Configures `duration`.
     pub fn duration(mut self, duration: u64) -> Self {
-        self.height = Some(duration);
+        self.duration = Some(duration);
         self
     }
 
