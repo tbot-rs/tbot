@@ -1,10 +1,10 @@
 use super::*;
 
-/// Represents an video to be sent.
+/// Represents a video to be sent.
 pub struct Video<'a>(pub(crate) InputFile<'a>);
 
 impl<'a> Video<'a> {
-    /// Constructs an `Video` from bytes.
+    /// Constructs a `Video` from bytes.
     pub fn file(bytes: &'a [u8]) -> Self {
         Video(InputFile::File {
             name: "video".into(),
@@ -13,12 +13,12 @@ impl<'a> Video<'a> {
         })
     }
 
-    /// Constructs an `Video` from a file ID.
+    /// Constructs a `Video` from a file ID.
     pub fn id(id: &'a str) -> Self {
         Video(InputFile::Id(id))
     }
 
-    /// Constructs an `Video` from an URL.
+    /// Constructs a `Video` from an URL.
     ///
     /// # Panics
     ///
