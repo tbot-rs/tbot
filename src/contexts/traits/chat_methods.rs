@@ -145,10 +145,7 @@ pub trait ChatMethods {
     /// Constructs a [`SendVideo`] inferring the token and the chat ID.
     ///
     /// [`SendVideo`]: ../methods/struct.SendDocument.html
-    fn send_video<'a>(
-        &'a self,
-        video: types::Video<'a>,
-    ) -> SendVideo<'a> {
+    fn send_video<'a>(&'a self, video: types::Video<'a>) -> SendVideo<'a> {
         self.bot().send_video(self.chat_id(), video)
     }
 
