@@ -56,18 +56,16 @@ impl<'a> Multipart<'a> {
         name: &'static str,
         value: &'a Option<String>,
     ) -> Self {
-        if let Some(value) = &value {
-            self.str(name, value)
-        } else {
-            self
+        match value {
+            Some(value) => self.str(name, value),
+            None => self,
         }
     }
 
     pub fn maybe_str(self, name: &'static str, value: Option<&'a str>) -> Self {
-        if let Some(value) = value {
-            self.str(name, value)
-        } else {
-            self
+        match value {
+            Some(value) => self.str(name, value),
+            None => self,
         }
     }
 
