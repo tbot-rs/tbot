@@ -4,11 +4,13 @@ mod animation;
 mod document;
 mod photo;
 mod thumb;
+mod video;
 
 pub use self::animation::*;
 pub use self::document::*;
 pub use self::photo::*;
 pub use self::thumb::*;
+pub use self::video::*;
 
 pub(crate) enum InputFile<'a> {
     File {

@@ -42,6 +42,7 @@ mod send_location;
 mod send_message;
 mod send_photo;
 mod send_venue;
+mod send_video;
 mod stop_inline_location;
 mod stop_message_location;
 
@@ -59,6 +60,7 @@ pub use self::send_location::*;
 pub use self::send_message::*;
 pub use self::send_photo::*;
 pub use self::send_venue::*;
+pub use self::send_video::*;
 pub use self::stop_inline_location::*;
 pub use self::stop_message_location::*;
 

@@ -56,6 +56,17 @@ pub trait Methods {
         methods::SendDocument::new(self.token(), chat_id, document)
     }
 
+    /// Constructs a new [`SendVideo`] inferring `token`.
+    ///
+    /// [`SendVideo`]: ./struct.SendVideo.html
+    fn send_video<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        video: types::Video<'a>,
+    ) -> methods::SendVideo<'a> {
+        methods::SendVideo::new(self.token(), chat_id, video)
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html
