@@ -20,7 +20,7 @@ impl<'a> Animation<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "tbot: video note's URL cannot start with `attach://`",
+            "tbot: video note's ID cannot start with `attach://`",
         );
 
         Animation(InputFile::Id(id))
