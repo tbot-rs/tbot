@@ -5,12 +5,14 @@ mod document;
 mod photo;
 mod thumb;
 mod video;
+mod video_note;
 
 pub use self::animation::*;
 pub use self::document::*;
 pub use self::photo::*;
 pub use self::thumb::*;
 pub use self::video::*;
+pub use self::video_note::*;
 
 pub(crate) enum InputFile<'a> {
     File {

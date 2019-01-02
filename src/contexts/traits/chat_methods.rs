@@ -144,7 +144,7 @@ pub trait ChatMethods {
 
     /// Constructs a [`SendVideo`] inferring the token and the chat ID.
     ///
-    /// [`SendVideo`]: ../methods/struct.SendDocument.html
+    /// [`SendVideo`]: ../methods/struct.SendVideo.html
     fn send_video<'a>(&'a self, video: types::Video<'a>) -> SendVideo<'a> {
         self.bot().send_video(self.chat_id(), video)
     }
@@ -157,6 +157,27 @@ pub trait ChatMethods {
         video: types::Video<'a>,
     ) -> SendVideo<'a> {
         self.send_video(video).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendVideoNote`] inferring the token and the chat ID.
+    ///
+    /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
+    fn send_video_note<'a>(
+        &'a self,
+        video_note: types::VideoNote<'a>,
+    ) -> SendVideoNote<'a> {
+        self.bot().send_video_note(self.chat_id(), video_note)
+    }
+
+    /// Constructs a [`SendVideo`Note] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
+    fn send_video_note_in_reply<'a>(
+        &'a self,
+        video_note: types::VideoNote<'a>,
+    ) -> SendVideoNote<'a> {
+        self.send_video_note(video_note).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
