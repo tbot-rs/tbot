@@ -14,7 +14,15 @@ impl<'a> Animation<'a> {
     }
 
     /// Constructs an `Animation` from a file ID.
+    /// # Panics
+    ///
+    /// Panicks if the ID starts with `attach://`.
     pub fn id(id: &'a str) -> Self {
+        assert!(
+            !id.starts_with("attach://"),
+            "tbot: video note's URL cannot start with `attach://`",
+        );
+
         Animation(InputFile::Id(id))
     }
 

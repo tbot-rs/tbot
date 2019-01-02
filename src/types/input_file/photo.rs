@@ -14,7 +14,16 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from a file ID.
+    ///
+    /// # Panics
+    ///
+    /// Panicks if the ID starts with `attach://`.
     pub fn id(id: &'a str) -> Self {
+        assert!(
+            !id.starts_with("attach://"),
+            "tbot: photo's URL cannot start with `attach://`",
+        );
+
         Photo(InputFile::Id(id))
     }
 

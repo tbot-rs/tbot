@@ -14,7 +14,16 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a `Document` from a file ID.
+    ///
+    /// # Panics
+    ///
+    /// Panicks if the ID starts with `attach://`.
     pub fn id(id: &'a str) -> Self {
+        assert!(
+            !id.starts_with("attach://"),
+            "tbot: document's URL cannot start with `attach://`",
+        );
+
         Document(InputFile::Id(id))
     }
 

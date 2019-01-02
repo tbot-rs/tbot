@@ -14,7 +14,16 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a `Video` from a file ID.
+    ///
+    /// # Panics
+    ///
+    /// Panicks if the ID starts with `attach://`.
     pub fn id(id: &'a str) -> Self {
+        assert!(
+            !id.starts_with("attach://"),
+            "tbot: video's URL cannot start with `attach://`",
+        );
+
         Video(InputFile::Id(id))
     }
 
