@@ -180,6 +180,27 @@ pub trait ChatMethods {
         self.send_video_note(video_note).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SendMediaGroup`] inferring the token and the chat ID.
+    ///
+    /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
+    fn send_media_group<'a>(
+        &'a self,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> SendMediaGroup<'a> {
+        self.bot().send_media_group(self.chat_id(), media)
+    }
+
+    /// Constructs a [`SendMediaGroup`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
+    fn send_media_group_in_reply<'a>(
+        &'a self,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> SendMediaGroup<'a> {
+        self.send_media_group(media).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///

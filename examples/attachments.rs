@@ -4,7 +4,7 @@ use tbot::{
     Bot,
 };
 
-const CHAT: i64 = 61829189;
+const CHAT: i64 = 0;
 
 fn main() {
     let bot = Bot::from_env("BOT_TOKEN");
@@ -45,5 +45,16 @@ fn main() {
         .into_future()
         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
 
-    tbot::run(photo.join4(animation, document, video));
+    let album = bot
+        .send_media_group(
+            CHAT,
+            vec![
+                Photo::file(include_bytes!("./assets/photo.jpg")).into(),
+                Video::file(include_bytes!("./assets/gif.mp4")).into(),
+            ],
+        )
+        .into_future()
+        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+
+    tbot::run(photo.join5(animation, document, video, album));
 }

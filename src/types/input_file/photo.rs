@@ -40,4 +40,11 @@ impl<'a> Photo<'a> {
 
         Photo(InputFile::Url(url))
     }
+
+    /// Constructs an [`InputMediaPhoto`] out of `self`.
+    ///
+    /// [`InputMediaPhoto`]: ./struct.InputMediaPhoto.html
+    pub fn into_input(self) -> InputMediaPhoto<'a> {
+        InputMediaPhoto::new(self.0)
+    }
 }

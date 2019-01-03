@@ -78,6 +78,17 @@ pub trait Methods {
         methods::SendVideoNote::new(self.token(), chat_id, video_note)
     }
 
+    /// Constructs a new [`SendMediaGroup`] inferring `token`.
+    ///
+    /// [`SendMediaGroup`]: ./struct.SendMediaGroup.html
+    fn send_media_group<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> methods::SendMediaGroup<'a> {
+        methods::SendMediaGroup::new(self.token(), chat_id, media)
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html

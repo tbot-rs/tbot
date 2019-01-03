@@ -39,6 +39,7 @@ mod send_chat_action;
 mod send_contact;
 mod send_document;
 mod send_location;
+mod send_media_group;
 mod send_message;
 mod send_photo;
 mod send_venue;
@@ -47,24 +48,16 @@ mod send_video_note;
 mod stop_inline_location;
 mod stop_message_location;
 
-pub use self::edit_inline_location::*;
-pub use self::edit_message_location::*;
-pub use self::forward_message::*;
-pub use self::get_me::*;
+pub use self::{
+    edit_inline_location::*, edit_message_location::*, forward_message::*,
+    get_me::*, get_user_profile_photos::*, send_animation::*,
+    send_chat_action::*, send_contact::*, send_document::*, send_location::*,
+    send_media_group::*, send_message::*, send_photo::*, send_venue::*,
+    send_video::*, send_video_note::*, stop_inline_location::*,
+    stop_message_location::*,
+};
+
 pub(crate) use self::get_updates::*;
-pub use self::get_user_profile_photos::*;
-pub use self::send_animation::*;
-pub use self::send_chat_action::*;
-pub use self::send_contact::*;
-pub use self::send_document::*;
-pub use self::send_location::*;
-pub use self::send_message::*;
-pub use self::send_photo::*;
-pub use self::send_venue::*;
-pub use self::send_video::*;
-pub use self::send_video_note::*;
-pub use self::stop_inline_location::*;
-pub use self::stop_message_location::*;
 
 mod methods_trait;
 pub use self::methods_trait::*;

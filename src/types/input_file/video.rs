@@ -40,4 +40,11 @@ impl<'a> Video<'a> {
 
         Video(InputFile::Url(url))
     }
+
+    /// Constructs an [`InputMediaVideo`] out of `self`.
+    ///
+    /// [`InputMediaVideo`]: ./struct.InputMediaVideo.html
+    pub fn into_input(self) -> InputMediaVideo<'a> {
+        InputMediaVideo::new(self.0)
+    }
 }
