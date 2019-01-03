@@ -45,6 +45,7 @@ mod send_photo;
 mod send_venue;
 mod send_video;
 mod send_video_note;
+mod send_voice;
 mod stop_inline_location;
 mod stop_message_location;
 
@@ -53,7 +54,7 @@ pub use self::{
     get_me::*, get_user_profile_photos::*, send_animation::*,
     send_chat_action::*, send_contact::*, send_document::*, send_location::*,
     send_media_group::*, send_message::*, send_photo::*, send_venue::*,
-    send_video::*, send_video_note::*, stop_inline_location::*,
+    send_video::*, send_video_note::*, send_voice::*, stop_inline_location::*,
     stop_message_location::*,
 };
 
