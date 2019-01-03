@@ -109,7 +109,7 @@ impl<'a> SendVoice<'a> {
                 .reply_markup
                 .and_then(|markup| serde_json::to_string(&markup).ok());
 
-            let mut multipart = Multipart::new(8)
+            let multipart = Multipart::new(8)
                 .str("chat_id", &chat_id)
                 .file("voice", filename, bytes)
                 .maybe_string("duration", &duration)
