@@ -169,7 +169,7 @@ pub trait ChatMethods {
         self.bot().send_video_note(self.chat_id(), video_note)
     }
 
-    /// Constructs a [`SendVideo`Note] inferring the token, chat ID and message
+    /// Constructs a [`SendVideoNote`] inferring the token, chat ID and message
     /// ID.
     ///
     /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
