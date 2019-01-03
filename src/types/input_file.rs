@@ -1,4 +1,4 @@
-use rand::{distributions::Alphanumeric, rngs::SmallRng, FromEntropy, Rng};
+use super::*;
 
 mod animation;
 mod document;
@@ -22,12 +22,6 @@ pub(crate) enum InputFile<'a> {
     },
     Url(&'a str),
     Id(&'a str),
-}
-
-fn random_name() -> String {
-    let mut rng = SmallRng::from_entropy();
-    let ascii = rng.sample_iter(&Alphanumeric);
-    ascii.take(20).collect()
 }
 
 impl<'a> serde::Serialize for InputFile<'a> {
