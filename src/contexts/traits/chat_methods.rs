@@ -176,6 +176,23 @@ pub trait ChatMethods {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SendAudio`] inferring the token and the chat ID.
+    ///
+    /// [`SendAudio`]: ../methods/struct.SendAudio.html
+    fn send_audio<'a>(&'a self, audio: types::Audio<'a>) -> SendAudio<'a> {
+        self.bot().send_audio(self.chat_id(), audio)
+    }
+
+    /// Constructs a [`SendAudio`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendAudio`]: ../methods/struct.SendAudio.html
+    fn send_audio_in_reply<'a>(
+        &'a self,
+        audio: types::Audio<'a>,
+    ) -> SendAudio<'a> {
+        self.send_audio(audio).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendVideoNote`] inferring the token and the chat ID.
     ///
     /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html

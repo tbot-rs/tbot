@@ -78,6 +78,17 @@ pub trait Methods {
         methods::SendVoice::new(self.token(), chat_id, voice)
     }
 
+    /// Constructs a new [`SendAudio`] inferring `token`.
+    ///
+    /// [`SendAudio`]: ./struct.SendAudio.html
+    fn send_audio<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        audio: types::Audio<'a>,
+    ) -> methods::SendAudio<'a> {
+        methods::SendAudio::new(self.token(), chat_id, audio)
+    }
+
     /// Constructs a new [`SendVideoNote`] inferring `token`.
     ///
     /// [`SendVideoNote`]: ./struct.SendVideoNote.html

@@ -1,6 +1,7 @@
 use super::*;
 
 mod animation;
+mod audio;
 mod document;
 mod photo;
 mod thumb;
@@ -9,8 +10,8 @@ mod video_note;
 mod voice;
 
 pub use self::{
-    animation::*, document::*, photo::*, thumb::*, video::*, video_note::*,
-    voice::*,
+    animation::*, audio::*, document::*, photo::*, thumb::*, video::*,
+    video_note::*, voice::*,
 };
 
 pub(crate) enum InputFile<'a> {
