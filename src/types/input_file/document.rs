@@ -23,7 +23,7 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a `Document` from bytes.
-    pub fn file(filename: &'a str, bytes: &'a [u8]) -> Self {
+    pub fn bytes(filename: &'a str, bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             name: "document".into(),
             filename,

@@ -23,7 +23,7 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Constructs an `VideoNote` from bytes.
-    pub fn file(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             name: "video_note".into(),
             filename: "video_note.mp4",
