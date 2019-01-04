@@ -9,13 +9,7 @@ pub struct SendDocument<'a> {
     #[serde(skip)]
     token: &'a str,
     chat_id: types::ChatId<'a>,
-    document: types::InputFile<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    thumb: Option<types::InputFile<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<types::ParseMode>,
+    document: types::Document<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,32 +28,11 @@ impl<'a> SendDocument<'a> {
         Self {
             token,
             chat_id: chat_id.into(),
-            document: document.0,
-            thumb: None,
-            caption: None,
-            parse_mode: None,
+            document,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
         }
-    }
-
-    /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: types::Thumb<'a>) -> Self {
-        self.thumb = Some(thumb.0);
-        self
-    }
-
-    /// Configures `caption`.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
     }
 
     /// Configures `disable_notification`.
@@ -88,51 +61,51 @@ impl<'a> SendDocument<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        let (boundary, body) = if let types::InputFile::File {
-            filename,
-            bytes,
-            ..
-        } = self.document
-        {
-            let chat_id = match self.chat_id {
-                types::ChatId::Id(id) => id.to_string(),
-                types::ChatId::Username(username) => username.into(),
-            };
+        let chat_id = match self.chat_id {
+            types::ChatId::Id(id) => id.to_string(),
+            types::ChatId::Username(username) => username.into(),
+        };
 
-            let parse_mode = self
-                .parse_mode
-                .and_then(|parse_mode| serde_json::to_string(&parse_mode).ok());
-            let is_disabled = self.disable_notification.map(|x| x.to_string());
-            let reply_to = self.reply_to_message_id.map(|id| id.to_string());
-            let reply_markup = self
-                .parse_mode
-                .and_then(|markup| serde_json::to_string(&markup).ok());
+        let parse_mode = self
+            .document
+            .parse_mode
+            .and_then(|x| serde_json::to_string(&x).ok());
+        let is_disabled = self.disable_notification.map(|x| x.to_string());
+        let reply_to = self.reply_to_message_id.map(|id| id.to_string());
+        let reply_markup =
+            self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
 
-            let mut multipart = Multipart::new(8)
-                .str("chat_id", &chat_id)
-                .file("document", filename, bytes)
-                .maybe_str("caption", self.caption)
-                .maybe_string("parse_mode", &parse_mode)
-                .maybe_string("disable_notification", &is_disabled)
-                .maybe_string("reply_to_message_id", &reply_to)
-                .maybe_string("reply_markup", &reply_markup);
+        let mut multipart = Multipart::new(8)
+            .str("chat_id", &chat_id)
+            .maybe_str("caption", self.document.caption)
+            .maybe_string("parse_mode", &parse_mode)
+            .maybe_string("disable_notification", &is_disabled)
+            .maybe_string("reply_to_message_id", &reply_to)
+            .maybe_string("reply_markup", &reply_markup);
 
-            if let Some(types::InputFile::File {
+        match self.document.file {
+            types::InputFile::File {
                 filename,
                 bytes,
                 ..
-            }) = self.thumb
-            {
-                multipart = multipart.file("thumb", filename, bytes);
+            } => multipart = multipart.file("document", filename, bytes),
+            types::InputFile::Id(document)
+            | types::InputFile::Url(document) => {
+                multipart = multipart.str("document", document);
             }
+        }
 
-            let (boundary, body) = multipart.finish();
+        if let Some(types::InputFile::File {
+            filename,
+            bytes,
+            ..
+        }) = self.document.thumb
+        {
+            multipart = multipart.file("thumb", filename, bytes);
+        }
 
-            (Some(boundary), body)
-        } else {
-            (None, serde_json::to_vec(&self).unwrap())
-        };
+        let (boundary, body) = multipart.finish();
 
-        send_method(self.token, "sendDocument", boundary, body)
+        send_method(self.token, "sendDocument", Some(boundary), body)
     }
 }

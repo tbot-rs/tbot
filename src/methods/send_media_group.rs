@@ -57,8 +57,8 @@ impl<'a> SendMediaGroup<'a> {
         let mut media = self.media;
 
         for (index, media) in media.iter_mut().enumerate() {
-            if let types::GroupMedia::Photo(types::InputMediaPhoto {
-                media:
+            if let types::GroupMedia::Photo(types::Photo {
+                file:
                     types::InputFile::File {
                         ref mut name,
                         ..
@@ -69,8 +69,8 @@ impl<'a> SendMediaGroup<'a> {
                 *name = format!("photo_{}", index);
             }
 
-            if let types::GroupMedia::Video(types::InputMediaVideo {
-                media:
+            if let types::GroupMedia::Video(types::Video {
+                file:
                     types::InputFile::File {
                         ref mut name,
                         ..
@@ -98,8 +98,8 @@ impl<'a> SendMediaGroup<'a> {
 
         for media in &media {
             match media {
-                types::GroupMedia::Photo(types::InputMediaPhoto {
-                    media:
+                types::GroupMedia::Photo(types::Photo {
+                    file:
                         types::InputFile::File {
                             name,
                             filename,
@@ -107,8 +107,8 @@ impl<'a> SendMediaGroup<'a> {
                         },
                     ..
                 })
-                | types::GroupMedia::Video(types::InputMediaVideo {
-                    media:
+                | types::GroupMedia::Video(types::Video {
+                    file:
                         types::InputFile::File {
                             name,
                             filename,

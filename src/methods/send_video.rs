@@ -3,32 +3,13 @@ use super::*;
 /// Representation of the [`sendVideo`] method.
 ///
 /// [`sendVideo`]: https://core.telegram.org/bots/api#sendvideo
-#[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideo<'a> {
-    #[serde(skip)]
     token: &'a str,
     chat_id: types::ChatId<'a>,
-    video: types::InputFile<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    duration: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    width: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    thumb: Option<types::InputFile<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<types::ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    video: types::Video<'a>,
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    supports_streaming: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
@@ -42,60 +23,11 @@ impl<'a> SendVideo<'a> {
         Self {
             token,
             chat_id: chat_id.into(),
-            video: video.0,
-            duration: None,
-            width: None,
-            height: None,
-            thumb: None,
-            caption: None,
-            parse_mode: None,
+            video,
             disable_notification: None,
-            supports_streaming: None,
             reply_to_message_id: None,
             reply_markup: None,
         }
-    }
-
-    /// Configures `duration`.
-    pub fn duration(mut self, duration: u64) -> Self {
-        self.duration = Some(duration);
-        self
-    }
-
-    /// Configures `width`.
-    pub fn width(mut self, width: u64) -> Self {
-        self.width = Some(width);
-        self
-    }
-
-    /// Configures `height`.
-    pub fn height(mut self, height: u64) -> Self {
-        self.height = Some(height);
-        self
-    }
-
-    /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: types::Thumb<'a>) -> Self {
-        self.thumb = Some(thumb.0);
-        self
-    }
-
-    /// Configures `caption`.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
-    }
-
-    /// Configures `supports_streaming`.
-    pub fn supports_streaming(mut self, is_streamed: bool) -> Self {
-        self.supports_streaming = Some(is_streamed);
-        self
     }
 
     /// Configures `disable_notification`.
@@ -124,64 +56,57 @@ impl<'a> SendVideo<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        let (boundary, body) = if let types::InputFile::File {
-            filename,
-            bytes,
-            ..
-        } = self.video
-        {
-            let chat_id = match self.chat_id {
-                types::ChatId::Id(id) => id.to_string(),
-                types::ChatId::Username(username) => username.into(),
-            };
+        let chat_id = match self.chat_id {
+            types::ChatId::Id(id) => id.to_string(),
+            types::ChatId::Username(username) => username.into(),
+        };
 
-            let duration = self.duration.map(|duration| duration.to_string());
-            let width = self.width.map(|width| width.to_string());
-            let height = self.height.map(|height| height.to_string());
-            let parse_mode = self
-                .parse_mode
-                .and_then(|parse_mode| serde_json::to_string(&parse_mode).ok());
-            let is_disabled = self.disable_notification.map(|x| x.to_string());
-            let is_streamed = self.supports_streaming.map(|x| x.to_string());
-            let reply_to = self.reply_to_message_id.map(|id| id.to_string());
-            let reply_markup = self
-                .reply_markup
-                .and_then(|markup| serde_json::to_string(&markup).ok());
+        let duration = self.video.duration.map(|x| x.to_string());
+        let width = self.video.width.map(|x| x.to_string());
+        let height = self.video.height.map(|x| x.to_string());
+        let parse_mode =
+            self.video.parse_mode.and_then(|x| serde_json::to_string(&x).ok());
+        let is_disabled = self.disable_notification.map(|x| x.to_string());
+        let is_streamed = self.video.supports_streaming.map(|x| x.to_string());
+        let reply_to = self.reply_to_message_id.map(|id| id.to_string());
+        let reply_markup = self
+            .reply_markup
+            .and_then(|markup| serde_json::to_string(&markup).ok());
 
-            let mut multipart = Multipart::new(12)
-                .str("chat_id", &chat_id)
-                .file("video", filename, bytes)
-                .maybe_string("duration", &duration)
-                .maybe_string("width", &width)
-                .maybe_string("height", &height)
-                .maybe_str("caption", self.caption)
-                .maybe_string("parse_mode", &parse_mode)
-                .maybe_string("disable_notification", &is_disabled)
-                .maybe_string("supports_streaming", &is_streamed)
-                .maybe_string("reply_to_message_id", &reply_to)
-                .maybe_string("reply_markup", &reply_markup);
+        let mut multipart = Multipart::new(12)
+            .str("chat_id", &chat_id)
+            .maybe_string("duration", &duration)
+            .maybe_string("width", &width)
+            .maybe_string("height", &height)
+            .maybe_str("caption", self.video.caption)
+            .maybe_string("parse_mode", &parse_mode)
+            .maybe_string("disable_notification", &is_disabled)
+            .maybe_string("supports_streaming", &is_streamed)
+            .maybe_string("reply_to_message_id", &reply_to)
+            .maybe_string("reply_markup", &reply_markup);
 
-            if let Some(types::InputFile::File {
+        match self.video.file {
+            types::InputFile::File {
                 filename,
                 bytes,
                 ..
-            }) = self.thumb
-            {
-                multipart = multipart.file("thumb", filename, bytes);
+            } => multipart = multipart.file("video", filename, bytes),
+            types::InputFile::Id(audio) | types::InputFile::Url(audio) => {
+                multipart = multipart.str("video", audio);
             }
+        }
 
-            let (boundary, body) = multipart.finish();
+        if let Some(types::InputFile::File {
+            filename,
+            bytes,
+            ..
+        }) = self.video.thumb
+        {
+            multipart = multipart.file("thumb", filename, bytes);
+        }
 
-            (Some(boundary), body)
-        } else {
-            (None, serde_json::to_vec(&self).unwrap())
-        };
+        let (boundary, body) = multipart.finish();
 
-        send_method::<types::raw::Message>(
-            self.token,
-            "sendVideo",
-            boundary,
-            body,
-        )
+        send_method(self.token, "sendVideo", Some(boundary), body)
     }
 }

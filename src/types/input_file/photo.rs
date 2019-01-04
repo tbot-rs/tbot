@@ -1,12 +1,27 @@
 use super::*;
 
 /// Represents a photo to be sent.
-pub struct Photo<'a>(pub(crate) InputFile<'a>);
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+pub struct Photo<'a> {
+    pub(crate) file: InputFile<'a>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) caption: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) parse_mode: Option<ParseMode>,
+}
 
 impl<'a> Photo<'a> {
+    fn new(file: InputFile<'a>) -> Self {
+        Self {
+            file,
+            caption: None,
+            parse_mode: None,
+        }
+    }
+
     /// Constructs a `Photo` from bytes.
     pub fn file(bytes: &'a [u8]) -> Self {
-        Photo(InputFile::File {
+        Self::new(InputFile::File {
             name: "photo".into(),
             filename: "photo.jpg",
             bytes,
@@ -24,7 +39,7 @@ impl<'a> Photo<'a> {
             "tbot: photo's ID cannot start with `attach://`",
         );
 
-        Photo(InputFile::Id(id))
+        Self::new(InputFile::Id(id))
     }
 
     /// Constructs a `Photo` from an URL.
@@ -38,13 +53,18 @@ impl<'a> Photo<'a> {
             "tbot: photo's URL cannot start with `attach://`",
         );
 
-        Photo(InputFile::Url(url))
+        Self::new(InputFile::Url(url))
     }
 
-    /// Constructs an [`InputMediaPhoto`] out of `self`.
-    ///
-    /// [`InputMediaPhoto`]: ./struct.InputMediaPhoto.html
-    pub fn into_input(self) -> InputMediaPhoto<'a> {
-        InputMediaPhoto::new(self.0)
+    /// Configures `caption`.
+    pub fn caption(mut self, caption: &'a str) -> Self {
+        self.caption = Some(caption);
+        self
+    }
+
+    /// Configures `parse_mode`.
+    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.parse_mode = Some(parse_mode);
+        self
     }
 }

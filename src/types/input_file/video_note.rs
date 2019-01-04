@@ -1,12 +1,30 @@
 use super::*;
 
 /// Represents a video note to be sent.
-pub struct VideoNote<'a>(pub(crate) InputFile<'a>);
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+pub struct VideoNote<'a> {
+    pub(crate) file: InputFile<'a>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) duration: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) length: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) thumb: Option<types::InputFile<'a>>,
+}
 
 impl<'a> VideoNote<'a> {
+    fn new(file: InputFile<'a>) -> Self {
+        Self {
+            file,
+            duration: None,
+            length: None,
+            thumb: None,
+        }
+    }
+
     /// Constructs an `VideoNote` from bytes.
     pub fn file(bytes: &'a [u8]) -> Self {
-        VideoNote(InputFile::File {
+        Self::new(InputFile::File {
             name: "video_note".into(),
             filename: "video_note.mp4",
             bytes,
@@ -24,7 +42,7 @@ impl<'a> VideoNote<'a> {
             "tbot: video note's ID cannot start with `attach://`",
         );
 
-        VideoNote(InputFile::Id(id))
+        Self::new(InputFile::Id(id))
     }
 
     /// Constructs a `VideoNote` from an URL.
@@ -38,6 +56,24 @@ impl<'a> VideoNote<'a> {
             "tbot: video note's URL cannot start with `attach://`",
         );
 
-        VideoNote(InputFile::Url(url))
+        Self::new(InputFile::Url(url))
+    }
+
+    /// Configures `duration`.
+    pub fn duration(mut self, duration: u64) -> Self {
+        self.duration = Some(duration);
+        self
+    }
+
+    /// Configures `length`.
+    pub fn length(mut self, length: u64) -> Self {
+        self.length = Some(length);
+        self
+    }
+
+    /// Configures `thumb`.
+    pub fn thumb(mut self, thumb: types::Thumb<'a>) -> Self {
+        self.thumb = Some(thumb.0);
+        self
     }
 }

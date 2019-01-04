@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents what markup the text is in.
-#[derive(Serialize, Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub enum ParseMode {
     /// The message will be parsed as Markdown.
     Markdown,

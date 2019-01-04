@@ -3,6 +3,7 @@ use super::*;
 mod animation;
 mod audio;
 mod document;
+mod group_media;
 mod photo;
 mod thumb;
 mod video;
@@ -10,10 +11,11 @@ mod video_note;
 mod voice;
 
 pub use self::{
-    animation::*, audio::*, document::*, photo::*, thumb::*, video::*,
-    video_note::*, voice::*,
+    animation::*, audio::*, document::*, group_media::*, photo::*, thumb::*,
+    video::*, video_note::*, voice::*,
 };
 
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub(crate) enum InputFile<'a> {
     File {
         name: String,

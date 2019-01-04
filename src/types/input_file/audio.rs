@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents an audio to be sent.
-#[derive(Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Audio<'a> {
     pub(crate) file: InputFile<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
