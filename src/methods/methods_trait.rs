@@ -23,6 +23,94 @@ pub trait Methods {
         methods::SendMessage::new(self.token(), chat_id, text)
     }
 
+    /// Constructs a new [`SendPhoto`] inferring `token`.
+    ///
+    /// [`SendPhoto`]: ./struct.SendPhoto.html
+    fn send_photo<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        photo: types::Photo<'a>,
+    ) -> methods::SendPhoto<'a> {
+        methods::SendPhoto::new(self.token(), chat_id, photo)
+    }
+
+    /// Constructs a new [`SendAnimation`] inferring `token`.
+    ///
+    /// [`SendAnimation`]: ./struct.SendAnimation.html
+    fn send_animation<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        animation: types::Animation<'a>,
+    ) -> methods::SendAnimation<'a> {
+        methods::SendAnimation::new(self.token(), chat_id, animation)
+    }
+
+    /// Constructs a new [`SendDocument`] inferring `token`.
+    ///
+    /// [`SendDocument`]: ./struct.SendDocument.html
+    fn send_document<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        document: types::Document<'a>,
+    ) -> methods::SendDocument<'a> {
+        methods::SendDocument::new(self.token(), chat_id, document)
+    }
+
+    /// Constructs a new [`SendVideo`] inferring `token`.
+    ///
+    /// [`SendVideo`]: ./struct.SendVideo.html
+    fn send_video<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        video: types::Video<'a>,
+    ) -> methods::SendVideo<'a> {
+        methods::SendVideo::new(self.token(), chat_id, video)
+    }
+
+    /// Constructs a new [`SendVoice`] inferring `token`.
+    ///
+    /// [`SendVideo`]: ./struct.SendVoice.html
+    fn send_voice<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        voice: types::Voice<'a>,
+    ) -> methods::SendVoice<'a> {
+        methods::SendVoice::new(self.token(), chat_id, voice)
+    }
+
+    /// Constructs a new [`SendAudio`] inferring `token`.
+    ///
+    /// [`SendAudio`]: ./struct.SendAudio.html
+    fn send_audio<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        audio: types::Audio<'a>,
+    ) -> methods::SendAudio<'a> {
+        methods::SendAudio::new(self.token(), chat_id, audio)
+    }
+
+    /// Constructs a new [`SendVideoNote`] inferring `token`.
+    ///
+    /// [`SendVideoNote`]: ./struct.SendVideoNote.html
+    fn send_video_note<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        video_note: types::VideoNote<'a>,
+    ) -> methods::SendVideoNote<'a> {
+        methods::SendVideoNote::new(self.token(), chat_id, video_note)
+    }
+
+    /// Constructs a new [`SendMediaGroup`] inferring `token`.
+    ///
+    /// [`SendMediaGroup`]: ./struct.SendMediaGroup.html
+    fn send_media_group<'a, 'b: 'a>(
+        &'b self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> methods::SendMediaGroup<'a> {
+        methods::SendMediaGroup::new(self.token(), chat_id, media)
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html

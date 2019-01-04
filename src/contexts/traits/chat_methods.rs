@@ -83,6 +83,158 @@ pub trait ChatMethods {
         self.bot().send_message(self.chat_id(), text)
     }
 
+    /// Constructs a [`SendPhoto`] inferring the token and the chat ID.
+    ///
+    /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
+    fn send_photo<'a>(&'a self, photo: types::Photo<'a>) -> SendPhoto<'a> {
+        self.bot().send_photo(self.chat_id(), photo)
+    }
+
+    /// Constructs a [`SendPhoto`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
+    fn send_photo_in_reply<'a>(
+        &'a self,
+        photo: types::Photo<'a>,
+    ) -> SendPhoto<'a> {
+        self.send_photo(photo).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
+    ///
+    /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
+    fn send_animation<'a>(
+        &'a self,
+        animation: types::Animation<'a>,
+    ) -> SendAnimation<'a> {
+        self.bot().send_animation(self.chat_id(), animation)
+    }
+
+    /// Constructs a [`SendAnimation`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
+    fn send_animation_in_reply<'a>(
+        &'a self,
+        animation: types::Animation<'a>,
+    ) -> SendAnimation<'a> {
+        self.send_animation(animation).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendDocument`] inferring the token and the chat ID.
+    ///
+    /// [`SendDocument`]: ../methods/struct.SendDocument.html
+    fn send_document<'a>(
+        &'a self,
+        document: types::Document<'a>,
+    ) -> SendDocument<'a> {
+        self.bot().send_document(self.chat_id(), document)
+    }
+
+    /// Constructs a [`SendDocument`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendDocument`]: ../methods/struct.SendDocument.html
+    fn send_document_in_reply<'a>(
+        &'a self,
+        document: types::Document<'a>,
+    ) -> SendDocument<'a> {
+        self.send_document(document).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendVideo`] inferring the token and the chat ID.
+    ///
+    /// [`SendVideo`]: ../methods/struct.SendVideo.html
+    fn send_video<'a>(&'a self, video: types::Video<'a>) -> SendVideo<'a> {
+        self.bot().send_video(self.chat_id(), video)
+    }
+
+    /// Constructs a [`SendVideo`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendVideo`]: ../methods/struct.SendVideo.html
+    fn send_video_in_reply<'a>(
+        &'a self,
+        video: types::Video<'a>,
+    ) -> SendVideo<'a> {
+        self.send_video(video).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendVoice`] inferring the token and the chat ID.
+    ///
+    /// [`SendVoice`]: ../methods/struct.SendVoice.html
+    fn send_voice<'a>(&'a self, voice: types::Voice<'a>) -> SendVoice<'a> {
+        self.bot().send_voice(self.chat_id(), voice)
+    }
+
+    /// Constructs a [`SendVoice`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendVoice`]: ../methods/struct.SendVoice.html
+    fn send_voice_in_reply<'a>(
+        &'a self,
+        voice: types::Voice<'a>,
+    ) -> SendVoice<'a> {
+        self.send_voice(voice).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendAudio`] inferring the token and the chat ID.
+    ///
+    /// [`SendAudio`]: ../methods/struct.SendAudio.html
+    fn send_audio<'a>(&'a self, audio: types::Audio<'a>) -> SendAudio<'a> {
+        self.bot().send_audio(self.chat_id(), audio)
+    }
+
+    /// Constructs a [`SendAudio`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendAudio`]: ../methods/struct.SendAudio.html
+    fn send_audio_in_reply<'a>(
+        &'a self,
+        audio: types::Audio<'a>,
+    ) -> SendAudio<'a> {
+        self.send_audio(audio).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendVideoNote`] inferring the token and the chat ID.
+    ///
+    /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
+    fn send_video_note<'a>(
+        &'a self,
+        video_note: types::VideoNote<'a>,
+    ) -> SendVideoNote<'a> {
+        self.bot().send_video_note(self.chat_id(), video_note)
+    }
+
+    /// Constructs a [`SendVideoNote`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
+    fn send_video_note_in_reply<'a>(
+        &'a self,
+        video_note: types::VideoNote<'a>,
+    ) -> SendVideoNote<'a> {
+        self.send_video_note(video_note).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SendMediaGroup`] inferring the token and the chat ID.
+    ///
+    /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
+    fn send_media_group<'a>(
+        &'a self,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> SendMediaGroup<'a> {
+        self.bot().send_media_group(self.chat_id(), media)
+    }
+
+    /// Constructs a [`SendMediaGroup`] inferring the token, chat ID and message
+    /// ID.
+    ///
+    /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
+    fn send_media_group_in_reply<'a>(
+        &'a self,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> SendMediaGroup<'a> {
+        self.send_media_group(media).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///
