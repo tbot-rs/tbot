@@ -10,14 +10,14 @@ fn main() {
     let bot = Bot::from_env("BOT_TOKEN");
 
     let photo = bot
-        .send_photo(CHAT, Photo::file(include_bytes!("./assets/photo.jpg")))
+        .send_photo(CHAT, Photo::bytes(include_bytes!("./assets/photo.jpg")))
         .into_future()
         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
 
     let animation = bot
         .send_animation(
             CHAT,
-            Animation::file(include_bytes!("./assets/gif.mp4")),
+            Animation::bytes(include_bytes!("./assets/gif.mp4")),
         )
         .into_future()
         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
@@ -25,7 +25,7 @@ fn main() {
     let document = bot
         .send_document(
             CHAT,
-            Document::file("tutorial.rs", include_bytes!("./tutorial.rs")),
+            Document::bytes("tutorial.rs", include_bytes!("./tutorial.rs")),
         )
         .into_future()
         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
@@ -40,7 +40,7 @@ fn main() {
             // Also Telegram seems not to create the thumb and figure out the
             // duration on its own, so the video might look somewhat corrupted
             // at first.
-            Video::file(include_bytes!("./assets/gif.mp4")),
+            Video::bytes(include_bytes!("./assets/gif.mp4")),
         )
         .into_future()
         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
@@ -49,8 +49,8 @@ fn main() {
         .send_media_group(
             CHAT,
             vec![
-                Photo::file(include_bytes!("./assets/photo.jpg")).into(),
-                Video::file(include_bytes!("./assets/gif.mp4")).into(),
+                Photo::bytes(include_bytes!("./assets/photo.jpg")).into(),
+                Video::bytes(include_bytes!("./assets/gif.mp4")).into(),
             ],
         )
         .into_future()
