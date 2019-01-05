@@ -24,6 +24,8 @@ pub struct Bot {
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<BeforeUpdateHandler>,
     message_handlers: Handlers<MessageHandler>,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
 }
 
 impl Bot {
@@ -34,6 +36,8 @@ impl Bot {
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             message_handlers: Vec::new(),
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -75,21 +79,27 @@ impl Bot {
 
     /// Sets a proxy through which requests to Telegram will be sent.
     #[cfg(feature = "proxy")]
-    pub fn set_proxy(&mut self, proxy: hyper_proxy::Proxy) {
-        unimplemented!();
+    pub fn proxy(&mut self, proxy: proxy::Proxy) {
+        self.proxy = Some(proxy);
     }
 
     /// Creates a new [`MockBot`] based on this bot.
     ///
     /// [`MockBot`]: ./struct.MockBot.html
     pub fn mock(&self) -> MockBot {
+        #[cfg(feature = "proxy")]
+        {
+            MockBot::new(self.token.clone(), self.proxy.clone())
+        }
+
+        #[cfg(not(feature = "proxy"))]
         MockBot::new(self.token.clone())
     }
 
     fn handle_update(&self, update: types::Update) {
         self.handle_before_update(&update);
 
-        let mock_bot = Arc::new(MockBot::new(self.token.clone()));
+        let mock_bot = Arc::new(self.mock());
 
         match update.update_type {
             Some(UpdateType::Message(mut message)) => {
@@ -127,5 +137,10 @@ impl Bot {
 impl Methods for Bot {
     fn token(&self) -> &str {
         &self.token
+    }
+
+    #[cfg(feature = "proxy")]
+    fn get_proxy(&self) -> Option<proxy::Proxy> {
+        self.proxy.clone()
     }
 }

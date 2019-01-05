@@ -8,6 +8,9 @@ use super::*;
 pub struct SendMessage<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -20,6 +23,15 @@ pub struct SendMessage<'a> {
     reply_to_message_id: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendMessage<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
+    }
 }
 
 impl<'a> SendMessage<'a> {
@@ -38,6 +50,8 @@ impl<'a> SendMessage<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -79,11 +93,13 @@ impl<'a> SendMessage<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        send_method::<types::raw::Message>(
+        send_method(
             self.token,
             "sendMessage",
             None,
             serde_json::to_vec(&self).unwrap(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
     }
 }

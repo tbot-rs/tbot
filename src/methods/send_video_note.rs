@@ -3,18 +3,15 @@ use super::*;
 /// Representation of the [`sendVideoNote`] method.
 ///
 /// [`sendVideoNote`]: https://core.telegram.org/bots/api#sendvideonote
-#[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a> {
-    #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     video_note: types::VideoNote<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
@@ -32,6 +29,8 @@ impl<'a> SendVideoNote<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -104,6 +103,22 @@ impl<'a> SendVideoNote<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.token, "sendVideoNote", Some(boundary), body)
+        send_method(
+            self.token,
+            "sendVideoNote",
+            Some(boundary),
+            body,
+            #[cfg(feature = "proxy")]
+            self.proxy,
+        )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendVideoNote<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

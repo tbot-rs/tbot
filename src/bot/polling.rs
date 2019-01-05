@@ -67,24 +67,38 @@ impl<'a> Polling<'a> {
 
             last_send_timestamp = Instant::now();
 
+            #[cfg(not(feature = "proxy"))]
             let request = GetUpdates::new(
                 &bot.token,
                 *last_offset.lock().unwrap(),
                 self.limit,
                 self.timeout,
                 self.allowed_updates,
-            )
-            .into_future()
-            .map(move |updates| {
-                if let Some(update) = updates.last() {
-                    *new_offset.lock().unwrap() = Some(update.update_id + 1);
-                }
+            );
 
-                for update in updates {
-                    on_ok.handle_update(update);
-                }
-            })
-            .map_err(move |error| on_err.handle_polling_error(&error));
+            #[cfg(feature = "proxy")]
+            let request = GetUpdates::new(
+                &bot.token,
+                *last_offset.lock().unwrap(),
+                self.limit,
+                self.timeout,
+                self.allowed_updates,
+                bot.proxy.clone(),
+            );
+
+            let request = request
+                .into_future()
+                .map(move |updates| {
+                    if let Some(update) = updates.last() {
+                        *new_offset.lock().unwrap() =
+                            Some(update.update_id + 1);
+                    }
+
+                    for update in updates {
+                        on_ok.handle_update(update);
+                    }
+                })
+                .map_err(move |error| on_err.handle_polling_error(&error));
 
             tokio::run(request);
 

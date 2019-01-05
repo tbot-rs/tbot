@@ -3,18 +3,15 @@ use super::*;
 /// Representation of the [`sendPhoto`] method.
 ///
 /// [`sendPhoto`]: https://core.telegram.org/bots/api#sendphoto
-#[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendPhoto<'a> {
-    #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     photo: types::Photo<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
@@ -32,6 +29,8 @@ impl<'a> SendPhoto<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -95,6 +94,22 @@ impl<'a> SendPhoto<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.token, "sendPhoto", Some(boundary), body)
+        send_method(
+            self.token,
+            "sendPhoto",
+            Some(boundary),
+            body,
+            #[cfg(feature = "proxy")]
+            self.proxy,
+        )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendPhoto<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

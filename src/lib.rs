@@ -45,6 +45,9 @@ pub use self::bot::*;
 use self::{multipart::*, prelude::*};
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "proxy")]
+pub use hyper_proxy as proxy;
+
 /// Like `tokio::run`, but doesn't require `future::Item` to be `()`.
 ///
 /// Most use-caces of `tbot` do not need to use the future's `Item` value,

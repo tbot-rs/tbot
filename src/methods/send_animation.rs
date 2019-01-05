@@ -3,18 +3,15 @@ use super::*;
 /// Representation of the [`sendAnimation`] method.
 ///
 /// [`sendAnimation`]: https://core.telegram.org/bots/api#sendanimation
-#[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a> {
-    #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     animation: types::Animation<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
@@ -32,6 +29,8 @@ impl<'a> SendAnimation<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -111,6 +110,22 @@ impl<'a> SendAnimation<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.token, "sendAnimation", Some(boundary), body)
+        send_method(
+            self.token,
+            "sendAnimation",
+            Some(boundary),
+            body,
+            #[cfg(feature = "proxy")]
+            self.proxy,
+        )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendAnimation<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

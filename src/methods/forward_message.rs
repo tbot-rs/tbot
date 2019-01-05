@@ -8,6 +8,9 @@ use super::*;
 pub struct ForwardMessage<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     from_chat_id: types::ChatId<'a>,
     message_id: u64,
@@ -29,6 +32,8 @@ impl<'a> ForwardMessage<'a> {
             from_chat_id: from_chat_id.into(),
             message_id,
             disable_notification: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -43,11 +48,22 @@ impl<'a> ForwardMessage<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        send_method::<types::raw::Message>(
+        send_method(
             self.token,
             "forwardMessage",
             None,
             serde_json::to_vec(&self).unwrap(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for ForwardMessage<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }
