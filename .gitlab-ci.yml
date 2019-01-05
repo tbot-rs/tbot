@@ -5,9 +5,10 @@ test:
     - rustup component add rustfmt
     - rustup component add clippy
   script:
-    - cargo test
     - cargo fmt -- --check
+    - cargo test --features proxy
     - cargo clippy
+    - cargo clippy --features proxy
   only:
     - branches
 
