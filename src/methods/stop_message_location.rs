@@ -9,6 +9,9 @@ use super::*;
 pub struct StopMessageLocation<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     message_id: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24,6 +27,8 @@ impl<'a> StopMessageLocation<'a> {
     ) -> Self {
         Self {
             token,
+            #[cfg(feature = "proxy")]
+            proxy: None,
             chat_id: chat_id.into(),
             message_id,
             reply_markup: None,
@@ -41,11 +46,22 @@ impl<'a> StopMessageLocation<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        send_method::<types::raw::Message>(
+        send_method(
             self.token,
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for StopMessageLocation<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

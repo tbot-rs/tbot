@@ -6,6 +6,8 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a> {
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     media: Vec<types::GroupMedia<'a>>,
     disable_notification: Option<bool>,
@@ -25,6 +27,8 @@ impl<'a> SendMediaGroup<'a> {
             media,
             disable_notification: None,
             reply_to_message_id: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -125,6 +129,22 @@ impl<'a> SendMediaGroup<'a> {
         let media = serde_json::to_string(&media).unwrap();
         let (boundary, body) = multipart.str("media", &media).finish();
 
-        send_method(self.token, "sendMediaGroup", Some(boundary), body)
+        send_method(
+            self.token,
+            "sendMediaGroup",
+            Some(boundary),
+            body,
+            #[cfg(feature = "proxy")]
+            self.proxy,
+        )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendMediaGroup<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

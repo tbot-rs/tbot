@@ -8,6 +8,9 @@ use super::*;
 pub struct SendContact<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[serde(skip)]
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     phone_number: &'a str,
     first_name: &'a str,
@@ -41,6 +44,8 @@ impl<'a> SendContact<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -82,11 +87,22 @@ impl<'a> SendContact<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        send_method::<types::raw::Message>(
+        send_method(
             self.token,
             "sendContact",
             None,
             serde_json::to_vec(&self).unwrap(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendContact<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

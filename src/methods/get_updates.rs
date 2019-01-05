@@ -6,6 +6,9 @@ use super::*;
 pub(crate) struct GetUpdates<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,6 +20,26 @@ pub(crate) struct GetUpdates<'a> {
 }
 
 impl<'a> GetUpdates<'a> {
+    #[cfg(feature = "proxy")]
+    pub fn new(
+        token: &'a str,
+        offset: Option<u64>,
+        limit: Option<u8>,
+        timeout: Option<u64>,
+        allowed_updates: Option<&'a [types::Updates]>,
+        proxy: Option<proxy::Proxy>,
+    ) -> Self {
+        Self {
+            token,
+            offset,
+            limit,
+            timeout,
+            allowed_updates,
+            proxy,
+        }
+    }
+
+    #[cfg(not(feature = "proxy"))]
     pub fn new(
         token: &'a str,
         offset: Option<u64>,
@@ -42,6 +65,8 @@ impl<'a> GetUpdates<'a> {
             "getUpdates",
             None,
             serde_json::to_vec(&self).unwrap(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
     }
 }

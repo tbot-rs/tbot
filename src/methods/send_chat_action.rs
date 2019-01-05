@@ -8,6 +8,9 @@ use super::*;
 pub struct SendChatAction<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     action: types::ChatAction,
 }
@@ -23,6 +26,8 @@ impl<'a> SendChatAction<'a> {
             token,
             chat_id: chat_id.into(),
             action,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -34,8 +39,19 @@ impl<'a> SendChatAction<'a> {
             "sendChatAction",
             None,
             serde_json::to_vec(&self).unwrap(),
-            // It returns only `true` if suceess, handling it is meaningless.
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+        // The only value `true` is returned on success.
         .map(|_| ())
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendChatAction<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

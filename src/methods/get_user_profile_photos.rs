@@ -1,5 +1,7 @@
 use super::*;
 
+// This is a false positive as it's used in `into_future`'s signature
+#[allow(dead_code)]
 type Photos = Vec<Vec<types::UserProfilePhotos>>;
 
 /// Representation of the [`getUserProfilePhotos`] method.
@@ -10,6 +12,9 @@ type Photos = Vec<Vec<types::UserProfilePhotos>>;
 pub struct GetUserProfilePhotos<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     user_id: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u64>,
@@ -25,6 +30,8 @@ impl<'a> GetUserProfilePhotos<'a> {
             user_id,
             offset: None,
             limit: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -45,11 +52,22 @@ impl<'a> GetUserProfilePhotos<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = Photos, Error = DeliveryError> {
-        send_method::<Photos>(
+        send_method(
             self.token,
             "getUserProfilePhotos",
             None,
             serde_json::to_vec(&self).unwrap(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for GetUserProfilePhotos<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

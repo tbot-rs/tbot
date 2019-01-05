@@ -9,6 +9,9 @@ use super::*;
 pub struct StopInlineLocation<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     inline_message_id: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::InlineKeyboard<'a>>,
@@ -21,6 +24,8 @@ impl<'a> StopInlineLocation<'a> {
             token,
             inline_message_id,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -38,8 +43,19 @@ impl<'a> StopInlineLocation<'a> {
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
-            // It returns only `true` if suceess, handling it is meaningless.
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+        // The only value `true` is returned on success.
         .map(|_| ())
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for StopInlineLocation<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

@@ -6,6 +6,8 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMe<'a> {
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
 }
 
 impl<'a> GetMe<'a> {
@@ -13,6 +15,8 @@ impl<'a> GetMe<'a> {
     pub fn new<'b: 'a>(token: &'b str) -> Self {
         Self {
             token,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -21,6 +25,22 @@ impl<'a> GetMe<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = types::User, Error = DeliveryError> {
-        send_method::<types::User>(self.token, "getMe", None, Vec::new())
+        send_method(
+            self.token,
+            "getMe",
+            None,
+            Vec::new(),
+            #[cfg(feature = "proxy")]
+            self.proxy,
+        )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for GetMe<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

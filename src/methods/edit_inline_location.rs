@@ -9,6 +9,9 @@ use super::*;
 pub struct EditInlineLocation<'a> {
     #[serde(skip)]
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    #[serde(skip)]
+    proxy: Option<proxy::Proxy>,
     inline_message_id: u64,
     latitude: f64,
     longitude: f64,
@@ -29,6 +32,8 @@ impl<'a> EditInlineLocation<'a> {
             latitude,
             longitude,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -46,8 +51,19 @@ impl<'a> EditInlineLocation<'a> {
             "editMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
-            // It returns only `true` if suceess, handling it is meaningless.
+            #[cfg(feature = "proxy")]
+            self.proxy,
         )
+        // The only value `true` is returned on success.
         .map(|_| ())
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for EditInlineLocation<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

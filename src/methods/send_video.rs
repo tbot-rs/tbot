@@ -6,6 +6,8 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideo<'a> {
     token: &'a str,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     video: types::Video<'a>,
     disable_notification: Option<bool>,
@@ -27,6 +29,8 @@ impl<'a> SendVideo<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            #[cfg(feature = "proxy")]
+            proxy: None,
         }
     }
 
@@ -107,6 +111,22 @@ impl<'a> SendVideo<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.token, "sendVideo", Some(boundary), body)
+        send_method(
+            self.token,
+            "sendVideo",
+            Some(boundary),
+            body,
+            #[cfg(feature = "proxy")]
+            self.proxy,
+        )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl<'a> ProxyMethod for SendVideo<'a> {
+    /// Configures `proxy`.
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }
