@@ -88,7 +88,7 @@ impl<'a> SendAnimation<'a> {
             .maybe_string("reply_to_message_id", &reply_to)
             .maybe_string("reply_markup", &reply_markup);
 
-        match self.animation.file {
+        match self.animation.media {
             types::InputFile::File {
                 filename,
                 bytes,

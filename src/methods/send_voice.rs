@@ -82,7 +82,7 @@ impl<'a> SendVoice<'a> {
             .maybe_string("reply_to_message_id", &reply_to)
             .maybe_string("reply_markup", &reply_markup);
 
-        match self.voice.file {
+        match self.voice.media {
             types::InputFile::File {
                 filename,
                 bytes,

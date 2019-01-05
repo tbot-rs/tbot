@@ -1,27 +1,22 @@
 use super::*;
+use serde::ser::SerializeMap;
 
 /// Represents an animation to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Animation<'a> {
-    pub(crate) file: InputFile<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<InputFile<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) width: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u64>,
 }
 
 impl<'a> Animation<'a> {
-    fn new(file: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
-            file,
+            media,
             thumb: None,
             caption: None,
             parse_mode: None,
@@ -101,5 +96,35 @@ impl<'a> Animation<'a> {
     pub fn height(mut self, height: u64) -> Self {
         self.height = Some(height);
         self
+    }
+}
+
+impl<'a> serde::Serialize for Animation<'a> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let mut map = s.serialize_map(None)?;
+
+        map.serialize_entry("type", "animation")?;
+        map.serialize_entry("media", &self.media)?;
+
+        if let Some(thumb) = &self.thumb {
+            map.serialize_entry("thumb", &thumb)?;
+        }
+        if let Some(caption) = self.caption {
+            map.serialize_entry("caption", caption)?;
+        }
+        if let Some(parse_mode) = self.parse_mode {
+            map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+        if let Some(width) = self.width {
+            map.serialize_entry("width", &width)?;
+        }
+        if let Some(height) = self.height {
+            map.serialize_entry("height", &height)?;
+        }
+        if let Some(duration) = self.duration {
+            map.serialize_entry("duration", &duration)?;
+        }
+
+        map.end()
     }
 }

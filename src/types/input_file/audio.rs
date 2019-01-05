@@ -1,27 +1,22 @@
 use super::*;
+use serde::ser::SerializeMap;
 
 /// Represents an audio to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Audio<'a> {
-    pub(crate) file: InputFile<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<InputFile<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) performer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) title: Option<&'a str>,
 }
 
 impl<'a> Audio<'a> {
-    fn new(file: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
-            file,
+            media,
             thumb: None,
             caption: None,
             parse_mode: None,
@@ -102,5 +97,35 @@ impl<'a> Audio<'a> {
     pub fn title(mut self, title: &'a str) -> Self {
         self.title = Some(title);
         self
+    }
+}
+
+impl<'a> serde::Serialize for Audio<'a> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let mut map = s.serialize_map(None)?;
+
+        map.serialize_entry("type", "audio")?;
+        map.serialize_entry("media", &self.media)?;
+
+        if let Some(thumb) = &self.thumb {
+            map.serialize_entry("thumb", &thumb)?;
+        }
+        if let Some(caption) = self.caption {
+            map.serialize_entry("caption", caption)?;
+        }
+        if let Some(parse_mode) = self.parse_mode {
+            map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+        if let Some(duration) = self.duration {
+            map.serialize_entry("duration", &duration)?;
+        }
+        if let Some(performer) = self.performer {
+            map.serialize_entry("performer", &performer)?;
+        }
+        if let Some(title) = self.title {
+            map.serialize_entry("title", &title)?;
+        }
+
+        map.end()
     }
 }
