@@ -1,19 +1,18 @@
 use super::*;
+use serde::ser::SerializeMap;
 
 /// Represents a photo to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Photo<'a> {
-    pub(crate) file: InputFile<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) media: InputFile<'a>,
     pub(crate) caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
 impl<'a> Photo<'a> {
-    fn new(file: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
-            file,
+            media,
             caption: None,
             parse_mode: None,
         }
@@ -66,5 +65,23 @@ impl<'a> Photo<'a> {
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
         self
+    }
+}
+
+impl<'a> serde::Serialize for Photo<'a> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let mut map = s.serialize_map(None)?;
+
+        map.serialize_entry("type", "photo")?;
+        map.serialize_entry("media", &self.media)?;
+
+        if let Some(caption) = self.caption {
+            map.serialize_entry("caption", caption)?;
+        }
+        if let Some(parse_mode) = self.parse_mode {
+            map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+
+        map.end()
     }
 }

@@ -84,7 +84,7 @@ impl<'a> SendAudio<'a> {
             .maybe_string("reply_to_message_id", &reply_to)
             .maybe_string("reply_markup", &reply_markup);
 
-        match self.audio.file {
+        match self.audio.media {
             types::InputFile::File {
                 filename,
                 bytes,

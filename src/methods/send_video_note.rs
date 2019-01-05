@@ -80,7 +80,7 @@ impl<'a> SendVideoNote<'a> {
             .maybe_string("reply_to_message_id", &reply_to)
             .maybe_string("reply_markup", &reply_markup);
 
-        match self.video_note.file {
+        match self.video_note.media {
             types::InputFile::File {
                 filename,
                 bytes,

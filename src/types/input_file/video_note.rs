@@ -3,7 +3,7 @@ use super::*;
 /// Represents a video note to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct VideoNote<'a> {
-    pub(crate) file: InputFile<'a>,
+    pub(crate) media: InputFile<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13,9 +13,9 @@ pub struct VideoNote<'a> {
 }
 
 impl<'a> VideoNote<'a> {
-    fn new(file: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
-            file,
+            media,
             duration: None,
             length: None,
             thumb: None,

@@ -1,29 +1,23 @@
 use super::*;
+use serde::ser::SerializeMap;
 
 /// Represents a video to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Video<'a> {
-    pub(crate) file: InputFile<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<InputFile<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) width: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) height: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) supports_streaming: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u64>,
 }
 
 impl<'a> Video<'a> {
-    fn new(file: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
-            file,
+            media,
             thumb: None,
             caption: None,
             parse_mode: None,
@@ -111,5 +105,38 @@ impl<'a> Video<'a> {
     pub fn supports_streaming(mut self, is_streamed: bool) -> Self {
         self.supports_streaming = Some(is_streamed);
         self
+    }
+}
+
+impl<'a> serde::Serialize for Video<'a> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let mut map = s.serialize_map(None)?;
+
+        map.serialize_entry("type", "video")?;
+        map.serialize_entry("media", &self.media)?;
+
+        if let Some(thumb) = &self.thumb {
+            map.serialize_entry("thumb", &thumb)?;
+        }
+        if let Some(caption) = self.caption {
+            map.serialize_entry("caption", caption)?;
+        }
+        if let Some(parse_mode) = self.parse_mode {
+            map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+        if let Some(duration) = self.duration {
+            map.serialize_entry("duration", &duration)?;
+        }
+        if let Some(width) = self.width {
+            map.serialize_entry("width", &width)?;
+        }
+        if let Some(height) = self.height {
+            map.serialize_entry("height", &height)?;
+        }
+        if let Some(has_support) = self.supports_streaming {
+            map.serialize_entry("supports_streaming", &has_support)?;
+        }
+
+        map.end()
     }
 }

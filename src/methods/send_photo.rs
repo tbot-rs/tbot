@@ -81,7 +81,7 @@ impl<'a> SendPhoto<'a> {
             .maybe_string("reply_to_message_id", &reply_to)
             .maybe_string("reply_markup", &reply_markup);
 
-        match self.photo.file {
+        match self.photo.media {
             types::InputFile::File {
                 filename,
                 bytes,
