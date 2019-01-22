@@ -65,8 +65,7 @@ impl<'a> SendAudio<'a> {
         };
 
         let duration = self.audio.duration.map(|x| x.to_string());
-        let parse_mode =
-            self.audio.parse_mode.and_then(|x| serde_json::to_string(&x).ok());
+        let parse_mode = self.audio.parse_mode.map(|x| x.to_string());
         let is_disabled = self.disable_notification.map(|x| x.to_string());
         let reply_to = self.reply_to_message_id.map(|id| id.to_string());
         let reply_markup = self

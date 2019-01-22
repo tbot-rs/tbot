@@ -68,8 +68,7 @@ impl<'a> SendVideo<'a> {
         let duration = self.video.duration.map(|x| x.to_string());
         let width = self.video.width.map(|x| x.to_string());
         let height = self.video.height.map(|x| x.to_string());
-        let parse_mode =
-            self.video.parse_mode.and_then(|x| serde_json::to_string(&x).ok());
+        let parse_mode = self.video.parse_mode.map(|x| x.to_string());
         let is_disabled = self.disable_notification.map(|x| x.to_string());
         let is_streamed = self.video.supports_streaming.map(|x| x.to_string());
         let reply_to = self.reply_to_message_id.map(|id| id.to_string());
