@@ -20,5 +20,5 @@ fn main() {
         tbot::spawn(reply);
     });
 
-    bot.webhook("https://6f8d2733.ngrok.io/", 2000).start();
+    bot.webhook("https://example.com", 2000).start();
 }
