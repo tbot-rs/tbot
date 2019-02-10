@@ -47,6 +47,7 @@ mod send_venue;
 mod send_video;
 mod send_video_note;
 mod send_voice;
+mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
 
@@ -59,7 +60,7 @@ pub use self::{
     stop_message_location::*,
 };
 
-pub(crate) use self::get_updates::*;
+pub(crate) use self::{get_updates::*, set_webhook::*};
 
 mod methods_trait;
 pub use self::methods_trait::*;
