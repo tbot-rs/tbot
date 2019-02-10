@@ -26,7 +26,7 @@ impl<'a> Webhook<'a> {
     pub(crate) fn new(bot: Bot, url: &'a str, port: u16) -> Self {
         Self {
             bot,
-            ip: IpAddr::V4(Ipv4Addr::UNSPECIFIED),
+            ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
             port,
             url,
             certificate: None,
