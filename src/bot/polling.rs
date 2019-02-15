@@ -1,4 +1,4 @@
-use super::*;
+use super::{methods::DeleteWebhook, *};
 
 /// Configures polling and runs it.
 ///
@@ -54,10 +54,31 @@ impl<'a> Polling<'a> {
 
     /// Starts the event loop.
     pub fn start(self) -> ! {
+        let error = Arc::new(Mutex::new(Ok(())));
+        let handler = error.clone();
+
+        let bot = Arc::new(self.bot);
+
+        let delete_webhook = DeleteWebhook::new(
+            &bot.token,
+            #[cfg(feature = "proxy")]
+            bot.proxy.clone(),
+        )
+        .into_future()
+        .map_err(move |error| *handler.lock().unwrap() = Err(error));
+
+        crate::run(delete_webhook);
+
+        if let Err(error) = &*error.lock().unwrap() {
+            panic!(
+                "\n[tbot] error while deleting previous webhook:\n\n{:#?}\n",
+                error,
+            );
+        }
+
         let interval = Duration::from_millis(self.poll_interval);
         let last_offset = Arc::new(Mutex::new(None));
         let mut last_send_timestamp;
-        let bot = Arc::new(self.bot);
 
         loop {
             // Couldn't find a better way to use bot in both map and map_err
@@ -67,22 +88,13 @@ impl<'a> Polling<'a> {
 
             last_send_timestamp = Instant::now();
 
-            #[cfg(not(feature = "proxy"))]
             let request = GetUpdates::new(
                 &bot.token,
                 *last_offset.lock().unwrap(),
                 self.limit,
                 self.timeout,
                 self.allowed_updates,
-            );
-
-            #[cfg(feature = "proxy")]
-            let request = GetUpdates::new(
-                &bot.token,
-                *last_offset.lock().unwrap(),
-                self.limit,
-                self.timeout,
-                self.allowed_updates,
+                #[cfg(feature = "proxy")]
                 bot.proxy.clone(),
             );
 
