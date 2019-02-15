@@ -78,7 +78,7 @@ impl<'a> Webhook<'a> {
         crate::run(webhook_set_request);
 
         if let Err(error) = &*error.lock().unwrap() {
-            panic!("An error happened during setting webhook:\n\n{:#?}", error);
+            panic!("\n[tbot] error while setting webhook:\n\n{:#?}\n", error);
         }
 
         start_server(Arc::new(self.bot), self.ip, self.port);
@@ -114,8 +114,13 @@ fn start_server(bot: Arc<Bot>, ip: IpAddr, port: u16) -> ! {
             let bot = bot.clone();
             service_fn(move |request| handle(bot.clone(), request))
         })
-        .map_err(|error| eprintln!("tbot webhook server error: {:#?}", error));
+        .map_err(|error| {
+            eprintln!("\n[tbot] webhook server error:\n\n{:#?}\n", error);
+        });
 
     tokio::run(server);
-    unreachable!("tbot webhook server was expected to never return");
+    unreachable!(
+        "\n[tbot] webhook server was expected to never return. Perhaps there's \
+        an error logged above\n",
+    );
 }
