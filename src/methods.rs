@@ -28,6 +28,7 @@
 
 use super::*;
 
+mod delete_webhook;
 mod edit_inline_location;
 mod edit_message_location;
 mod forward_message;
@@ -60,7 +61,7 @@ pub use self::{
     stop_message_location::*,
 };
 
-pub(crate) use self::{get_updates::*, set_webhook::*};
+pub(crate) use self::{delete_webhook::*, get_updates::*, set_webhook::*};
 
 mod methods_trait;
 pub use self::methods_trait::*;
