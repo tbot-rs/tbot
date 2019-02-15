@@ -79,9 +79,10 @@ impl Bot {
         Polling::new(self)
     }
 
-    /// Starts configuring webhook.
+    /// Starts configuring webhook. See our [wiki] to learn how to use webhook
+    /// with `tbot`.
     ///
-    /// The given port is the one __`tbot`__ binds to.
+    /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
     pub fn webhook<'a>(self, url: &'a str, port: u16) -> Webhook<'a> {
         Webhook::new(self, url, port)
     }
