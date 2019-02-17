@@ -3,7 +3,7 @@ use super::*;
 /// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[must_use]
 pub struct ReplyButton<'a> {
     text: &'a str,
@@ -39,7 +39,7 @@ impl<'a> ReplyButton<'a> {
 /// Represents Telegram's [`ReplyKeyboardMarkup`].
 ///
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct ReplyKeyboard<'a> {
     keyboard: Vec<Vec<ReplyButton<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")]

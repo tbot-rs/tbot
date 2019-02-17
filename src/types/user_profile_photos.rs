@@ -3,7 +3,7 @@ use super::*;
 /// Represents [`UserProfilePhotos`].
 ///
 /// [`UserProfilePhotos`]: https://core.telegram.org/bots/api#userprofilephotos
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct UserProfilePhotos {
     /// Overall amount of user's photos.
     pub total_count: u64,

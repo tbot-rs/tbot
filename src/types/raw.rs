@@ -3,7 +3,7 @@
 
 use super::*;
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct ChatMember {
     pub user: User,
     pub status: String,
@@ -23,7 +23,7 @@ pub struct ChatMember {
     pub can_add_web_page_previews: Option<bool>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct Chat {
     pub id: i64,
     #[serde(rename = "type")]
@@ -41,7 +41,7 @@ pub struct Chat {
     pub can_set_sticker_set: Option<bool>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct Message {
     pub message_id: u64,
     pub from: User,
@@ -89,7 +89,7 @@ pub struct Message {
     pub passport_data: Option<PassportData>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MessageEntityTypes {
     Mention,
@@ -107,7 +107,7 @@ pub enum MessageEntityTypes {
     TextMention,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct MessageEntity {
     #[serde(rename = "type")]
     pub entity_type: MessageEntityTypes,
@@ -117,7 +117,7 @@ pub struct MessageEntity {
     pub user: Option<User>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PhotoSize {
     pub file_id: String,
     pub width: i64,
@@ -125,7 +125,7 @@ pub struct PhotoSize {
     pub file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Audio {
     pub file_id: String,
     pub duration: i64,
@@ -136,7 +136,7 @@ pub struct Audio {
     pub thumb: Option<PhotoSize>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Document {
     pub file_id: String,
     pub thumb: Option<PhotoSize>,
@@ -145,7 +145,7 @@ pub struct Document {
     pub file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Video {
     pub file_id: String,
     pub width: i64,
@@ -155,7 +155,8 @@ pub struct Video {
     pub mime_type: Option<String>,
     pub file_size: Option<i64>,
 }
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Animation {
     pub file_id: String,
     pub width: i64,
@@ -166,7 +167,7 @@ pub struct Animation {
     pub file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Voice {
     pub file_id: String,
     pub duration: i64,
@@ -174,7 +175,7 @@ pub struct Voice {
     pub file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct VideoNote {
     pub file_id: String,
     pub length: i64,
@@ -183,7 +184,7 @@ pub struct VideoNote {
     pub file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Contact {
     pub phone_number: String,
     pub first_name: String,
@@ -192,13 +193,13 @@ pub struct Contact {
     pub vcard: Option<String>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy, Deserialize)]
 pub struct Location {
     pub longitude: f64,
     pub latitude: f64,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct Venue {
     pub location: Location,
     pub title: String,
@@ -207,20 +208,20 @@ pub struct Venue {
     pub foursquare_type: Option<String>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct UserProfilePhotos {
     pub total_count: i64,
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct File {
     pub file_id: String,
     pub file_size: Option<i64>,
     pub file_path: Option<String>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct CallbackQuery {
     pub id: String,
     pub from: User,
@@ -233,7 +234,7 @@ pub struct CallbackQuery {
 
 // TODO: Manual serialization or look up how to choose the right `type` value
 // based on the variant.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum InputMedia {
     Photo {
         media: String,
@@ -276,7 +277,7 @@ pub enum InputMedia {
     },
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct Sticker {
     pub file_id: String,
     pub width: i64,
@@ -288,7 +289,7 @@ pub struct Sticker {
     pub file_size: Option<i64>,
 }
 
-#[derive(Deserialize, Serialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MaskPositionPoint {
     Forehead,
@@ -297,7 +298,7 @@ pub enum MaskPositionPoint {
     Chin,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
 pub struct MaskPosition {
     pub point: MaskPositionPoint,
     pub x_shift: f64,
@@ -305,7 +306,7 @@ pub struct MaskPosition {
     pub scale: f64,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct StickerSet {
     pub name: String,
     pub title: String,
@@ -313,13 +314,13 @@ pub struct StickerSet {
     pub stickers: Vec<Sticker>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct LabeledPrice {
     pub label: String,
     pub amount: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct Invoice {
     pub title: String,
     pub description: String,
@@ -328,7 +329,7 @@ pub struct Invoice {
     pub total_amount: u64,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct ShippingAddress {
     pub country_code: String,
     pub state: String,
@@ -338,7 +339,7 @@ pub struct ShippingAddress {
     pub post_code: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct OrderInfo {
     pub name: Option<String>,
     pub phone_number: Option<String>,
@@ -346,14 +347,14 @@ pub struct OrderInfo {
     pub shipping_address: Option<ShippingAddress>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct ShippingOption {
     pub id: String,
     pub title: String,
     pub prices: Vec<LabeledPrice>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct SuccessfulPayment {
     pub currency: String,
     pub total_amount: u64,
@@ -364,7 +365,7 @@ pub struct SuccessfulPayment {
     pub provider_payment_charge_id: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct ShippingQuery {
     pub id: String,
     pub from: User,
@@ -372,7 +373,7 @@ pub struct ShippingQuery {
     pub shipping_address: ShippingAddress,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PreCheckoutQuery {
     pub id: String,
     pub from: User,
@@ -383,20 +384,20 @@ pub struct PreCheckoutQuery {
     pub order_info: Option<OrderInfo>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PassportData {
     pub data: Vec<EncryptedPassportElement>,
     pub credentails: EncryptedCredentails,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PassportFile {
     pub file_id: String,
     pub file_size: u64,
     pub file_date: u64,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EncryptedPassportElementType {
     PersonalDetails,
@@ -414,7 +415,7 @@ pub enum EncryptedPassportElementType {
     Email,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct EncryptedPassportElement {
     pub element_type: EncryptedPassportElementType,
     pub data: Option<String>,
@@ -428,15 +429,14 @@ pub struct EncryptedPassportElement {
     pub hash: String,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct EncryptedCredentails {
     pub data: String,
     pub hash: String,
     pub secret: String,
 }
 
-//manual Deserialize source
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub enum PassportElementError {
     DataField {
         field_type: String,
@@ -486,7 +486,7 @@ pub enum PassportElementError {
     },
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct Game {
     pub title: String,
     pub description: String,
@@ -496,7 +496,7 @@ pub struct Game {
     pub animation: Option<Animation>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct GameHighScore {
     pub position: u64,
     pub user: User,

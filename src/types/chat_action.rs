@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents possible chat actions.
-#[derive(Serialize, Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ChatAction {
     /// About to send a text message.

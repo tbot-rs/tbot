@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents possible chat types.
-#[derive(Deserialize, Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ChatTypes {
     /// The chat is private.

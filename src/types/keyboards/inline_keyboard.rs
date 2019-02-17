@@ -9,7 +9,7 @@ use serde::ser::SerializeMap;
 /// Complete descriptions can be found in [Bots API docs][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub enum InlineButtonType<'a> {
     /// Represents a URL button.
     Url(&'a str),
@@ -28,7 +28,7 @@ pub enum InlineButtonType<'a> {
 /// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeybaordButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use]
 pub struct InlineButton<'a> {
     text: &'a str,
@@ -75,7 +75,7 @@ impl serde::Serialize for InlineButton<'_> {
 /// Represents an [`InlineKeyboardMarkup`].
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct InlineKeyboard<'a> {
     inline_keyboard: Vec<Vec<InlineButton<'a>>>,
 }
