@@ -3,7 +3,7 @@ use super::*;
 /// Represents a [`User`].
 ///
 /// [`User`]: https://core.telegram.org/bots/api#user
-#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct User {
     /// The user's ID.
     pub id: i64,

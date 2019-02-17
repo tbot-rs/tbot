@@ -3,7 +3,7 @@ use serde::ser::SerializeMap;
 /// Represents a [`ReplyKeyboardRemove`].
 ///
 /// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
-#[derive(Debug, PartialEq, Clone, Default)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Default)]
 #[must_use]
 pub struct ReplyKeyboardRemove {
     // remove_keyboard is added when serializing

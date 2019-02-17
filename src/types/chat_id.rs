@@ -1,5 +1,5 @@
 /// Represents possible ways to specify the destination chat.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub enum ChatId<'a> {
     /// A user's ID.
     Id(i64),

@@ -4,6 +4,7 @@ use std::sync::Arc;
 /// Contants data for [text message handlers][on_message].
 ///
 /// [on_message]: ../struct.Bot.html#method.on_message
+#[derive(Clone)]
 pub struct MessageContext {
     /// A mock bot with all API methods.
     pub bot: Arc<MockBot>,

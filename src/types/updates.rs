@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents updates names to subscribe with Webhooks or getUpdates.
-#[derive(Serialize, Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Updates {
     /// Handles messages in a chat of any kind.
@@ -26,7 +26,7 @@ pub enum Updates {
 }
 
 /// Represents different types of updates from Telegram.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum UpdateType {
     /// A new incoming message.
     Message(raw::Message),

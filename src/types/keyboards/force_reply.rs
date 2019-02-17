@@ -3,7 +3,7 @@ use serde::ser::SerializeMap;
 /// Represents a [`ForceReply`].
 ///
 /// [`ForceReply`]: https://core.telegram.org/bots/api#forcereply
-#[derive(Debug, PartialEq, Clone, Default)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Default)]
 #[must_use]
 pub struct ForceReply {
     // force_reply is added when serialized
