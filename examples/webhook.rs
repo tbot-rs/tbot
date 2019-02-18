@@ -1,5 +1,8 @@
 use tbot::{prelude::*, types::ParseMode::Markdown, Bot};
 
+const URL: &str = "https://example.com";
+const PORT: u16 = 2000;
+
 fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN");
 
@@ -20,5 +23,5 @@ fn main() {
         tbot::spawn(reply);
     });
 
-    bot.webhook("https://example.com", 2000).start();
+    bot.webhook(URL, PORT).start();
 }
