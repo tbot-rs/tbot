@@ -48,8 +48,8 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures `max_connections`.
-    pub fn max_connections(mut self, amount: u8) -> Self {
-        self.max_connections = Some(amount);
+    pub fn max_connections(mut self, max: u8) -> Self {
+        self.max_connections = Some(max);
         self
     }
 
@@ -61,8 +61,6 @@ impl<'a> Webhook<'a> {
 
     /// Starts the server.
     pub fn start(self) -> ! {
-        let error = Arc::new(Mutex::new(Ok(())));
-        let handler = error.clone();
         let webhook_set_request = methods::SetWebhook::new(
             &self.bot.token,
             self.url,
@@ -73,54 +71,73 @@ impl<'a> Webhook<'a> {
             self.bot.proxy.clone(),
         )
         .into_future()
-        .map_err(move |error| *handler.lock().unwrap() = Err(error));
+        .map_err(|error| {
+            eprintln!("[tbot] Error while setting webhook: {:#?}", error);
+        });
 
-        crate::run(webhook_set_request);
+        let Self {
+            bot,
+            ip,
+            port,
+            ..
+        } = self;
 
-        if let Err(error) = &*error.lock().unwrap() {
-            panic!("\n[tbot] error while setting webhook:\n\n{:#?}\n", error);
-        }
+        let server =
+            webhook_set_request.and_then(move |_| init_server(bot, ip, port));
 
-        start_server(Arc::new(self.bot), self.ip, self.port);
+        crate::run(server);
+
+        panic!(
+            "\n[tbot] Webhook server was expected to never return. Perhaps \
+             there's an error logged above.\n",
+        );
     }
 }
 
-fn is_content_type_correct(request: &Request<Body>) -> bool {
-    let header = request.headers().get("Content-Type");
+fn is_request_correct(request: &Request<Body>) -> bool {
+    let content_type = request.headers().get("Content-Type");
 
-    header.map(|x| x == "application/json") == Some(true)
+    request.method() == Method::POST
+        && request.uri() == "/"
+        && content_type.map(|x| x == "application/json") == Some(true)
 }
 
 fn handle(
     bot: Arc<Bot>,
     request: Request<Body>,
 ) -> Box<dyn Future<Item = Response<Body>, Error = Error> + Send> {
-    if request.method() == Method::POST && is_content_type_correct(&request) {
-        Box::new(request.into_body().concat2().map(move |body| {
-            let update = serde_json::from_slice(&body[..]).unwrap();
+    if is_request_correct(&request) {
+        let body = request.into_body().concat2();
+        let handler = body.map(move |body| {
+            let update =
+                serde_json::from_slice(&body[..]).unwrap_or_else(|error| {
+                    panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
+                });
+
             bot.handle_update(update);
+
             Response::new(Body::empty())
-        }))
+        });
+
+        Box::new(handler)
     } else {
-        Box::new(futures::future::ok(Response::new(Body::empty())))
+        let response = Response::new(Body::empty());
+        let future = futures::future::ok(response);
+
+        Box::new(future)
     }
 }
 
-fn start_server(bot: Arc<Bot>, ip: IpAddr, port: u16) -> ! {
+fn init_server(bot: Bot, ip: IpAddr, port: u16) -> impl Future<Error = ()> {
+    let bot = Arc::new(bot);
     let addr = SocketAddr::new(ip, port);
 
-    let server = Server::bind(&addr)
+    Server::bind(&addr)
         .serve(move || {
             let bot = bot.clone();
             service_fn(move |request| handle(bot.clone(), request))
         })
         .map_err(|error| {
-            eprintln!("\n[tbot] webhook server error:\n\n{:#?}\n", error);
-        });
-
-    tokio::run(server);
-    unreachable!(
-        "\n[tbot] webhook server was expected to never return. Perhaps there's \
-        an error logged above\n",
-    );
+            eprintln!("[tbot] Webhook server error: {:#?}", error);
+        })
 }
