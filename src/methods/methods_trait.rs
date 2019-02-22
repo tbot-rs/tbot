@@ -109,7 +109,7 @@ pub trait Methods {
 
     /// Constructs a new [`SendVoice`] inferring `token`.
     ///
-    /// [`SendVideo`]: ./struct.SendVoice.html
+    /// [`SendVoice`]: ./struct.SendVoice.html
     fn send_voice<'a, 'b: 'a>(
         &'b self,
         chat_id: impl Into<types::ChatId<'a>>,
