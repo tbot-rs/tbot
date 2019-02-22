@@ -43,6 +43,6 @@ impl Methods for MockBot {
 
     #[cfg(feature = "proxy")]
     fn get_proxy(&self) -> Option<proxy::Proxy> {
-       self.proxy.clone()
+        self.proxy.clone()
     }
 }
