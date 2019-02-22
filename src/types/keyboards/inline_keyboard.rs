@@ -1,8 +1,8 @@
-use self::InlineButtonType::{
-    CallbackData, Pay, SwitchInlineQuery, SwitchInlineQueryCurrentChat, Url,
-};
 use super::*;
 use serde::ser::SerializeMap;
+use InlineButtonType::{
+    CallbackData, Pay, SwitchInlineQuery, SwitchInlineQueryCurrentChat, Url,
+};
 
 /// Represents different types an inline button can be.
 ///

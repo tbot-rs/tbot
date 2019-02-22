@@ -1,17 +1,15 @@
-use self::{contexts::*, methods::GetUpdates, types::UpdateType};
 use super::*;
 use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
+use {contexts::*, methods::GetUpdates, types::UpdateType};
 
 mod mock_bot;
 mod polling;
 mod webhook;
 
-pub use self::mock_bot::*;
-pub use self::polling::*;
-pub use self::webhook::*;
+pub use {mock_bot::*, polling::*, webhook::*};
 
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
