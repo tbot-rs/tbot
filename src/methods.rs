@@ -35,6 +35,7 @@ mod forward_message;
 mod get_me;
 mod get_updates;
 mod get_user_profile_photos;
+mod get_webhook_info;
 mod send_animation;
 mod send_audio;
 mod send_chat_action;
@@ -54,11 +55,11 @@ mod stop_message_location;
 
 pub use self::{
     edit_inline_location::*, edit_message_location::*, forward_message::*,
-    get_me::*, get_user_profile_photos::*, send_animation::*, send_audio::*,
-    send_chat_action::*, send_contact::*, send_document::*, send_location::*,
-    send_media_group::*, send_message::*, send_photo::*, send_venue::*,
-    send_video::*, send_video_note::*, send_voice::*, stop_inline_location::*,
-    stop_message_location::*,
+    get_me::*, get_user_profile_photos::*, get_webhook_info::*,
+    send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
+    send_document::*, send_location::*, send_media_group::*, send_message::*,
+    send_photo::*, send_venue::*, send_video::*, send_video_note::*,
+    send_voice::*, stop_inline_location::*, stop_message_location::*,
 };
 
 pub(crate) use self::{delete_webhook::*, get_updates::*, set_webhook::*};
