@@ -20,8 +20,12 @@
 //! # use tbot::prelude::*;
 //! let request = tbot::methods::GetMe::new(env!("BOT_TOKEN"))
 //!     .into_future()
-//!     .map_err(|_| ())
-//!     .map(|me| println!("Here I am: {:#?}", me));
+//!     .map_err(|error| {
+//!         dbg!(error);
+//!     })
+//!     .map(|me| {
+//!         dbg!(me);
+//!     });
 //!
 //! tbot::run(request);
 //! ```
