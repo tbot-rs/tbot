@@ -43,10 +43,6 @@ impl Methods for MockBot {
 
     #[cfg(feature = "proxy")]
     fn get_proxy(&self) -> Option<proxy::Proxy> {
-        if let Some(proxy) = &self.proxy {
-            Some(proxy.clone())
-        } else {
-            None
-        }
+       self.proxy.clone()
     }
 }
