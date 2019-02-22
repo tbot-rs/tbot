@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents updates names to subscribe with Webhooks or getUpdates.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Updates {
     /// Handles messages in a chat of any kind.

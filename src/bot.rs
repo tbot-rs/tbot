@@ -7,9 +7,11 @@ use std::{
 
 mod mock_bot;
 mod polling;
+mod webhook;
 
 pub use self::mock_bot::*;
 pub use self::polling::*;
+pub use self::webhook::*;
 
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
@@ -75,6 +77,14 @@ impl Bot {
     /// Starts configuring polling.
     pub fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
+    }
+
+    /// Starts configuring webhook. See our [wiki] to learn how to use webhook
+    /// with `tbot`.
+    ///
+    /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
+    pub fn webhook(self, url: &str, port: u16) -> Webhook<'_> {
+        Webhook::new(self, url, port)
     }
 
     /// Sets a proxy through which requests to Telegram will be sent.

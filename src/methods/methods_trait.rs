@@ -322,4 +322,11 @@ pub trait Methods {
             user_id,
         ))
     }
+
+    /// Constructs a new [`GetWebhookInfo`] inferring `token`.
+    ///
+    /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
+    fn get_webhook_info(&self) -> methods::GetWebhookInfo {
+        self.prepare_method(methods::GetWebhookInfo::new(self.token()))
+    }
 }

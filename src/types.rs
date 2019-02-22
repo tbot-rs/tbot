@@ -16,16 +16,10 @@ mod photo_size;
 mod updates;
 mod user;
 mod user_profile_photos;
+mod webhook_info;
 
-pub use self::callback_game::*;
-pub use self::chat_action::*;
-pub use self::chat_id::*;
-pub use self::chat_photo::*;
-pub use self::chat_types::*;
-pub use self::input_file::*;
-pub use self::keyboards::*;
-pub use self::parse_mode::*;
-pub use self::photo_size::*;
-pub use self::updates::*;
-pub use self::user::*;
-pub use self::user_profile_photos::*;
+pub use {
+    callback_game::*, chat_action::*, chat_id::*, chat_photo::*, chat_types::*,
+    input_file::*, keyboards::*, parse_mode::*, photo_size::*, updates::*,
+    user::*, user_profile_photos::*, webhook_info::*,
+};
