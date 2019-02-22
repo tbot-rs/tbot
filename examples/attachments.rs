@@ -5,56 +5,36 @@ use tbot::{
 };
 
 const CHAT: i64 = 0;
+const PHOTO: &[u8] = include_bytes!("./assets/photo.jpg");
+const GIF: &[u8] = include_bytes!("./assets/gif.mp4");
+const TUTORIAL: &[u8] = include_bytes!("./tutorial.rs");
 
 fn main() {
     let bot = Bot::from_env("BOT_TOKEN");
 
-    let photo = bot
-        .send_photo(CHAT, Photo::bytes(include_bytes!("./assets/photo.jpg")))
-        .into_future()
-        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
-
-    let animation = bot
-        .send_animation(
-            CHAT,
-            Animation::bytes(include_bytes!("./assets/gif.mp4")),
-        )
-        .into_future()
-        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
-
+    let photo = bot.send_photo(CHAT, Photo::bytes(PHOTO)).into_future();
+    let animation =
+        bot.send_animation(CHAT, Animation::bytes(GIF)).into_future();
     let document = bot
-        .send_document(
-            CHAT,
-            Document::bytes("tutorial.rs", include_bytes!("./tutorial.rs")),
-        )
-        .into_future()
-        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+        .send_document(CHAT, Document::bytes("tutorial.rs", TUTORIAL))
+        .into_future();
 
-    let video = bot
-        .send_video(
-            CHAT,
-            // Note: because the video for this example is silent, Telegram
-            // will send it as a gif. You can try sending a video wth sound and
-            // it will be processed as a video.
-            //
-            // Also Telegram seems not to create the thumb and figure out the
-            // duration on its own, so the video might look somewhat corrupted
-            // at first.
-            Video::bytes(include_bytes!("./assets/gif.mp4")),
-        )
-        .into_future()
-        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
-
+    // Because the video for this example is silent, Telegram will send it as a
+    // gif. You can try sending a video with sound and it will be sent as a
+    // video. Also, Telegram seems not to create the thumb and figure out the
+    // duration on its own, so the video might look somewhat corrupted at first.
+    let video = bot.send_video(CHAT, Video::bytes(GIF)).into_future();
     let album = bot
         .send_media_group(
             CHAT,
-            vec![
-                Photo::bytes(include_bytes!("./assets/photo.jpg")).into(),
-                Video::bytes(include_bytes!("./assets/gif.mp4")).into(),
-            ],
+            vec![Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()],
         )
-        .into_future()
-        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+        .into_future();
 
-    tbot::run(photo.join5(animation, document, video, album));
+    let joined =
+        photo.join5(animation, document, video, album).map_err(|error| {
+            dbg!(error);
+        });
+
+    tbot::run(joined);
 }

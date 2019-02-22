@@ -4,14 +4,14 @@ use tbot::{
     Bot,
 };
 
+const CHAT: i64 = 0;
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 
 fn main() {
     let bot = Bot::from_env("BOT_TOKEN");
 
-    let request = bot
-        // put your ID here
-        .send_message(0, "This is a keyboard done with tbot!")
+    let message = bot
+        .send_message(CHAT, "This is a keyboard done with tbot!")
         .reply_markup(InlineKeyboard::new(vec![
             vec![
                 InlineButton::new(
@@ -29,7 +29,9 @@ fn main() {
             )],
         ]))
         .into_future()
-        .map_err(|error| eprintln!("Whops, an error happened: {:#?}", error));
+        .map_err(|error| {
+            dbg!(error);
+        });
 
-    tbot::run(request);
+    tbot::run(message);
 }

@@ -13,7 +13,9 @@ fn main() {
     let message = bot
         .send_message(CHAT, "Hi from behind a proxy!")
         .into_future()
-        .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+        .map_err(|error| {
+            dbg!(error);
+        });
 
     tbot::run(message);
 }
