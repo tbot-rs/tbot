@@ -57,7 +57,7 @@ mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
 
-pub use self::{
+pub use {
     edit_inline_location::*, edit_message_location::*, forward_message::*,
     get_me::*, get_user_profile_photos::*, get_webhook_info::*,
     send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
@@ -66,13 +66,13 @@ pub use self::{
     send_voice::*, stop_inline_location::*, stop_message_location::*,
 };
 
-pub(crate) use self::{delete_webhook::*, get_updates::*, set_webhook::*};
+pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
 
 mod methods_trait;
-pub use self::methods_trait::*;
+pub use methods_trait::*;
 
 mod call_method;
-use self::call_method::*;
+use call_method::*;
 
 /// An error happened during request. Different errors may happen, so this is
 /// an enum representing error that may happen during request.
