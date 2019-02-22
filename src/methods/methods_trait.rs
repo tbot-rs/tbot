@@ -2,7 +2,7 @@ use super::*;
 
 /// Provides API methods that infer the bot's token.
 pub trait Methods {
-    /// Gets the token.
+    #[doc(hidden)]
     fn token(&self) -> &str;
 
     #[cfg(feature = "proxy")]
