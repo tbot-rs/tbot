@@ -54,41 +54,40 @@ impl<'a> Polling<'a> {
 
     /// Starts the event loop.
     pub fn start(self) -> ! {
-        let error = Arc::new(Mutex::new(Ok(())));
-        let handler = error.clone();
+        self.delete_webhook();
+        self.start_event_loop();
+    }
 
-        let bot = Arc::new(self.bot);
-
+    fn delete_webhook(&self) {
         let delete_webhook = DeleteWebhook::new(
-            &bot.token,
+            &self.bot.token,
             #[cfg(feature = "proxy")]
-            bot.proxy.clone(),
+            self.bot.proxy.clone(),
         )
-        .into_future()
-        .map_err(move |error| *handler.lock().unwrap() = Err(error));
+        .into_future();
 
-        crate::run(delete_webhook);
-
-        if let Err(error) = &*error.lock().unwrap() {
+        if let Err(error) = delete_webhook.wait() {
             panic!(
-                "\n[tbot] error while deleting previous webhook:\n\n{:#?}\n",
+                "\n[tbot] error while deleting previous webhook: {:#?}\n",
                 error,
             );
         }
+    }
 
+    fn start_event_loop(self) -> ! {
+        let bot = Arc::new(self.bot);
         let interval = Duration::from_millis(self.poll_interval);
         let last_offset = Arc::new(Mutex::new(None));
         let mut last_send_timestamp;
 
         loop {
-            // Couldn't find a better way to use bot in both map and map_err
             let on_ok = bot.clone();
-            let on_err = bot.clone();
+            let on_error = bot.clone();
             let new_offset = last_offset.clone();
 
             last_send_timestamp = Instant::now();
 
-            let request = GetUpdates::new(
+            let updates = GetUpdates::new(
                 &bot.token,
                 *last_offset.lock().unwrap(),
                 self.limit,
@@ -96,10 +95,10 @@ impl<'a> Polling<'a> {
                 self.allowed_updates,
                 #[cfg(feature = "proxy")]
                 bot.proxy.clone(),
-            );
+            )
+            .into_future();
 
-            let request = request
-                .into_future()
+            let handler = updates
                 .map(move |updates| {
                     if let Some(update) = updates.last() {
                         *new_offset.lock().unwrap() =
@@ -110,9 +109,9 @@ impl<'a> Polling<'a> {
                         on_ok.handle_update(update);
                     }
                 })
-                .map_err(move |error| on_err.handle_polling_error(&error));
+                .map_err(move |error| on_error.handle_polling_error(&error));
 
-            tokio::run(request);
+            crate::run(handler);
 
             let next_timestamp = last_send_timestamp + interval;
             let now = Instant::now();
