@@ -83,7 +83,7 @@ impl Bot {
     /// with `tbot`.
     ///
     /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
-    pub fn webhook<'a>(self, url: &'a str, port: u16) -> Webhook<'a> {
+    pub fn webhook(self, url: &str, port: u16) -> Webhook<'_> {
         Webhook::new(self, url, port)
     }
 
