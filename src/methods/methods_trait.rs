@@ -25,180 +25,6 @@ pub trait Methods<'a> {
         method
     }
 
-    /// Constructs a new [`GetMe`] inferring `token`.
-    ///
-    /// [`GetMe`]: ./struct.GetMe.html
-    fn get_me(&'a self) -> methods::GetMe<'a> {
-        self.prepare_method(methods::GetMe::new(self.token()))
-    }
-
-    /// Constructs a new [`SendMessage`] inferring `token`.
-    ///
-    /// [`SendMessage`]: ./struct.SendMessage.html
-    fn send_message(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        text: &'a str,
-    ) -> methods::SendMessage<'a> {
-        self.prepare_method(methods::SendMessage::new(
-            self.token(),
-            chat_id,
-            text,
-        ))
-    }
-
-    /// Constructs a new [`SendPhoto`] inferring `token`.
-    ///
-    /// [`SendPhoto`]: ./struct.SendPhoto.html
-    fn send_photo(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        photo: types::Photo<'a>,
-    ) -> methods::SendPhoto<'a> {
-        self.prepare_method(methods::SendPhoto::new(
-            self.token(),
-            chat_id,
-            photo,
-        ))
-    }
-
-    /// Constructs a new [`SendAnimation`] inferring `token`.
-    ///
-    /// [`SendAnimation`]: ./struct.SendAnimation.html
-    fn send_animation(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        animation: types::Animation<'a>,
-    ) -> methods::SendAnimation<'a> {
-        self.prepare_method(methods::SendAnimation::new(
-            self.token(),
-            chat_id,
-            animation,
-        ))
-    }
-
-    /// Constructs a new [`SendDocument`] inferring `token`.
-    ///
-    /// [`SendDocument`]: ./struct.SendDocument.html
-    fn send_document(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        document: types::Document<'a>,
-    ) -> methods::SendDocument<'a> {
-        self.prepare_method(methods::SendDocument::new(
-            self.token(),
-            chat_id,
-            document,
-        ))
-    }
-
-    /// Constructs a new [`SendVideo`] inferring `token`.
-    ///
-    /// [`SendVideo`]: ./struct.SendVideo.html
-    fn send_video(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        video: types::Video<'a>,
-    ) -> methods::SendVideo<'a> {
-        self.prepare_method(methods::SendVideo::new(
-            self.token(),
-            chat_id,
-            video,
-        ))
-    }
-
-    /// Constructs a new [`SendVoice`] inferring `token`.
-    ///
-    /// [`SendVoice`]: ./struct.SendVoice.html
-    fn send_voice(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        voice: types::Voice<'a>,
-    ) -> methods::SendVoice<'a> {
-        self.prepare_method(methods::SendVoice::new(
-            self.token(),
-            chat_id,
-            voice,
-        ))
-    }
-
-    /// Constructs a new [`SendAudio`] inferring `token`.
-    ///
-    /// [`SendAudio`]: ./struct.SendAudio.html
-    fn send_audio(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        audio: types::Audio<'a>,
-    ) -> methods::SendAudio<'a> {
-        self.prepare_method(methods::SendAudio::new(
-            self.token(),
-            chat_id,
-            audio,
-        ))
-    }
-
-    /// Constructs a new [`SendVideoNote`] inferring `token`.
-    ///
-    /// [`SendVideoNote`]: ./struct.SendVideoNote.html
-    fn send_video_note(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        video_note: types::VideoNote<'a>,
-    ) -> methods::SendVideoNote<'a> {
-        self.prepare_method(methods::SendVideoNote::new(
-            self.token(),
-            chat_id,
-            video_note,
-        ))
-    }
-
-    /// Constructs a new [`SendMediaGroup`] inferring `token`.
-    ///
-    /// [`SendMediaGroup`]: ./struct.SendMediaGroup.html
-    fn send_media_group(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        media: Vec<types::GroupMedia<'a>>,
-    ) -> methods::SendMediaGroup<'a> {
-        self.prepare_method(methods::SendMediaGroup::new(
-            self.token(),
-            chat_id,
-            media,
-        ))
-    }
-
-    /// Constructs a new [`ForwardMessage`] inferring `token`.
-    ///
-    /// [`ForwardMessage`]: ./struct.ForwardMessage.html
-    fn forward_message(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        from_chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
-    ) -> methods::ForwardMessage<'a> {
-        self.prepare_method(methods::ForwardMessage::new(
-            self.token(),
-            chat_id,
-            from_chat_id,
-            message_id,
-        ))
-    }
-
-    /// Constructs a new [`SendLocation`] inferring `token`.
-    ///
-    /// [`SendLocation`]: ./struct.SendLocation.html
-    fn send_location(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        position: (f64, f64),
-    ) -> methods::SendLocation<'a> {
-        self.prepare_method(methods::SendLocation::new(
-            self.token(),
-            chat_id,
-            position,
-        ))
-    }
-
     /// Constructs a new [`EditInlineLocation`] inferring `token`.
     ///
     /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
@@ -231,6 +57,251 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`ForwardMessage`] inferring `token`.
+    ///
+    /// [`ForwardMessage`]: ./struct.ForwardMessage.html
+    fn forward_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        from_chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+    ) -> methods::ForwardMessage<'a> {
+        self.prepare_method(methods::ForwardMessage::new(
+            self.token(),
+            chat_id,
+            from_chat_id,
+            message_id,
+        ))
+    }
+
+    /// Constructs a new [`GetMe`] inferring `token`.
+    ///
+    /// [`GetMe`]: ./struct.GetMe.html
+    fn get_me(&'a self) -> methods::GetMe<'a> {
+        self.prepare_method(methods::GetMe::new(self.token()))
+    }
+
+    /// Constructs a new [`GetUserProfilePhotos`] inferring `token`.
+    ///
+    /// [`GetUserProfilePhotos`]: ./struct.GetUserProfilePhotos.html
+    fn get_user_profile_photos(
+        &'a self,
+        user_id: i64,
+    ) -> methods::GetUserProfilePhotos<'a> {
+        self.prepare_method(methods::GetUserProfilePhotos::new(
+            self.token(),
+            user_id,
+        ))
+    }
+
+    /// Constructs a new [`GetWebhookInfo`] inferring `token`.
+    ///
+    /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
+    fn get_webhook_info(&'a self) -> methods::GetWebhookInfo<'a> {
+        self.prepare_method(methods::GetWebhookInfo::new(self.token()))
+    }
+
+    /// Constructs a new [`SendAnimation`] inferring `token`.
+    ///
+    /// [`SendAnimation`]: ./struct.SendAnimation.html
+    fn send_animation(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        animation: types::Animation<'a>,
+    ) -> methods::SendAnimation<'a> {
+        self.prepare_method(methods::SendAnimation::new(
+            self.token(),
+            chat_id,
+            animation,
+        ))
+    }
+
+    /// Constructs a new [`SendAudio`] inferring `token`.
+    ///
+    /// [`SendAudio`]: ./struct.SendAudio.html
+    fn send_audio(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        audio: types::Audio<'a>,
+    ) -> methods::SendAudio<'a> {
+        self.prepare_method(methods::SendAudio::new(
+            self.token(),
+            chat_id,
+            audio,
+        ))
+    }
+
+    /// Constructs a new [`SendChatAction`] inferring `token`.
+    ///
+    /// [`SendChatAction`]: ./struct.SendChatAction.html
+    fn send_chat_action(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        action: types::ChatAction,
+    ) -> methods::SendChatAction<'a> {
+        self.prepare_method(methods::SendChatAction::new(
+            self.token(),
+            chat_id,
+            action,
+        ))
+    }
+
+    /// Constructs a new [`SendContact`] inferring `token`.
+    ///
+    /// [`SendContact`]: ./struct.SendContact.html
+    fn send_contact(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        phone_number: &'a str,
+        first_name: &'a str,
+    ) -> methods::SendContact<'a> {
+        self.prepare_method(methods::SendContact::new(
+            self.token(),
+            chat_id,
+            phone_number,
+            first_name,
+        ))
+    }
+
+    /// Constructs a new [`SendDocument`] inferring `token`.
+    ///
+    /// [`SendDocument`]: ./struct.SendDocument.html
+    fn send_document(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        document: types::Document<'a>,
+    ) -> methods::SendDocument<'a> {
+        self.prepare_method(methods::SendDocument::new(
+            self.token(),
+            chat_id,
+            document,
+        ))
+    }
+
+    /// Constructs a new [`SendLocation`] inferring `token`.
+    ///
+    /// [`SendLocation`]: ./struct.SendLocation.html
+    fn send_location(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        position: (f64, f64),
+    ) -> methods::SendLocation<'a> {
+        self.prepare_method(methods::SendLocation::new(
+            self.token(),
+            chat_id,
+            position,
+        ))
+    }
+
+    /// Constructs a new [`SendMediaGroup`] inferring `token`.
+    ///
+    /// [`SendMediaGroup`]: ./struct.SendMediaGroup.html
+    fn send_media_group(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        media: Vec<types::GroupMedia<'a>>,
+    ) -> methods::SendMediaGroup<'a> {
+        self.prepare_method(methods::SendMediaGroup::new(
+            self.token(),
+            chat_id,
+            media,
+        ))
+    }
+
+    /// Constructs a new [`SendMessage`] inferring `token`.
+    ///
+    /// [`SendMessage`]: ./struct.SendMessage.html
+    fn send_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        text: &'a str,
+    ) -> methods::SendMessage<'a> {
+        self.prepare_method(methods::SendMessage::new(
+            self.token(),
+            chat_id,
+            text,
+        ))
+    }
+
+    /// Constructs a new [`SendPhoto`] inferring `token`.
+    ///
+    /// [`SendPhoto`]: ./struct.SendPhoto.html
+    fn send_photo(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        photo: types::Photo<'a>,
+    ) -> methods::SendPhoto<'a> {
+        self.prepare_method(methods::SendPhoto::new(
+            self.token(),
+            chat_id,
+            photo,
+        ))
+    }
+
+    /// Constructs a new [`SendVenue`] inferring `token`.
+    ///
+    /// [`SendVenue`]: ./struct.SendVenue.html
+    fn send_venue(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        position: (f64, f64),
+        title: &'a str,
+        address: &'a str,
+    ) -> methods::SendVenue<'a> {
+        self.prepare_method(methods::SendVenue::new(
+            self.token(),
+            chat_id,
+            position,
+            title,
+            address,
+        ))
+    }
+
+    /// Constructs a new [`SendVideo`] inferring `token`.
+    ///
+    /// [`SendVideo`]: ./struct.SendVideo.html
+    fn send_video(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        video: types::Video<'a>,
+    ) -> methods::SendVideo<'a> {
+        self.prepare_method(methods::SendVideo::new(
+            self.token(),
+            chat_id,
+            video,
+        ))
+    }
+
+    /// Constructs a new [`SendVideoNote`] inferring `token`.
+    ///
+    /// [`SendVideoNote`]: ./struct.SendVideoNote.html
+    fn send_video_note(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        video_note: types::VideoNote<'a>,
+    ) -> methods::SendVideoNote<'a> {
+        self.prepare_method(methods::SendVideoNote::new(
+            self.token(),
+            chat_id,
+            video_note,
+        ))
+    }
+
+    /// Constructs a new [`SendVoice`] inferring `token`.
+    ///
+    /// [`SendVoice`]: ./struct.SendVoice.html
+    fn send_voice(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        voice: types::Voice<'a>,
+    ) -> methods::SendVoice<'a> {
+        self.prepare_method(methods::SendVoice::new(
+            self.token(),
+            chat_id,
+            voice,
+        ))
+    }
+
     /// Constructs a new [`StopInlineLocation`] inferring `token`.
     ///
     /// [`StopInlineLocation`]: ./struct.StopInlineLocation.html
@@ -257,76 +328,5 @@ pub trait Methods<'a> {
             chat_id,
             message_id,
         ))
-    }
-
-    /// Constructs a new [`SendVenue`] inferring `token`.
-    ///
-    /// [`SendVenue`]: ./struct.SendVenue.html
-    fn send_venue(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        position: (f64, f64),
-        title: &'a str,
-        address: &'a str,
-    ) -> methods::SendVenue<'a> {
-        self.prepare_method(methods::SendVenue::new(
-            self.token(),
-            chat_id,
-            position,
-            title,
-            address,
-        ))
-    }
-
-    /// Constructs a new [`SendContact`] inferring `token`.
-    ///
-    /// [`SendContact`]: ./struct.SendContact.html
-    fn send_contact(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        phone_number: &'a str,
-        first_name: &'a str,
-    ) -> methods::SendContact<'a> {
-        self.prepare_method(methods::SendContact::new(
-            self.token(),
-            chat_id,
-            phone_number,
-            first_name,
-        ))
-    }
-
-    /// Constructs a new [`SendChatAction`] inferring `token`.
-    ///
-    /// [`SendChatAction`]: ./struct.SendChatAction.html
-    fn send_chat_action(
-        &'a self,
-        chat_id: impl Into<types::ChatId<'a>>,
-        action: types::ChatAction,
-    ) -> methods::SendChatAction<'a> {
-        self.prepare_method(methods::SendChatAction::new(
-            self.token(),
-            chat_id,
-            action,
-        ))
-    }
-
-    /// Constructs a new [`GetUserProfilePhotos`] inferring `token`.
-    ///
-    /// [`GetUserProfilePhotos`]: ./struct.GetUserProfilePhotos.html
-    fn get_user_profile_photos(
-        &'a self,
-        user_id: i64,
-    ) -> methods::GetUserProfilePhotos<'a> {
-        self.prepare_method(methods::GetUserProfilePhotos::new(
-            self.token(),
-            user_id,
-        ))
-    }
-
-    /// Constructs a new [`GetWebhookInfo`] inferring `token`.
-    ///
-    /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
-    fn get_webhook_info(&'a self) -> methods::GetWebhookInfo<'a> {
-        self.prepare_method(methods::GetWebhookInfo::new(self.token()))
     }
 }
