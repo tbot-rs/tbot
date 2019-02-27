@@ -17,9 +17,9 @@ pub struct SendVideo<'a> {
 
 impl<'a> SendVideo<'a> {
     /// Constructs a new `SendVideo`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         video: types::Video<'a>,
     ) -> Self {
         Self {
@@ -122,8 +122,7 @@ impl<'a> SendVideo<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendVideo<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendVideo<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

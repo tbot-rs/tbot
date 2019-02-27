@@ -36,7 +36,7 @@ impl MockBot {
     }
 }
 
-impl Methods for MockBot {
+impl Methods<'_> for MockBot {
     fn token(&self) -> &str {
         &self.token
     }

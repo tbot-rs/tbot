@@ -1,7 +1,7 @@
 use super::*;
 
 /// Provides API methods that infer the bot's token.
-pub trait Methods {
+pub trait Methods<'a> {
     #[doc(hidden)]
     fn token(&self) -> &str;
 
@@ -28,15 +28,15 @@ pub trait Methods {
     /// Constructs a new [`GetMe`] inferring `token`.
     ///
     /// [`GetMe`]: ./struct.GetMe.html
-    fn get_me(&self) -> methods::GetMe {
+    fn get_me(&'a self) -> methods::GetMe<'a> {
         self.prepare_method(methods::GetMe::new(self.token()))
     }
 
     /// Constructs a new [`SendMessage`] inferring `token`.
     ///
     /// [`SendMessage`]: ./struct.SendMessage.html
-    fn send_message<'a, 'b: 'a>(
-        &'b self,
+    fn send_message(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         text: &'a str,
     ) -> methods::SendMessage<'a> {
@@ -50,8 +50,8 @@ pub trait Methods {
     /// Constructs a new [`SendPhoto`] inferring `token`.
     ///
     /// [`SendPhoto`]: ./struct.SendPhoto.html
-    fn send_photo<'a, 'b: 'a>(
-        &'b self,
+    fn send_photo(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: types::Photo<'a>,
     ) -> methods::SendPhoto<'a> {
@@ -65,8 +65,8 @@ pub trait Methods {
     /// Constructs a new [`SendAnimation`] inferring `token`.
     ///
     /// [`SendAnimation`]: ./struct.SendAnimation.html
-    fn send_animation<'a, 'b: 'a>(
-        &'b self,
+    fn send_animation(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         animation: types::Animation<'a>,
     ) -> methods::SendAnimation<'a> {
@@ -80,8 +80,8 @@ pub trait Methods {
     /// Constructs a new [`SendDocument`] inferring `token`.
     ///
     /// [`SendDocument`]: ./struct.SendDocument.html
-    fn send_document<'a, 'b: 'a>(
-        &'b self,
+    fn send_document(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         document: types::Document<'a>,
     ) -> methods::SendDocument<'a> {
@@ -95,8 +95,8 @@ pub trait Methods {
     /// Constructs a new [`SendVideo`] inferring `token`.
     ///
     /// [`SendVideo`]: ./struct.SendVideo.html
-    fn send_video<'a, 'b: 'a>(
-        &'b self,
+    fn send_video(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         video: types::Video<'a>,
     ) -> methods::SendVideo<'a> {
@@ -110,8 +110,8 @@ pub trait Methods {
     /// Constructs a new [`SendVoice`] inferring `token`.
     ///
     /// [`SendVoice`]: ./struct.SendVoice.html
-    fn send_voice<'a, 'b: 'a>(
-        &'b self,
+    fn send_voice(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         voice: types::Voice<'a>,
     ) -> methods::SendVoice<'a> {
@@ -125,8 +125,8 @@ pub trait Methods {
     /// Constructs a new [`SendAudio`] inferring `token`.
     ///
     /// [`SendAudio`]: ./struct.SendAudio.html
-    fn send_audio<'a, 'b: 'a>(
-        &'b self,
+    fn send_audio(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         audio: types::Audio<'a>,
     ) -> methods::SendAudio<'a> {
@@ -140,8 +140,8 @@ pub trait Methods {
     /// Constructs a new [`SendVideoNote`] inferring `token`.
     ///
     /// [`SendVideoNote`]: ./struct.SendVideoNote.html
-    fn send_video_note<'a, 'b: 'a>(
-        &'b self,
+    fn send_video_note(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         video_note: types::VideoNote<'a>,
     ) -> methods::SendVideoNote<'a> {
@@ -155,8 +155,8 @@ pub trait Methods {
     /// Constructs a new [`SendMediaGroup`] inferring `token`.
     ///
     /// [`SendMediaGroup`]: ./struct.SendMediaGroup.html
-    fn send_media_group<'a, 'b: 'a>(
-        &'b self,
+    fn send_media_group(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         media: Vec<types::GroupMedia<'a>>,
     ) -> methods::SendMediaGroup<'a> {
@@ -170,8 +170,8 @@ pub trait Methods {
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html
-    fn forward_message<'a, 'b: 'a>(
-        &'b self,
+    fn forward_message(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         from_chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
@@ -187,8 +187,8 @@ pub trait Methods {
     /// Constructs a new [`SendLocation`] inferring `token`.
     ///
     /// [`SendLocation`]: ./struct.SendLocation.html
-    fn send_location<'a, 'b: 'a>(
-        &'b self,
+    fn send_location(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         position: (f64, f64),
     ) -> methods::SendLocation<'a> {
@@ -202,8 +202,8 @@ pub trait Methods {
     /// Constructs a new [`EditInlineLocation`] inferring `token`.
     ///
     /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
-    fn edit_inline_location<'a, 'b: 'a>(
-        &'b self,
+    fn edit_inline_location(
+        &'a self,
         inline_message_id: u64,
         position: (f64, f64),
     ) -> methods::EditInlineLocation<'a> {
@@ -217,8 +217,8 @@ pub trait Methods {
     /// Constructs a new [`EditMessageLocation`] inferring `token`.
     ///
     /// [`EditMessageLocation`]: ./struct.EditMessageLocation.html
-    fn edit_message_location<'a, 'b: 'a>(
-        &'b self,
+    fn edit_message_location(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
         position: (f64, f64),
@@ -234,8 +234,8 @@ pub trait Methods {
     /// Constructs a new [`StopInlineLocation`] inferring `token`.
     ///
     /// [`StopInlineLocation`]: ./struct.StopInlineLocation.html
-    fn stop_inline_location<'a, 'b: 'a>(
-        &'b self,
+    fn stop_inline_location(
+        &'a self,
         inline_message_id: u64,
     ) -> methods::StopInlineLocation<'a> {
         self.prepare_method(methods::StopInlineLocation::new(
@@ -247,8 +247,8 @@ pub trait Methods {
     /// Constructs a new [`StopMessageLocation`] inferring `token`.
     ///
     /// [`StopMessageLocation`]: ./struct.StopMessageLocation.html
-    fn stop_message_location<'a, 'b: 'a>(
-        &'b self,
+    fn stop_message_location(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
     ) -> methods::StopMessageLocation<'a> {
@@ -262,8 +262,8 @@ pub trait Methods {
     /// Constructs a new [`SendVenue`] inferring `token`.
     ///
     /// [`SendVenue`]: ./struct.SendVenue.html
-    fn send_venue<'a, 'b: 'a>(
-        &'b self,
+    fn send_venue(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         position: (f64, f64),
         title: &'a str,
@@ -281,8 +281,8 @@ pub trait Methods {
     /// Constructs a new [`SendContact`] inferring `token`.
     ///
     /// [`SendContact`]: ./struct.SendContact.html
-    fn send_contact<'a, 'b: 'a>(
-        &'b self,
+    fn send_contact(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         phone_number: &'a str,
         first_name: &'a str,
@@ -298,8 +298,8 @@ pub trait Methods {
     /// Constructs a new [`SendChatAction`] inferring `token`.
     ///
     /// [`SendChatAction`]: ./struct.SendChatAction.html
-    fn send_chat_action<'a, 'b: 'a>(
-        &'b self,
+    fn send_chat_action(
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         action: types::ChatAction,
     ) -> methods::SendChatAction<'a> {
@@ -313,8 +313,8 @@ pub trait Methods {
     /// Constructs a new [`GetUserProfilePhotos`] inferring `token`.
     ///
     /// [`GetUserProfilePhotos`]: ./struct.GetUserProfilePhotos.html
-    fn get_user_profile_photos<'a, 'b: 'a>(
-        &'b self,
+    fn get_user_profile_photos(
+        &'a self,
         user_id: i64,
     ) -> methods::GetUserProfilePhotos<'a> {
         self.prepare_method(methods::GetUserProfilePhotos::new(
@@ -326,7 +326,7 @@ pub trait Methods {
     /// Constructs a new [`GetWebhookInfo`] inferring `token`.
     ///
     /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
-    fn get_webhook_info(&self) -> methods::GetWebhookInfo {
+    fn get_webhook_info(&'a self) -> methods::GetWebhookInfo<'a> {
         self.prepare_method(methods::GetWebhookInfo::new(self.token()))
     }
 }

@@ -142,7 +142,7 @@ impl Bot {
     }
 }
 
-impl Methods for Bot {
+impl Methods<'_> for Bot {
     fn token(&self) -> &str {
         &self.token
     }

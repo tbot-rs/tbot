@@ -17,9 +17,9 @@ pub struct SendChatAction<'a> {
 
 impl<'a> SendChatAction<'a> {
     /// Constructs a new `SendChatAction`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         action: types::ChatAction,
     ) -> Self {
         Self {
@@ -48,8 +48,7 @@ impl<'a> SendChatAction<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendChatAction<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendChatAction<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

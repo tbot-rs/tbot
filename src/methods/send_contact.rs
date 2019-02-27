@@ -28,9 +28,9 @@ pub struct SendContact<'a> {
 
 impl<'a> SendContact<'a> {
     /// Constructs a new `SendContact`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         phone_number: &'a str,
         first_name: &'a str,
     ) -> Self {
@@ -50,13 +50,13 @@ impl<'a> SendContact<'a> {
     }
 
     /// Configures `last_name`.
-    pub fn last_name<'b: 'a>(mut self, last_name: &'b str) -> Self {
+    pub fn last_name(mut self, last_name: &'a str) -> Self {
         self.last_name = Some(last_name);
         self
     }
 
     /// Configures `vcard`.
-    pub fn vcard<'b: 'a>(mut self, vcard: &'b str) -> Self {
+    pub fn vcard(mut self, vcard: &'a str) -> Self {
         self.vcard = Some(vcard);
         self
     }
@@ -99,8 +99,7 @@ impl<'a> SendContact<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendContact<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendContact<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

@@ -141,8 +141,7 @@ impl<'a> SendMediaGroup<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendMediaGroup<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendMediaGroup<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

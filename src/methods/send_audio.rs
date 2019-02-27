@@ -17,9 +17,9 @@ pub struct SendAudio<'a> {
 
 impl<'a> SendAudio<'a> {
     /// Constructs a new `SendAudio`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         audio: types::Audio<'a>,
     ) -> Self {
         Self {
@@ -117,8 +117,7 @@ impl<'a> SendAudio<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendAudio<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendAudio<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

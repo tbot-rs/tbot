@@ -24,7 +24,7 @@ pub struct GetUserProfilePhotos<'a> {
 
 impl<'a> GetUserProfilePhotos<'a> {
     /// Constructs a new `GetUserProfilePhotos`.
-    pub fn new<'b: 'a>(token: &'b str, user_id: i64) -> Self {
+    pub fn new(token: &'a str, user_id: i64) -> Self {
         Self {
             token,
             user_id,
@@ -64,8 +64,7 @@ impl<'a> GetUserProfilePhotos<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for GetUserProfilePhotos<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for GetUserProfilePhotos<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

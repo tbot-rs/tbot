@@ -30,12 +30,12 @@ pub struct SendVenue<'a> {
 
 impl<'a> SendVenue<'a> {
     /// Constructs a new `SendVenue`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         (latitude, longitude): (f64, f64),
-        title: &'b str,
-        address: &'b str,
+        title: &'a str,
+        address: &'a str,
     ) -> Self {
         Self {
             token,
@@ -104,8 +104,7 @@ impl<'a> SendVenue<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendVenue<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendVenue<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

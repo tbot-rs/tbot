@@ -19,7 +19,7 @@ pub struct StopInlineLocation<'a> {
 
 impl<'a> StopInlineLocation<'a> {
     /// Constructs a new `StopInlineLocation`.
-    pub fn new<'b: 'a>(token: &'b str, inline_message_id: u64) -> Self {
+    pub fn new(token: &'a str, inline_message_id: u64) -> Self {
         Self {
             token,
             inline_message_id,
@@ -52,8 +52,7 @@ impl<'a> StopInlineLocation<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for StopInlineLocation<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for StopInlineLocation<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

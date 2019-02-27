@@ -21,8 +21,8 @@ pub struct EditInlineLocation<'a> {
 
 impl<'a> EditInlineLocation<'a> {
     /// Constructs a new `EditInlineLocation`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
+    pub fn new(
+        token: &'a str,
         inline_message_id: u64,
         (latitude, longitude): (f64, f64),
     ) -> Self {
@@ -60,8 +60,7 @@ impl<'a> EditInlineLocation<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for EditInlineLocation<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for EditInlineLocation<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

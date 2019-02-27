@@ -20,9 +20,9 @@ pub struct StopMessageLocation<'a> {
 
 impl<'a> StopMessageLocation<'a> {
     /// Constructs a new `StopMessageLocation`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
     ) -> Self {
         Self {
@@ -58,8 +58,7 @@ impl<'a> StopMessageLocation<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for StopMessageLocation<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for StopMessageLocation<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

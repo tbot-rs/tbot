@@ -17,10 +17,10 @@ pub struct SendPhoto<'a> {
 
 impl<'a> SendPhoto<'a> {
     /// Constructs a new `SendPhoto`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
-        photo: types::Photo<'b>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
+        photo: types::Photo<'a>,
     ) -> Self {
         Self {
             token,
@@ -105,8 +105,7 @@ impl<'a> SendPhoto<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendPhoto<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendPhoto<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

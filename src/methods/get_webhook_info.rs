@@ -37,7 +37,7 @@ impl<'a> GetWebhookInfo<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for GetWebhookInfo<'a> {
+impl ProxyMethod for GetWebhookInfo<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self
