@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`getMe`] method.
+/// Represents the [`getMe`][docs] method.
 ///
-/// [`getMe`]: https://core.telegram.org/bots/api#getme
+/// [docs]: https://core.telegram.org/bots/api#getme
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMe<'a> {
     token: &'a str,

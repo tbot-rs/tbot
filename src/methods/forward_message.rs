@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`forwardMessage`] method.
+/// Represents the [`forwardMessage`][docs] method.
 ///
-/// [`forwardMessage`]: https://core.telegram.org/bots/api#forwardmessage
+/// [docs]: https://core.telegram.org/bots/api#forwardmessage
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct ForwardMessage<'a> {

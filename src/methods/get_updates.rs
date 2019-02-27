@@ -1,6 +1,5 @@
 use super::*;
 
-/// This method isn't meant to be used by users directly.
 #[derive(Serialize)]
 #[must_use]
 pub(crate) struct GetUpdates<'a> {

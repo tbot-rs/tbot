@@ -4,9 +4,9 @@ use super::*;
 #[allow(dead_code)]
 type Photos = Vec<Vec<types::UserProfilePhotos>>;
 
-/// Representation of the [`getUserProfilePhotos`] method.
+/// Represents the [`getUserProfilePhotos`][docs] method.
 ///
-/// [`getUserProfilePhotos`]: https://core.telegram.org/bots/api#getuserprofilephotos
+/// [docs]: https://core.telegram.org/bots/api#getuserprofilephotos
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetUserProfilePhotos<'a> {

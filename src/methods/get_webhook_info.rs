@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`getWebhookInfo`] method.
+/// Represents the [`getWebhookInfo`][docs] method.
 ///
-/// [`getWebhookInfo`]: https://core.telegram.org/bots/api#getwebhookinfo
+/// [docs]: https://core.telegram.org/bots/api#getwebhookinfo
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetWebhookInfo<'a> {
     token: &'a str,

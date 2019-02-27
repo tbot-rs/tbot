@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`sendAnimation`] method.
+/// Represents the [`sendAnimation`][docs] method.
 ///
-/// [`sendAnimation`]: https://core.telegram.org/bots/api#sendanimation
+/// [docs]: https://core.telegram.org/bots/api#sendanimation
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a> {
     token: &'a str,

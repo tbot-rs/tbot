@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`sendVideoNote`] method.
+/// Represents the [`sendVideoNote`][docs] method.
 ///
-/// [`sendVideoNote`]: https://core.telegram.org/bots/api#sendvideonote
+/// [docs]: https://core.telegram.org/bots/api#sendvideonote
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a> {
     token: &'a str,

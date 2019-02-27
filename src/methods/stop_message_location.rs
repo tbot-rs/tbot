@@ -1,9 +1,9 @@
 use super::*;
 
-/// Representation of the [`stopMessageLiveLocation`] method for the case if
+/// Represents the [`stopMessageLiveLocation`][docs] method for when
 /// the message was sent by the bot.
 ///
-/// [`stopMessageLiveLocation`]: https://core.telegram.org/bots/api#stopmessagelivelocation
+/// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct StopMessageLocation<'a> {

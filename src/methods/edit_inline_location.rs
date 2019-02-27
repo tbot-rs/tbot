@@ -1,9 +1,9 @@
 use super::*;
 
-/// Representation of the [`editMessageLiveLocation`] method for the case if
+/// Represents the [`editMessageLiveLocation`][docs] method for when
 /// the message was sent via the inline mode.
 ///
-/// [`editMessageLiveLocation`]: https://core.telegram.org/bots/api#editmessagelivelocation
+/// [docs]: https://core.telegram.org/bots/api#editmessagelivelocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineLocation<'a> {

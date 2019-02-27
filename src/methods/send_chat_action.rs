@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`sendChatAction`] method.
+/// Represents the [`sendChatAction`][docs] method.
 ///
-/// [`sendChatAction`]: https://core.telegram.org/bots/api#sendchataction
+/// [docs]: https://core.telegram.org/bots/api#sendchataction
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendChatAction<'a> {
