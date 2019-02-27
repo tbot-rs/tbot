@@ -25,9 +25,9 @@ pub struct EditMessageText<'a> {
 
 impl<'a> EditMessageText<'a> {
     /// Constructs a new `EditMessageText`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
         text: &'a str,
     ) -> Self {
