@@ -40,6 +40,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`EditInlineText`] inferring `token`.
+    ///
+    /// [`EditInlineText`]: ./struct.EditInlineText.html
+    fn edit_inline_text(
+        &'a self,
+        inline_message_id: u64,
+        text: &'a str,
+    ) -> methods::EditInlineText<'a> {
+        self.prepare_method(methods::EditInlineText::new(
+            self.token(),
+            inline_message_id,
+            text,
+        ))
+    }
+
     /// Constructs a new [`EditMessageLocation`] inferring `token`.
     ///
     /// [`EditMessageLocation`]: ./struct.EditMessageLocation.html
@@ -61,7 +76,7 @@ pub trait Methods<'a> {
     ///
     /// [`EditMessageText`]: ./struct.EditMessageText.html
     fn edit_message_text(
-        &'a self,
+       &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
         text: &'a str,
@@ -70,21 +85,6 @@ pub trait Methods<'a> {
             self.token(),
             chat_id,
             message_id,
-            text,
-        ))
-    }
-
-    /// Constructs a new [`EditInlineText`] inferring `token`.
-    ///
-    /// [`EditInlineText`]: ./struct.EditInlineText.html
-    fn edit_inline_text(
-        &'a self,
-        inline_message_id: u64,
-        text: &'a str,
-    ) -> methods::EditInlineText<'a> {
-        self.prepare_method(methods::EditInlineText::new(
-            self.token(),
-            inline_message_id,
             text,
         ))
     }
