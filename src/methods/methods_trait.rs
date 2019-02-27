@@ -25,6 +25,21 @@ pub trait Methods<'a> {
         method
     }
 
+    /// Constructs a new [`EditInlineCaption`] inferring `token`.
+    ///
+    /// [`EditInlineCaption`]: ./struct.EditInlineCaption.html
+    fn edit_inline_caption(
+        &'a self,
+        inline_message_id: u64,
+        caption: &'a str,
+    ) -> methods::EditInlineCaption<'a> {
+        self.prepare_method(methods::EditInlineCaption::new(
+            self.token(),
+            inline_message_id,
+            caption,
+        ))
+    }
+
     /// Constructs a new [`EditInlineLocation`] inferring `token`.
     ///
     /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
@@ -52,6 +67,23 @@ pub trait Methods<'a> {
             self.token(),
             inline_message_id,
             text,
+        ))
+    }
+
+    /// Constructs a new [`EditMessageCaption`] inferring `token`.
+    ///
+    /// [`EditMessageCaption`]: ./struct.EditMessageCaption.html
+    fn edit_message_caption(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        caption: &'a str,
+    ) -> methods::EditMessageCaption<'a> {
+        self.prepare_method(methods::EditMessageCaption::new(
+            self.token(),
+            chat_id,
+            message_id,
+            caption,
         ))
     }
 
