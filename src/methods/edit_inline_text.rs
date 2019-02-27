@@ -24,11 +24,7 @@ pub struct EditInlineText<'a> {
 
 impl<'a> EditInlineText<'a> {
     /// Constructs a new `EditMessageText`.
-    pub fn new(
-        token: &'a str,
-        inline_message_id: u64,
-        text: &'a str,
-    ) -> Self {
+    pub fn new(token: &'a str, inline_message_id: u64, text: &'a str) -> Self {
         Self {
             token,
             inline_message_id,

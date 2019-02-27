@@ -76,7 +76,7 @@ pub trait Methods<'a> {
     ///
     /// [`EditMessageText`]: ./struct.EditMessageText.html
     fn edit_message_text(
-       &'a self,
+        &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
         text: &'a str,
