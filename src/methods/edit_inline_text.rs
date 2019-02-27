@@ -51,7 +51,7 @@ impl<'a> EditInlineText<'a> {
 
     /// Configures `reply_markup`.
     pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
-        self.reply_markup = Some(markup.into());
+        self.reply_markup = Some(markup);
         self
     }
 
