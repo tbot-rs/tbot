@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`getMe`] method.
+/// Represents the [`getMe`][docs] method.
 ///
-/// [`getMe`]: https://core.telegram.org/bots/api#getme
+/// [docs]: https://core.telegram.org/bots/api#getme
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMe<'a> {
     token: &'a str,
@@ -12,7 +12,7 @@ pub struct GetMe<'a> {
 
 impl<'a> GetMe<'a> {
     /// Constructs a new `GetMe`.
-    pub fn new<'b: 'a>(token: &'b str) -> Self {
+    pub fn new(token: &'a str) -> Self {
         Self {
             token,
             #[cfg(feature = "proxy")]
@@ -37,8 +37,7 @@ impl<'a> GetMe<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for GetMe<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for GetMe<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

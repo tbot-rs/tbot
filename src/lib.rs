@@ -10,7 +10,9 @@
 //!     let reply = context
 //!         .send_message(&context.message)
 //!         .into_future()
-//!         .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+//!         .map_err(|error| {
+//!             dbg!(error);
+//!         });
 //!
 //!     tbot::spawn(reply);
 //! });
@@ -41,9 +43,9 @@ pub mod contexts;
 pub mod methods;
 pub mod types;
 
-pub use self::bot::*;
-use self::{multipart::*, prelude::*};
+pub use bot::*;
 use serde::{Deserialize, Serialize};
+use {multipart::*, prelude::*};
 
 #[cfg(feature = "proxy")]
 pub use hyper_proxy as proxy;

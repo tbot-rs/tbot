@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`forwardMessage`] method.
+/// Represents the [`forwardMessage`][docs] method.
 ///
-/// [`forwardMessage`]: https://core.telegram.org/bots/api#forwardmessage
+/// [docs]: https://core.telegram.org/bots/api#forwardmessage
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct ForwardMessage<'a> {
@@ -20,10 +20,10 @@ pub struct ForwardMessage<'a> {
 
 impl<'a> ForwardMessage<'a> {
     /// Constructs a new `ForwardMessage`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
-        from_chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
+        from_chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
     ) -> Self {
         Self {
@@ -60,8 +60,7 @@ impl<'a> ForwardMessage<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for ForwardMessage<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for ForwardMessage<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

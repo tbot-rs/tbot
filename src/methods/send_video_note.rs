@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`sendVideoNote`] method.
+/// Represents the [`sendVideoNote`][docs] method.
 ///
-/// [`sendVideoNote`]: https://core.telegram.org/bots/api#sendvideonote
+/// [docs]: https://core.telegram.org/bots/api#sendvideonote
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a> {
     token: &'a str,
@@ -17,9 +17,9 @@ pub struct SendVideoNote<'a> {
 
 impl<'a> SendVideoNote<'a> {
     /// Constructs a new `SendVideoNote`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         video_note: types::VideoNote<'a>,
     ) -> Self {
         Self {
@@ -115,8 +115,7 @@ impl<'a> SendVideoNote<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendVideoNote<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendVideoNote<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

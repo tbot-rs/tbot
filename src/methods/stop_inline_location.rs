@@ -1,9 +1,9 @@
 use super::*;
 
-/// Representation of the [`stopMessageLiveLocation`] method for the case if
+/// Represents the [`stopMessageLiveLocation`][docs] method for when
 /// the message was sent via the inline mode.
 ///
-/// [`stopMessageLiveLocation`]: https://core.telegram.org/bots/api#stopmessagelivelocation
+/// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct StopInlineLocation<'a> {
@@ -19,7 +19,7 @@ pub struct StopInlineLocation<'a> {
 
 impl<'a> StopInlineLocation<'a> {
     /// Constructs a new `StopInlineLocation`.
-    pub fn new<'b: 'a>(token: &'b str, inline_message_id: u64) -> Self {
+    pub fn new(token: &'a str, inline_message_id: u64) -> Self {
         Self {
             token,
             inline_message_id,
@@ -46,14 +46,12 @@ impl<'a> StopInlineLocation<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
-        // The only value `true` is returned on success.
-        .map(|_| ())
+        .map(|_| ()) // Only `true` is returned on success
     }
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for StopInlineLocation<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for StopInlineLocation<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

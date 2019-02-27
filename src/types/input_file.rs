@@ -10,7 +10,7 @@ mod video;
 mod video_note;
 mod voice;
 
-pub use self::{
+pub use {
     animation::*, audio::*, document::*, group_media::*, photo::*, thumb::*,
     video::*, video_note::*, voice::*,
 };

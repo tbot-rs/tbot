@@ -13,7 +13,9 @@ fn main() {
             .send_message_in_reply(&message)
             .parse_mode(Markdown)
             .into_future()
-            .map_err(|error| eprintln!("Whops, got an error: {:#?}", error));
+            .map_err(|error| {
+                dbg!(error);
+            });
 
         tbot::spawn(reply);
     });

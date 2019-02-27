@@ -4,9 +4,9 @@ use super::*;
 #[allow(dead_code)]
 type Photos = Vec<Vec<types::UserProfilePhotos>>;
 
-/// Representation of the [`getUserProfilePhotos`] method.
+/// Represents the [`getUserProfilePhotos`][docs] method.
 ///
-/// [`getUserProfilePhotos`]: https://core.telegram.org/bots/api#getuserprofilephotos
+/// [docs]: https://core.telegram.org/bots/api#getuserprofilephotos
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetUserProfilePhotos<'a> {
@@ -24,7 +24,7 @@ pub struct GetUserProfilePhotos<'a> {
 
 impl<'a> GetUserProfilePhotos<'a> {
     /// Constructs a new `GetUserProfilePhotos`.
-    pub fn new<'b: 'a>(token: &'b str, user_id: i64) -> Self {
+    pub fn new(token: &'a str, user_id: i64) -> Self {
         Self {
             token,
             user_id,
@@ -64,8 +64,7 @@ impl<'a> GetUserProfilePhotos<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for GetUserProfilePhotos<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for GetUserProfilePhotos<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

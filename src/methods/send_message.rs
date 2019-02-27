@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`sendMessage`] method.
+/// Represents the [`sendMessage`][docs] method.
 ///
-/// [`sendMessage`]: https://core.telegram.org/bots/api#sendmessage
+/// [docs]: https://core.telegram.org/bots/api#sendmessage
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMessage<'a> {
@@ -25,20 +25,11 @@ pub struct SendMessage<'a> {
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
-#[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendMessage<'a> {
-    /// Configures `proxy`.
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
-    }
-}
-
 impl<'a> SendMessage<'a> {
     /// Constructs a new `SendMessage`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         text: &'a str,
     ) -> Self {
         Self {
@@ -101,5 +92,13 @@ impl<'a> SendMessage<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
+    }
+}
+
+#[cfg(feature = "proxy")]
+impl ProxyMethod for SendMessage<'_> {
+    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
+        self.proxy = Some(proxy);
+        self
     }
 }

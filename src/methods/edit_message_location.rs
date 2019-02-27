@@ -1,9 +1,9 @@
 use super::*;
 
-/// Representation of the [`editMessageLiveLocation`] method for the case if
+/// Represents the [`editMessageLiveLocation`][docs] method for when
 /// the message was sent by the bot.
 ///
-/// [`editMessageLiveLocation`]: https://core.telegram.org/bots/api#editmessagelivelocation
+/// [docs]: https://core.telegram.org/bots/api#editmessagelivelocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageLocation<'a> {
@@ -22,9 +22,9 @@ pub struct EditMessageLocation<'a> {
 
 impl<'a> EditMessageLocation<'a> {
     /// Constructs a new `EditMessageLocation`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
         (latitude, longitude): (f64, f64),
     ) -> Self {
@@ -63,8 +63,7 @@ impl<'a> EditMessageLocation<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for EditMessageLocation<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for EditMessageLocation<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

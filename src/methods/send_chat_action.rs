@@ -1,8 +1,8 @@
 use super::*;
 
-/// Representation of the [`sendChatAction`] method.
+/// Represents the [`sendChatAction`][docs] method.
 ///
-/// [`sendChatAction`]: https://core.telegram.org/bots/api#sendchataction
+/// [docs]: https://core.telegram.org/bots/api#sendchataction
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendChatAction<'a> {
@@ -17,9 +17,9 @@ pub struct SendChatAction<'a> {
 
 impl<'a> SendChatAction<'a> {
     /// Constructs a new `SendChatAction`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
-        chat_id: impl Into<types::ChatId<'b>>,
+    pub fn new(
+        token: &'a str,
+        chat_id: impl Into<types::ChatId<'a>>,
         action: types::ChatAction,
     ) -> Self {
         Self {
@@ -42,14 +42,12 @@ impl<'a> SendChatAction<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
-        // The only value `true` is returned on success.
-        .map(|_| ())
+        .map(|_| ()) // Only `true` is returned on success
     }
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for SendChatAction<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for SendChatAction<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

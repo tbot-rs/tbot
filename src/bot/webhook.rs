@@ -61,7 +61,12 @@ impl<'a> Webhook<'a> {
 
     /// Starts the server.
     pub fn start(self) -> ! {
-        let webhook_set_request = methods::SetWebhook::new(
+        self.set_webhook();
+        self.start_event_loop();
+    }
+
+    fn set_webhook(&self) {
+        let set_webhook = methods::SetWebhook::new(
             &self.bot.token,
             self.url,
             self.certificate,
@@ -70,27 +75,24 @@ impl<'a> Webhook<'a> {
             #[cfg(feature = "proxy")]
             self.bot.proxy.clone(),
         )
-        .into_future()
-        .map_err(|error| {
-            eprintln!("[tbot] Error while setting webhook: {:#?}", error);
-        });
+        .into_future();
 
-        let Self {
-            bot,
-            ip,
-            port,
-            ..
-        } = self;
+        if let Err(error) = set_webhook.wait() {
+            panic!("\n[tbot] Error while setting webhook: {:#?}\n", error);
+        }
+    }
 
-        let server =
-            webhook_set_request.and_then(move |_| init_server(bot, ip, port));
+    fn start_event_loop(self) -> ! {
+        let server = init_server(self.bot, self.ip, self.port);
 
-        crate::run(server);
+        if let Err(error) = server.wait() {
+            panic!(
+                "\n[tbot] Webhook server returned with an error: {:#?}\n",
+                error,
+            );
+        }
 
-        panic!(
-            "\n[tbot] Webhook server was expected to never return. Perhaps \
-             there's an error logged above.\n",
-        );
+        unreachable!();
     }
 }
 
@@ -128,16 +130,12 @@ fn handle(
     }
 }
 
-fn init_server(bot: Bot, ip: IpAddr, port: u16) -> impl Future<Error = ()> {
+fn init_server(bot: Bot, ip: IpAddr, port: u16) -> impl Future<Error = Error> {
     let bot = Arc::new(bot);
     let addr = SocketAddr::new(ip, port);
 
-    Server::bind(&addr)
-        .serve(move || {
-            let bot = bot.clone();
-            service_fn(move |request| handle(bot.clone(), request))
-        })
-        .map_err(|error| {
-            eprintln!("[tbot] Webhook server error: {:#?}", error);
-        })
+    Server::bind(&addr).serve(move || {
+        let bot = bot.clone();
+        service_fn(move |request| handle(bot.clone(), request))
+    })
 }

@@ -1,9 +1,9 @@
 use super::*;
 
-/// Representation of the [`editMessageLiveLocation`] method for the case if
+/// Represents the [`editMessageLiveLocation`][docs] method for when
 /// the message was sent via the inline mode.
 ///
-/// [`editMessageLiveLocation`]: https://core.telegram.org/bots/api#editmessagelivelocation
+/// [docs]: https://core.telegram.org/bots/api#editmessagelivelocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineLocation<'a> {
@@ -21,8 +21,8 @@ pub struct EditInlineLocation<'a> {
 
 impl<'a> EditInlineLocation<'a> {
     /// Constructs a new `EditInlineLocation`.
-    pub fn new<'b: 'a>(
-        token: &'b str,
+    pub fn new(
+        token: &'a str,
         inline_message_id: u64,
         (latitude, longitude): (f64, f64),
     ) -> Self {
@@ -54,14 +54,12 @@ impl<'a> EditInlineLocation<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
-        // The only value `true` is returned on success.
-        .map(|_| ())
+        .map(|_| ()) // Only `true` is returned on success
     }
 }
 
 #[cfg(feature = "proxy")]
-impl<'a> ProxyMethod for EditInlineLocation<'a> {
-    /// Configures `proxy`.
+impl ProxyMethod for EditInlineLocation<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

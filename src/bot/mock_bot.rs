@@ -36,17 +36,13 @@ impl MockBot {
     }
 }
 
-impl Methods for MockBot {
+impl Methods<'_> for MockBot {
     fn token(&self) -> &str {
         &self.token
     }
 
     #[cfg(feature = "proxy")]
     fn get_proxy(&self) -> Option<proxy::Proxy> {
-        if let Some(proxy) = &self.proxy {
-            Some(proxy.clone())
-        } else {
-            None
-        }
+        self.proxy.clone()
     }
 }

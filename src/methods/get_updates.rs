@@ -1,6 +1,5 @@
 use super::*;
 
-/// This method isn't meant to be used by users directly.
 #[derive(Serialize)]
 #[must_use]
 pub(crate) struct GetUpdates<'a> {
@@ -60,7 +59,7 @@ impl<'a> GetUpdates<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = Vec<types::Update>, Error = DeliveryError> {
-        send_method::<Vec<types::Update>>(
+        send_method(
             self.token,
             "getUpdates",
             None,
