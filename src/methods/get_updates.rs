@@ -59,7 +59,7 @@ impl<'a> GetUpdates<'a> {
     pub fn into_future(
         self,
     ) -> impl Future<Item = Vec<types::Update>, Error = DeliveryError> {
-        send_method::<Vec<types::Update>>(
+        send_method(
             self.token,
             "getUpdates",
             None,

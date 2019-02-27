@@ -42,8 +42,7 @@ impl<'a> SendChatAction<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
-        // The only value `true` is returned on success.
-        .map(|_| ())
+        .map(|_| ()) // Only `true` is returned on success
     }
 }
 
