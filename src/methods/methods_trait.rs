@@ -25,6 +25,21 @@ pub trait Methods<'a> {
         method
     }
 
+    /// Constructs a new [`DeleteMessage`] inferring `token`.
+    ///
+    /// [`DeleteMessage`]: ./struct.DeleteMessage.html
+    fn delete_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+    ) -> methods::DeleteMessage<'a> {
+        self.prepare_method(methods::DeleteMessage::new(
+            self.token(),
+            chat_id,
+            message_id,
+        ))
+    }
+
     /// Constructs a new [`EditInlineCaption`] inferring `token`.
     ///
     /// [`EditInlineCaption`]: ./struct.EditInlineCaption.html

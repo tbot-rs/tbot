@@ -279,6 +279,21 @@ pub trait ChatMethods {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
     }
 
+    /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
+    ///
+    /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
+    fn delete_message<'a>(&'a self, message_id: u64) -> DeleteMessage<'a> {
+        self.bot().delete_message(self.chat_id(), message_id)
+    }
+
+    /// Constructs a [`DeleteMessage`] inferring the token, the chat ID and
+    /// the message ID.
+    ///
+    /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
+    fn delete_this_message<'a>(&'a self) -> DeleteMessage<'a> {
+        self.delete_message(self.message_id())
+    }
+
     /// Constructs a new [`EditMessageReplyMarkup`] inferring the token and the chat ID.
     ///
     /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
