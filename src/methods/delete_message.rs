@@ -34,9 +34,7 @@ impl<'a> DeleteMessage<'a> {
 
     /// Prepares the request and returns a `Future`.
     #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = (), Error = DeliveryError> {
+    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
         send_method::<bool>(
             self.token,
             "deleteMessage",

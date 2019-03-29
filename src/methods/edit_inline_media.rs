@@ -39,9 +39,7 @@ impl<'a> EditInlineMedia<'a> {
 
     /// Prepares the request and returns a `Future`.
     #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = (), Error = DeliveryError> {
+    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
         let inline_message_id = self.inline_message_id.to_string();
         let reply_markup =
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
