@@ -279,6 +279,21 @@ pub trait ChatMethods {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
     }
 
+    /// Constructs a new [`EditMessageReplyMarkup`] inferring the token and the chat ID.
+    ///
+    /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
+    fn edit_message_reply_markup<'a>(
+        &'a self,
+        message_id: u64,
+        reply_markup: types::InlineKeyboard<'a>,
+    ) -> EditMessageReplyMarkup<'a> {
+        self.bot().edit_message_reply_markup(
+            self.chat_id(),
+            message_id,
+            reply_markup,
+        )
+    }
+
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
     /// message ID.
     ///

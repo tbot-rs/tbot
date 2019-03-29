@@ -70,6 +70,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`EditInlineReplyMarkup`] inferring `token`.
+    ///
+    /// [`EditInlineReplyMarkup`]: ./struct.EditInlineReplyMarkup.html
+    fn edit_inline_reply_markup(
+        &'a self,
+        inline_message_id: u64,
+        reply_markup: types::InlineKeyboard<'a>,
+    ) -> methods::EditInlineReplyMarkup<'a> {
+        self.prepare_method(methods::EditInlineReplyMarkup::new(
+            self.token(),
+            inline_message_id,
+            reply_markup,
+        ))
+    }
+
     /// Constructs a new [`EditMessageCaption`] inferring `token`.
     ///
     /// [`EditMessageCaption`]: ./struct.EditMessageCaption.html
@@ -135,6 +150,23 @@ pub trait Methods<'a> {
             chat_id,
             message_id,
             text,
+        ))
+    }
+
+    /// Constructs a new [`EditMessageReplyMarkup`] inferring `token`.
+    ///
+    /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
+    fn edit_message_reply_markup(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        reply_markup: types::InlineKeyboard<'a>,
+    ) -> methods::EditMessageReplyMarkup<'a> {
+        self.prepare_method(methods::EditMessageReplyMarkup::new(
+            self.token(),
+            chat_id,
+            message_id,
+            reply_markup,
         ))
     }
 
