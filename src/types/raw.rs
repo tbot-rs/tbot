@@ -214,13 +214,6 @@ pub struct UserProfilePhotos {
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct File {
-    pub file_id: String,
-    pub file_size: Option<i64>,
-    pub file_path: Option<String>,
-}
-
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct CallbackQuery {
     pub id: String,
