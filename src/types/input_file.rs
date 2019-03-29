@@ -1,6 +1,6 @@
 //! Contains types that are represent uploadable media.
 
-use super::*;
+use super::{types, ParseMode, Serialize};
 
 mod animation;
 mod audio;
@@ -8,6 +8,7 @@ mod document;
 mod editable_media;
 mod group_media;
 mod photo;
+mod sticker;
 mod thumb;
 mod video;
 mod video_note;
@@ -15,7 +16,7 @@ mod voice;
 
 pub use {
     animation::*, audio::*, document::*, editable_media::*, group_media::*,
-    photo::*, thumb::*, video::*, video_note::*, voice::*,
+    photo::*, sticker::*, thumb::*, video::*, video_note::*, voice::*,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
