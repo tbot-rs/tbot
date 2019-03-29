@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{InputFile, Video};
 
 /// Represents the [`sendVideo`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendVideo<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    video: types::Video<'a>,
+    video: Video<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendVideo<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        video: types::Video<'a>,
+        video: Video<'a>,
     ) -> Self {
         Self {
             token,
@@ -89,17 +90,17 @@ impl<'a> SendVideo<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.video.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("video", filename, bytes),
-            types::InputFile::Id(audio) | types::InputFile::Url(audio) => {
+            InputFile::Id(audio) | InputFile::Url(audio) => {
                 multipart = multipart.str("video", audio);
             }
         }
 
-        if let Some(types::InputFile::File {
+        if let Some(InputFile::File {
             filename,
             bytes,
             ..

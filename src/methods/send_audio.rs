@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{Audio, InputFile};
 
 /// Represents the [`sendAudio`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendAudio<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    audio: types::Audio<'a>,
+    audio: Audio<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendAudio<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        audio: types::Audio<'a>,
+        audio: Audio<'a>,
     ) -> Self {
         Self {
             token,
@@ -84,17 +85,17 @@ impl<'a> SendAudio<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.audio.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("audio", filename, bytes),
-            types::InputFile::Id(audio) | types::InputFile::Url(audio) => {
+            InputFile::Id(audio) | InputFile::Url(audio) => {
                 multipart = multipart.str("audio", audio);
             }
         }
 
-        if let Some(types::InputFile::File {
+        if let Some(InputFile::File {
             filename,
             bytes,
             ..

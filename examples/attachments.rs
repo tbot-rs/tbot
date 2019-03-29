@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::{Animation, Document, Photo, Video},
+    types::input_file::{Animation, Document, Photo, Video},
     Bot,
 };
 

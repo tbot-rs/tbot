@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{InputFile, Voice};
 
 /// Represents the [`sendVoice`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendVoice<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    voice: types::Voice<'a>,
+    voice: Voice<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendVoice<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        voice: types::Voice<'a>,
+        voice: Voice<'a>,
     ) -> Self {
         Self {
             token,
@@ -82,12 +83,12 @@ impl<'a> SendVoice<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.voice.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("voice", filename, bytes),
-            types::InputFile::Id(voice) | types::InputFile::Url(voice) => {
+            InputFile::Id(voice) | InputFile::Url(voice) => {
                 multipart = multipart.str("voice", voice);
             }
         }

@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{InputFile, Photo};
 
 /// Represents the [`sendPhoto`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendPhoto<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    photo: types::Photo<'a>,
+    photo: Photo<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendPhoto<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        photo: types::Photo<'a>,
+        photo: Photo<'a>,
     ) -> Self {
         Self {
             token,
@@ -81,12 +82,12 @@ impl<'a> SendPhoto<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.photo.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("photo", filename, bytes),
-            types::InputFile::Id(photo) | types::InputFile::Url(photo) => {
+            InputFile::Id(photo) | InputFile::Url(photo) => {
                 multipart = multipart.str("photo", photo);
             }
         }

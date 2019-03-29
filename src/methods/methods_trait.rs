@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::*;
 
 /// Provides API methods that infer the bot's token.
 pub trait Methods<'a> {
@@ -141,7 +142,7 @@ pub trait Methods<'a> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
-        media: impl Into<types::EditableMedia<'a>>,
+        media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditMessageMedia<'a> {
         self.prepare_method(methods::EditMessageMedia::new(
             self.token(),
@@ -235,7 +236,7 @@ pub trait Methods<'a> {
     fn send_animation(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        animation: types::Animation<'a>,
+        animation: Animation<'a>,
     ) -> methods::SendAnimation<'a> {
         self.prepare_method(methods::SendAnimation::new(
             self.token(),
@@ -250,7 +251,7 @@ pub trait Methods<'a> {
     fn send_audio(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        audio: types::Audio<'a>,
+        audio: Audio<'a>,
     ) -> methods::SendAudio<'a> {
         self.prepare_method(methods::SendAudio::new(
             self.token(),
@@ -297,7 +298,7 @@ pub trait Methods<'a> {
     fn send_document(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        document: types::Document<'a>,
+        document: Document<'a>,
     ) -> methods::SendDocument<'a> {
         self.prepare_method(methods::SendDocument::new(
             self.token(),
@@ -327,7 +328,7 @@ pub trait Methods<'a> {
     fn send_media_group(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        media: Vec<types::GroupMedia<'a>>,
+        media: Vec<GroupMedia<'a>>,
     ) -> methods::SendMediaGroup<'a> {
         self.prepare_method(methods::SendMediaGroup::new(
             self.token(),
@@ -357,7 +358,7 @@ pub trait Methods<'a> {
     fn send_photo(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        photo: types::Photo<'a>,
+        photo: Photo<'a>,
     ) -> methods::SendPhoto<'a> {
         self.prepare_method(methods::SendPhoto::new(
             self.token(),
@@ -391,7 +392,7 @@ pub trait Methods<'a> {
     fn send_video(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        video: types::Video<'a>,
+        video: Video<'a>,
     ) -> methods::SendVideo<'a> {
         self.prepare_method(methods::SendVideo::new(
             self.token(),
@@ -406,7 +407,7 @@ pub trait Methods<'a> {
     fn send_video_note(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        video_note: types::VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> methods::SendVideoNote<'a> {
         self.prepare_method(methods::SendVideoNote::new(
             self.token(),
@@ -421,7 +422,7 @@ pub trait Methods<'a> {
     fn send_voice(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        voice: types::Voice<'a>,
+        voice: Voice<'a>,
     ) -> methods::SendVoice<'a> {
         self.prepare_method(methods::SendVoice::new(
             self.token(),

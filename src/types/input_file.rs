@@ -1,3 +1,5 @@
+//! Contains types that are represent uploadable media.
+
 use super::*;
 
 mod animation;

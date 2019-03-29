@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{Animation, InputFile};
 
 /// Represents the [`sendAnimation`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendAnimation<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    animation: types::Animation<'a>,
+    animation: Animation<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendAnimation<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        animation: types::Animation<'a>,
+        animation: Animation<'a>,
     ) -> Self {
         Self {
             token,
@@ -86,17 +87,17 @@ impl<'a> SendAnimation<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.animation.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("animation", filename, bytes),
-            types::InputFile::Id(audio) | types::InputFile::Url(audio) => {
-                multipart = multipart.str("animation", audio);
+            InputFile::Id(animation) | InputFile::Url(animation) => {
+                multipart = multipart.str("animation", animation);
             }
         }
 
-        if let Some(types::InputFile::File {
+        if let Some(InputFile::File {
             filename,
             bytes,
             ..

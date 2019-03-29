@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::*;
 
 /// Represents the [`editMessageMedia`][docs] method for when the message was
 /// sent by the bot.
@@ -11,7 +12,7 @@ pub struct EditMessageMedia<'a> {
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     message_id: u64,
-    media: types::EditableMedia<'a>,
+    media: EditableMedia<'a>,
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
@@ -21,7 +22,7 @@ impl<'a> EditMessageMedia<'a> {
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
-        media: impl Into<types::EditableMedia<'a>>,
+        media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
             token,
@@ -59,27 +60,27 @@ impl<'a> EditMessageMedia<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match &self.media {
-            types::EditableMedia::Animation(types::Animation {
+            EditableMedia::Animation(Animation {
                 media,
                 ..
             })
-            | types::EditableMedia::Audio(types::Audio {
+            | EditableMedia::Audio(Audio {
                 media,
                 ..
             })
-            | types::EditableMedia::Document(types::Document {
+            | EditableMedia::Document(Document {
                 media,
                 ..
             })
-            | types::EditableMedia::Photo(types::Photo {
+            | EditableMedia::Photo(Photo {
                 media,
                 ..
             })
-            | types::EditableMedia::Video(types::Video {
+            | EditableMedia::Video(Video {
                 media,
                 ..
             }) => {
-                if let types::InputFile::File {
+                if let InputFile::File {
                     name,
                     filename,
                     bytes,

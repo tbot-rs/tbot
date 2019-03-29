@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::*;
 
 /// Represents the [`sendMediaGroup`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendMediaGroup<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    media: Vec<types::GroupMedia<'a>>,
+    media: Vec<GroupMedia<'a>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
 }
@@ -19,7 +20,7 @@ impl<'a> SendMediaGroup<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        media: Vec<types::GroupMedia<'a>>,
+        media: Vec<GroupMedia<'a>>,
     ) -> Self {
         Self {
             token,
@@ -61,9 +62,9 @@ impl<'a> SendMediaGroup<'a> {
         let mut media = self.media;
 
         for (index, media) in media.iter_mut().enumerate() {
-            if let types::GroupMedia::Photo(types::Photo {
+            if let GroupMedia::Photo(Photo {
                 media:
-                    types::InputFile::File {
+                    InputFile::File {
                         ref mut name,
                         ..
                     },
@@ -73,9 +74,9 @@ impl<'a> SendMediaGroup<'a> {
                 *name = format!("photo_{}", index);
             }
 
-            if let types::GroupMedia::Video(types::Video {
+            if let GroupMedia::Video(Video {
                 media:
-                    types::InputFile::File {
+                    InputFile::File {
                         ref mut name,
                         ..
                     },
@@ -85,7 +86,7 @@ impl<'a> SendMediaGroup<'a> {
             {
                 *name = format!("video_{}", index);
 
-                if let Some(types::InputFile::File {
+                if let Some(InputFile::File {
                     ref mut name,
                     ..
                 }) = thumb
@@ -102,18 +103,18 @@ impl<'a> SendMediaGroup<'a> {
 
         for media in &media {
             match media {
-                types::GroupMedia::Photo(types::Photo {
+                GroupMedia::Photo(Photo {
                     media:
-                        types::InputFile::File {
+                        InputFile::File {
                             name,
                             filename,
                             bytes,
                         },
                     ..
                 })
-                | types::GroupMedia::Video(types::Video {
+                | GroupMedia::Video(Video {
                     media:
-                        types::InputFile::File {
+                        InputFile::File {
                             name,
                             filename,
                             bytes,
