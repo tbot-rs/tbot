@@ -86,8 +86,8 @@ impl<'a> SendPhoto<'a> {
                 bytes,
                 ..
             } => multipart = multipart.file("photo", filename, bytes),
-            types::InputFile::Id(audio) | types::InputFile::Url(audio) => {
-                multipart = multipart.str("photo", audio);
+            types::InputFile::Id(photo) | types::InputFile::Url(photo) => {
+                multipart = multipart.str("photo", photo);
             }
         }
 
