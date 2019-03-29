@@ -11,8 +11,11 @@ mod chat_photo;
 mod chat_types;
 pub mod input_file;
 mod keyboards;
+mod mask_position;
 mod parse_mode;
 mod photo_size;
+mod sticker;
+mod sticker_set;
 mod updates;
 mod user;
 mod user_profile_photos;
@@ -20,6 +23,7 @@ mod webhook_info;
 
 pub use {
     callback_game::*, chat_action::*, chat_id::*, chat_photo::*, chat_types::*,
-    keyboards::*, parse_mode::*, photo_size::*, updates::*, user::*,
-    user_profile_photos::*, webhook_info::*,
+    keyboards::*, mask_position::*, parse_mode::*, photo_size::*, sticker::*,
+    sticker_set::*, updates::*, user::*, user_profile_photos::*,
+    webhook_info::*,
 };

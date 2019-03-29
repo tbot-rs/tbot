@@ -277,43 +277,6 @@ pub enum InputMedia {
     },
 }
 
-#[derive(Debug, PartialEq, Clone, Deserialize)]
-pub struct Sticker {
-    pub file_id: String,
-    pub width: i64,
-    pub height: i64,
-    pub thumb: Option<PhotoSize>,
-    pub emoji: Option<String>,
-    pub set_name: Option<String>,
-    pub mask_position: Option<MaskPosition>,
-    pub file_size: Option<i64>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum MaskPositionPoint {
-    Forehead,
-    Eyes,
-    Mouth,
-    Chin,
-}
-
-#[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
-pub struct MaskPosition {
-    pub point: MaskPositionPoint,
-    pub x_shift: f64,
-    pub y_shift: f64,
-    pub scale: f64,
-}
-
-#[derive(Debug, PartialEq, Clone, Deserialize)]
-pub struct StickerSet {
-    pub name: String,
-    pub title: String,
-    pub contains_masks: bool,
-    pub stickers: Vec<Sticker>,
-}
-
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct LabeledPrice {
     pub label: String,
