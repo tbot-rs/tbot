@@ -104,6 +104,23 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`EditMessageMedia`] inferring `token`.
+    ///
+    /// [`EditMessageMedia`]: ./struct.EditMessageMedia.html
+    fn edit_message_media(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        media: impl Into<types::EditableMedia<'a>>,
+    ) -> methods::EditMessageMedia<'a> {
+        self.prepare_method(methods::EditMessageMedia::new(
+            self.token(),
+            chat_id,
+            message_id,
+            media,
+        ))
+    }
+
     /// Constructs a new [`EditMessageText`] inferring `token`.
     ///
     /// [`EditMessageText`]: ./struct.EditMessageText.html
