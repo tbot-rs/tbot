@@ -36,8 +36,8 @@ impl<'a> DeleteMessage<'a> {
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
-    ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
-        send_method(
+    ) -> impl Future<Item = (), Error = DeliveryError> {
+        send_method::<bool>(
             self.token,
             "deleteMessage",
             None,
@@ -45,6 +45,7 @@ impl<'a> DeleteMessage<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
+        .map(|_| ())
     }
 }
 

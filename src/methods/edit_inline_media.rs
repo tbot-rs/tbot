@@ -41,7 +41,7 @@ impl<'a> EditInlineMedia<'a> {
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
-    ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
+    ) -> impl Future<Item = (), Error = DeliveryError> {
         let inline_message_id = self.inline_message_id.to_string();
         let reply_markup =
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
@@ -85,7 +85,7 @@ impl<'a> EditInlineMedia<'a> {
         let media = serde_json::to_string(&self.media).unwrap();
         let (boundary, body) = multipart.str("media", &media).finish();
 
-        send_method(
+        send_method::<bool>(
             self.token,
             "editMessageMedia",
             Some(boundary),
@@ -93,6 +93,7 @@ impl<'a> EditInlineMedia<'a> {
             #[cfg(feature = "proxy")]
             self.proxy,
         )
+        .map(|_| ())
     }
 }
 
