@@ -1,6 +1,6 @@
 # `tbot`
 
-Write Telegram bots in Rust in an ease and nice way. Here is a simple echo bot:
+Make cool Telegram bots with Rust easily. Here is a simple echo bot:
 
 ```rust
 use tbot::{prelude::*, Bot};
@@ -26,8 +26,8 @@ fn main() {
 If you're a newcomer, we recommend you go through the [tutorial] first. We also
 have several [How-to guides][how-to] for you to use all the power of `tbot`.
 
-If you get stuck or find a bug, fill an issue on either our [GitLab] or [GitHub]
-repository.
+If you have a question, ask it in [our group] on Telegram. If you find a bug,
+fill an issue on either our [GitLab] or [GitHub] repository.
 
 ## Why another crate?
 
@@ -61,6 +61,7 @@ Glad you want to contribute to `tbot`! We develop the crate on [GitLab], so
 create your pull/merge request there if you can. We accept pull requests on
 [GitHub] as well, but we prefer [GitLab].
 
+[our group]: t.me/tbot_group
 [why-another-crate]: https://gitlab.com/SnejUgal/tbot/wikis/Why-another-crate
 [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to

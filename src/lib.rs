@@ -1,5 +1,4 @@
-//! Write Telegram bots in Rust in an ease and nice way. Here is a simple echo
-//! bot:
+//! Make cool Telegram bots with Rust easily. Here is a simple echo bot:
 //!
 //! ```no_run
 //! use tbot::{prelude::*, Bot};
@@ -20,13 +19,13 @@
 //! bot.polling().start();
 //! ```
 //!
-//! If you're a newcomer, we recommend you go through the [tutorial] first. We
-//! also have several [How-to guides][how-to] for you to use all the power of
-//! `tbot`.
+//! If you have a question, ask it in [our group] on Telegram. If you find
+//! a bug, fill an issue on either our [GitLab] or [GitHub] repository.
 //!
 //! If you get stuck or find a bug, fill an issue on either our [GitLab] or
 //! [GitHub] repository.
 //!
+//! [our group]: t.me/tbot_group
 //! [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 //! [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
 //! [GitLab]: https://gitlab.com/SnejUgal/tbot
