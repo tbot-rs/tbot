@@ -25,6 +25,36 @@ pub trait Methods<'a> {
         method
     }
 
+    /// Constructs a new [`DeleteMessage`] inferring `token`.
+    ///
+    /// [`DeleteMessage`]: ./struct.DeleteMessage.html
+    fn delete_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+    ) -> methods::DeleteMessage<'a> {
+        self.prepare_method(methods::DeleteMessage::new(
+            self.token(),
+            chat_id,
+            message_id,
+        ))
+    }
+
+    /// Constructs a new [`EditInlineCaption`] inferring `token`.
+    ///
+    /// [`EditInlineCaption`]: ./struct.EditInlineCaption.html
+    fn edit_inline_caption(
+        &'a self,
+        inline_message_id: u64,
+        caption: &'a str,
+    ) -> methods::EditInlineCaption<'a> {
+        self.prepare_method(methods::EditInlineCaption::new(
+            self.token(),
+            inline_message_id,
+            caption,
+        ))
+    }
+
     /// Constructs a new [`EditInlineLocation`] inferring `token`.
     ///
     /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
@@ -37,6 +67,53 @@ pub trait Methods<'a> {
             self.token(),
             inline_message_id,
             position,
+        ))
+    }
+
+    /// Constructs a new [`EditInlineText`] inferring `token`.
+    ///
+    /// [`EditInlineText`]: ./struct.EditInlineText.html
+    fn edit_inline_text(
+        &'a self,
+        inline_message_id: u64,
+        text: &'a str,
+    ) -> methods::EditInlineText<'a> {
+        self.prepare_method(methods::EditInlineText::new(
+            self.token(),
+            inline_message_id,
+            text,
+        ))
+    }
+
+    /// Constructs a new [`EditInlineReplyMarkup`] inferring `token`.
+    ///
+    /// [`EditInlineReplyMarkup`]: ./struct.EditInlineReplyMarkup.html
+    fn edit_inline_reply_markup(
+        &'a self,
+        inline_message_id: u64,
+        reply_markup: types::InlineKeyboard<'a>,
+    ) -> methods::EditInlineReplyMarkup<'a> {
+        self.prepare_method(methods::EditInlineReplyMarkup::new(
+            self.token(),
+            inline_message_id,
+            reply_markup,
+        ))
+    }
+
+    /// Constructs a new [`EditMessageCaption`] inferring `token`.
+    ///
+    /// [`EditMessageCaption`]: ./struct.EditMessageCaption.html
+    fn edit_message_caption(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        caption: &'a str,
+    ) -> methods::EditMessageCaption<'a> {
+        self.prepare_method(methods::EditMessageCaption::new(
+            self.token(),
+            chat_id,
+            message_id,
+            caption,
         ))
     }
 
@@ -54,6 +131,57 @@ pub trait Methods<'a> {
             chat_id,
             message_id,
             position,
+        ))
+    }
+
+    /// Constructs a new [`EditMessageMedia`] inferring `token`.
+    ///
+    /// [`EditMessageMedia`]: ./struct.EditMessageMedia.html
+    fn edit_message_media(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        media: impl Into<types::EditableMedia<'a>>,
+    ) -> methods::EditMessageMedia<'a> {
+        self.prepare_method(methods::EditMessageMedia::new(
+            self.token(),
+            chat_id,
+            message_id,
+            media,
+        ))
+    }
+
+    /// Constructs a new [`EditMessageText`] inferring `token`.
+    ///
+    /// [`EditMessageText`]: ./struct.EditMessageText.html
+    fn edit_message_text(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        text: &'a str,
+    ) -> methods::EditMessageText<'a> {
+        self.prepare_method(methods::EditMessageText::new(
+            self.token(),
+            chat_id,
+            message_id,
+            text,
+        ))
+    }
+
+    /// Constructs a new [`EditMessageReplyMarkup`] inferring `token`.
+    ///
+    /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
+    fn edit_message_reply_markup(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u64,
+        reply_markup: types::InlineKeyboard<'a>,
+    ) -> methods::EditMessageReplyMarkup<'a> {
+        self.prepare_method(methods::EditMessageReplyMarkup::new(
+            self.token(),
+            chat_id,
+            message_id,
+            reply_markup,
         ))
     }
 

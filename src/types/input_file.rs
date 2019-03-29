@@ -3,6 +3,7 @@ use super::*;
 mod animation;
 mod audio;
 mod document;
+mod editable_media;
 mod group_media;
 mod photo;
 mod thumb;
@@ -11,8 +12,8 @@ mod video_note;
 mod voice;
 
 pub use {
-    animation::*, audio::*, document::*, group_media::*, photo::*, thumb::*,
-    video::*, video_note::*, voice::*,
+    animation::*, audio::*, document::*, editable_media::*, group_media::*,
+    photo::*, thumb::*, video::*, video_note::*, voice::*,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]

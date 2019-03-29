@@ -32,9 +32,18 @@
 
 use super::*;
 
+mod delete_message;
 mod delete_webhook;
+mod edit_inline_caption;
 mod edit_inline_location;
+mod edit_inline_media;
+mod edit_inline_reply_markup;
+mod edit_inline_text;
+mod edit_message_caption;
 mod edit_message_location;
+mod edit_message_media;
+mod edit_message_reply_markup;
+mod edit_message_text;
 mod forward_message;
 mod get_me;
 mod get_updates;
@@ -58,7 +67,10 @@ mod stop_inline_location;
 mod stop_message_location;
 
 pub use {
-    edit_inline_location::*, edit_message_location::*, forward_message::*,
+    delete_message::*, edit_inline_caption::*, edit_inline_location::*,
+    edit_inline_media::*, edit_inline_reply_markup::*, edit_inline_text::*,
+    edit_message_caption::*, edit_message_location::*, edit_message_media::*,
+    edit_message_reply_markup::*, edit_message_text::*, forward_message::*,
     get_me::*, get_user_profile_photos::*, get_webhook_info::*,
     send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
     send_document::*, send_location::*, send_media_group::*, send_message::*,

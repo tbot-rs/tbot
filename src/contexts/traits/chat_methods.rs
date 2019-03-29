@@ -224,8 +224,8 @@ pub trait ChatMethods {
         self.bot().send_media_group(self.chat_id(), media)
     }
 
-    /// Constructs a [`SendMediaGroup`] inferring the token, chat ID and message
-    /// ID.
+    /// Constructs a [`SendMediaGroup`] inferring the token, chat ID and
+    /// message ID.
     ///
     /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
     fn send_media_group_in_reply<'a>(
@@ -233,6 +233,83 @@ pub trait ChatMethods {
         media: Vec<types::GroupMedia<'a>>,
     ) -> SendMediaGroup<'a> {
         self.send_media_group(media).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs an [`EditMessageCaption`] inferring the token and
+    /// the chat ID.
+    ///
+    /// [`EditMessageCaption`]: ../methods/struct.EditMessageCaption.html
+    fn edit_message_caption<'a>(
+        &'a self,
+        message_id: u64,
+        caption: &'a str,
+    ) -> EditMessageCaption<'a> {
+        self.bot().edit_message_caption(self.chat_id(), message_id, caption)
+    }
+
+    /// Constructs an [`EditMessageLocation`] inferring the token and
+    /// the chat ID.
+    ///
+    /// [`EditMessageLocation`]: ../methods/struct.EditMessageLocation.html
+    fn edit_message_location<'a>(
+        &'a self,
+        message_id: u64,
+        location: (f64, f64),
+    ) -> EditMessageLocation<'a> {
+        self.bot().edit_message_location(self.chat_id(), message_id, location)
+    }
+
+    /// Constructs an [`EditMessageMedia`] inferring the token and the chat ID.
+    ///
+    /// [`EditMessageMedia`]: ../methods/struct.EditMessageMedia.html
+    fn edit_message_media<'a>(
+        &'a self,
+        message_id: u64,
+        media: impl Into<types::EditableMedia<'a>>,
+    ) -> EditMessageMedia<'a> {
+        self.bot().edit_message_media(self.chat_id(), message_id, media)
+    }
+
+    /// Constructs an [`EditMessageText`] inferring the token and the chat ID.
+    ///
+    /// [`EditMessageText`]: ../methods/struct.EditMessageText.html
+    fn edit_message_text<'a>(
+        &'a self,
+        message_id: u64,
+        text: &'a str,
+    ) -> EditMessageText<'a> {
+        self.bot().edit_message_text(self.chat_id(), message_id, text)
+    }
+
+    /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
+    ///
+    /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
+    fn delete_message<'a>(&'a self, message_id: u64) -> DeleteMessage<'a> {
+        self.bot().delete_message(self.chat_id(), message_id)
+    }
+
+    /// Constructs a [`DeleteMessage`] inferring the token, the chat ID and
+    /// the message ID.
+    ///
+    /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
+    fn delete_this_message<'a>(&'a self) -> DeleteMessage<'a> {
+        self.delete_message(self.message_id())
+    }
+
+    /// Constructs a new [`EditMessageReplyMarkup`] inferring the token and
+    /// the chat ID.
+    ///
+    /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
+    fn edit_message_reply_markup<'a>(
+        &'a self,
+        message_id: u64,
+        reply_markup: types::InlineKeyboard<'a>,
+    ) -> EditMessageReplyMarkup<'a> {
+        self.bot().edit_message_reply_markup(
+            self.chat_id(),
+            message_id,
+            reply_markup,
+        )
     }
 
     /// Constructs a [`SendMessage`] inferring the token, chat ID and
