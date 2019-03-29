@@ -246,6 +246,16 @@ pub trait ChatMethods {
         self.bot().edit_message_caption(self.chat_id(), message_id, caption)
     }
 
+    /// Constructs an [`EditMessageLocation`] inferring the token and the chat ID.
+    ///
+    /// [`EditMessageLocation`]: ../methods/struct.EditMessageLocation.html
+    fn edit_message_location<'a>(
+        &'a self,
+        message_id: u64,
+        location: (f64, f64),
+    ) -> EditMessageLocation<'a> {
+        self.bot().edit_message_location(self.chat_id(), message_id, location)
+    }
 
     /// Constructs an [`EditMessageMedia`] inferring the token and the chat ID.
     ///
