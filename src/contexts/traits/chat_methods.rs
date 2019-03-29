@@ -224,8 +224,8 @@ pub trait ChatMethods {
         self.bot().send_media_group(self.chat_id(), media)
     }
 
-    /// Constructs a [`SendMediaGroup`] inferring the token, chat ID and message
-    /// ID.
+    /// Constructs a [`SendMediaGroup`] inferring the token, chat ID and
+    /// message ID.
     ///
     /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
     fn send_media_group_in_reply<'a>(
@@ -235,7 +235,8 @@ pub trait ChatMethods {
         self.send_media_group(media).reply_to_message_id(self.message_id())
     }
 
-    /// Constructs an [`EditMessageCaption`] inferring the token and the chat ID.
+    /// Constructs an [`EditMessageCaption`] inferring the token and
+    /// the chat ID.
     ///
     /// [`EditMessageCaption`]: ../methods/struct.EditMessageCaption.html
     fn edit_message_caption<'a>(
@@ -246,7 +247,8 @@ pub trait ChatMethods {
         self.bot().edit_message_caption(self.chat_id(), message_id, caption)
     }
 
-    /// Constructs an [`EditMessageLocation`] inferring the token and the chat ID.
+    /// Constructs an [`EditMessageLocation`] inferring the token and
+    /// the chat ID.
     ///
     /// [`EditMessageLocation`]: ../methods/struct.EditMessageLocation.html
     fn edit_message_location<'a>(
@@ -294,7 +296,8 @@ pub trait ChatMethods {
         self.delete_message(self.message_id())
     }
 
-    /// Constructs a new [`EditMessageReplyMarkup`] inferring the token and the chat ID.
+    /// Constructs a new [`EditMessageReplyMarkup`] inferring the token and
+    /// the chat ID.
     ///
     /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
     fn edit_message_reply_markup<'a>(
