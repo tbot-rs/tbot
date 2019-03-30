@@ -311,7 +311,7 @@ pub trait Methods<'a> {
     fn send_animation(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        animation: Animation<'a>,
+        animation: &'a Animation<'a>,
     ) -> methods::SendAnimation<'a> {
         self.prepare_method(methods::SendAnimation::new(
             self.token(),
@@ -326,7 +326,7 @@ pub trait Methods<'a> {
     fn send_audio(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        audio: Audio<'a>,
+        audio: &'a Audio<'a>,
     ) -> methods::SendAudio<'a> {
         self.prepare_method(methods::SendAudio::new(
             self.token(),
@@ -373,7 +373,7 @@ pub trait Methods<'a> {
     fn send_document(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        document: Document<'a>,
+        document: &'a Document<'a>,
     ) -> methods::SendDocument<'a> {
         self.prepare_method(methods::SendDocument::new(
             self.token(),
@@ -433,7 +433,7 @@ pub trait Methods<'a> {
     fn send_photo(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        photo: Photo<'a>,
+        photo: &'a Photo<'a>,
     ) -> methods::SendPhoto<'a> {
         self.prepare_method(methods::SendPhoto::new(
             self.token(),
@@ -482,7 +482,7 @@ pub trait Methods<'a> {
     fn send_video(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        video: Video<'a>,
+        video: &'a Video<'a>,
     ) -> methods::SendVideo<'a> {
         self.prepare_method(methods::SendVideo::new(
             self.token(),
@@ -497,7 +497,7 @@ pub trait Methods<'a> {
     fn send_video_note(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        video_note: VideoNote<'a>,
+        video_note: &'a VideoNote<'a>,
     ) -> methods::SendVideoNote<'a> {
         self.prepare_method(methods::SendVideoNote::new(
             self.token(),
@@ -512,7 +512,7 @@ pub trait Methods<'a> {
     fn send_voice(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        voice: Voice<'a>,
+        voice: &'a Voice<'a>,
     ) -> methods::SendVoice<'a> {
         self.prepare_method(methods::SendVoice::new(
             self.token(),
