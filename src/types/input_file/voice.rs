@@ -39,7 +39,7 @@ impl<'a> Voice<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "tbot: voice's ID cannot start with `attach://`",
+            "\n[tbot]: Voice's ID cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Id(id))
@@ -53,7 +53,7 @@ impl<'a> Voice<'a> {
     pub fn url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
-            "tbot: voice's URL cannot start with `attach://`",
+            "\n[tbot]: Voice's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))

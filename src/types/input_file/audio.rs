@@ -43,7 +43,7 @@ impl<'a> Audio<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "tbot: audio's ID cannot start with `attach://`",
+            "\n[tbot] Audio's ID cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Id(id))
@@ -57,7 +57,7 @@ impl<'a> Audio<'a> {
     pub fn url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
-            "tbot: audio's URL cannot start with `attach://`",
+            "\n[tbot] Audio's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))
