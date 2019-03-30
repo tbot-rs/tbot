@@ -1,8 +1,8 @@
 use super::*;
-use types::input_file::*;
+use crate::types::input_file::*;
 
 /// Contains general methods which can infer some data from the context.
-pub trait ChatMethods {
+pub trait ChatMethods<'a> {
     // Wish trait fields came out soon
     /// Gets the bot.
     fn bot(&self) -> &MockBot;
@@ -17,7 +17,7 @@ pub trait ChatMethods {
     /// destination chat ID.
     ///
     /// [`ForwardMessage`]: ../methods/struct.ForwardMessage.html
-    fn forward_here<'a>(
+    fn forward_here(
         &'a self,
         from_chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
@@ -42,7 +42,7 @@ pub trait ChatMethods {
     /// Construct a [`SendContact`] inferring the token and the chat ID.
     ///
     /// [`SendContact`]: ../methods/struct.SendContact.html
-    fn send_contact<'a>(
+    fn send_contact(
         &'a self,
         phone_number: &'a str,
         first_name: &'a str,
@@ -53,7 +53,7 @@ pub trait ChatMethods {
     /// Construct a [`SendContact`] inferring the token, chat ID and message ID.
     ///
     /// [`SendContact`]: ../methods/struct.SendContact.html
-    fn send_contact_in_reply<'a>(
+    fn send_contact_in_reply(
         &'a self,
         phone_number: &'a str,
         first_name: &'a str,
@@ -80,35 +80,35 @@ pub trait ChatMethods {
     /// Constructs a [`SendMessage`] inferring the token and the chat ID.
     ///
     /// [`SendMessage`]: ../methods/struct.SendMessage.html
-    fn send_message<'a>(&'a self, text: &'a str) -> SendMessage<'a> {
+    fn send_message(&'a self, text: &'a str) -> SendMessage<'a> {
         self.bot().send_message(self.chat_id(), text)
     }
 
     /// Constructs a [`SendPhoto`] inferring the token and the chat ID.
     ///
     /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
-    fn send_photo<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
         self.bot().send_photo(self.chat_id(), photo)
     }
 
     /// Constructs a [`SendPhoto`] inferring the token, chat ID and message ID.
     ///
     /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
-    fn send_photo_in_reply<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo_in_reply(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendSticker`] inferring the token and the chat ID.
     ///
     /// [`SendSticker`]: ../methods/struct.SendSticker.html
-    fn send_sticker<'a>(&'a self, sticker: &'a Sticker<'a>) -> SendSticker<'a> {
+    fn send_sticker(&'a self, sticker: &'a Sticker<'a>) -> SendSticker<'a> {
         self.bot().send_sticker(self.chat_id(), sticker)
     }
 
     /// Constructs a [`SendSticker`] inferring the token, chat ID and message ID.
     ///
     /// [`SendSticker`]: ../methods/struct.SendSticker.html
-    fn send_sticker_in_reply<'a>(
+    fn send_sticker_in_reply(
         &'a self,
         sticker: &'a Sticker<'a>,
     ) -> SendSticker<'a> {
@@ -118,7 +118,7 @@ pub trait ChatMethods {
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
-    fn send_animation<'a>(
+    fn send_animation(
         &'a self,
         animation: Animation<'a>,
     ) -> SendAnimation<'a> {
@@ -129,7 +129,7 @@ pub trait ChatMethods {
     /// ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
-    fn send_animation_in_reply<'a>(
+    fn send_animation_in_reply(
         &'a self,
         animation: Animation<'a>,
     ) -> SendAnimation<'a> {
@@ -139,7 +139,7 @@ pub trait ChatMethods {
     /// Constructs a [`SendDocument`] inferring the token and the chat ID.
     ///
     /// [`SendDocument`]: ../methods/struct.SendDocument.html
-    fn send_document<'a>(&'a self, document: Document<'a>) -> SendDocument<'a> {
+    fn send_document(&'a self, document: Document<'a>) -> SendDocument<'a> {
         self.bot().send_document(self.chat_id(), document)
     }
 
@@ -147,7 +147,7 @@ pub trait ChatMethods {
     /// ID.
     ///
     /// [`SendDocument`]: ../methods/struct.SendDocument.html
-    fn send_document_in_reply<'a>(
+    fn send_document_in_reply(
         &'a self,
         document: Document<'a>,
     ) -> SendDocument<'a> {
@@ -157,49 +157,49 @@ pub trait ChatMethods {
     /// Constructs a [`SendVideo`] inferring the token and the chat ID.
     ///
     /// [`SendVideo`]: ../methods/struct.SendVideo.html
-    fn send_video<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video(&'a self, video: Video<'a>) -> SendVideo<'a> {
         self.bot().send_video(self.chat_id(), video)
     }
 
     /// Constructs a [`SendVideo`] inferring the token, chat ID and message ID.
     ///
     /// [`SendVideo`]: ../methods/struct.SendVideo.html
-    fn send_video_in_reply<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video_in_reply(&'a self, video: Video<'a>) -> SendVideo<'a> {
         self.send_video(video).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendVoice`] inferring the token and the chat ID.
     ///
     /// [`SendVoice`]: ../methods/struct.SendVoice.html
-    fn send_voice<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
         self.bot().send_voice(self.chat_id(), voice)
     }
 
     /// Constructs a [`SendVoice`] inferring the token, chat ID and message ID.
     ///
     /// [`SendVoice`]: ../methods/struct.SendVoice.html
-    fn send_voice_in_reply<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice_in_reply(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendAudio`] inferring the token and the chat ID.
     ///
     /// [`SendAudio`]: ../methods/struct.SendAudio.html
-    fn send_audio<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
         self.bot().send_audio(self.chat_id(), audio)
     }
 
     /// Constructs a [`SendAudio`] inferring the token, chat ID and message ID.
     ///
     /// [`SendAudio`]: ../methods/struct.SendAudio.html
-    fn send_audio_in_reply<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio_in_reply(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
         self.send_audio(audio).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendVideoNote`] inferring the token and the chat ID.
     ///
     /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
-    fn send_video_note<'a>(
+    fn send_video_note(
         &'a self,
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a> {
@@ -210,7 +210,7 @@ pub trait ChatMethods {
     /// ID.
     ///
     /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
-    fn send_video_note_in_reply<'a>(
+    fn send_video_note_in_reply(
         &'a self,
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a> {
@@ -220,7 +220,7 @@ pub trait ChatMethods {
     /// Constructs a [`SendMediaGroup`] inferring the token and the chat ID.
     ///
     /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
-    fn send_media_group<'a>(
+    fn send_media_group(
         &'a self,
         media: Vec<GroupMedia<'a>>,
     ) -> SendMediaGroup<'a> {
@@ -231,7 +231,7 @@ pub trait ChatMethods {
     /// message ID.
     ///
     /// [`SendMediaGroup`]: ../methods/struct.SendMediaGroup.html
-    fn send_media_group_in_reply<'a>(
+    fn send_media_group_in_reply(
         &'a self,
         media: Vec<GroupMedia<'a>>,
     ) -> SendMediaGroup<'a> {
@@ -242,7 +242,7 @@ pub trait ChatMethods {
     /// the chat ID.
     ///
     /// [`EditMessageCaption`]: ../methods/struct.EditMessageCaption.html
-    fn edit_message_caption<'a>(
+    fn edit_message_caption(
         &'a self,
         message_id: u64,
         caption: &'a str,
@@ -254,7 +254,7 @@ pub trait ChatMethods {
     /// the chat ID.
     ///
     /// [`EditMessageLocation`]: ../methods/struct.EditMessageLocation.html
-    fn edit_message_location<'a>(
+    fn edit_message_location(
         &'a self,
         message_id: u64,
         location: (f64, f64),
@@ -265,7 +265,7 @@ pub trait ChatMethods {
     /// Constructs an [`EditMessageMedia`] inferring the token and the chat ID.
     ///
     /// [`EditMessageMedia`]: ../methods/struct.EditMessageMedia.html
-    fn edit_message_media<'a>(
+    fn edit_message_media(
         &'a self,
         message_id: u64,
         media: impl Into<EditableMedia<'a>>,
@@ -276,7 +276,7 @@ pub trait ChatMethods {
     /// Constructs an [`EditMessageText`] inferring the token and the chat ID.
     ///
     /// [`EditMessageText`]: ../methods/struct.EditMessageText.html
-    fn edit_message_text<'a>(
+    fn edit_message_text(
         &'a self,
         message_id: u64,
         text: &'a str,
@@ -287,7 +287,7 @@ pub trait ChatMethods {
     /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
     ///
     /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
-    fn delete_message<'a>(&'a self, message_id: u64) -> DeleteMessage<'a> {
+    fn delete_message(&'a self, message_id: u64) -> DeleteMessage<'a> {
         self.bot().delete_message(self.chat_id(), message_id)
     }
 
@@ -295,7 +295,7 @@ pub trait ChatMethods {
     /// the message ID.
     ///
     /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
-    fn delete_this_message<'a>(&'a self) -> DeleteMessage<'a> {
+    fn delete_this_message(&'a self) -> DeleteMessage<'a> {
         self.delete_message(self.message_id())
     }
 
@@ -303,7 +303,7 @@ pub trait ChatMethods {
     /// the chat ID.
     ///
     /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
-    fn edit_message_reply_markup<'a>(
+    fn edit_message_reply_markup(
         &'a self,
         message_id: u64,
         reply_markup: types::InlineKeyboard<'a>,
@@ -319,14 +319,14 @@ pub trait ChatMethods {
     /// message ID.
     ///
     /// [`SendMessage`]: ../methods/struct.SendMessage.html
-    fn send_message_in_reply<'a>(&'a self, text: &'a str) -> SendMessage<'a> {
+    fn send_message_in_reply(&'a self, text: &'a str) -> SendMessage<'a> {
         self.send_message(text).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendVenue`] inferring the token and the chat ID.
     ///
     /// [`SendVenue`]: ../methods/struct.SendLocation.html
-    fn send_venue<'a>(
+    fn send_venue(
         &'a self,
         location: (f64, f64),
         title: &'a str,
@@ -339,7 +339,7 @@ pub trait ChatMethods {
     /// message ID.
     ///
     /// [`SendVenue`]: ../methods/struct.SendLocation.html
-    fn send_venue_in_reply<'a>(
+    fn send_venue_in_reply(
         &'a self,
         location: (f64, f64),
         title: &'a str,

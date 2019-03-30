@@ -51,7 +51,7 @@ impl MessageContext {
     }
 }
 
-impl traits::ChatMethods for MessageContext {
+impl<'a> traits::ChatMethods<'a> for MessageContext {
     fn bot(&self) -> &MockBot {
         &self.bot
     }
@@ -69,4 +69,4 @@ impl traits::ChatMethods for MessageContext {
     }
 }
 
-impl Forwardable for MessageContext {}
+impl<'a> Forwardable<'a> for MessageContext {}
