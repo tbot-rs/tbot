@@ -111,7 +111,10 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
-    fn send_animation(&'a self, animation: Animation<'a>) -> SendAnimation<'a> {
+    fn send_animation(
+        &'a self,
+        animation: &'a Animation<'a>,
+    ) -> SendAnimation<'a> {
         self.bot().send_animation(self.chat_id(), animation)
     }
 
@@ -121,7 +124,7 @@ pub trait ChatMethods<'a> {
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
     fn send_animation_in_reply(
         &'a self,
-        animation: Animation<'a>,
+        animation: &'a Animation<'a>,
     ) -> SendAnimation<'a> {
         self.send_animation(animation).reply_to_message_id(self.message_id())
     }
@@ -129,14 +132,14 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendAudio`] inferring the token and the chat ID.
     ///
     /// [`SendAudio`]: ../methods/struct.SendAudio.html
-    fn send_audio(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a> {
         self.bot().send_audio(self.chat_id(), audio)
     }
 
     /// Constructs a [`SendAudio`] inferring the token, chat ID and message ID.
     ///
     /// [`SendAudio`]: ../methods/struct.SendAudio.html
-    fn send_audio_in_reply(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio_in_reply(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a> {
         self.send_audio(audio).reply_to_message_id(self.message_id())
     }
 
@@ -173,7 +176,7 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendDocument`] inferring the token and the chat ID.
     ///
     /// [`SendDocument`]: ../methods/struct.SendDocument.html
-    fn send_document(&'a self, document: Document<'a>) -> SendDocument<'a> {
+    fn send_document(&'a self, document: &'a Document<'a>) -> SendDocument<'a> {
         self.bot().send_document(self.chat_id(), document)
     }
 
@@ -183,7 +186,7 @@ pub trait ChatMethods<'a> {
     /// [`SendDocument`]: ../methods/struct.SendDocument.html
     fn send_document_in_reply(
         &'a self,
-        document: Document<'a>,
+        document: &'a Document<'a>,
     ) -> SendDocument<'a> {
         self.send_document(document).reply_to_message_id(self.message_id())
     }
@@ -242,14 +245,14 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendPhoto`] inferring the token and the chat ID.
     ///
     /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
-    fn send_photo(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a> {
         self.bot().send_photo(self.chat_id(), photo)
     }
 
     /// Constructs a [`SendPhoto`] inferring the token, chat ID and message ID.
     ///
     /// [`SendPhoto`]: ../methods/struct.SendPhoto.html
-    fn send_photo_in_reply(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo_in_reply(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a> {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
@@ -299,14 +302,14 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendVideo`] inferring the token and the chat ID.
     ///
     /// [`SendVideo`]: ../methods/struct.SendVideo.html
-    fn send_video(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video(&'a self, video: &'a Video<'a>) -> SendVideo<'a> {
         self.bot().send_video(self.chat_id(), video)
     }
 
     /// Constructs a [`SendVideo`] inferring the token, chat ID and message ID.
     ///
     /// [`SendVideo`]: ../methods/struct.SendVideo.html
-    fn send_video_in_reply(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video_in_reply(&'a self, video: &'a Video<'a>) -> SendVideo<'a> {
         self.send_video(video).reply_to_message_id(self.message_id())
     }
 
@@ -315,7 +318,7 @@ pub trait ChatMethods<'a> {
     /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
     fn send_video_note(
         &'a self,
-        video_note: VideoNote<'a>,
+        video_note: &'a VideoNote<'a>,
     ) -> SendVideoNote<'a> {
         self.bot().send_video_note(self.chat_id(), video_note)
     }
@@ -326,7 +329,7 @@ pub trait ChatMethods<'a> {
     /// [`SendVideoNote`]: ../methods/struct.SendVideoNote.html
     fn send_video_note_in_reply(
         &'a self,
-        video_note: VideoNote<'a>,
+        video_note: &'a VideoNote<'a>,
     ) -> SendVideoNote<'a> {
         self.send_video_note(video_note).reply_to_message_id(self.message_id())
     }
@@ -334,14 +337,14 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendVoice`] inferring the token and the chat ID.
     ///
     /// [`SendVoice`]: ../methods/struct.SendVoice.html
-    fn send_voice(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a> {
         self.bot().send_voice(self.chat_id(), voice)
     }
 
     /// Constructs a [`SendVoice`] inferring the token, chat ID and message ID.
     ///
     /// [`SendVoice`]: ../methods/struct.SendVoice.html
-    fn send_voice_in_reply(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice_in_reply(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 }

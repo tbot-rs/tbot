@@ -10,7 +10,7 @@ pub struct SendAnimation<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    animation: Animation<'a>,
+    animation: &'a Animation<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -21,7 +21,7 @@ impl<'a> SendAnimation<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        animation: Animation<'a>,
+        animation: &'a Animation<'a>,
     ) -> Self {
         Self {
             token,
