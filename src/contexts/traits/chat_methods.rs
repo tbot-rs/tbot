@@ -3,14 +3,13 @@ use crate::types::input_file::*;
 
 /// Contains general methods which can infer some data from the context.
 pub trait ChatMethods<'a> {
-    // Wish trait fields came out soon
-    /// Gets the bot.
+    #[doc(hidden)]
     fn bot(&self) -> &MockBot;
-    /// Gets the chat ID.
+    #[doc(hidden)]
     fn chat_id(&self) -> i64;
-    /// Gets the message ID.
+    #[doc(hidden)]
     fn message_id(&self) -> u64;
-    /// Gets the sender ID.
+    #[doc(hidden)]
     fn from_id(&self) -> i64;
 
     /// Constructs a new [`ForwardMessage`] inferring the token and the
