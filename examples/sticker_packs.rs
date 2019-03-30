@@ -29,24 +29,23 @@ fn main() {
             dbg!(error);
         })
         .and_then(|_| {
-            iter_ok(stickers)
-                .for_each(move |sticker| {
-                    bot.add_sticker_to_set(
-                        USER,
-                        NAME,
-                        &PngSticker::bytes(sticker.0),
-                        sticker.1,
-                    )
-                    .into_future()
-                    .map_err(|error| {
-                        dbg!(error);
-                    })
+            iter_ok(stickers).for_each(move |sticker| {
+                bot.add_sticker_to_set(
+                    USER,
+                    NAME,
+                    &PngSticker::bytes(sticker.0),
+                    sticker.1,
+                )
+                .into_future()
+                .map_err(|error| {
+                    dbg!(error);
                 })
+            })
         })
         .map(|_| {
             println!(
                 "Go check out this amazing sticker pack: \
-                https://t.me/addstickers/{}",
+                 https://t.me/addstickers/{}",
                 NAME,
             );
         });
