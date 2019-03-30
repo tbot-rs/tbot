@@ -448,7 +448,7 @@ pub trait Methods<'a> {
     fn send_sticker(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        sticker: Sticker<'a>,
+        sticker: &'a Sticker<'a>,
     ) -> methods::SendSticker<'a> {
         self.prepare_method(methods::SendSticker::new(
             self.token(),

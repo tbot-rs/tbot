@@ -10,7 +10,7 @@ pub struct SendSticker<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    sticker: Sticker<'a>,
+    sticker: &'a Sticker<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -21,7 +21,7 @@ impl<'a> SendSticker<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        sticker: Sticker<'a>,
+        sticker: &'a Sticker<'a>,
     ) -> Self {
         Self {
             token,
