@@ -111,10 +111,7 @@ pub trait ChatMethods<'a> {
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
-    fn send_animation(
-        &'a self,
-        animation: Animation<'a>,
-    ) -> SendAnimation<'a> {
+    fn send_animation(&'a self, animation: Animation<'a>) -> SendAnimation<'a> {
         self.bot().send_animation(self.chat_id(), animation)
     }
 
