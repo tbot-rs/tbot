@@ -98,6 +98,23 @@ pub trait ChatMethods {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SendSticker`] inferring the token and the chat ID.
+    ///
+    /// [`SendSticker`]: ../methods/struct.SendSticker.html
+    fn send_sticker<'a>(&'a self, sticker: Sticker<'a>) -> SendSticker<'a> {
+        self.bot().send_sticker(self.chat_id(), sticker)
+    }
+
+    /// Constructs a [`SendSticker`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendSticker`]: ../methods/struct.SendSticker.html
+    fn send_sticker_in_reply<'a>(
+        &'a self,
+        sticker: Sticker<'a>,
+    ) -> SendSticker<'a> {
+        self.send_sticker(sticker).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html

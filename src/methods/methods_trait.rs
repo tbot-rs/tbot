@@ -223,6 +223,81 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`GetStickerSet`] inferring `token`.
+    ///
+    /// [`GetStickerSet`]: ./struct.GetStickerSet.html
+    fn get_sticker_set(&'a self, name: &'a str) -> methods::GetStickerSet<'a> {
+        self.prepare_method(methods::GetStickerSet::new(self.token(), name))
+    }
+
+    /// Constructs a new [`CreateNewStickerSet`] inferring `token`.
+    ///
+    /// [`CreateNewStickerSet`]: ./struct.CreateNewStickerSet.html
+    fn create_new_sticker_set(
+        &'a self,
+        user_id: u64,
+        name: &'a str,
+        title: &'a str,
+        png_sticker: Sticker<'a>,
+        emojis: &'a str,
+    ) -> methods::CreateNewStickerSet<'a> {
+        self.prepare_method(methods::CreateNewStickerSet::new(
+            self.token(),
+            user_id,
+            name,
+            title,
+            png_sticker,
+            emojis,
+        ))
+    }
+
+    /// Constructs a new [`AddStickerToSet`] inferring `token`.
+    ///
+    /// [`AddStickerToSet`]: ./struct.AddStickerToSet.html
+    fn add_sticker_to_set(
+        &'a self,
+        user_id: u64,
+        name: &'a str,
+        png_sticker: Sticker<'a>,
+        emojis: &'a str,
+    ) -> methods::AddStickerToSet<'a> {
+        self.prepare_method(methods::AddStickerToSet::new(
+            self.token(),
+            user_id,
+            name,
+            png_sticker,
+            emojis,
+        ))
+    }
+
+    /// Constructs a new [`SetStickerPositionInSet`] inferring `token`.
+    ///
+    /// [`SetStickerPositionInSet`]: ./struct.SetStickerPositionInSet.html
+    fn set_sticker_position_in_set(
+        &'a self,
+        sticker: &'a str,
+        position: u64,
+    ) -> methods::SetStickerPositionInSet<'a> {
+        self.prepare_method(methods::SetStickerPositionInSet::new(
+            self.token(),
+            sticker,
+            position,
+        ))
+    }
+
+    /// Constructs a new [`DeleteStickerFromSet`] inferring `token`.
+    ///
+    /// [`DeleteStickerFromSet`]: ./struct.DeleteStickerFromSet.html
+    fn delete_sticker_from_set(
+        &'a self,
+        sticker: &'a str,
+    ) -> methods::DeleteStickerFromSet<'a> {
+        self.prepare_method(methods::DeleteStickerFromSet::new(
+            self.token(),
+            sticker,
+        ))
+    }
+
     /// Constructs a new [`GetWebhookInfo`] inferring `token`.
     ///
     /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
@@ -364,6 +439,21 @@ pub trait Methods<'a> {
             self.token(),
             chat_id,
             photo,
+        ))
+    }
+
+    /// Constructs a new [`SendSticker`] inferring `token`.
+    ///
+    /// [`SendSticker`]: ./struct.SendSticker.html
+    fn send_sticker(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        sticker: Sticker<'a>,
+    ) -> methods::SendSticker<'a> {
+        self.prepare_method(methods::SendSticker::new(
+            self.token(),
+            chat_id,
+            sticker,
         ))
     }
 
