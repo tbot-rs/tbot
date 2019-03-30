@@ -1,5 +1,5 @@
 use super::*;
-use types::input_file::{InputFile, Sticker};
+use types::input_file::{InputFile, PngSticker};
 use types::MaskPosition;
 
 /// Represents the [`addStickerToSet`][docs] method.
@@ -12,7 +12,7 @@ pub struct AddStickerToSet<'a> {
     proxy: Option<proxy::Proxy>,
     user_id: u64,
     name: &'a str,
-    png_sticker: Sticker<'a>,
+    png_sticker: &'a PngSticker<'a>,
     emojis: &'a str,
     mask_position: Option<MaskPosition>,
 }
@@ -23,7 +23,7 @@ impl<'a> AddStickerToSet<'a> {
         token: &'a str,
         user_id: u64,
         name: &'a str,
-        png_sticker: Sticker<'a>,
+        png_sticker: &'a PngSticker<'a>,
         emojis: &'a str,
     ) -> Self {
         Self {

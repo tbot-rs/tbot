@@ -8,6 +8,7 @@ mod document;
 mod editable_media;
 mod group_media;
 mod photo;
+mod png_sticker;
 mod sticker;
 mod thumb;
 mod video;
@@ -16,7 +17,8 @@ mod voice;
 
 pub use {
     animation::*, audio::*, document::*, editable_media::*, group_media::*,
-    photo::*, sticker::*, thumb::*, video::*, video_note::*, voice::*,
+    photo::*, png_sticker::*, sticker::*, thumb::*, video::*, video_note::*,
+    voice::*,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]

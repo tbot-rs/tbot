@@ -238,7 +238,7 @@ pub trait Methods<'a> {
         user_id: u64,
         name: &'a str,
         title: &'a str,
-        png_sticker: Sticker<'a>,
+        png_sticker: &'a PngSticker<'a>,
         emojis: &'a str,
     ) -> methods::CreateNewStickerSet<'a> {
         self.prepare_method(methods::CreateNewStickerSet::new(
@@ -258,7 +258,7 @@ pub trait Methods<'a> {
         &'a self,
         user_id: u64,
         name: &'a str,
-        png_sticker: Sticker<'a>,
+        png_sticker: &'a PngSticker<'a>,
         emojis: &'a str,
     ) -> methods::AddStickerToSet<'a> {
         self.prepare_method(methods::AddStickerToSet::new(

@@ -1,5 +1,5 @@
 use super::*;
-use types::input_file::{InputFile, Sticker};
+use types::input_file::{InputFile, PngSticker};
 use types::MaskPosition;
 
 /// Represents the [`createNewStickerSet`][docs] method.
@@ -13,7 +13,7 @@ pub struct CreateNewStickerSet<'a> {
     user_id: u64,
     name: &'a str,
     title: &'a str,
-    png_sticker: Sticker<'a>,
+    png_sticker: &'a PngSticker<'a>,
     emojis: &'a str,
     contains_masks: Option<bool>,
     mask_position: Option<MaskPosition>,
@@ -26,7 +26,7 @@ impl<'a> CreateNewStickerSet<'a> {
         user_id: u64,
         name: &'a str,
         title: &'a str,
-        png_sticker: Sticker<'a>,
+        png_sticker: &'a PngSticker<'a>,
         emojis: &'a str,
     ) -> Self {
         Self {
