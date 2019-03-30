@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{InputFile, VideoNote};
 
 /// Represents the [`sendVideoNote`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendVideoNote<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    video_note: types::VideoNote<'a>,
+    video_note: VideoNote<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendVideoNote<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        video_note: types::VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> Self {
         Self {
             token,
@@ -81,18 +82,17 @@ impl<'a> SendVideoNote<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.video_note.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("video_note", filename, bytes),
-            types::InputFile::Id(video_note)
-            | types::InputFile::Url(video_note) => {
+            InputFile::Id(video_note) | InputFile::Url(video_note) => {
                 multipart = multipart.str("video_note", video_note);
             }
         }
 
-        if let Some(types::InputFile::File {
+        if let Some(InputFile::File {
             filename,
             bytes,
             ..

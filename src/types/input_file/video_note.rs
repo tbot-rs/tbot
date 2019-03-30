@@ -9,7 +9,7 @@ pub struct VideoNote<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) length: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) thumb: Option<types::InputFile<'a>>,
+    pub(crate) thumb: Option<InputFile<'a>>,
 }
 
 impl<'a> VideoNote<'a> {
@@ -72,7 +72,7 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: types::Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
         self.thumb = Some(thumb.0);
         self
     }

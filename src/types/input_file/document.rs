@@ -58,7 +58,7 @@ impl<'a> Document<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: types::Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
         self.thumb = Some(thumb.0);
         self
     }

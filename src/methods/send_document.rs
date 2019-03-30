@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::{Document, InputFile};
 
 /// Represents the [`sendDocument`][docs] method.
 ///
@@ -9,7 +10,7 @@ pub struct SendDocument<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    document: types::Document<'a>,
+    document: Document<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
@@ -20,7 +21,7 @@ impl<'a> SendDocument<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        document: types::Document<'a>,
+        document: Document<'a>,
     ) -> Self {
         Self {
             token,
@@ -80,18 +81,17 @@ impl<'a> SendDocument<'a> {
             .maybe_string("reply_markup", &reply_markup);
 
         match self.document.media {
-            types::InputFile::File {
+            InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("document", filename, bytes),
-            types::InputFile::Id(document)
-            | types::InputFile::Url(document) => {
+            InputFile::Id(document) | InputFile::Url(document) => {
                 multipart = multipart.str("document", document);
             }
         }
 
-        if let Some(types::InputFile::File {
+        if let Some(InputFile::File {
             filename,
             bytes,
             ..

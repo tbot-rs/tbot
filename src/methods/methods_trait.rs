@@ -1,4 +1,5 @@
 use super::*;
+use types::input_file::*;
 
 /// Provides API methods that infer the bot's token.
 pub trait Methods<'a> {
@@ -141,7 +142,7 @@ pub trait Methods<'a> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u64,
-        media: impl Into<types::EditableMedia<'a>>,
+        media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditMessageMedia<'a> {
         self.prepare_method(methods::EditMessageMedia::new(
             self.token(),
@@ -222,6 +223,81 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`GetStickerSet`] inferring `token`.
+    ///
+    /// [`GetStickerSet`]: ./struct.GetStickerSet.html
+    fn get_sticker_set(&'a self, name: &'a str) -> methods::GetStickerSet<'a> {
+        self.prepare_method(methods::GetStickerSet::new(self.token(), name))
+    }
+
+    /// Constructs a new [`CreateNewStickerSet`] inferring `token`.
+    ///
+    /// [`CreateNewStickerSet`]: ./struct.CreateNewStickerSet.html
+    fn create_new_sticker_set(
+        &'a self,
+        user_id: u64,
+        name: &'a str,
+        title: &'a str,
+        png_sticker: &'a PngSticker<'a>,
+        emojis: &'a str,
+    ) -> methods::CreateNewStickerSet<'a> {
+        self.prepare_method(methods::CreateNewStickerSet::new(
+            self.token(),
+            user_id,
+            name,
+            title,
+            png_sticker,
+            emojis,
+        ))
+    }
+
+    /// Constructs a new [`AddStickerToSet`] inferring `token`.
+    ///
+    /// [`AddStickerToSet`]: ./struct.AddStickerToSet.html
+    fn add_sticker_to_set(
+        &'a self,
+        user_id: u64,
+        name: &'a str,
+        png_sticker: &'a PngSticker<'a>,
+        emojis: &'a str,
+    ) -> methods::AddStickerToSet<'a> {
+        self.prepare_method(methods::AddStickerToSet::new(
+            self.token(),
+            user_id,
+            name,
+            png_sticker,
+            emojis,
+        ))
+    }
+
+    /// Constructs a new [`SetStickerPositionInSet`] inferring `token`.
+    ///
+    /// [`SetStickerPositionInSet`]: ./struct.SetStickerPositionInSet.html
+    fn set_sticker_position_in_set(
+        &'a self,
+        sticker: &'a str,
+        position: u64,
+    ) -> methods::SetStickerPositionInSet<'a> {
+        self.prepare_method(methods::SetStickerPositionInSet::new(
+            self.token(),
+            sticker,
+            position,
+        ))
+    }
+
+    /// Constructs a new [`DeleteStickerFromSet`] inferring `token`.
+    ///
+    /// [`DeleteStickerFromSet`]: ./struct.DeleteStickerFromSet.html
+    fn delete_sticker_from_set(
+        &'a self,
+        sticker: &'a str,
+    ) -> methods::DeleteStickerFromSet<'a> {
+        self.prepare_method(methods::DeleteStickerFromSet::new(
+            self.token(),
+            sticker,
+        ))
+    }
+
     /// Constructs a new [`GetWebhookInfo`] inferring `token`.
     ///
     /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
@@ -235,7 +311,7 @@ pub trait Methods<'a> {
     fn send_animation(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        animation: types::Animation<'a>,
+        animation: Animation<'a>,
     ) -> methods::SendAnimation<'a> {
         self.prepare_method(methods::SendAnimation::new(
             self.token(),
@@ -250,7 +326,7 @@ pub trait Methods<'a> {
     fn send_audio(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        audio: types::Audio<'a>,
+        audio: Audio<'a>,
     ) -> methods::SendAudio<'a> {
         self.prepare_method(methods::SendAudio::new(
             self.token(),
@@ -297,7 +373,7 @@ pub trait Methods<'a> {
     fn send_document(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        document: types::Document<'a>,
+        document: Document<'a>,
     ) -> methods::SendDocument<'a> {
         self.prepare_method(methods::SendDocument::new(
             self.token(),
@@ -327,7 +403,7 @@ pub trait Methods<'a> {
     fn send_media_group(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        media: Vec<types::GroupMedia<'a>>,
+        media: Vec<GroupMedia<'a>>,
     ) -> methods::SendMediaGroup<'a> {
         self.prepare_method(methods::SendMediaGroup::new(
             self.token(),
@@ -357,12 +433,27 @@ pub trait Methods<'a> {
     fn send_photo(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        photo: types::Photo<'a>,
+        photo: Photo<'a>,
     ) -> methods::SendPhoto<'a> {
         self.prepare_method(methods::SendPhoto::new(
             self.token(),
             chat_id,
             photo,
+        ))
+    }
+
+    /// Constructs a new [`SendSticker`] inferring `token`.
+    ///
+    /// [`SendSticker`]: ./struct.SendSticker.html
+    fn send_sticker(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        sticker: &'a Sticker<'a>,
+    ) -> methods::SendSticker<'a> {
+        self.prepare_method(methods::SendSticker::new(
+            self.token(),
+            chat_id,
+            sticker,
         ))
     }
 
@@ -391,7 +482,7 @@ pub trait Methods<'a> {
     fn send_video(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        video: types::Video<'a>,
+        video: Video<'a>,
     ) -> methods::SendVideo<'a> {
         self.prepare_method(methods::SendVideo::new(
             self.token(),
@@ -406,7 +497,7 @@ pub trait Methods<'a> {
     fn send_video_note(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        video_note: types::VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> methods::SendVideoNote<'a> {
         self.prepare_method(methods::SendVideoNote::new(
             self.token(),
@@ -421,7 +512,7 @@ pub trait Methods<'a> {
     fn send_voice(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        voice: types::Voice<'a>,
+        voice: Voice<'a>,
     ) -> methods::SendVoice<'a> {
         self.prepare_method(methods::SendVoice::new(
             self.token(),

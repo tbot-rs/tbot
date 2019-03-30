@@ -2,6 +2,7 @@
 
 use super::*;
 
+pub mod input_file;
 pub mod raw;
 
 mod callback_game;
@@ -9,10 +10,13 @@ mod chat_action;
 mod chat_id;
 mod chat_photo;
 mod chat_types;
-mod input_file;
+mod file;
 mod keyboards;
+mod mask_position;
 mod parse_mode;
 mod photo_size;
+mod sticker;
+mod sticker_set;
 mod updates;
 mod user;
 mod user_profile_photos;
@@ -20,6 +24,7 @@ mod webhook_info;
 
 pub use {
     callback_game::*, chat_action::*, chat_id::*, chat_photo::*, chat_types::*,
-    input_file::*, keyboards::*, parse_mode::*, photo_size::*, updates::*,
-    user::*, user_profile_photos::*, webhook_info::*,
+    file::*, keyboards::*, mask_position::*, parse_mode::*, photo_size::*,
+    sticker::*, sticker_set::*, updates::*, user::*, user_profile_photos::*,
+    webhook_info::*,
 };

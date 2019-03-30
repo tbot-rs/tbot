@@ -1,32 +1,32 @@
 use super::*;
-use types::input_file::{Audio, InputFile};
+use types::input_file::{InputFile, Sticker};
 
-/// Represents the [`sendAudio`][docs] method.
+/// Represents the [`sendSticker`][docs] method.
 ///
-/// [docs]: https://core.telegram.org/bots/api#sendaudio
+/// [docs]: https://core.telegram.org/bots/api#sendsticker
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendAudio<'a> {
+pub struct SendSticker<'a> {
     token: &'a str,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    audio: Audio<'a>,
+    sticker: &'a Sticker<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u64>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
-impl<'a> SendAudio<'a> {
-    /// Constructs a new `SendAudio`.
+impl<'a> SendSticker<'a> {
+    /// Constructs a new `SendSticker`.
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        audio: Audio<'a>,
+        sticker: &'a Sticker<'a>,
     ) -> Self {
         Self {
             token,
             chat_id: chat_id.into(),
-            audio,
+            sticker,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -34,6 +34,7 @@ impl<'a> SendAudio<'a> {
             proxy: None,
         }
     }
+
     /// Configures `disable_notification`.
     pub fn disable_notification(mut self, is_disabled: bool) -> Self {
         self.disable_notification = Some(is_disabled);
@@ -65,50 +66,34 @@ impl<'a> SendAudio<'a> {
             types::ChatId::Username(username) => username.into(),
         };
 
-        let duration = self.audio.duration.map(|x| x.to_string());
-        let parse_mode = self.audio.parse_mode.map(|x| x.to_string());
         let is_disabled = self.disable_notification.map(|x| x.to_string());
         let reply_to = self.reply_to_message_id.map(|id| id.to_string());
         let reply_markup = self
             .reply_markup
             .and_then(|markup| serde_json::to_string(&markup).ok());
 
-        let mut multipart = Multipart::new(11)
+        let mut multipart = Multipart::new(7)
             .str("chat_id", &chat_id)
-            .maybe_string("duration", &duration)
-            .maybe_str("caption", self.audio.caption)
-            .maybe_str("performer", self.audio.performer)
-            .maybe_str("title", self.audio.title)
-            .maybe_string("parse_mode", &parse_mode)
-            .maybe_string("disable_notification", &is_disabled)
+            .maybe_string("disabled_notification", &is_disabled)
             .maybe_string("reply_to_message_id", &reply_to)
             .maybe_string("reply_markup", &reply_markup);
 
-        match self.audio.media {
+        match self.sticker.media {
             InputFile::File {
                 filename,
                 bytes,
                 ..
-            } => multipart = multipart.file("audio", filename, bytes),
-            InputFile::Id(audio) | InputFile::Url(audio) => {
-                multipart = multipart.str("audio", audio);
+            } => multipart = multipart.file("sticker", filename, bytes),
+            InputFile::Id(sticker) | InputFile::Url(sticker) => {
+                multipart = multipart.str("sticker", sticker);
             }
-        }
-
-        if let Some(InputFile::File {
-            filename,
-            bytes,
-            ..
-        }) = self.audio.thumb
-        {
-            multipart = multipart.file("thumb", filename, bytes);
         }
 
         let (boundary, body) = multipart.finish();
 
         send_method(
             self.token,
-            "sendAudio",
+            "sendSticker",
             Some(boundary),
             body,
             #[cfg(feature = "proxy")]
@@ -118,7 +103,7 @@ impl<'a> SendAudio<'a> {
 }
 
 #[cfg(feature = "proxy")]
-impl ProxyMethod for SendAudio<'_> {
+impl ProxyMethod for SendSticker<'_> {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self
