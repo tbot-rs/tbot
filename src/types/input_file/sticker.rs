@@ -31,7 +31,7 @@ impl<'a> Sticker<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "\n[tbot] sticker's ID cannot start with `attach://`\n",
+            "\n[tbot] Sticker's ID cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Id(id))
@@ -45,7 +45,7 @@ impl<'a> Sticker<'a> {
     pub fn url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
-            "\n[tbot] sticker's URL cannot start with `attach://`\n",
+            "\n[tbot] Sticker's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))

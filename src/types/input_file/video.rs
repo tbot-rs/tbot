@@ -45,7 +45,7 @@ impl<'a> Video<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "tbot: video's ID cannot start with `attach://`",
+            "\n[tbot]: Video's ID cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Id(id))
@@ -59,7 +59,7 @@ impl<'a> Video<'a> {
     pub fn url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
-            "tbot: video's URL cannot start with `attach://`",
+            "\n[tbot]: Video's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))

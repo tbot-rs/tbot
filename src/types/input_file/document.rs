@@ -37,7 +37,7 @@ impl<'a> Document<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "tbot: document's ID cannot start with `attach://`",
+            "\n[tbot]: Document's ID cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Id(id))
@@ -51,7 +51,7 @@ impl<'a> Document<'a> {
     pub fn url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
-            "tbot: document's URL cannot start with `attach://`",
+            "\n[tbot]: Document's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))

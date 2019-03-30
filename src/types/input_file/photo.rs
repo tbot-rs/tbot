@@ -35,7 +35,7 @@ impl<'a> Photo<'a> {
     pub fn id(id: &'a str) -> Self {
         assert!(
             !id.starts_with("attach://"),
-            "tbot: photo's ID cannot start with `attach://`",
+            "\n[tbot]: Photo's ID cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Id(id))
@@ -49,7 +49,7 @@ impl<'a> Photo<'a> {
     pub fn url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
-            "tbot: photo's URL cannot start with `attach://`",
+            "\n[tbot]: Photo's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))

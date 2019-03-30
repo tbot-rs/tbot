@@ -68,7 +68,7 @@ impl<'a> Polling<'a> {
 
         if let Err(error) = delete_webhook.wait() {
             panic!(
-                "\n[tbot] error while deleting previous webhook: {:#?}\n",
+                "\n[tbot] Error while deleting previous webhook: {:#?}\n",
                 error,
             );
         }
