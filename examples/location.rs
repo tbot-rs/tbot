@@ -35,7 +35,7 @@ fn main() {
                 .for_each(move |(_, place)| {
                     bot.edit_message_location(
                         message.chat.id,
-                        message.message_id,
+                        message.id as u64,
                         *place,
                     )
                     .into_future()
