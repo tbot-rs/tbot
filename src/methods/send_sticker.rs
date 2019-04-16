@@ -60,7 +60,7 @@ impl<'a> SendSticker<'a> {
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
-    ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
+    ) -> impl Future<Item = types::Message, Error = DeliveryError> {
         let chat_id = match self.chat_id {
             types::ChatId::Id(id) => id.to_string(),
             types::ChatId::Username(username) => username.into(),

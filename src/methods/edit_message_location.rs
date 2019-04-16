@@ -50,7 +50,7 @@ impl<'a> EditMessageLocation<'a> {
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
-    ) -> impl Future<Item = types::raw::Message, Error = DeliveryError> {
+    ) -> impl Future<Item = types::Message, Error = DeliveryError> {
         send_method(
             self.token,
             "editMessageLiveLocation",
