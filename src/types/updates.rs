@@ -29,13 +29,13 @@ pub enum Updates {
 #[derive(Debug, PartialEq, Clone)]
 pub enum UpdateType {
     /// A new incoming message.
-    Message(raw::Message),
+    Message(Message),
     /// A message was edited.
-    EditedMessage(raw::Message),
+    EditedMessage(Message),
     /// A new channel post.
-    ChannelPost(raw::Message),
+    ChannelPost(Message),
     /// A channel post was edited.
-    EditedChannelPost(raw::Message),
+    EditedChannelPost(Message),
 }
 
 /// Represents an update from Telegram.
