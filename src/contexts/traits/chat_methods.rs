@@ -9,8 +9,6 @@ pub trait ChatMethods<'a> {
     fn chat_id(&self) -> i64;
     #[doc(hidden)]
     fn message_id(&self) -> u64;
-    #[doc(hidden)]
-    fn from_id(&self) -> i64;
 
     /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
     ///
@@ -99,13 +97,6 @@ pub trait ChatMethods<'a> {
         message_id: u64,
     ) -> ForwardMessage<'a> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
-    }
-
-    /// Constructs a [`GetUserProfilePhotos`] inferring the token and sender ID.
-    ///
-    /// [`GetUserProfilePhotos`]: ../methods/struct.GetUserProfilePhotos.html
-    fn get_sender_profile_photos(&self) -> GetUserProfilePhotos {
-        self.bot().get_user_profile_photos(self.from_id())
     }
 
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
