@@ -63,10 +63,6 @@ impl<'a> traits::ChatMethods<'a> for MessageContext {
     fn message_id(&self) -> u64 {
         self.message_id
     }
-
-    fn from_id(&self) -> i64 {
-        self.from.id
-    }
 }
 
 impl<'a> Forwardable<'a> for MessageContext {}
