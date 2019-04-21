@@ -9,11 +9,11 @@ pub(crate) struct GetUpdates<'a> {
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    offset: Option<u64>,
+    offset: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    timeout: Option<u64>,
+    timeout: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allowed_updates: Option<&'a [types::Updates]>,
 }
@@ -22,9 +22,9 @@ impl<'a> GetUpdates<'a> {
     #[cfg(feature = "proxy")]
     pub fn new(
         token: &'a str,
-        offset: Option<u64>,
+        offset: Option<u32>,
         limit: Option<u8>,
-        timeout: Option<u64>,
+        timeout: Option<u32>,
         allowed_updates: Option<&'a [types::Updates]>,
         proxy: Option<proxy::Proxy>,
     ) -> Self {
@@ -41,9 +41,9 @@ impl<'a> GetUpdates<'a> {
     #[cfg(not(feature = "proxy"))]
     pub fn new(
         token: &'a str,
-        offset: Option<u64>,
+        offset: Option<u32>,
         limit: Option<u8>,
-        timeout: Option<u64>,
+        timeout: Option<u32>,
         allowed_updates: Option<&'a [types::Updates]>,
     ) -> Self {
         Self {

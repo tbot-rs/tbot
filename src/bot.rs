@@ -3,7 +3,7 @@ use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
-use {contexts::*, methods::GetUpdates, types::UpdateType};
+use {contexts::*, methods::GetUpdates, types::UpdateKind};
 
 mod mock_bot;
 mod polling;
@@ -15,14 +15,15 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 
 // Wish trait alises came out soon
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
-type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
+type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type MessageHandler = dyn FnMut(&MessageContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: Arc<String>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
-    before_update_handlers: Handlers<BeforeUpdateHandler>,
+    before_update_handlers: Handlers<UpdateHandler>,
+    after_update_handlers: Handlers<UpdateHandler>,
     message_handlers: Handlers<MessageHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
@@ -35,6 +36,7 @@ impl Bot {
             token: Arc::new(token),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
+            after_update_handlers: Vec::new(),
             message_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
@@ -76,9 +78,17 @@ impl Bot {
     /// Adds a new handler for all updates run before the specialized updates.
     pub fn before_update(
         &mut self,
-        handler: impl FnMut(&types::Update) + Send + Sync + 'static,
+        handler: impl FnMut(&UpdateContext) + Send + Sync + 'static,
     ) {
         self.before_update_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for all updates run after the specialized updates.
+    pub fn after_update(
+        &mut self,
+        handler: impl FnMut(&UpdateContext) + Send + Sync + 'static,
+    ) {
+        self.after_update_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new text message handler.
@@ -122,22 +132,24 @@ impl Bot {
     }
 
     fn handle_update(&self, update: types::Update) {
-        self.handle_before_update(&update);
-
         let mock_bot = Arc::new(self.mock());
+        let update_context = UpdateContext::new(mock_bot.clone(), update.id);
 
-        match update.update_type {
-            Some(UpdateType::Message(mut message)) => {
+        self.handle_before_update(&update_context);
+
+        match update.kind {
+            Some(UpdateKind::Message(mut message)) => {
                 match MessageContext::try_new(mock_bot.clone(), message) {
                     Ok(context) => {
                         self.handle_message(&context);
-                        return;
                     }
                     Err(original) => message = original,
                 }
             }
             _ => (), // TODO
         }
+
+        self.handle_after_update(&update_context);
     }
 
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
@@ -150,9 +162,15 @@ impl Bot {
         }
     }
 
-    fn handle_before_update(&self, update: &types::Update) {
+    fn handle_before_update(&self, context: &UpdateContext) {
         for handler in &self.before_update_handlers {
-            (&mut *handler.lock().unwrap())(&update);
+            (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    fn handle_after_update(&self, context: &UpdateContext) {
+        for handler in &self.after_update_handlers {
+            (&mut *handler.lock().unwrap())(&context);
         }
     }
 
