@@ -63,6 +63,9 @@ impl Bot {
     }
 
     /// Adds a new handler for errors that happened while polling.
+    ///
+    /// If no polling error handler is set and such an error occurs, `tbot` will
+    /// panic printing the error.
     pub fn on_polling_error(
         &mut self,
         handler: impl FnMut(&methods::DeliveryError) + Send + Sync + 'static,
@@ -138,6 +141,10 @@ impl Bot {
     }
 
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
+        if self.polling_error_handlers.is_empty() {
+            panic!("\n[tbot] Unhandled polling error: {:#?}\n", error);
+        }
+
         for handler in &self.polling_error_handlers {
             (&mut *handler.lock().unwrap())(&error);
         }
