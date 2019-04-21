@@ -21,6 +21,7 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
+type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
@@ -29,6 +30,7 @@ pub struct Bot {
     before_update_handlers: Handlers<UpdateHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
     text_handlers: Handlers<TextHandler>,
+    edited_text_handlers: Handlers<EditedTextHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
@@ -42,6 +44,7 @@ impl Bot {
             before_update_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
             text_handlers: Vec::new(),
+            edited_text_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
         }
@@ -101,6 +104,14 @@ impl Bot {
         handler: impl FnMut(&TextContext) + Send + Sync + 'static,
     ) {
         self.text_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for edited text messages.
+    pub fn edited_text(
+        &mut self,
+        handler: impl FnMut(&EditedTextContext) + Send + Sync + 'static,
+    ) {
+        self.edited_text_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Starts configuring polling.
@@ -166,6 +177,35 @@ impl Bot {
                     _ => (), // TOOD
                 }
             }
+            Some(UpdateKind::EditedMessage(message))
+            | Some(UpdateKind::EditedChannelPost(message)) => {
+                let edit_date = message.edit_date.expect(
+                    "\n[tbot] Edited message did not have the `edit_date` \
+                     field\n",
+                );
+
+                match message.kind {
+                    MessageKind::Text(text) => {
+                        if !text.text.starts_with("/")
+                            && self.will_handle_edited_text()
+                        {
+                            let context = EditedTextContext::new(
+                                Arc::clone(&mock_bot),
+                                message.id,
+                                message.from,
+                                message.date,
+                                message.chat,
+                                message.reply_to.map(|message| *message),
+                                edit_date,
+                                text,
+                            );
+
+                            self.handle_edited_text(&context);
+                        }
+                    }
+                    _ => (), // TOOD
+                }
+            }
             _ => (), // TODO
         }
 
@@ -200,6 +240,16 @@ impl Bot {
 
     fn handle_text(&self, context: &TextContext) {
         for handler in &self.text_handlers {
+            (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    fn will_handle_edited_text(&self) -> bool {
+        !self.edited_text_handlers.is_empty()
+    }
+
+    fn handle_edited_text(&self, context: &EditedTextContext) {
+        for handler in &self.edited_text_handlers {
             (&mut *handler.lock().unwrap())(&context);
         }
     }

@@ -2,9 +2,10 @@
 
 use super::*;
 
+mod edited_text;
 mod text;
 mod update;
 
 pub mod traits;
 
-pub use {text::*, update::*};
+pub use {edited_text::*, text::*, update::*};
