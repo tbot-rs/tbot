@@ -410,7 +410,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         Ok(Message {
             id: message_id
                 .ok_or_else(|| serde::de::Error::missing_field(MESSAGE_ID))?,
-            from: from.ok_or_else(|| serde::de::Error::missing_field(FROM))?,
+            from,
             date: date.ok_or_else(|| serde::de::Error::missing_field(DATE))?,
             chat: chat.ok_or_else(|| serde::de::Error::missing_field(CHAT))?,
             forward,
