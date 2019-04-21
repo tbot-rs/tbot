@@ -66,7 +66,7 @@ impl Bot {
     ///
     /// If no polling error handler is set and such an error occurs, `tbot` will
     /// panic printing the error.
-    pub fn on_polling_error(
+    pub fn polling_error(
         &mut self,
         handler: impl FnMut(&methods::DeliveryError) + Send + Sync + 'static,
     ) {
