@@ -52,20 +52,6 @@ pub struct SuccessfulPayment {
     pub provider_payment_charge_id: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct PhotoSize {
-    pub file_id: String,
-    pub width: u32,
-    pub height: u32,
-    pub file_size: Option<u32>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct UserProfilePhotos {
-    pub total_count: u32,
-    pub photos: Vec<Vec<PhotoSize>>,
-}
-
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct CallbackQuery {
     pub id: String,
@@ -75,51 +61,6 @@ pub struct CallbackQuery {
     pub chat_instance: String,
     pub data: Option<String>,
     pub game_short_name: Option<String>,
-}
-
-// TODO: Manual serialization or look up how to choose the right `type` value
-// based on the variant.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum InputMedia {
-    Photo {
-        media: String,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-    },
-    Video {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-        width: Option<u32>,
-        height: Option<u32>,
-        duration: Option<u32>,
-        supports_streaming: Option<bool>,
-    },
-    Animation {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-        width: Option<u32>,
-        height: Option<u32>,
-        duration: Option<u32>,
-    },
-    Audio {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-        duration: Option<u32>,
-        performer: Option<String>,
-        title: Option<String>,
-    },
-    Document {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<String>,
-    },
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
@@ -272,16 +213,6 @@ pub enum PassportElementError {
         element_hash: String,
         message: String,
     },
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct Game {
-    pub title: String,
-    pub description: String,
-    pub photo: Vec<PhotoSize>,
-    pub text: Option<String>,
-    pub text_entities: Option<Vec<MessageEntity>>,
-    pub animation: Option<Animation>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
