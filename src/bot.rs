@@ -50,6 +50,8 @@ impl Bot {
     /// # Example
     ///
     /// ```
+    /// use tbot::Bot;
+    ///
     /// let mut bot = Bot::from_env("BOT_TOKEN");
     ///
     /// bot.on_message(|_| ());
