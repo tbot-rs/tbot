@@ -8,7 +8,7 @@ use tbot::prelude::*;
 fn main() {
     let mut bot = tbot::bot!("BOT_TOKEN");
 
-    bot.on_text(|context| {
+    bot.text(|context| {
         let reply = context
             .send_message(&context.text)
             .into_future()

@@ -2,8 +2,10 @@
 
 use super::*;
 
-mod message_context;
-pub mod traits;
+mod edited_text;
+mod text;
 mod update;
 
-pub use {message_context::*, update::*};
+pub mod traits;
+
+pub use {edited_text::*, text::*, update::*};

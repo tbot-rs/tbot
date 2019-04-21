@@ -50,7 +50,7 @@ pub struct Update {
 
 const UPDATE_ID: &str = "update_id";
 const MESSAGE: &str = "message";
-const EDITED_MESSAGE: &str = "edited_mesage";
+const EDITED_MESSAGE: &str = "edited_message";
 const CHANNEL_POST: &str = "channel_post";
 const EDITED_CHANNEL_POST: &str = "edited_channel_post";
 
