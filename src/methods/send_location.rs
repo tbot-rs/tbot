@@ -21,7 +21,7 @@ pub struct SendLocation<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::raw::Keyboard<'a>>,
+    reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
 impl<'a> SendLocation<'a> {
@@ -66,7 +66,7 @@ impl<'a> SendLocation<'a> {
     /// Confgiures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::raw::Keyboard<'a>>,
+        markup: impl Into<types::AnyKeyboard<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

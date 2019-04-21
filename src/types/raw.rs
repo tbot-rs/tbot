@@ -52,20 +52,6 @@ pub struct SuccessfulPayment {
     pub provider_payment_charge_id: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct PhotoSize {
-    pub file_id: String,
-    pub width: u32,
-    pub height: u32,
-    pub file_size: Option<u32>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct UserProfilePhotos {
-    pub total_count: u32,
-    pub photos: Vec<Vec<PhotoSize>>,
-}
-
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct CallbackQuery {
     pub id: String,
@@ -75,51 +61,6 @@ pub struct CallbackQuery {
     pub chat_instance: String,
     pub data: Option<String>,
     pub game_short_name: Option<String>,
-}
-
-// TODO: Manual serialization or look up how to choose the right `type` value
-// based on the variant.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum InputMedia {
-    Photo {
-        media: String,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-    },
-    Video {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-        width: Option<u32>,
-        height: Option<u32>,
-        duration: Option<u32>,
-        supports_streaming: Option<bool>,
-    },
-    Animation {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-        width: Option<u32>,
-        height: Option<u32>,
-        duration: Option<u32>,
-    },
-    Audio {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<ParseMode>,
-        duration: Option<u32>,
-        performer: Option<String>,
-        title: Option<String>,
-    },
-    Document {
-        media: String,
-        thumb: Option<String>,
-        caption: Option<String>,
-        parse_mode: Option<String>,
-    },
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
@@ -275,60 +216,8 @@ pub enum PassportElementError {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct Game {
-    pub title: String,
-    pub description: String,
-    pub photo: Vec<PhotoSize>,
-    pub text: Option<String>,
-    pub text_entities: Option<Vec<MessageEntity>>,
-    pub animation: Option<Animation>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct GameHighScore {
     pub position: u32,
     pub user: User,
     pub score: i32,
-}
-
-pub enum Keyboard<'a> {
-    Inline(InlineKeyboard<'a>),
-    ReplyMarkup(ReplyKeyboard<'a>),
-    ReplyRemove(ReplyKeyboardRemove),
-    ForceReply(ForceReply),
-}
-
-impl<'a> serde::Serialize for Keyboard<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        match self {
-            Keyboard::Inline(keyboard) => keyboard.serialize(s),
-            Keyboard::ReplyMarkup(keyboard) => keyboard.serialize(s),
-            Keyboard::ReplyRemove(keyboard) => keyboard.serialize(s),
-            Keyboard::ForceReply(keyboard) => keyboard.serialize(s),
-        }
-    }
-}
-
-impl<'a> From<InlineKeyboard<'a>> for Keyboard<'a> {
-    fn from(keyboard: InlineKeyboard<'a>) -> Keyboard<'a> {
-        Keyboard::Inline(keyboard)
-    }
-}
-
-impl<'a> From<ReplyKeyboard<'a>> for Keyboard<'a> {
-    fn from(keyboard: ReplyKeyboard<'a>) -> Keyboard<'a> {
-        Keyboard::ReplyMarkup(keyboard)
-    }
-}
-
-impl<'a> From<ReplyKeyboardRemove> for Keyboard<'a> {
-    fn from(keyboard: ReplyKeyboardRemove) -> Keyboard<'a> {
-        Keyboard::ReplyRemove(keyboard)
-    }
-}
-
-impl<'a> From<ForceReply> for Keyboard<'a> {
-    fn from(keyboard: ForceReply) -> Keyboard<'a> {
-        Keyboard::ForceReply(keyboard)
-    }
 }
