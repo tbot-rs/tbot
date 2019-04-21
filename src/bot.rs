@@ -3,7 +3,7 @@ use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
-use {contexts::*, methods::GetUpdates, types::UpdateType};
+use {contexts::*, methods::GetUpdates, types::UpdateKind};
 
 mod mock_bot;
 mod polling;
@@ -126,8 +126,8 @@ impl Bot {
 
         let mock_bot = Arc::new(self.mock());
 
-        match update.update_type {
-            Some(UpdateType::Message(mut message)) => {
+        match update.kind {
+            Some(UpdateKind::Message(mut message)) => {
                 match MessageContext::try_new(mock_bot.clone(), message) {
                     Ok(context) => {
                         self.handle_message(&context);

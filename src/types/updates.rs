@@ -27,7 +27,7 @@ pub enum Updates {
 
 /// Represents different types of updates from Telegram.
 #[derive(Debug, PartialEq, Clone)]
-pub enum UpdateType {
+pub enum UpdateKind {
     /// A new incoming message.
     Message(Message),
     /// A message was edited.
@@ -41,11 +41,18 @@ pub enum UpdateType {
 /// Represents an update from Telegram.
 #[derive(Debug)]
 pub struct Update {
+    private: (),
     /// Update's ID.
-    pub update_id: u64,
+    pub id: u32,
     /// Update's type.
-    pub update_type: Option<UpdateType>,
+    pub kind: Option<UpdateKind>,
 }
+
+const UPDATE_ID: &str = "update_id";
+const MESSAGE: &str = "message";
+const EDITED_MESSAGE: &str = "edited_mesage";
+const CHANNEL_POST: &str = "channel_post";
+const EDITED_CHANNEL_POST: &str = "edited_channel_post";
 
 impl<'de> serde::Deserialize<'de> for Update {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -68,48 +75,54 @@ impl<'de> serde::Deserialize<'de> for Update {
             where
                 V: serde::de::MapAccess<'v>,
             {
-                let mut update_id = None;
-                let mut update_type = None;
+                let mut id = None;
+                let mut kind = None;
 
                 while let Some(key) = map.next_key()? {
                     match key {
-                        "update_id" => update_id = Some(map.next_value()?),
-                        "message" => {
-                            update_type =
-                                Some(UpdateType::Message(map.next_value()?))
+                        UPDATE_ID => id = Some(map.next_value()?),
+                        MESSAGE => {
+                            kind = Some(UpdateKind::Message(map.next_value()?))
                         }
-                        "edited_message" => {
-                            update_type = Some(UpdateType::EditedMessage(
+                        EDITED_MESSAGE => {
+                            kind = Some(UpdateKind::EditedMessage(
                                 map.next_value()?,
                             ))
                         }
-                        "channel_post" => {
-                            update_type =
-                                Some(UpdateType::ChannelPost(map.next_value()?))
+                        CHANNEL_POST => {
+                            kind =
+                                Some(UpdateKind::ChannelPost(map.next_value()?))
                         }
-                        "edited_channel_post" => {
-                            update_type = Some(UpdateType::EditedChannelPost(
+                        EDITED_CHANNEL_POST => {
+                            kind = Some(UpdateKind::EditedChannelPost(
                                 map.next_value()?,
                             ))
                         }
-                        _ => (),
+                        _ => {
+                            let _ = map.next_value::<serde::de::IgnoredAny>()?;
+                        },
                     }
                 }
 
-                let update_id = update_id.ok_or_else(|| {
-                    serde::de::Error::missing_field("update_id")
-                })?;
-
                 Ok(Update {
-                    update_id,
-                    update_type,
+                    private: (),
+                    id: id.ok_or_else(|| {
+                        serde::de::Error::missing_field(UPDATE_ID)
+                    })?,
+                    kind,
                 })
             }
         }
 
         deserializer.deserialize_struct(
-            "Duration",
-            &["update_id", "update_type"],
+            "Update",
+            &[
+                UPDATE_ID,
+                MESSAGE,
+                EDITED_MESSAGE,
+                CHANNEL_POST,
+                EDITED_CHANNEL_POST,
+            ],
             UpdateVisitor,
         )
     }

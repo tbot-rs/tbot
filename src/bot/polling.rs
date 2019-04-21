@@ -9,7 +9,7 @@ use super::{methods::DeleteWebhook, *};
 pub struct Polling<'a> {
     bot: Bot,
     limit: Option<u8>,
-    timeout: Option<u64>,
+    timeout: Option<u32>,
     allowed_updates: Option<&'a [types::Updates]>,
     poll_interval: u64,
 }
@@ -32,7 +32,7 @@ impl<'a> Polling<'a> {
     }
 
     /// Configures the timeout for long polling.
-    pub fn timeout(mut self, timeout: u64) -> Self {
+    pub fn timeout(mut self, timeout: u32) -> Self {
         self.timeout = Some(timeout);
         self
     }
@@ -110,7 +110,7 @@ impl<'a> Polling<'a> {
                 .map(move |updates| {
                     if let Some(update) = updates.last() {
                         *new_offset.lock().unwrap() =
-                            Some(update.update_id + 1);
+                            Some(update.id + 1);
                     }
 
                     for update in updates {
