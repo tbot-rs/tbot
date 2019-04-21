@@ -1,7 +1,6 @@
 use tbot::{
     prelude::*,
     types::input_file::{Animation, Document, Photo, Video},
-    Bot,
 };
 
 const CHAT: i64 = 0;
@@ -10,7 +9,7 @@ const GIF: &[u8] = include_bytes!("./assets/gif.mp4");
 const TUTORIAL: &[u8] = include_bytes!("./tutorial.rs");
 
 fn main() {
-    let bot = Bot::from_env("BOT_TOKEN");
+    let bot = tbot::bot!("BOT_TOKEN");
 
     let photo = bot.send_photo(CHAT, &Photo::bytes(PHOTO)).into_future();
     let animation =

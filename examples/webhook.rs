@@ -1,10 +1,10 @@
-use tbot::{prelude::*, types::ParseMode::Markdown, Bot};
+use tbot::{prelude::*, types::ParseMode::Markdown};
 
 const URL: &str = "https://example.com";
 const PORT: u16 = 2000;
 
 fn main() {
-    let mut bot = Bot::from_env("BOT_TOKEN");
+    let mut bot = tbot::bot!("BOT_TOKEN");
 
     bot.on_message(|context| {
         let message = match meval::eval_str(&context.message) {

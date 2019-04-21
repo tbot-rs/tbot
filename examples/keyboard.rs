@@ -1,14 +1,13 @@
 use tbot::{
     prelude::*,
     types::{InlineButton, InlineButtonType, InlineKeyboard},
-    Bot,
 };
 
 const CHAT: i64 = 0;
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 
 fn main() {
-    let bot = Bot::from_env("BOT_TOKEN");
+    let bot = tbot::bot!("BOT_TOKEN");
 
     let message = bot
         .send_message(CHAT, "This is a keyboard done with tbot!")
