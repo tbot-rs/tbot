@@ -59,14 +59,22 @@ impl<'a> Polling<'a> {
     }
 
     fn delete_webhook(&self) {
+        let error = Arc::new(Mutex::new(None));
+        let outer_error = Arc::clone(&error);
+
         let delete_webhook = DeleteWebhook::new(
             &self.bot.token,
             #[cfg(feature = "proxy")]
             self.bot.proxy.clone(),
         )
-        .into_future();
+        .into_future()
+        .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
 
-        if let Err(error) = delete_webhook.wait() {
+        crate::run(delete_webhook);
+
+        let error = &*error.lock().unwrap();
+
+        if let Some(error) = error {
             panic!(
                 "\n[tbot] Error while deleting previous webhook: {:#?}\n",
                 error,
