@@ -13,7 +13,7 @@ pub struct SendAudio<'a> {
     audio: &'a Audio<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
-    reply_markup: Option<types::raw::Keyboard<'a>>,
+    reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
 impl<'a> SendAudio<'a> {
@@ -49,7 +49,7 @@ impl<'a> SendAudio<'a> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::raw::Keyboard<'a>>,
+        markup: impl Into<types::AnyKeyboard<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
