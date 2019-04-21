@@ -15,7 +15,7 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 
 // Wish trait alises came out soon
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
-type BeforeUpdateHandler = dyn FnMut(&types::Update) + Send + Sync;
+type BeforeUpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type MessageHandler = dyn FnMut(&MessageContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
@@ -76,7 +76,7 @@ impl Bot {
     /// Adds a new handler for all updates run before the specialized updates.
     pub fn before_update(
         &mut self,
-        handler: impl FnMut(&types::Update) + Send + Sync + 'static,
+        handler: impl FnMut(&UpdateContext) + Send + Sync + 'static,
     ) {
         self.before_update_handlers.push(Mutex::new(Box::new(handler)))
     }
@@ -122,9 +122,10 @@ impl Bot {
     }
 
     fn handle_update(&self, update: types::Update) {
-        self.handle_before_update(&update);
-
         let mock_bot = Arc::new(self.mock());
+        let context = UpdateContext::new(mock_bot.clone(), update.id);
+
+        self.handle_before_update(&context);
 
         match update.kind {
             Some(UpdateKind::Message(mut message)) => {
@@ -150,9 +151,9 @@ impl Bot {
         }
     }
 
-    fn handle_before_update(&self, update: &types::Update) {
+    fn handle_before_update(&self, context: &UpdateContext) {
         for handler in &self.before_update_handlers {
-            (&mut *handler.lock().unwrap())(&update);
+            (&mut *handler.lock().unwrap())(&context);
         }
     }
 

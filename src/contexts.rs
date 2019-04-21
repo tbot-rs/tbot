@@ -4,5 +4,6 @@ use super::*;
 
 mod message_context;
 pub mod traits;
+mod update;
 
-pub use message_context::*;
+pub use {message_context::*, update::*};
