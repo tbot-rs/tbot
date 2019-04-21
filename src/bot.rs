@@ -41,10 +41,22 @@ impl Bot {
         }
     }
 
-    /// Constructs a new `Bot`, getting the token from the environment.
+    /// Constructs a new `Bot`, extracting the token from the environment at
+    /// _runtime_.
+    /// If you need to extract the token at _compile time_, use [`bot!`].
+    ///
+    /// [`bot!`]: ./macro.bot.html
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let mut bot = Bot::from_env("BOT_TOKEN");
+    ///
+    /// bot.on_message(|_| ());
+    /// ```
     pub fn from_env(env_var: &'static str) -> Self {
         Self::new(std::env::var(env_var).unwrap_or_else(|_| {
-            panic!("The bot's token in {} was not specified", env_var)
+            panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
         }))
     }
 
@@ -151,4 +163,35 @@ impl Methods<'_> for Bot {
     fn get_proxy(&self) -> Option<proxy::Proxy> {
         self.proxy.clone()
     }
+}
+
+/// Constructs a new `Bot`, extracting the token from the environment at
+/// _compile time_.
+///
+/// If you need to extract the token at _runtime_, use [`Bot::from_env`].
+///
+/// [`Bot::from_env`]: ./struct.Bot.html#method.from_env
+///
+/// # Example
+///
+/// ```
+/// let mut bot = tbot::bot!("BOT_TOKEN");
+///
+/// bot.on_message(|_| ());
+/// ```
+#[macro_export]
+macro_rules! bot {
+    ($var:literal) => {{
+        let token = env!($var).to_string();
+        $crate::Bot::new(token)
+    }};
+    ($var:literal,) => {
+        $crate::bot!($var)
+    };
+    () => {
+        compile_error!("the macro must be invoked as `bot!(\"<VAR_NAME>\")`")
+    };
+    ($($x:tt)+) => {
+        $crate::bot!()
+    };
 }
