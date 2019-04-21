@@ -3,10 +3,10 @@
 Make cool Telegram bots with Rust easily. Here is a simple echo bot:
 
 ```rust
-use tbot::{prelude::*, Bot};
+use tbot::prelude::*;
 
 fn main() {
-    let mut bot = Bot::from_env("BOT_TOKEN");
+    let mut bot = tbot::bot!("BOT_TOKEN");
 
     bot.on_text(|context| {
         let reply = context

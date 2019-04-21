@@ -1,5 +1,5 @@
 use std::time::{Duration, Instant};
-use tbot::{prelude::*, Bot};
+use tbot::prelude::*;
 use tokio::{prelude::*, timer::Interval};
 
 const CHAT: i64 = 0;
@@ -15,7 +15,7 @@ const PLACES: [(f64, f64); 6] = [
 const UPDATE_PERIOD: u32 = 3600 * 24;
 
 fn main() {
-    let bot = Bot::from_env("BOT_TOKEN");
+    let bot = tbot::bot!("BOT_TOKEN");
     let mut places = PLACES.iter().cycle();
 
     let live_location = bot

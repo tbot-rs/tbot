@@ -1,5 +1,5 @@
 use futures::{stream::iter_ok, Stream};
-use tbot::{prelude::*, types::input_file::PngSticker, Bot};
+use tbot::{prelude::*, types::input_file::PngSticker};
 
 const USER: u64 = 0;
 // Must end with `_by_<bot_username>`
@@ -11,7 +11,7 @@ const STICKERS: [(&[u8], &str); 2] = [
 ];
 
 fn main() {
-    let bot = Bot::from_env("BOT_TOKEN");
+    let bot = tbot::bot!("BOT_TOKEN");
 
     let mut stickers = STICKERS.iter();
     let first_sticker = stickers.next().unwrap();
