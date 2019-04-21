@@ -99,8 +99,9 @@ impl<'de> serde::Deserialize<'de> for Update {
                             ))
                         }
                         _ => {
-                            let _ = map.next_value::<serde::de::IgnoredAny>()?;
-                        },
+                            let _ =
+                                map.next_value::<serde::de::IgnoredAny>()?;
+                        }
                     }
                 }
 
