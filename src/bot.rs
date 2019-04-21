@@ -3,7 +3,11 @@ use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
-use {contexts::*, methods::GetUpdates, types::UpdateKind};
+use {
+    contexts::*,
+    methods::GetUpdates,
+    types::{MessageKind, UpdateKind},
+};
 
 mod mock_bot;
 mod polling;
@@ -16,7 +20,7 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 // Wish trait alises came out soon
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
-type MessageHandler = dyn FnMut(&MessageContext) + Send + Sync;
+type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
@@ -24,7 +28,7 @@ pub struct Bot {
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
-    message_handlers: Handlers<MessageHandler>,
+    text_handlers: Handlers<TextHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
@@ -37,7 +41,7 @@ impl Bot {
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
-            message_handlers: Vec::new(),
+            text_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
         }
@@ -92,11 +96,11 @@ impl Bot {
     }
 
     /// Adds a new text message handler.
-    pub fn on_message(
+    pub fn text(
         &mut self,
-        handler: impl FnMut(&MessageContext) + Send + Sync + 'static,
+        handler: impl FnMut(&TextContext) + Send + Sync + 'static,
     ) {
-        self.message_handlers.push(Mutex::new(Box::new(handler)))
+        self.text_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Starts configuring polling.
@@ -138,12 +142,28 @@ impl Bot {
         self.handle_before_update(&update_context);
 
         match update.kind {
-            Some(UpdateKind::Message(mut message)) => {
-                match MessageContext::try_new(mock_bot.clone(), message) {
-                    Ok(context) => {
-                        self.handle_message(&context);
+            Some(UpdateKind::Message(message))
+            | Some(UpdateKind::ChannelPost(message)) => {
+                match message.kind {
+                    MessageKind::Text(text) => {
+                        if !text.text.starts_with("/")
+                            && self.will_handle_text()
+                        {
+                            let context = TextContext::new(
+                                Arc::clone(&mock_bot),
+                                message.id,
+                                message.from,
+                                message.date,
+                                message.chat,
+                                message.forward,
+                                message.reply_to.map(|message| *message),
+                                text,
+                            );
+
+                            self.handle_text(&context);
+                        }
                     }
-                    Err(original) => message = original,
+                    _ => (), // TOOD
                 }
             }
             _ => (), // TODO
@@ -174,8 +194,12 @@ impl Bot {
         }
     }
 
-    fn handle_message(&self, context: &MessageContext) {
-        for handler in &self.message_handlers {
+    fn will_handle_text(&self) -> bool {
+        !self.text_handlers.is_empty()
+    }
+
+    fn handle_text(&self, context: &TextContext) {
+        for handler in &self.text_handlers {
             (&mut *handler.lock().unwrap())(&context);
         }
     }
