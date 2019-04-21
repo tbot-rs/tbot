@@ -12,7 +12,7 @@ pub struct EditInlineText<'a> {
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
-    inline_message_id: u64,
+    inline_message_id: u32,
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<types::ParseMode>,
@@ -24,7 +24,7 @@ pub struct EditInlineText<'a> {
 
 impl<'a> EditInlineText<'a> {
     /// Constructs a new `EditMessageText`.
-    pub fn new(token: &'a str, inline_message_id: u64, text: &'a str) -> Self {
+    pub fn new(token: &'a str, inline_message_id: u32, text: &'a str) -> Self {
         Self {
             token,
             inline_message_id,

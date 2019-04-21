@@ -8,12 +8,12 @@ pub trait ChatMethods<'a> {
     #[doc(hidden)]
     fn chat_id(&self) -> i64;
     #[doc(hidden)]
-    fn message_id(&self) -> u64;
+    fn message_id(&self) -> u32;
 
     /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
     ///
     /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
-    fn delete_message(&'a self, message_id: u64) -> DeleteMessage<'a> {
+    fn delete_message(&'a self, message_id: u32) -> DeleteMessage<'a> {
         self.bot().delete_message(self.chat_id(), message_id)
     }
 
@@ -31,7 +31,7 @@ pub trait ChatMethods<'a> {
     /// [`EditMessageCaption`]: ../methods/struct.EditMessageCaption.html
     fn edit_message_caption(
         &'a self,
-        message_id: u64,
+        message_id: u32,
         caption: &'a str,
     ) -> EditMessageCaption<'a> {
         self.bot().edit_message_caption(self.chat_id(), message_id, caption)
@@ -43,7 +43,7 @@ pub trait ChatMethods<'a> {
     /// [`EditMessageLocation`]: ../methods/struct.EditMessageLocation.html
     fn edit_message_location(
         &'a self,
-        message_id: u64,
+        message_id: u32,
         location: (f64, f64),
     ) -> EditMessageLocation<'a> {
         self.bot().edit_message_location(self.chat_id(), message_id, location)
@@ -54,7 +54,7 @@ pub trait ChatMethods<'a> {
     /// [`EditMessageMedia`]: ../methods/struct.EditMessageMedia.html
     fn edit_message_media(
         &'a self,
-        message_id: u64,
+        message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditMessageMedia<'a> {
         self.bot().edit_message_media(self.chat_id(), message_id, media)
@@ -66,7 +66,7 @@ pub trait ChatMethods<'a> {
     /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
     fn edit_message_reply_markup(
         &'a self,
-        message_id: u64,
+        message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> EditMessageReplyMarkup<'a> {
         self.bot().edit_message_reply_markup(
@@ -81,7 +81,7 @@ pub trait ChatMethods<'a> {
     /// [`EditMessageText`]: ../methods/struct.EditMessageText.html
     fn edit_message_text(
         &'a self,
-        message_id: u64,
+        message_id: u32,
         text: &'a str,
     ) -> EditMessageText<'a> {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
@@ -94,7 +94,7 @@ pub trait ChatMethods<'a> {
     fn forward_here(
         &'a self,
         from_chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
     ) -> ForwardMessage<'a> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
     }

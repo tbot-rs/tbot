@@ -8,13 +8,13 @@ pub struct UploadStickerFile<'a> {
     token: &'a str,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
-    user_id: u64,
+    user_id: i64,
     png_sticker: &'a [u8],
 }
 
 impl<'a> UploadStickerFile<'a> {
     /// Constructs a new `UploadStickerFile`.
-    pub fn new(token: &'a str, user_id: u64, png_sticker: &'a [u8]) -> Self {
+    pub fn new(token: &'a str, user_id: i64, png_sticker: &'a [u8]) -> Self {
         Self {
             token,
             user_id,

@@ -117,7 +117,7 @@ pub enum DeliveryError {
         /// Human-readable description of the error.
         description: String,
         /// Error code reflected through HTTP error codes (for example, 401).
-        error_code: i64,
+        error_code: u8,
         /// The group moved to a supergroup.
         migrate_to_chat_id: Option<i64>,
         /// When exceeding flood control, you must wait for this amount of

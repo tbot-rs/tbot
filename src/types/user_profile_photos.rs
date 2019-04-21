@@ -6,7 +6,7 @@ use super::*;
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct UserProfilePhotos {
     /// Overall amount of user's photos.
-    pub total_count: u64,
+    pub total_count: u32,
     /// Vector of photos in different sizes.
     pub photos: Vec<Vec<PhotoSize>>,
 }

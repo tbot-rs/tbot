@@ -9,7 +9,7 @@ pub struct SetStickerPositionInSet<'a> {
     #[serde(skip)]
     token: &'a str,
     sticker: &'a str,
-    position: u64,
+    position: u32,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -17,7 +17,7 @@ pub struct SetStickerPositionInSet<'a> {
 
 impl<'a> SetStickerPositionInSet<'a> {
     /// Constructs a new `SetStickerPositionInSet`.
-    pub fn new(token: &'a str, sticker: &'a str, position: u64) -> Self {
+    pub fn new(token: &'a str, sticker: &'a str, position: u32) -> Self {
         Self {
             token,
             sticker,

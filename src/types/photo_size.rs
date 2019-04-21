@@ -8,9 +8,9 @@ pub struct PhotoSize {
     /// Photo's file ID.
     pub file_id: String,
     /// Photo's width.
-    pub width: u64,
+    pub width: u32,
     /// Photo's height.
-    pub height: u64,
+    pub height: u32,
     /// Photo's file size.
-    pub file_size: Option<u64>,
+    pub file_size: Option<u32>,
 }

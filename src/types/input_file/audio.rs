@@ -8,7 +8,7 @@ pub struct Audio<'a> {
     pub(crate) thumb: Option<InputFile<'a>>,
     pub(crate) caption: Option<&'a str>,
     pub(crate) parse_mode: Option<ParseMode>,
-    pub(crate) duration: Option<u64>,
+    pub(crate) duration: Option<u32>,
     pub(crate) performer: Option<&'a str>,
     pub(crate) title: Option<&'a str>,
 }
@@ -82,7 +82,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u64) -> Self {
+    pub fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }

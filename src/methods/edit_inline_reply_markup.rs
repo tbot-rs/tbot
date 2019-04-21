@@ -12,7 +12,7 @@ pub struct EditInlineReplyMarkup<'a> {
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
-    inline_message_id: u64,
+    inline_message_id: u32,
     reply_markup: types::InlineKeyboard<'a>,
 }
 
@@ -20,7 +20,7 @@ impl<'a> EditInlineReplyMarkup<'a> {
     /// Constructs a new `EditInlineReplyMarkup`.
     pub fn new(
         token: &'a str,
-        inline_message_id: u64,
+        inline_message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> Self {
         Self {

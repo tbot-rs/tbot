@@ -8,11 +8,11 @@ pub struct VideoNote {
     /// The file ID of the video note.
     pub file_id: String,
     /// The length of the video note.
-    pub length: i64,
+    pub length: u32,
     /// The duration of the video note.
-    pub duration: i64,
+    pub duration: u32,
     /// The thumb ID of the video_note.
     pub thumb: Option<PhotoSize>,
     /// The video note file's size.
-    pub file_size: Option<i64>,
+    pub file_size: Option<u32>,
 }

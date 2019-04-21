@@ -13,7 +13,7 @@ pub struct EditMessageReplyMarkup<'a> {
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    message_id: u64,
+    message_id: u32,
     reply_markup: types::InlineKeyboard<'a>,
 }
 
@@ -22,7 +22,7 @@ impl<'a> EditMessageReplyMarkup<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> Self {
         Self {

@@ -8,9 +8,9 @@ pub struct Voice {
     /// The file ID of the voice.
     pub file_id: String,
     /// The duration of the voice.
-    pub duration: i64,
+    pub duration: u32,
     /// The MIME type of the voice.
     pub mime_type: Option<String>,
     /// The voice file's size.
-    pub file_size: Option<i64>,
+    pub file_size: Option<u32>,
 }

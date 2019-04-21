@@ -110,7 +110,7 @@ pub enum MessageKind {
 #[derive(Debug, PartialEq, Clone)]
 pub struct Message {
     /// The message's ID.
-    pub id: i32,
+    pub id: u32,
     /// The message's author. Note that this field is `None` for messages from
     /// channels.
     pub from: Option<User>,

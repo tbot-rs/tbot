@@ -44,7 +44,7 @@ pub struct Chat {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct SuccessfulPayment {
     pub currency: String,
-    pub total_amount: u64,
+    pub total_amount: u32,
     pub invoice_payload: String,
     pub shipping_option_id: Option<String>,
     pub order_info: Option<OrderInfo>,
@@ -55,14 +55,14 @@ pub struct SuccessfulPayment {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PhotoSize {
     pub file_id: String,
-    pub width: i64,
-    pub height: i64,
-    pub file_size: Option<i64>,
+    pub width: u32,
+    pub height: u32,
+    pub file_size: Option<u32>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct UserProfilePhotos {
-    pub total_count: i64,
+    pub total_count: u32,
     pub photos: Vec<Vec<PhotoSize>>,
 }
 
@@ -91,9 +91,9 @@ pub enum InputMedia {
         thumb: Option<String>,
         caption: Option<String>,
         parse_mode: Option<ParseMode>,
-        width: Option<i64>,
-        height: Option<i64>,
-        duration: Option<i64>,
+        width: Option<u32>,
+        height: Option<u32>,
+        duration: Option<u32>,
         supports_streaming: Option<bool>,
     },
     Animation {
@@ -101,16 +101,16 @@ pub enum InputMedia {
         thumb: Option<String>,
         caption: Option<String>,
         parse_mode: Option<ParseMode>,
-        width: Option<i64>,
-        height: Option<i64>,
-        duration: Option<i64>,
+        width: Option<u32>,
+        height: Option<u32>,
+        duration: Option<u32>,
     },
     Audio {
         media: String,
         thumb: Option<String>,
         caption: Option<String>,
         parse_mode: Option<ParseMode>,
-        duration: Option<i64>,
+        duration: Option<u32>,
         performer: Option<String>,
         title: Option<String>,
     },
@@ -125,7 +125,7 @@ pub enum InputMedia {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct LabeledPrice {
     pub label: String,
-    pub amount: u64,
+    pub amount: u32,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
@@ -166,7 +166,7 @@ pub struct PreCheckoutQuery {
     pub id: String,
     pub from: User,
     pub currency: String,
-    pub total_amount: u64,
+    pub total_amount: u32,
     pub invoice_payload: String,
     pub shipping_option_id: Option<String>,
     pub order_info: Option<OrderInfo>,
@@ -181,8 +181,8 @@ pub struct PassportData {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PassportFile {
     pub file_id: String,
-    pub file_size: u64,
-    pub file_date: u64,
+    pub file_size: u32,
+    pub file_date: i64,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
@@ -286,9 +286,9 @@ pub struct Game {
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct GameHighScore {
-    pub position: u64,
+    pub position: u32,
     pub user: User,
-    pub score: u64,
+    pub score: i32,
 }
 
 pub enum Keyboard<'a> {

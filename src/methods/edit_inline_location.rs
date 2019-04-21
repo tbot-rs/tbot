@@ -12,7 +12,7 @@ pub struct EditInlineLocation<'a> {
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
-    inline_message_id: u64,
+    inline_message_id: u32,
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,7 +23,7 @@ impl<'a> EditInlineLocation<'a> {
     /// Constructs a new `EditInlineLocation`.
     pub fn new(
         token: &'a str,
-        inline_message_id: u64,
+        inline_message_id: u32,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {

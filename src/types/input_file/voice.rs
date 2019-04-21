@@ -5,7 +5,7 @@ use super::*;
 pub struct Voice<'a> {
     pub(crate) media: InputFile<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) duration: Option<u64>,
+    pub(crate) duration: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) caption: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -59,7 +59,7 @@ impl<'a> Voice<'a> {
         Self::new(InputFile::Url(url))
     }
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u64) -> Self {
+    pub fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }

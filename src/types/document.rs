@@ -14,5 +14,5 @@ pub struct Document {
     /// The MIME type of the document.
     pub mime_type: Option<String>,
     /// The document file's size.
-    pub file_size: Option<i64>,
+    pub file_size: Option<u32>,
 }

@@ -8,9 +8,9 @@ pub struct Animation<'a> {
     pub(crate) thumb: Option<InputFile<'a>>,
     pub(crate) caption: Option<&'a str>,
     pub(crate) parse_mode: Option<ParseMode>,
-    pub(crate) width: Option<u64>,
-    pub(crate) height: Option<u64>,
-    pub(crate) duration: Option<u64>,
+    pub(crate) width: Option<u32>,
+    pub(crate) height: Option<u32>,
+    pub(crate) duration: Option<u32>,
 }
 
 impl<'a> Animation<'a> {
@@ -81,19 +81,19 @@ impl<'a> Animation<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u64) -> Self {
+    pub fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }
 
     /// Configures `width`.
-    pub fn width(mut self, width: u64) -> Self {
+    pub fn width(mut self, width: u32) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures `height`.
-    pub fn height(mut self, height: u64) -> Self {
+    pub fn height(mut self, height: u32) -> Self {
         self.height = Some(height);
         self
     }

@@ -10,7 +10,7 @@ pub struct TextContext {
     /// A mock bot with all API methods.
     pub bot: Arc<MockBot>,
     /// Id of the message.
-    pub message_id: i32,
+    pub message_id: u32,
     /// The sender of the message.
     pub from: Option<types::User>,
     /// The time the message was sent at.
@@ -30,7 +30,7 @@ pub struct TextContext {
 impl TextContext {
     pub(crate) fn new(
         bot: Arc<MockBot>,
-        message_id: i32,
+        message_id: u32,
         from: Option<types::User>,
         date: i64,
         chat: types::raw::Chat,
@@ -62,8 +62,8 @@ impl<'a> traits::ChatMethods<'a> for TextContext {
         self.chat.id
     }
 
-    fn message_id(&self) -> u64 {
-        self.message_id as u64
+    fn message_id(&self) -> u32 {
+        self.message_id
     }
 }
 

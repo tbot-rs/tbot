@@ -12,7 +12,7 @@ pub struct SendMediaGroup<'a> {
     chat_id: types::ChatId<'a>,
     media: Vec<GroupMedia<'a>>,
     disable_notification: Option<bool>,
-    reply_to_message_id: Option<u64>,
+    reply_to_message_id: Option<u32>,
 }
 
 impl<'a> SendMediaGroup<'a> {
@@ -44,7 +44,7 @@ impl<'a> SendMediaGroup<'a> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u64) -> Self {
+    pub fn reply_to_message_id(mut self, id: u32) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

@@ -37,9 +37,9 @@ pub struct MessageEntity {
     /// The kind of the entity.
     pub kind: MessageEntityKind,
     /// The offset at which the entity starts.
-    pub offset: i64,
+    pub offset: usize,
     /// The length of the entity.
-    pub length: i64,
+    pub length: usize,
 }
 
 const OFFSET: &str = "offset";

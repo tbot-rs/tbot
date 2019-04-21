@@ -20,7 +20,7 @@ fn main() {
 
     let live_location = bot
         .send_location(CHAT, *places.next().unwrap())
-        .live_period(UPDATE_PERIOD as u16)
+        .live_period(UPDATE_PERIOD)
         .into_future()
         .map_err(|error| {
             dbg!(error);
@@ -35,7 +35,7 @@ fn main() {
                 .for_each(move |(_, place)| {
                     bot.edit_message_location(
                         message.chat.id,
-                        message.id as u64,
+                        message.id,
                         *place,
                     )
                     .into_future()

@@ -12,14 +12,14 @@ pub struct StopInlineLocation<'a> {
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
-    inline_message_id: u64,
+    inline_message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
 impl<'a> StopInlineLocation<'a> {
     /// Constructs a new `StopInlineLocation`.
-    pub fn new(token: &'a str, inline_message_id: u64) -> Self {
+    pub fn new(token: &'a str, inline_message_id: u32) -> Self {
         Self {
             token,
             inline_message_id,

@@ -12,7 +12,7 @@ pub struct SendSticker<'a> {
     chat_id: types::ChatId<'a>,
     sticker: &'a Sticker<'a>,
     disable_notification: Option<bool>,
-    reply_to_message_id: Option<u64>,
+    reply_to_message_id: Option<u32>,
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
 
@@ -42,7 +42,7 @@ impl<'a> SendSticker<'a> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u64) -> Self {
+    pub fn reply_to_message_id(mut self, id: u32) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
