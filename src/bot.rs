@@ -60,7 +60,7 @@ impl Bot {
     ///
     /// let mut bot = Bot::from_env("BOT_TOKEN");
     ///
-    /// bot.on_message(|_| ());
+    /// bot.text(|_| ());
     /// ```
     pub fn from_env(env_var: &'static str) -> Self {
         Self::new(std::env::var(env_var).unwrap_or_else(|_| {
@@ -228,7 +228,7 @@ impl Methods<'_> for Bot {
 /// ```
 /// let mut bot = tbot::bot!("BOT_TOKEN");
 ///
-/// bot.on_message(|_| ());
+/// bot.text(|_| ());
 /// ```
 #[macro_export]
 macro_rules! bot {
