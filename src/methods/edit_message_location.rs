@@ -13,7 +13,7 @@ pub struct EditMessageLocation<'a> {
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    message_id: u64,
+    message_id: u32,
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,7 +25,7 @@ impl<'a> EditMessageLocation<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {

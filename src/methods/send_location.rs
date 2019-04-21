@@ -15,11 +15,11 @@ pub struct SendLocation<'a> {
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    live_period: Option<u16>,
+    live_period: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<u64>,
+    reply_to_message_id: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
@@ -46,7 +46,7 @@ impl<'a> SendLocation<'a> {
     }
 
     /// Confgiures `live_period`.
-    pub fn live_period(mut self, duration: u16) -> Self {
+    pub fn live_period(mut self, duration: u32) -> Self {
         self.live_period = Some(duration);
         self
     }
@@ -58,7 +58,7 @@ impl<'a> SendLocation<'a> {
     }
 
     /// Confgiures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u64) -> Self {
+    pub fn reply_to_message_id(mut self, id: u32) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

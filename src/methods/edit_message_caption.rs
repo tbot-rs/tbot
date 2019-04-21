@@ -13,7 +13,7 @@ pub struct EditMessageCaption<'a> {
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    message_id: u64,
+    message_id: u32,
     caption: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<types::ParseMode>,
@@ -26,7 +26,7 @@ impl<'a> EditMessageCaption<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         caption: &'a str,
     ) -> Self {
         Self {

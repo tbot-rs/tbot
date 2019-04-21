@@ -10,7 +10,7 @@ pub struct CreateNewStickerSet<'a> {
     token: &'a str,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
-    user_id: u64,
+    user_id: i64,
     name: &'a str,
     title: &'a str,
     png_sticker: &'a PngSticker<'a>,
@@ -23,7 +23,7 @@ impl<'a> CreateNewStickerSet<'a> {
     /// Constructs a new `CreateNewStickerSet`.
     pub fn new(
         token: &'a str,
-        user_id: u64,
+        user_id: i64,
         name: &'a str,
         title: &'a str,
         png_sticker: &'a PngSticker<'a>,

@@ -13,7 +13,7 @@ pub struct StopMessageLocation<'a> {
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    message_id: u64,
+    message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
@@ -23,7 +23,7 @@ impl<'a> StopMessageLocation<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
     ) -> Self {
         Self {
             token,

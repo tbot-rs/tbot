@@ -1,7 +1,7 @@
 use futures::{stream::iter_ok, Stream};
 use tbot::{prelude::*, types::input_file::PngSticker};
 
-const USER: u64 = 0;
+const USER: i64 = 0;
 // Must end with `_by_<bot_username>`
 const NAME: &str = "tbot";
 const TITLE: &str = "tbot";

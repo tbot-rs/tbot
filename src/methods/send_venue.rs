@@ -23,7 +23,7 @@ pub struct SendVenue<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<u64>,
+    reply_to_message_id: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::raw::Keyboard<'a>>,
 }
@@ -73,7 +73,7 @@ impl<'a> SendVenue<'a> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u64) -> Self {
+    pub fn reply_to_message_id(mut self, id: u32) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

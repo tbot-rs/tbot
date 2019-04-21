@@ -17,7 +17,7 @@ pub struct GetUserProfilePhotos<'a> {
     proxy: Option<proxy::Proxy>,
     user_id: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    offset: Option<u64>,
+    offset: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u8>,
 }
@@ -36,7 +36,7 @@ impl<'a> GetUserProfilePhotos<'a> {
     }
 
     /// Configures `offset`.
-    pub fn offset(mut self, offset: u64) -> Self {
+    pub fn offset(mut self, offset: u32) -> Self {
         self.offset = Some(offset);
         self
     }

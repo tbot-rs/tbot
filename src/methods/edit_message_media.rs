@@ -11,7 +11,7 @@ pub struct EditMessageMedia<'a> {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
-    message_id: u64,
+    message_id: u32,
     media: EditableMedia<'a>,
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
@@ -21,7 +21,7 @@ impl<'a> EditMessageMedia<'a> {
     pub fn new(
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {

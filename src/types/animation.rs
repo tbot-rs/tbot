@@ -8,15 +8,15 @@ pub struct Animation {
     /// The file ID of the animation.
     pub file_id: String,
     /// The width of the animation.
-    pub width: i64,
+    pub width: u32,
     /// The height of the animation.
-    pub height: i64,
+    pub height: u32,
     /// The duration of the animation.
-    pub duration: i64,
+    pub duration: u32,
     /// The thumb of the animation.
     pub thumb: Option<PhotoSize>,
     /// The MIME type of the animation.
     pub mime_type: Option<String>,
     /// The animation file's size.
-    pub file_size: Option<i64>,
+    pub file_size: Option<u32>,
 }

@@ -14,5 +14,5 @@ pub struct Invoice {
     /// The currency of the invoice.
     pub currency: String,
     /// The total amount of the invoice.
-    pub total_amount: u64,
+    pub total_amount: u32,
 }

@@ -13,7 +13,7 @@ pub struct ForwardMessage<'a> {
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     from_chat_id: types::ChatId<'a>,
-    message_id: u64,
+    message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
 }
@@ -24,7 +24,7 @@ impl<'a> ForwardMessage<'a> {
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
         from_chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
     ) -> Self {
         Self {
             token,

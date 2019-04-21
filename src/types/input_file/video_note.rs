@@ -5,9 +5,9 @@ use super::*;
 pub struct VideoNote<'a> {
     pub(crate) media: InputFile<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) duration: Option<u64>,
+    pub(crate) duration: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) length: Option<u64>,
+    pub(crate) length: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) thumb: Option<InputFile<'a>>,
 }
@@ -60,13 +60,13 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u64) -> Self {
+    pub fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }
 
     /// Configures `length`.
-    pub fn length(mut self, length: u64) -> Self {
+    pub fn length(mut self, length: u32) -> Self {
         self.length = Some(length);
         self
     }

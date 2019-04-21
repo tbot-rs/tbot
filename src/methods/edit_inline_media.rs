@@ -10,7 +10,7 @@ pub struct EditInlineMedia<'a> {
     token: &'a str,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
-    inline_message_id: u64,
+    inline_message_id: u32,
     media: EditableMedia<'a>,
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
@@ -19,7 +19,7 @@ impl<'a> EditInlineMedia<'a> {
     /// Constructs a new `EditInlineMedia`.
     pub fn new(
         token: &'a str,
-        inline_message_id: u64,
+        inline_message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {

@@ -32,7 +32,7 @@ pub trait Methods<'a> {
     fn delete_message(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
     ) -> methods::DeleteMessage<'a> {
         self.prepare_method(methods::DeleteMessage::new(
             self.token(),
@@ -46,7 +46,7 @@ pub trait Methods<'a> {
     /// [`EditInlineCaption`]: ./struct.EditInlineCaption.html
     fn edit_inline_caption(
         &'a self,
-        inline_message_id: u64,
+        inline_message_id: u32,
         caption: &'a str,
     ) -> methods::EditInlineCaption<'a> {
         self.prepare_method(methods::EditInlineCaption::new(
@@ -61,7 +61,7 @@ pub trait Methods<'a> {
     /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
     fn edit_inline_location(
         &'a self,
-        inline_message_id: u64,
+        inline_message_id: u32,
         position: (f64, f64),
     ) -> methods::EditInlineLocation<'a> {
         self.prepare_method(methods::EditInlineLocation::new(
@@ -76,7 +76,7 @@ pub trait Methods<'a> {
     /// [`EditInlineText`]: ./struct.EditInlineText.html
     fn edit_inline_text(
         &'a self,
-        inline_message_id: u64,
+        inline_message_id: u32,
         text: &'a str,
     ) -> methods::EditInlineText<'a> {
         self.prepare_method(methods::EditInlineText::new(
@@ -91,7 +91,7 @@ pub trait Methods<'a> {
     /// [`EditInlineReplyMarkup`]: ./struct.EditInlineReplyMarkup.html
     fn edit_inline_reply_markup(
         &'a self,
-        inline_message_id: u64,
+        inline_message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> methods::EditInlineReplyMarkup<'a> {
         self.prepare_method(methods::EditInlineReplyMarkup::new(
@@ -107,7 +107,7 @@ pub trait Methods<'a> {
     fn edit_message_caption(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         caption: &'a str,
     ) -> methods::EditMessageCaption<'a> {
         self.prepare_method(methods::EditMessageCaption::new(
@@ -124,7 +124,7 @@ pub trait Methods<'a> {
     fn edit_message_location(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         position: (f64, f64),
     ) -> methods::EditMessageLocation<'a> {
         self.prepare_method(methods::EditMessageLocation::new(
@@ -141,7 +141,7 @@ pub trait Methods<'a> {
     fn edit_message_media(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditMessageMedia<'a> {
         self.prepare_method(methods::EditMessageMedia::new(
@@ -158,7 +158,7 @@ pub trait Methods<'a> {
     fn edit_message_text(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         text: &'a str,
     ) -> methods::EditMessageText<'a> {
         self.prepare_method(methods::EditMessageText::new(
@@ -175,7 +175,7 @@ pub trait Methods<'a> {
     fn edit_message_reply_markup(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> methods::EditMessageReplyMarkup<'a> {
         self.prepare_method(methods::EditMessageReplyMarkup::new(
@@ -193,7 +193,7 @@ pub trait Methods<'a> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         from_chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
     ) -> methods::ForwardMessage<'a> {
         self.prepare_method(methods::ForwardMessage::new(
             self.token(),
@@ -235,7 +235,7 @@ pub trait Methods<'a> {
     /// [`CreateNewStickerSet`]: ./struct.CreateNewStickerSet.html
     fn create_new_sticker_set(
         &'a self,
-        user_id: u64,
+        user_id: i64,
         name: &'a str,
         title: &'a str,
         png_sticker: &'a PngSticker<'a>,
@@ -256,7 +256,7 @@ pub trait Methods<'a> {
     /// [`AddStickerToSet`]: ./struct.AddStickerToSet.html
     fn add_sticker_to_set(
         &'a self,
-        user_id: u64,
+        user_id: i64,
         name: &'a str,
         png_sticker: &'a PngSticker<'a>,
         emojis: &'a str,
@@ -276,7 +276,7 @@ pub trait Methods<'a> {
     fn set_sticker_position_in_set(
         &'a self,
         sticker: &'a str,
-        position: u64,
+        position: u32,
     ) -> methods::SetStickerPositionInSet<'a> {
         self.prepare_method(methods::SetStickerPositionInSet::new(
             self.token(),
@@ -526,7 +526,7 @@ pub trait Methods<'a> {
     /// [`StopInlineLocation`]: ./struct.StopInlineLocation.html
     fn stop_inline_location(
         &'a self,
-        inline_message_id: u64,
+        inline_message_id: u32,
     ) -> methods::StopInlineLocation<'a> {
         self.prepare_method(methods::StopInlineLocation::new(
             self.token(),
@@ -540,7 +540,7 @@ pub trait Methods<'a> {
     fn stop_message_location(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        message_id: u64,
+        message_id: u32,
     ) -> methods::StopMessageLocation<'a> {
         self.prepare_method(methods::StopMessageLocation::new(
             self.token(),
