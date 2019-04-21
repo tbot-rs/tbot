@@ -5,9 +5,9 @@
 //!
 //! let mut bot = tbot::bot!("BOT_TOKEN");
 //!
-//! bot.on_message(|context| {
+//! bot.text(|context| {
 //!     let reply = context
-//!         .send_message(&context.message)
+//!         .send_message(&context.text)
 //!         .into_future()
 //!         .map_err(|error| {
 //!             dbg!(error);

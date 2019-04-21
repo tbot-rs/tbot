@@ -3,8 +3,8 @@ use tbot::{prelude::*, types::ParseMode::Markdown};
 fn main() {
     let mut bot = tbot::bot!("BOT_TOKEN");
 
-    bot.on_message(|context| {
-        let message = match meval::eval_str(&context.message) {
+    bot.text(|context| {
+        let message = match meval::eval_str(&context.text) {
             Ok(result) => format!("= `{}`", result),
             Err(_) => "Whops, I couldn't evaluate your expression :(".into(),
         };
