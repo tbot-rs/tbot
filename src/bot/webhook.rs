@@ -94,7 +94,7 @@ impl<'a> Webhook<'a> {
         let error = Arc::new(Mutex::new(None));
         let outer_error = Arc::clone(&error);
         let server = init_server(self.bot, self.ip, self.port)
-        .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
+            .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
 
         crate::run(server);
 
