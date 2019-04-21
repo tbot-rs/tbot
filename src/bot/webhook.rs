@@ -66,6 +66,9 @@ impl<'a> Webhook<'a> {
     }
 
     fn set_webhook(&self) {
+        let error = Arc::new(Mutex::new(None));
+        let outer_error = Arc::clone(&error);
+
         let set_webhook = methods::SetWebhook::new(
             &self.bot.token,
             self.url,
@@ -75,17 +78,29 @@ impl<'a> Webhook<'a> {
             #[cfg(feature = "proxy")]
             self.bot.proxy.clone(),
         )
-        .into_future();
+        .into_future()
+        .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
 
-        if let Err(error) = set_webhook.wait() {
+        crate::run(set_webhook);
+
+        let error = &*error.lock().unwrap();
+
+        if let Some(error) = error {
             panic!("\n[tbot] Error while setting webhook: {:#?}\n", error);
         }
     }
 
     fn start_event_loop(self) -> ! {
-        let server = init_server(self.bot, self.ip, self.port);
+        let error = Arc::new(Mutex::new(None));
+        let outer_error = Arc::clone(&error);
+        let server = init_server(self.bot, self.ip, self.port)
+        .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
 
-        if let Err(error) = server.wait() {
+        crate::run(server);
+
+        let error = &*error.lock().unwrap();
+
+        if let Some(error) = error {
             panic!(
                 "\n[tbot] Webhook server returned with an error: {:#?}\n",
                 error,
