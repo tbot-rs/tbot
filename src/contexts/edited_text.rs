@@ -1,7 +1,7 @@
 use super::*;
 use std::sync::Arc;
 
-/// Contants data for the [`edited_text`] handler.
+/// Context for the [`edited_text`] handler.
 ///
 /// [`edited_text`]: ../struct.Bot.html#method.edited_text
 #[derive(Clone)]

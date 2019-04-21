@@ -98,7 +98,7 @@ impl Bot {
         self.after_update_handlers.push(Mutex::new(Box::new(handler)))
     }
 
-    /// Adds a new text message handler.
+    /// Adds a new handler for text messages.
     pub fn text(
         &mut self,
         handler: impl FnMut(&TextContext) + Send + Sync + 'static,
