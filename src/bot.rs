@@ -133,9 +133,9 @@ impl Bot {
 
     fn handle_update(&self, update: types::Update) {
         let mock_bot = Arc::new(self.mock());
-        let context = UpdateContext::new(mock_bot.clone(), update.id);
+        let update_context = UpdateContext::new(mock_bot.clone(), update.id);
 
-        self.handle_before_update(&context);
+        self.handle_before_update(&update_context);
 
         match update.kind {
             Some(UpdateKind::Message(mut message)) => {
@@ -149,7 +149,7 @@ impl Bot {
             _ => (), // TODO
         }
 
-        self.handle_after_update(&context);
+        self.handle_after_update(&update_context);
     }
 
     fn handle_polling_error(&self, error: &methods::DeliveryError) {
