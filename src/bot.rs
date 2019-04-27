@@ -22,6 +22,8 @@ type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
 type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
+type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
+type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
@@ -31,6 +33,8 @@ pub struct Bot {
     after_update_handlers: Handlers<UpdateHandler>,
     text_handlers: Handlers<TextHandler>,
     edited_text_handlers: Handlers<EditedTextHandler>,
+    poll_handlers: Handlers<PollHandler>,
+    updated_poll_handlers: Handlers<UpdatedPollHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
@@ -45,6 +49,8 @@ impl Bot {
             after_update_handlers: Vec::new(),
             text_handlers: Vec::new(),
             edited_text_handlers: Vec::new(),
+            poll_handlers: Vec::new(),
+            updated_poll_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
         }
@@ -114,6 +120,22 @@ impl Bot {
         self.edited_text_handlers.push(Mutex::new(Box::new(handler)))
     }
 
+    /// Adds a new handler for poll messages.
+    pub fn poll(
+        &mut self,
+        handler: impl FnMut(&PollContext) + Send + Sync + 'static,
+    ) {
+        self.poll_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for new states of polls
+    pub fn updated_poll(
+        &mut self,
+        handler: impl FnMut(&UpdatedPollContext) + Send + Sync + 'static,
+    ) {
+        self.updated_poll_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
     /// Starts configuring polling.
     pub fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
@@ -174,6 +196,22 @@ impl Bot {
                             self.handle_text(&context);
                         }
                     }
+                    MessageKind::Poll(poll) => {
+                        if self.will_handle_poll() {
+                            let context = PollContext::new(
+                                Arc::clone(&mock_bot),
+                                message.id,
+                                message.from,
+                                message.date,
+                                message.chat,
+                                message.forward,
+                                message.reply_to.map(|message| *message),
+                                poll,
+                            );
+
+                            self.handle_poll(&context);
+                        }
+                    }
                     _ => (), // TOOD
                 }
             }
@@ -203,7 +241,18 @@ impl Bot {
                             self.handle_edited_text(&context);
                         }
                     }
+                    MessageKind::Poll(_) => unreachable!(
+                        "\n[tbot] Unexpected poll as an edited message update\n"
+                    ),
                     _ => (), // TOOD
+                }
+            }
+            Some(UpdateKind::Poll(poll)) => {
+                if self.will_handle_updated_poll() {
+                    let context =
+                        UpdatedPollContext::new(Arc::clone(&mock_bot), poll);
+
+                    self.handle_updated_poll(&context);
                 }
             }
             _ => (), // TODO
@@ -250,6 +299,26 @@ impl Bot {
 
     fn handle_edited_text(&self, context: &EditedTextContext) {
         for handler in &self.edited_text_handlers {
+            (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    fn will_handle_poll(&self) -> bool {
+        !self.poll_handlers.is_empty()
+    }
+
+    fn handle_poll(&self, context: &PollContext) {
+        for handler in &self.poll_handlers {
+            (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    fn will_handle_updated_poll(&self) -> bool {
+        !self.updated_poll_handlers.is_empty()
+    }
+
+    fn handle_updated_poll(&self, context: &UpdatedPollContext) {
+        for handler in &self.updated_poll_handlers {
             (&mut *handler.lock().unwrap())(&context);
         }
     }

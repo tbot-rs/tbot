@@ -67,6 +67,8 @@ pub enum MessageKind {
     Venue(Venue),
     /// An animation. The second item is the caption.
     Animation(Animation, Text),
+    /// A poll.
+    Poll(Poll),
     /// A service message about new chat members.
     NewChatMembers(Vec<User>),
     /// A service message about a member who left.
@@ -162,6 +164,7 @@ const CAPTION: &str = "caption";
 const CONTACT: &str = "contact";
 const LOCATION: &str = "location";
 const VENUE: &str = "venue";
+const POLL: &str = "poll";
 const NEW_CHAT_MEMBERS: &str = "new_chat_members";
 const LEFT_CHAT_MEMBER: &str = "left_chat_member";
 const NEW_CHAT_TITLE: &str = "new_chat_title";
@@ -221,6 +224,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         let mut contact = None;
         let mut location = None;
         let mut venue = None;
+        let mut poll = None;
         let mut new_chat_members = None;
         let mut left_chat_member = None;
         let mut new_chat_title = None;
@@ -277,6 +281,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 CONTACT => contact = Some(map.next_value()?),
                 LOCATION => location = Some(map.next_value()?),
                 VENUE => venue = Some(map.next_value()?),
+                POLL => poll = Some(map.next_value()?),
                 NEW_CHAT_MEMBERS => new_chat_members = Some(map.next_value()?),
                 LEFT_CHAT_MEMBER => left_chat_member = Some(map.next_value()?),
                 NEW_CHAT_TITLE => new_chat_title = Some(map.next_value()?),
@@ -369,6 +374,8 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             MessageKind::Location(location)
         } else if let Some(venue) = venue {
             MessageKind::Venue(venue)
+        } else if let Some(poll) = poll {
+            MessageKind::Poll(poll)
         } else if let Some(animation) = animation {
             MessageKind::Animation(animation, caption)
         } else if let Some(document) = document {
@@ -461,6 +468,7 @@ impl<'de> serde::Deserialize<'de> for Message {
                 CONTACT,
                 LOCATION,
                 VENUE,
+                POLL,
                 NEW_CHAT_MEMBERS,
                 LEFT_CHAT_MEMBER,
                 NEW_CHAT_TITLE,

@@ -62,6 +62,7 @@ mod send_location;
 mod send_media_group;
 mod send_message;
 mod send_photo;
+mod send_poll;
 mod send_sticker;
 mod send_venue;
 mod send_video;
@@ -71,6 +72,7 @@ mod set_sticker_position_in_set;
 mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
+mod stop_poll;
 mod upload_sticker_file;
 
 pub use {
@@ -83,9 +85,10 @@ pub use {
     get_user_profile_photos::*, get_webhook_info::*, send_animation::*,
     send_audio::*, send_chat_action::*, send_contact::*, send_document::*,
     send_location::*, send_media_group::*, send_message::*, send_photo::*,
-    send_sticker::*, send_venue::*, send_video::*, send_video_note::*,
-    send_voice::*, set_sticker_position_in_set::*, stop_inline_location::*,
-    stop_message_location::*, upload_sticker_file::*,
+    send_poll::*, send_sticker::*, send_venue::*, send_video::*,
+    send_video_note::*, send_voice::*, set_sticker_position_in_set::*,
+    stop_inline_location::*, stop_message_location::*, stop_poll::*,
+    upload_sticker_file::*,
 };
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
