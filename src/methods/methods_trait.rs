@@ -442,6 +442,23 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SendPoll`] inferring `token`.
+    ///
+    /// [`SendPoll`]: ./struct.SendPoll.html
+    fn send_poll(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        question: &'a str,
+        options: &'a [&'a str],
+    ) -> methods::SendPoll<'a> {
+        self.prepare_method(methods::SendPoll::new(
+            self.token(),
+            chat_id,
+            question,
+            options,
+        ))
+    }
+
     /// Constructs a new [`SendSticker`] inferring `token`.
     ///
     /// [`SendSticker`]: ./struct.SendSticker.html
@@ -543,6 +560,21 @@ pub trait Methods<'a> {
         message_id: u32,
     ) -> methods::StopMessageLocation<'a> {
         self.prepare_method(methods::StopMessageLocation::new(
+            self.token(),
+            chat_id,
+            message_id,
+        ))
+    }
+
+    /// Constructs a new [`StopPoll`] inferring `token`.
+    ///
+    /// [`StopPoll`]: ./struct.StopPoll.html
+    fn stop_poll(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+    ) -> methods::StopPoll<'a> {
+        self.prepare_method(methods::StopPoll::new(
             self.token(),
             chat_id,
             message_id,

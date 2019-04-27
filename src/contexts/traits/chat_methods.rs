@@ -247,6 +247,28 @@ pub trait ChatMethods<'a> {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SendPoll`] inferring the token and the chat ID.
+    ///
+    /// [`SendPoll`]: ../methods/struct.SendPoll.html
+    fn send_poll(
+        &'a self,
+        question: &'a str,
+        options: &'a [&'a str],
+    ) -> SendPoll<'a> {
+        self.bot().send_poll(self.chat_id(), question, options)
+    }
+
+    /// Constructs a [`SendPoll`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendPoll`]: ../methods/struct.SendPoll.html
+    fn send_poll_in_reply(
+        &'a self,
+        question: &'a str,
+        options: &'a [&'a str],
+    ) -> SendPoll<'a> {
+        self.send_poll(question, options).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendSticker`] inferring the token and the chat ID.
     ///
     /// [`SendSticker`]: ../methods/struct.SendSticker.html
