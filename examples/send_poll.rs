@@ -25,11 +25,9 @@ fn main() {
                 })
         })
         .and_then(move |message| {
-            bot.stop_poll(CHAT, message.id)
-                .into_future()
-                .map_err(|error| {
-                    dbg!(error);
-                })
+            bot.stop_poll(CHAT, message.id).into_future().map_err(|error| {
+                dbg!(error);
+            })
         });
 
     tbot::run(poll);
