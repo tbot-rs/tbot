@@ -24,6 +24,7 @@ mod message;
 mod message_entity;
 mod parse_mode;
 mod photo_size;
+mod poll;
 mod sticker;
 mod sticker_set;
 mod updates;
@@ -39,7 +40,7 @@ pub use {
     animation::*, audio::*, callback_game::*, chat_action::*, chat_id::*,
     chat_photo::*, chat_types::*, contact::*, document::*, file::*, game::*,
     invoice::*, keyboards::*, location::*, mask_position::*, message::*,
-    message_entity::*, parse_mode::*, photo_size::*, sticker::*,
+    message_entity::*, parse_mode::*, photo_size::*, poll::*, sticker::*,
     sticker_set::*, updates::*, user::*, user_profile_photos::*, venue::*,
     video::*, video_note::*, voice::*, webhook_info::*,
 };
