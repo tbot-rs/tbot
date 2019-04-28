@@ -159,18 +159,17 @@ impl Bot {
     ///
     /// [`MockBot`]: ./struct.MockBot.html
     pub fn mock(&self) -> MockBot {
-        #[cfg(feature = "proxy")]
-        {
-            MockBot::new(self.token.clone(), self.proxy.clone())
-        }
-
-        #[cfg(not(feature = "proxy"))]
-        MockBot::new(self.token.clone())
+        MockBot::new(
+            Arc::clone(&self.token),
+            #[cfg(feature = "proxy")]
+            self.proxy.clone(),
+        )
     }
 
     fn handle_update(&self, update: types::Update) {
         let mock_bot = Arc::new(self.mock());
-        let update_context = UpdateContext::new(mock_bot.clone(), update.id);
+        let update_context =
+            UpdateContext::new(Arc::clone(&mock_bot), update.id);
 
         self.handle_before_update(&update_context);
 

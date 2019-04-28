@@ -150,7 +150,7 @@ fn init_server(bot: Bot, ip: IpAddr, port: u16) -> impl Future<Error = Error> {
     let addr = SocketAddr::new(ip, port);
 
     Server::bind(&addr).serve(move || {
-        let bot = bot.clone();
-        service_fn(move |request| handle(bot.clone(), request))
+        let bot = Arc::clone(&bot);
+        service_fn(move |request| handle(Arc::clone(&bot), request))
     })
 }
