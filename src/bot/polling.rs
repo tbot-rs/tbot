@@ -89,9 +89,9 @@ impl<'a> Polling<'a> {
         let mut last_send_timestamp;
 
         loop {
-            let on_ok = bot.clone();
-            let on_error = bot.clone();
-            let new_offset = last_offset.clone();
+            let on_ok = Arc::clone(&bot);
+            let on_error = Arc::clone(&bot);
+            let new_offset = Arc::clone(&last_offset);
 
             last_send_timestamp = Instant::now();
 
