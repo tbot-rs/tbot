@@ -18,7 +18,7 @@ pub struct EditInlineReplyMarkup<'a> {
 
 impl<'a> EditInlineReplyMarkup<'a> {
     /// Constructs a new `EditInlineReplyMarkup`.
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         inline_message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,

@@ -16,7 +16,7 @@ pub struct DeleteStickerFromSet<'a> {
 
 impl<'a> DeleteStickerFromSet<'a> {
     /// Constructs a new `DeleteStickerFromSet`.
-    pub fn new(token: &'a str, sticker: &'a str) -> Self {
+    pub const fn new(token: &'a str, sticker: &'a str) -> Self {
         Self {
             token,
             sticker,

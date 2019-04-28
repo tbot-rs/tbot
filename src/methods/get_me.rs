@@ -12,7 +12,7 @@ pub struct GetMe<'a> {
 
 impl<'a> GetMe<'a> {
     /// Constructs a new `GetMe`.
-    pub fn new(token: &'a str) -> Self {
+    pub const fn new(token: &'a str) -> Self {
         Self {
             token,
             #[cfg(feature = "proxy")]

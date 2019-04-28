@@ -17,7 +17,7 @@ pub struct SetStickerPositionInSet<'a> {
 
 impl<'a> SetStickerPositionInSet<'a> {
     /// Constructs a new `SetStickerPositionInSet`.
-    pub fn new(token: &'a str, sticker: &'a str, position: u32) -> Self {
+    pub const fn new(token: &'a str, sticker: &'a str, position: u32) -> Self {
         Self {
             token,
             sticker,

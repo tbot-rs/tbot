@@ -15,8 +15,8 @@ pub struct ReplyButton<'a> {
 
 impl<'a> ReplyButton<'a> {
     /// Constructs a new `ReplyButton`.
-    pub fn new(text: &'a str) -> ReplyButton {
-        ReplyButton {
+    pub const fn new(text: &'a str) -> Self {
+        Self {
             text,
             request_contact: None,
             request_localization: None,
@@ -52,8 +52,8 @@ pub struct ReplyKeyboard<'a> {
 
 impl<'a> ReplyKeyboard<'a> {
     /// Constructs a new `ReplyKeyboard`.
-    pub fn new(buttons: Vec<Vec<ReplyButton<'a>>>) -> ReplyKeyboard<'a> {
-        ReplyKeyboard {
+    pub const fn new(buttons: Vec<Vec<ReplyButton<'a>>>) -> Self {
+        Self {
             keyboard: buttons,
             resize_keyboard: None,
             one_time_keyboard: None,

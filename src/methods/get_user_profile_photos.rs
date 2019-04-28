@@ -24,7 +24,7 @@ pub struct GetUserProfilePhotos<'a> {
 
 impl<'a> GetUserProfilePhotos<'a> {
     /// Constructs a new `GetUserProfilePhotos`.
-    pub fn new(token: &'a str, user_id: i64) -> Self {
+    pub const fn new(token: &'a str, user_id: i64) -> Self {
         Self {
             token,
             user_id,

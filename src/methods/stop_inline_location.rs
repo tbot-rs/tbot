@@ -19,7 +19,7 @@ pub struct StopInlineLocation<'a> {
 
 impl<'a> StopInlineLocation<'a> {
     /// Constructs a new `StopInlineLocation`.
-    pub fn new(token: &'a str, inline_message_id: u32) -> Self {
+    pub const fn new(token: &'a str, inline_message_id: u32) -> Self {
         Self {
             token,
             inline_message_id,

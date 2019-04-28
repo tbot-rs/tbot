@@ -8,7 +8,7 @@ pub struct Sticker<'a> {
 }
 
 impl<'a> Sticker<'a> {
-    fn new(media: InputFile<'a>) -> Self {
+    const fn new(media: InputFile<'a>) -> Self {
         Self {
             media,
         }

@@ -12,8 +12,8 @@ pub struct ForceReply {
 
 impl ForceReply {
     /// Constructs a new `ForceReply`.
-    pub fn new() -> ForceReply {
-        ForceReply {
+    pub const fn new() -> Self {
+        Self {
             selective: None,
         }
     }

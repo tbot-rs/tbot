@@ -16,7 +16,7 @@ pub struct GetStickerSet<'a> {
 
 impl<'a> GetStickerSet<'a> {
     /// Constructs a new `GetStickerSet`.
-    pub fn new(token: &'a str, name: &'a str) -> Self {
+    pub const fn new(token: &'a str, name: &'a str) -> Self {
         Self {
             token,
             name,

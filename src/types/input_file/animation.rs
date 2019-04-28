@@ -14,7 +14,7 @@ pub struct Animation<'a> {
 }
 
 impl<'a> Animation<'a> {
-    fn new(media: InputFile<'a>) -> Self {
+    const fn new(media: InputFile<'a>) -> Self {
         Self {
             media,
             thumb: None,

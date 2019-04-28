@@ -12,8 +12,8 @@ pub struct ReplyKeyboardRemove {
 
 impl ReplyKeyboardRemove {
     /// Constructs a new `ReplyKeyboardRemove`.
-    pub fn new() -> ReplyKeyboardRemove {
-        ReplyKeyboardRemove {
+    pub const fn new() -> Self {
+        Self {
             selective: None,
         }
     }

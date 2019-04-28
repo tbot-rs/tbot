@@ -20,7 +20,7 @@ pub(crate) struct GetUpdates<'a> {
 
 impl<'a> GetUpdates<'a> {
     #[cfg(feature = "proxy")]
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         offset: Option<u32>,
         limit: Option<u8>,
@@ -39,7 +39,7 @@ impl<'a> GetUpdates<'a> {
     }
 
     #[cfg(not(feature = "proxy"))]
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         offset: Option<u32>,
         limit: Option<u8>,

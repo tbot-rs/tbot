@@ -37,7 +37,7 @@ pub struct InlineButton<'a> {
 
 impl<'a> InlineButton<'a> {
     /// Constructs a new `InlineButton`.
-    pub fn new(text: &'a str, button_type: InlineButtonType<'a>) -> Self {
+    pub const fn new(text: &'a str, button_type: InlineButtonType<'a>) -> Self {
         Self {
             text,
             button_type,
@@ -82,7 +82,7 @@ pub struct InlineKeyboard<'a> {
 
 impl<'a> InlineKeyboard<'a> {
     /// Constructs a new `InlineKeyboard`.
-    pub fn new(buttons: Vec<Vec<InlineButton<'a>>>) -> Self {
+    pub const fn new(buttons: Vec<Vec<InlineButton<'a>>>) -> Self {
         Self {
             inline_keyboard: buttons,
         }

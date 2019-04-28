@@ -13,7 +13,7 @@ pub struct VideoNote<'a> {
 }
 
 impl<'a> VideoNote<'a> {
-    fn new(media: InputFile<'a>) -> Self {
+    const fn new(media: InputFile<'a>) -> Self {
         Self {
             media,
             duration: None,

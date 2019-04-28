@@ -21,7 +21,7 @@ pub struct CreateNewStickerSet<'a> {
 
 impl<'a> CreateNewStickerSet<'a> {
     /// Constructs a new `CreateNewStickerSet`.
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         user_id: i64,
         name: &'a str,
@@ -65,9 +65,9 @@ impl<'a> CreateNewStickerSet<'a> {
 
         let mut multipart = Multipart::new(7)
             .str("user_id", &user_id)
-            .str("name", &self.name)
-            .str("title", &self.title)
-            .str("emojis", &self.emojis)
+            .str("name", self.name)
+            .str("title", self.title)
+            .str("emojis", self.emojis)
             .maybe_string("contains_masks", &contains_mask)
             .maybe_string("mask_position", &mask_position);
 

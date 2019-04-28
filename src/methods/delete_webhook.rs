@@ -9,14 +9,14 @@ pub struct DeleteWebhook<'a> {
 
 impl<'a> DeleteWebhook<'a> {
     #[cfg(not(feature = "proxy"))]
-    pub fn new(token: &'a str) -> Self {
+    pub const fn new(token: &'a str) -> Self {
         Self {
             token,
         }
     }
 
     #[cfg(feature = "proxy")]
-    pub fn new(token: &'a str, proxy: Option<proxy::Proxy>) -> Self {
+    pub const fn new(token: &'a str, proxy: Option<proxy::Proxy>) -> Self {
         Self {
             token,
             proxy,

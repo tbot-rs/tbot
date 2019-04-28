@@ -18,7 +18,7 @@ pub struct UpdateContext {
 }
 
 impl UpdateContext {
-    pub(crate) fn new(bot: Arc<MockBot>, update_id: u32) -> Self {
+    pub(crate) const fn new(bot: Arc<MockBot>, update_id: u32) -> Self {
         Self {
             bot,
             update_id,

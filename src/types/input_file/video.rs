@@ -15,7 +15,7 @@ pub struct Video<'a> {
 }
 
 impl<'a> Video<'a> {
-    fn new(media: InputFile<'a>) -> Self {
+    const fn new(media: InputFile<'a>) -> Self {
         Self {
             media,
             thumb: None,

@@ -13,7 +13,7 @@ pub struct UpdatedPollContext {
 }
 
 impl UpdatedPollContext {
-    pub(crate) fn new(bot: Arc<MockBot>, poll: types::Poll) -> Self {
+    pub(crate) const fn new(bot: Arc<MockBot>, poll: types::Poll) -> Self {
         Self {
             bot,
             poll,

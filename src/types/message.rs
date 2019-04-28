@@ -2,6 +2,9 @@ use super::*;
 
 /// Represents a forward source.
 #[derive(Debug, PartialEq, Clone)]
+// It warns on Channel — we'll need to consider to box it when we unraw chat
+// types.
+#[allow(clippy::large_enum_variant)]
 pub enum ForwardSource {
     /// The forward is from a user.
     User(User),
@@ -38,6 +41,9 @@ pub struct Text {
 
 /// Represents kinds of messages.
 #[derive(Debug, PartialEq, Clone)]
+// It warns on SuccessfulPayment — we'll need to consider to box it when we
+// unraw payment types.
+#[allow(clippy::large_enum_variant)]
 pub enum MessageKind {
     /// A text message.
     Text(Text),
@@ -190,6 +196,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         write!(fmt, "struct Message")
     }
 
+    #[allow(clippy::cyclomatic_complexity)] // can't do much
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
         V: serde::de::MapAccess<'v>,

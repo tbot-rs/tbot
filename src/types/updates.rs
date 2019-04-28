@@ -27,6 +27,9 @@ pub enum Updates {
 
 /// Represents different types of updates from Telegram.
 #[derive(Debug, PartialEq, Clone)]
+// In fact, the large-sized variants are more common than the small-sized ones,
+// so I think it's better not to box them.
+#[allow(clippy::large_enum_variant)]
 pub enum UpdateKind {
     /// A new incoming message.
     Message(Message),

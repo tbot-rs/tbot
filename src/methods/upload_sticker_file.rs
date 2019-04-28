@@ -14,7 +14,11 @@ pub struct UploadStickerFile<'a> {
 
 impl<'a> UploadStickerFile<'a> {
     /// Constructs a new `UploadStickerFile`.
-    pub fn new(token: &'a str, user_id: i64, png_sticker: &'a [u8]) -> Self {
+    pub const fn new(
+        token: &'a str,
+        user_id: i64,
+        png_sticker: &'a [u8],
+    ) -> Self {
         Self {
             token,
             user_id,
