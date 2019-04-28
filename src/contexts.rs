@@ -1,5 +1,9 @@
 //! This module contants contexts that are passed to handlers.
 
+#![allow(clippy::too_many_arguments)] // can't do much
+                                      // we re-export everything under one namespace
+#![allow(clippy::module_name_repetitions)]
+
 use super::*;
 
 mod edited_text;

@@ -1,5 +1,8 @@
 //! Contains types used in Telegram Bots API.
 
+// we re-export everything under one namespace
+#![allow(clippy::module_name_repetitions)]
+
 use super::*;
 
 pub mod input_file;

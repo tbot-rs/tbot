@@ -10,7 +10,7 @@ pub struct Photo<'a> {
 }
 
 impl<'a> Photo<'a> {
-    fn new(media: InputFile<'a>) -> Self {
+    const fn new(media: InputFile<'a>) -> Self {
         Self {
             media,
             caption: None,

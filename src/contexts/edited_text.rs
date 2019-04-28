@@ -29,6 +29,8 @@ pub struct EditedTextContext {
 }
 
 impl EditedTextContext {
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: Arc<MockBot>,
         message_id: u32,

@@ -14,7 +14,7 @@ pub(crate) struct SetWebhook<'a> {
 
 impl<'a> SetWebhook<'a> {
     #[cfg(feature = "proxy")]
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         url: &'a str,
         certificate: Option<&'a str>,
@@ -33,7 +33,7 @@ impl<'a> SetWebhook<'a> {
     }
 
     #[cfg(not(feature = "proxy"))]
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         url: &'a str,
         certificate: Option<&'a str>,

@@ -12,7 +12,7 @@ pub struct GetWebhookInfo<'a> {
 
 impl<'a> GetWebhookInfo<'a> {
     /// Constructs a new `GetWebhookInfo`.
-    pub fn new(token: &'a str) -> Self {
+    pub const fn new(token: &'a str) -> Self {
         Self {
             token,
             #[cfg(feature = "proxy")]

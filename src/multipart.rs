@@ -96,10 +96,10 @@ impl<'a> Multipart<'a> {
             body.extend_from_slice(b"\r\n");
             body.extend_from_slice(b"Content-Disposition: form-data; ");
             body.extend_from_slice(
-                &part.header.content_disposition().as_bytes(),
+                part.header.content_disposition().as_bytes(),
             );
             body.extend_from_slice(b"\r\n\r\n");
-            body.extend_from_slice(&part.body);
+            body.extend_from_slice(part.body);
             body.extend_from_slice(b"\r\n--");
             body.extend_from_slice(&boundary);
         }

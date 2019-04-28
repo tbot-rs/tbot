@@ -25,7 +25,7 @@ pub struct PollContext {
 }
 
 impl PollContext {
-    pub(crate) fn new(
+    pub(crate) const fn new(
         bot: Arc<MockBot>,
         message_id: u32,
         from: Option<types::User>,

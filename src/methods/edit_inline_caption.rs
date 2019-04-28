@@ -22,7 +22,7 @@ pub struct EditInlineCaption<'a> {
 
 impl<'a> EditInlineCaption<'a> {
     /// Constructs a new `EditInlineCaption`.
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         inline_message_id: u32,
         caption: &'a str,

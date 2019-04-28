@@ -36,7 +36,7 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures the IP `tbot` will bind to.
-    pub fn ip(mut self, ip: IpAddr) -> Self {
+    pub const fn ip(mut self, ip: IpAddr) -> Self {
         self.ip = ip;
         self
     }

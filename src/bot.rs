@@ -137,7 +137,7 @@ impl Bot {
     }
 
     /// Starts configuring polling.
-    pub fn polling<'a>(self) -> Polling<'a> {
+    pub const fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
     }
 
@@ -179,7 +179,7 @@ impl Bot {
             | Some(UpdateKind::ChannelPost(message)) => {
                 match message.kind {
                     MessageKind::Text(text) => {
-                        if !text.text.starts_with("/")
+                        if !text.text.starts_with('/')
                             && self.will_handle_text()
                         {
                             let context = TextContext::new(
@@ -224,7 +224,7 @@ impl Bot {
 
                 match message.kind {
                     MessageKind::Text(text) => {
-                        if !text.text.starts_with("/")
+                        if !text.text.starts_with('/')
                             && self.will_handle_edited_text()
                         {
                             let context = EditedTextContext::new(
@@ -267,19 +267,19 @@ impl Bot {
         }
 
         for handler in &self.polling_error_handlers {
-            (&mut *handler.lock().unwrap())(&error);
+            (&mut *handler.lock().unwrap())(error);
         }
     }
 
     fn handle_before_update(&self, context: &UpdateContext) {
         for handler in &self.before_update_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
     fn handle_after_update(&self, context: &UpdateContext) {
         for handler in &self.after_update_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
@@ -289,7 +289,7 @@ impl Bot {
 
     fn handle_text(&self, context: &TextContext) {
         for handler in &self.text_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
@@ -299,7 +299,7 @@ impl Bot {
 
     fn handle_edited_text(&self, context: &EditedTextContext) {
         for handler in &self.edited_text_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
@@ -309,7 +309,7 @@ impl Bot {
 
     fn handle_poll(&self, context: &PollContext) {
         for handler in &self.poll_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
@@ -319,7 +319,7 @@ impl Bot {
 
     fn handle_updated_poll(&self, context: &UpdatedPollContext) {
         for handler in &self.updated_poll_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 }

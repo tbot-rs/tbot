@@ -15,7 +15,7 @@ pub struct Polling<'a> {
 }
 
 impl<'a> Polling<'a> {
-    pub(crate) fn new(bot: Bot) -> Self {
+    pub(crate) const fn new(bot: Bot) -> Self {
         Self {
             bot,
             limit: None,
@@ -47,7 +47,7 @@ impl<'a> Polling<'a> {
     }
 
     /// Configures the minimal interval between making requests.
-    pub fn poll_interval(mut self, poll_interval: u64) -> Self {
+    pub const fn poll_interval(mut self, poll_interval: u64) -> Self {
         self.poll_interval = poll_interval;
         self
     }

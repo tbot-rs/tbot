@@ -19,7 +19,7 @@ pub struct AddStickerToSet<'a> {
 
 impl<'a> AddStickerToSet<'a> {
     /// Constructs a new `AddStickerToSet`.
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         user_id: i64,
         name: &'a str,
@@ -53,8 +53,8 @@ impl<'a> AddStickerToSet<'a> {
 
         let mut multipart = Multipart::new(7)
             .str("user_id", &user_id)
-            .str("name", &self.name)
-            .str("emojis", &self.emojis)
+            .str("name", self.name)
+            .str("emojis", self.emojis)
             .maybe_string("mask_position", &mask_position);
 
         match self.png_sticker.media {

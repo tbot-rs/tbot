@@ -21,7 +21,7 @@ pub struct EditInlineLocation<'a> {
 
 impl<'a> EditInlineLocation<'a> {
     /// Constructs a new `EditInlineLocation`.
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         inline_message_id: u32,
         (latitude, longitude): (f64, f64),

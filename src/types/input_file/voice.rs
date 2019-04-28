@@ -13,7 +13,7 @@ pub struct Voice<'a> {
 }
 
 impl<'a> Voice<'a> {
-    fn new(media: InputFile<'a>) -> Self {
+    const fn new(media: InputFile<'a>) -> Self {
         Self {
             media,
             duration: None,
