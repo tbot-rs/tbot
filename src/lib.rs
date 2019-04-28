@@ -31,9 +31,16 @@
 //! [GitLab]: https://gitlab.com/SnejUgal/tbot
 //! [GitHub]: https://github.com/SnejUgal/tbot
 
-#![deny(future_incompatible)]
-#![deny(nonstandard_style)]
-#![deny(missing_docs)]
+#![deny(
+    future_incompatible,
+    nonstandard_style,
+    missing_docs,
+    clippy::all,
+    clippy::pedantic,
+    clippy::nursery,
+    clippy::cargo
+)]
+#![allow(clippy::multiple_crate_versions)] // can't do much
 
 mod bot;
 mod multipart;
