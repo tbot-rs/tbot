@@ -6,7 +6,7 @@ use std::{
 use {
     contexts::*,
     methods::GetUpdates,
-    types::{MessageKind, UpdateKind},
+    types::{Message, MessageKind, UpdateKind},
 };
 
 mod mock_bot;
@@ -24,6 +24,7 @@ type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
 type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
+type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
@@ -35,6 +36,7 @@ pub struct Bot {
     edited_text_handlers: Handlers<EditedTextHandler>,
     poll_handlers: Handlers<PollHandler>,
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
+    unhandled_handlers: Handlers<UnhandledHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
@@ -51,6 +53,7 @@ impl Bot {
             edited_text_handlers: Vec::new(),
             poll_handlers: Vec::new(),
             updated_poll_handlers: Vec::new(),
+            unhandled_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
         }
@@ -136,6 +139,14 @@ impl Bot {
         self.updated_poll_handlers.push(Mutex::new(Box::new(handler)))
     }
 
+    /// Adds a new handler for unhandled events.
+    pub fn unhandled(
+        &mut self,
+        handler: impl FnMut(&UnhandledContext) + Send + Sync + 'static,
+    ) {
+        self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
     /// Starts configuring polling.
     pub const fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
@@ -178,22 +189,29 @@ impl Bot {
             | Some(UpdateKind::ChannelPost(message)) => {
                 match message.kind {
                     MessageKind::Text(text) => {
-                        if !text.text.starts_with('/')
-                            && self.will_handle_text()
-                        {
-                            let context = TextContext::new(
-                                Arc::clone(&mock_bot),
-                                message.id,
-                                message.from,
-                                message.date,
-                                message.chat,
-                                message.forward,
-                                message.reply_to.map(|message| *message),
-                                text,
-                            );
+                        if !text.text.starts_with('/') {
+                            if self.will_handle_text() {
+                                let context = TextContext::new(
+                                    Arc::clone(&mock_bot),
+                                    message.id,
+                                    message.from,
+                                    message.date,
+                                    message.chat,
+                                    message.forward,
+                                    message.reply_to.map(|message| *message),
+                                    text,
+                                );
 
-                            self.handle_text(&context);
-                        }
+                                self.handle_text(&context);
+                            } else if self.will_handle_unhandled() {
+                                let update = UpdateKind::Message(Message {
+                                    kind: MessageKind::Text(text),
+                                    ..message
+                                });
+
+                                self.handle_unhandled(mock_bot, update);
+                            }
+                        } // TODO: command handlers
                     }
                     MessageKind::Poll(poll) => {
                         if self.will_handle_poll() {
@@ -209,9 +227,20 @@ impl Bot {
                             );
 
                             self.handle_poll(&context);
+                        } else if self.will_handle_unhandled() {
+                            let update = UpdateKind::Message(Message {
+                                kind: MessageKind::Poll(poll),
+                                ..message
+                            });
+
+                            self.handle_unhandled(mock_bot, update);
                         }
                     }
-                    _ => (), // TOOD
+                    _ if self.will_handle_unhandled() => {
+                        let update = UpdateKind::Message(message);
+                        self.handle_unhandled(mock_bot, update);
+                    }
+                    _ => (),
                 }
             }
             Some(UpdateKind::EditedMessage(message))
@@ -223,27 +252,39 @@ impl Bot {
 
                 match message.kind {
                     MessageKind::Text(text) => {
-                        if !text.text.starts_with('/')
-                            && self.will_handle_edited_text()
-                        {
-                            let context = EditedTextContext::new(
-                                Arc::clone(&mock_bot),
-                                message.id,
-                                message.from,
-                                message.date,
-                                message.chat,
-                                message.reply_to.map(|message| *message),
-                                edit_date,
-                                text,
-                            );
+                        if !text.text.starts_with('/') {
+                            if self.will_handle_edited_text() {
+                                let context = EditedTextContext::new(
+                                    Arc::clone(&mock_bot),
+                                    message.id,
+                                    message.from,
+                                    message.date,
+                                    message.chat,
+                                    message.reply_to.map(|message| *message),
+                                    edit_date,
+                                    text,
+                                );
 
-                            self.handle_edited_text(&context);
+                                self.handle_edited_text(&context);
+                            } else if self.will_handle_unhandled() {
+                                let update =
+                                    UpdateKind::EditedMessage(Message {
+                                        kind: MessageKind::Text(text),
+                                        ..message
+                                    });
+
+                                self.handle_unhandled(mock_bot, update);
+                            }
                         }
                     }
                     MessageKind::Poll(_) => unreachable!(
                         "\n[tbot] Unexpected poll as an edited message update\n"
                     ),
-                    _ => (), // TOOD
+                    _ if self.will_handle_unhandled() => {
+                        let update = UpdateKind::EditedMessage(message);
+                        self.handle_unhandled(mock_bot, update)
+                    }
+                    _ => (),
                 }
             }
             Some(UpdateKind::Poll(poll)) => {
@@ -252,9 +293,13 @@ impl Bot {
                         UpdatedPollContext::new(Arc::clone(&mock_bot), poll);
 
                     self.handle_updated_poll(&context);
+                } else if self.will_handle_unhandled() {
+                    let update = UpdateKind::Poll(poll);
+
+                    self.handle_unhandled(mock_bot, update);
                 }
             }
-            _ => (), // TODO
+            None => (), // todo: remove Option and use UpdateKind::Unknown
         }
 
         self.handle_after_update(&update_context);
@@ -319,6 +364,18 @@ impl Bot {
     fn handle_updated_poll(&self, context: &UpdatedPollContext) {
         for handler in &self.updated_poll_handlers {
             (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_unhandled(&self) -> bool {
+        !self.unhandled_handlers.is_empty()
+    }
+
+    fn handle_unhandled(&self, mock_bot: Arc<MockBot>, update: UpdateKind) {
+        let context = UnhandledContext::new(mock_bot, update);
+
+        for handler in &self.unhandled_handlers {
+            (&mut *handler.lock().unwrap())(&context);
         }
     }
 }
