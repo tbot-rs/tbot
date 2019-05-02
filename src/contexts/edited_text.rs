@@ -33,25 +33,20 @@ impl EditedTextContext {
     #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: Arc<MockBot>,
-        message_id: u32,
-        from: Option<types::User>,
-        date: i64,
-        chat: types::raw::Chat,
-        reply_to: Option<types::Message>,
-        edit_date: i64,
+        data: types::MessageData,
         text: types::Text,
     ) -> Self {
         Self {
             private: (),
             bot,
-            message_id,
-            from,
-            date,
-            chat,
-            reply_to,
+            message_id: data.id,
+            from: data.from,
+            date: data.date,
+            chat: data.chat,
+            reply_to: data.reply_to.map(|message| *message),
             text: text.text,
             entities: text.entities,
-            edit_date,
+            edit_date: data.edit_date.expect("\n[tbot] Expected an edited message to have the `edit_date` field\n"),
         }
     }
 }

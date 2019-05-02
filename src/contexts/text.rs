@@ -32,23 +32,18 @@ impl TextContext {
     #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: Arc<MockBot>,
-        message_id: u32,
-        from: Option<types::User>,
-        date: i64,
-        chat: types::raw::Chat,
-        forward: Option<types::Forward>,
-        reply_to: Option<types::Message>,
+        data: types::MessageData,
         text: types::Text,
     ) -> Self {
         Self {
             private: (),
             bot,
-            message_id,
-            from,
-            date,
-            chat,
-            forward,
-            reply_to,
+            message_id: data.id,
+            from: data.from,
+            date: data.date,
+            chat: data.chat,
+            forward: data.forward,
+            reply_to: data.reply_to.map(|message| *message),
             text: text.text,
             entities: text.entities,
         }

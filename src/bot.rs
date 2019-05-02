@@ -187,27 +187,23 @@ impl Bot {
         match update.kind {
             Some(UpdateKind::Message(message))
             | Some(UpdateKind::ChannelPost(message)) => {
-                match message.kind {
+                let (data, kind) = message.split();
+
+                match kind {
                     MessageKind::Text(text) => {
                         if !text.text.starts_with('/') {
                             if self.will_handle_text() {
                                 let context = TextContext::new(
-                                    Arc::clone(&mock_bot),
-                                    message.id,
-                                    message.from,
-                                    message.date,
-                                    message.chat,
-                                    message.forward,
-                                    message.reply_to.map(|message| *message),
+                                    mock_bot,
+                                    data,
                                     text,
                                 );
 
                                 self.run_text_handlers(&context);
                             } else if self.will_handle_unhandled() {
-                                let update = UpdateKind::Message(Message {
-                                    kind: MessageKind::Text(text),
-                                    ..message
-                                });
+                                let kind = MessageKind::Text(text);
+                                let message = Message::new(data, kind);
+                                let update = UpdateKind::Message(message);
 
                                 self.run_unhandled_handlers(mock_bot, update);
                             }
@@ -216,27 +212,22 @@ impl Bot {
                     MessageKind::Poll(poll) => {
                         if self.will_handle_poll() {
                             let context = PollContext::new(
-                                Arc::clone(&mock_bot),
-                                message.id,
-                                message.from,
-                                message.date,
-                                message.chat,
-                                message.forward,
-                                message.reply_to.map(|message| *message),
+                                mock_bot,
+                                data,
                                 poll,
                             );
 
                             self.run_poll_handlers(&context);
                         } else if self.will_handle_unhandled() {
-                            let update = UpdateKind::Message(Message {
-                                kind: MessageKind::Poll(poll),
-                                ..message
-                            });
+                            let kind = MessageKind::Poll(poll);
+                            let message = Message::new(data, kind);
+                            let update = UpdateKind::Message(message);
 
                             self.run_unhandled_handlers(mock_bot, update);
                         }
                     }
                     _ if self.will_handle_unhandled() => {
+                        let message = Message::new(data, kind);
                         let update = UpdateKind::Message(message);
                         self.run_unhandled_handlers(mock_bot, update);
                     }
@@ -245,33 +236,24 @@ impl Bot {
             }
             Some(UpdateKind::EditedMessage(message))
             | Some(UpdateKind::EditedChannelPost(message)) => {
-                let edit_date = message.edit_date.expect(
-                    "\n[tbot] Edited message did not have the `edit_date` \
-                     field\n",
-                );
+                let (data, kind) = message.split();
 
-                match message.kind {
+                match kind {
                     MessageKind::Text(text) => {
                         if !text.text.starts_with('/') {
                             if self.will_handle_edited_text() {
                                 let context = EditedTextContext::new(
-                                    Arc::clone(&mock_bot),
-                                    message.id,
-                                    message.from,
-                                    message.date,
-                                    message.chat,
-                                    message.reply_to.map(|message| *message),
-                                    edit_date,
+                                    mock_bot,
+                                    data,
                                     text,
                                 );
 
                                 self.run_edited_text_handlers(&context);
                             } else if self.will_handle_unhandled() {
+                                let kind = MessageKind::Text(text);
+                                let message = Message::new(data, kind);
                                 let update =
-                                    UpdateKind::EditedMessage(Message {
-                                        kind: MessageKind::Text(text),
-                                        ..message
-                                    });
+                                    UpdateKind::EditedMessage(message);
 
                                 self.run_unhandled_handlers(mock_bot, update);
                             }
@@ -281,6 +263,7 @@ impl Bot {
                         "\n[tbot] Unexpected poll as an edited message update\n"
                     ),
                     _ if self.will_handle_unhandled() => {
+                        let message = Message::new(data, kind);
                         let update = UpdateKind::EditedMessage(message);
                         self.run_unhandled_handlers(mock_bot, update)
                     }
