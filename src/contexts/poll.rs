@@ -20,6 +20,8 @@ pub struct PollContext {
     pub forward: Option<types::Forward>,
     /// If `Some`, the original message.
     pub reply_to: Option<types::Message>,
+    /// The author's signature, if turned for the channel.
+    pub author_signature: Option<String>,
     /// The poll.
     pub poll: types::Poll,
 }
@@ -38,6 +40,7 @@ impl PollContext {
             chat: data.chat,
             forward: data.forward,
             reply_to: data.reply_to.map(|message| *message),
+            author_signature: data.author_signature,
             poll,
         }
     }

@@ -20,6 +20,8 @@ pub struct EditedTextContext {
     // No forward because one can't edit a forwared message.
     /// If `Some`, the original message.
     pub reply_to: Option<types::Message>,
+    /// The author's signature, if turned for the channel.
+    pub author_signature: Option<String>,
     /// The message's text.
     pub text: String,
     /// Entities in the message (links, formatting, etc).
@@ -44,6 +46,7 @@ impl EditedTextContext {
             date: data.date,
             chat: data.chat,
             reply_to: data.reply_to.map(|message| *message),
+            author_signature: data.author_signature,
             text: text.text,
             entities: text.entities,
             edit_date: data.edit_date.expect("\n[tbot] Expected an edited message to have the `edit_date` field\n"),
