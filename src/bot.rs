@@ -182,7 +182,7 @@ impl Bot {
         let update_context =
             UpdateContext::new(Arc::clone(&mock_bot), update.id);
 
-        self.handle_before_update(&update_context);
+        self.run_before_update_handlers(&update_context);
 
         match update.kind {
             Some(UpdateKind::Message(message))
@@ -202,14 +202,14 @@ impl Bot {
                                     text,
                                 );
 
-                                self.handle_text(&context);
+                                self.run_text_handlers(&context);
                             } else if self.will_handle_unhandled() {
                                 let update = UpdateKind::Message(Message {
                                     kind: MessageKind::Text(text),
                                     ..message
                                 });
 
-                                self.handle_unhandled(mock_bot, update);
+                                self.run_unhandled_handlers(mock_bot, update);
                             }
                         } // TODO: command handlers
                     }
@@ -226,19 +226,19 @@ impl Bot {
                                 poll,
                             );
 
-                            self.handle_poll(&context);
+                            self.run_poll_handlers(&context);
                         } else if self.will_handle_unhandled() {
                             let update = UpdateKind::Message(Message {
                                 kind: MessageKind::Poll(poll),
                                 ..message
                             });
 
-                            self.handle_unhandled(mock_bot, update);
+                            self.run_unhandled_handlers(mock_bot, update);
                         }
                     }
                     _ if self.will_handle_unhandled() => {
                         let update = UpdateKind::Message(message);
-                        self.handle_unhandled(mock_bot, update);
+                        self.run_unhandled_handlers(mock_bot, update);
                     }
                     _ => (),
                 }
@@ -265,7 +265,7 @@ impl Bot {
                                     text,
                                 );
 
-                                self.handle_edited_text(&context);
+                                self.run_edited_text_handlers(&context);
                             } else if self.will_handle_unhandled() {
                                 let update =
                                     UpdateKind::EditedMessage(Message {
@@ -273,7 +273,7 @@ impl Bot {
                                         ..message
                                     });
 
-                                self.handle_unhandled(mock_bot, update);
+                                self.run_unhandled_handlers(mock_bot, update);
                             }
                         }
                     }
@@ -282,7 +282,7 @@ impl Bot {
                     ),
                     _ if self.will_handle_unhandled() => {
                         let update = UpdateKind::EditedMessage(message);
-                        self.handle_unhandled(mock_bot, update)
+                        self.run_unhandled_handlers(mock_bot, update)
                     }
                     _ => (),
                 }
@@ -292,20 +292,20 @@ impl Bot {
                     let context =
                         UpdatedPollContext::new(Arc::clone(&mock_bot), poll);
 
-                    self.handle_updated_poll(&context);
+                    self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let update = UpdateKind::Poll(poll);
 
-                    self.handle_unhandled(mock_bot, update);
+                    self.run_unhandled_handlers(mock_bot, update);
                 }
             }
             None => (), // todo: remove Option and use UpdateKind::Unknown
         }
 
-        self.handle_after_update(&update_context);
+        self.run_after_update_handlers(&update_context);
     }
 
-    fn handle_polling_error(&self, error: &methods::DeliveryError) {
+    fn run_polling_error_handlers(&self, error: &methods::DeliveryError) {
         if self.polling_error_handlers.is_empty() {
             panic!("\n[tbot] Unhandled polling error: {:#?}\n", error);
         }
@@ -315,13 +315,13 @@ impl Bot {
         }
     }
 
-    fn handle_before_update(&self, context: &UpdateContext) {
+    fn run_before_update_handlers(&self, context: &UpdateContext) {
         for handler in &self.before_update_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
 
-    fn handle_after_update(&self, context: &UpdateContext) {
+    fn run_after_update_handlers(&self, context: &UpdateContext) {
         for handler in &self.after_update_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
@@ -331,7 +331,7 @@ impl Bot {
         !self.text_handlers.is_empty()
     }
 
-    fn handle_text(&self, context: &TextContext) {
+    fn run_text_handlers(&self, context: &TextContext) {
         for handler in &self.text_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
@@ -341,7 +341,7 @@ impl Bot {
         !self.edited_text_handlers.is_empty()
     }
 
-    fn handle_edited_text(&self, context: &EditedTextContext) {
+    fn run_edited_text_handlers(&self, context: &EditedTextContext) {
         for handler in &self.edited_text_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
@@ -351,7 +351,7 @@ impl Bot {
         !self.poll_handlers.is_empty()
     }
 
-    fn handle_poll(&self, context: &PollContext) {
+    fn run_poll_handlers(&self, context: &PollContext) {
         for handler in &self.poll_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
@@ -361,7 +361,7 @@ impl Bot {
         !self.updated_poll_handlers.is_empty()
     }
 
-    fn handle_updated_poll(&self, context: &UpdatedPollContext) {
+    fn run_updated_poll_handlers(&self, context: &UpdatedPollContext) {
         for handler in &self.updated_poll_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
@@ -371,7 +371,11 @@ impl Bot {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn handle_unhandled(&self, mock_bot: Arc<MockBot>, update: UpdateKind) {
+    fn run_unhandled_handlers(
+        &self,
+        mock_bot: Arc<MockBot>,
+        update: UpdateKind,
+    ) {
         let context = UnhandledContext::new(mock_bot, update);
 
         for handler in &self.unhandled_handlers {
