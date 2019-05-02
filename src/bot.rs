@@ -185,8 +185,8 @@ impl Bot {
         self.run_before_update_handlers(&update_context);
 
         match update.kind {
-            Some(UpdateKind::Message(message))
-            | Some(UpdateKind::ChannelPost(message)) => {
+            UpdateKind::Message(message)
+            | UpdateKind::ChannelPost(message) => {
                 let (data, kind) = message.split();
 
                 match kind {
@@ -234,8 +234,8 @@ impl Bot {
                     _ => (),
                 }
             }
-            Some(UpdateKind::EditedMessage(message))
-            | Some(UpdateKind::EditedChannelPost(message)) => {
+            UpdateKind::EditedMessage(message)
+            | UpdateKind::EditedChannelPost(message) => {
                 let (data, kind) = message.split();
 
                 match kind {
@@ -270,7 +270,7 @@ impl Bot {
                     _ => (),
                 }
             }
-            Some(UpdateKind::Poll(poll)) => {
+            UpdateKind::Poll(poll) => {
                 if self.will_handle_updated_poll() {
                     let context =
                         UpdatedPollContext::new(Arc::clone(&mock_bot), poll);
@@ -282,7 +282,9 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
-            None => (), // todo: remove Option and use UpdateKind::Unknown
+            update @ UpdateKind::Unknown => {
+                self.run_unhandled_handlers(mock_bot, update);
+            }
         }
 
         self.run_after_update_handlers(&update_context);
