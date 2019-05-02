@@ -150,8 +150,10 @@ pub(crate) struct MessageData {
 }
 
 impl Message {
-    pub(crate) fn new(data: MessageData, kind: MessageKind) -> Message {
-        Message {
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn new(data: MessageData, kind: MessageKind) -> Self {
+        Self {
             id: data.id,
             from: data.from,
             date: data.date,
@@ -164,6 +166,8 @@ impl Message {
         }
     }
 
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn split(self) -> (MessageData, MessageKind) {
         let data = MessageData {
             id: self.id,
