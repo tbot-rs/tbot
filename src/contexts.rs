@@ -7,6 +7,7 @@
 use super::*;
 
 mod edited_text;
+mod photo;
 mod poll;
 mod text;
 mod unhandled;
@@ -16,5 +17,6 @@ mod updated_poll;
 pub mod traits;
 
 pub use {
-    edited_text::*, poll::*, text::*, unhandled::*, update::*, updated_poll::*,
+    edited_text::*, photo::*, poll::*, text::*, unhandled::*, update::*,
+    updated_poll::*,
 };

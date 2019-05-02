@@ -23,6 +23,7 @@ type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
 type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
+type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
 type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
 
@@ -35,6 +36,7 @@ pub struct Bot {
     text_handlers: Handlers<TextHandler>,
     edited_text_handlers: Handlers<EditedTextHandler>,
     poll_handlers: Handlers<PollHandler>,
+    photo_handlers: Handlers<PhotoHandler>,
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
     #[cfg(feature = "proxy")]
@@ -52,6 +54,7 @@ impl Bot {
             text_handlers: Vec::new(),
             edited_text_handlers: Vec::new(),
             poll_handlers: Vec::new(),
+            photo_handlers: Vec::new(),
             updated_poll_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
@@ -129,6 +132,14 @@ impl Bot {
         handler: impl FnMut(&PollContext) + Send + Sync + 'static,
     ) {
         self.poll_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for photo messages.
+    pub fn photo(
+        &mut self,
+        handler: impl FnMut(&PhotoContext) + Send + Sync + 'static,
+    ) {
+        self.photo_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for new states of polls
@@ -248,6 +259,26 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::Photo(photo, caption, media_group_id) => {
+                if self.will_handle_photo() {
+                    let context = PhotoContext::new(
+                        mock_bot,
+                        data,
+                        photo,
+                        caption,
+                        media_group_id,
+                    );
+
+                    self.run_photo_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind =
+                        MessageKind::Photo(photo, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = UpdateKind::Message(message);
@@ -341,6 +372,16 @@ impl Bot {
 
     fn run_poll_handlers(&self, context: &PollContext) {
         for handler in &self.poll_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_photo(&self) -> bool {
+        !self.photo_handlers.is_empty()
+    }
+
+    fn run_photo_handlers(&self, context: &PhotoContext) {
+        for handler in &self.photo_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
