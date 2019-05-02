@@ -116,7 +116,9 @@ impl<'a> Polling<'a> {
                         on_ok.handle_update(update);
                     }
                 })
-                .map_err(move |error| on_error.handle_polling_error(&error));
+                .map_err(move |error| {
+                    on_error.run_polling_error_handlers(&error)
+                });
 
             crate::run(handler);
 

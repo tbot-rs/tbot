@@ -138,6 +138,52 @@ pub struct Message {
     pub kind: MessageKind,
 }
 
+pub(crate) struct MessageData {
+    pub id: u32,
+    pub from: Option<User>,
+    pub date: i64,
+    pub chat: raw::Chat,
+    pub forward: Option<Forward>,
+    pub reply_to: Option<Box<Message>>,
+    pub edit_date: Option<i64>,
+    pub author_signature: Option<String>,
+}
+
+impl Message {
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn new(data: MessageData, kind: MessageKind) -> Self {
+        Self {
+            id: data.id,
+            from: data.from,
+            date: data.date,
+            chat: data.chat,
+            forward: data.forward,
+            reply_to: data.reply_to,
+            edit_date: data.edit_date,
+            author_signature: data.author_signature,
+            kind,
+        }
+    }
+
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn split(self) -> (MessageData, MessageKind) {
+        let data = MessageData {
+            id: self.id,
+            from: self.from,
+            date: self.date,
+            chat: self.chat,
+            forward: self.forward,
+            reply_to: self.reply_to,
+            edit_date: self.edit_date,
+            author_signature: self.author_signature,
+        };
+
+        (data, self.kind)
+    }
+}
+
 // Prepare for crap.
 
 const MESSAGE_ID: &str = "message_id";

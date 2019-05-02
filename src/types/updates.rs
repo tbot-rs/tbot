@@ -41,6 +41,8 @@ pub enum UpdateKind {
     EditedChannelPost(Message),
     /// A new state of a poll.
     Poll(Poll),
+    /// Unknown update kind.
+    Unknown,
 }
 
 /// Represents an update from Telegram.
@@ -50,7 +52,7 @@ pub struct Update {
     /// Update's ID.
     pub id: u32,
     /// Update's type.
-    pub kind: Option<UpdateKind>,
+    pub kind: UpdateKind,
 }
 
 const UPDATE_ID: &str = "update_id";
@@ -119,7 +121,7 @@ impl<'de> serde::Deserialize<'de> for Update {
                     id: id.ok_or_else(|| {
                         serde::de::Error::missing_field(UPDATE_ID)
                     })?,
-                    kind,
+                    kind: kind.unwrap_or(UpdateKind::Unknown),
                 })
             }
         }
