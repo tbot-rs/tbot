@@ -33,6 +33,8 @@ macro_rules! message_base {
         }
 
         impl $name {
+            // https://github.com/rust-lang/rust-clippy/issues/4041
+            #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
                 bot: Arc<MockBot>,
                 data: types::MessageData,
