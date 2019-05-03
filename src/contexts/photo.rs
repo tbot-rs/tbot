@@ -47,7 +47,7 @@ impl PhotoContext {
             date: data.date,
             chat: data.chat,
             forward: data.forward,
-            reply_to: data.reply_to.map(|message| *message),
+            reply_to: data.reply_to,
             author_signature: data.author_signature,
             photo,
             caption: caption.text,
