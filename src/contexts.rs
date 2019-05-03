@@ -6,6 +6,9 @@
 
 use super::*;
 
+#[macro_use]
+mod macros;
+
 mod edited_text;
 mod photo;
 mod poll;
