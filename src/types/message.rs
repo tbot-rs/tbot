@@ -159,7 +159,7 @@ impl Message {
             date: data.date,
             chat: data.chat,
             forward: data.forward,
-            reply_to: data.reply_to.map(|message| Box::new(message)),
+            reply_to: data.reply_to.map(Box::new),
             edit_date: data.edit_date,
             author_signature: data.author_signature,
             kind,
