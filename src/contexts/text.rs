@@ -45,7 +45,7 @@ impl TextContext {
             date: data.date,
             chat: data.chat,
             forward: data.forward,
-            reply_to: data.reply_to.map(|message| *message),
+            reply_to: data.reply_to,
             author_signature: data.author_signature,
             text: text.text,
             entities: text.entities,
