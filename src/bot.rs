@@ -27,6 +27,7 @@ type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
 type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
 type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
+type VoiceHandler = dyn FnMut(&VoiceContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
@@ -41,6 +42,7 @@ pub struct Bot {
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
     video_handlers: Handlers<VideoHandler>,
+    voice_handlers: Handlers<VoiceHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
@@ -60,6 +62,7 @@ impl Bot {
             updated_poll_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
             video_handlers: Vec::new(),
+            voice_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
         }
@@ -167,6 +170,14 @@ impl Bot {
         handler: impl FnMut(&VideoContext) + Send + Sync + 'static,
     ) {
         self.video_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for voice messages.
+    pub fn voice(
+        &mut self,
+        handler: impl FnMut(&VoiceContext) + Send + Sync + 'static,
+    ) {
+        self.voice_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Starts configuring polling.
@@ -304,6 +315,20 @@ impl Bot {
                 } else if self.will_handle_unhandled() {
                     let kind =
                         MessageKind::Video(video, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Voice(voice, caption) => {
+                if self.will_handle_voice() {
+                    let context =
+                        VoiceContext::new(mock_bot, data, voice, caption);
+
+                    self.run_voice_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Voice(voice, caption);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
@@ -449,6 +474,16 @@ impl Bot {
 
     fn run_video_handlers(&self, context: &VideoContext) {
         for handler in &self.video_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_voice(&self) -> bool {
+        !self.voice_handlers.is_empty()
+    }
+
+    fn run_voice_handlers(&self, context: &VoiceContext) {
+        for handler in &self.voice_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
