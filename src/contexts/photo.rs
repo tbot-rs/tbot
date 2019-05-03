@@ -1,14 +1,14 @@
 media_message! {
     struct PhotoContext {
-        /// The video.
+        /// The photo.
         photo: Vec<types::PhotoSize>,
-        /// The video's caption.
+        /// The photo's caption.
         caption: String,
         /// Entities in the caption (links, formatting, etc).
         caption_entities: Vec<types::MessageEntity>,
         /// The media group's ID.
         media_group_id: Option<i32>,
-    } -> Bot::video
+    } -> Bot::photo
 
     fn new(caption: types::Text, media_group_id: Option<i32>,) -> Self {
         Self {
