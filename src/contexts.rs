@@ -16,10 +16,11 @@ mod text;
 mod unhandled;
 mod update;
 mod updated_poll;
+mod video;
 
 pub mod traits;
 
 pub use {
     edited_text::*, photo::*, poll::*, text::*, unhandled::*, update::*,
-    updated_poll::*,
+    updated_poll::*, video::*,
 };
