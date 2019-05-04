@@ -18,6 +18,7 @@ pub use {mock_bot::*, polling::*, webhook::*};
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
 // Wish trait alises came out soon
+type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
@@ -32,6 +33,7 @@ type VoiceHandler = dyn FnMut(&VoiceContext) + Send + Sync;
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: Arc<String>,
+    audio_handlers: Handlers<AudioHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
@@ -52,6 +54,7 @@ impl Bot {
     pub fn new(token: String) -> Self {
         Self {
             token: Arc::new(token),
+            audio_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
@@ -87,6 +90,14 @@ impl Bot {
         Self::new(std::env::var(env_var).unwrap_or_else(|_| {
             panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
         }))
+    }
+
+    /// Adds a new handler for audio messages.
+    pub fn audio(
+        &mut self,
+        handler: impl FnMut(&AudioContext) + Send + Sync + 'static,
+    ) {
+        self.audio_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for errors that happened while polling.
@@ -335,6 +346,20 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::Audio(audio, caption) => {
+                if self.will_handle_audio() {
+                    let context =
+                        AudioContext::new(mock_bot, data, audio, caption);
+
+                    self.run_audio_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Audio(audio, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = UpdateKind::Message(message);
@@ -377,6 +402,16 @@ impl Bot {
                 self.run_unhandled_handlers(mock_bot, update)
             }
             _ => (),
+        }
+    }
+
+    fn will_handle_audio(&self) -> bool {
+        !self.audio_handlers.is_empty()
+    }
+
+    fn run_audio_handlers(&self, context: &AudioContext) {
+        for handler in &self.audio_handlers {
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 

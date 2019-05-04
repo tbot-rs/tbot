@@ -9,6 +9,7 @@ use super::*;
 #[macro_use]
 mod macros;
 
+mod audio;
 mod edited_text;
 mod photo;
 mod poll;
@@ -22,6 +23,6 @@ mod voice;
 pub mod traits;
 
 pub use {
-    edited_text::*, photo::*, poll::*, text::*, unhandled::*, update::*,
-    updated_poll::*, video::*, voice::*,
+    audio::*, edited_text::*, photo::*, poll::*, text::*, unhandled::*,
+    update::*, updated_poll::*, video::*, voice::*,
 };
