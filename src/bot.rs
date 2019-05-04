@@ -28,6 +28,7 @@ type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
 type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
 type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
+type StickerHandler = dyn FnMut(&StickerContext) + Send + Sync;
 type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
 type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
@@ -47,6 +48,7 @@ pub struct Bot {
     edited_text_handlers: Handlers<EditedTextHandler>,
     poll_handlers: Handlers<PollHandler>,
     photo_handlers: Handlers<PhotoHandler>,
+    sticker_handlers: Handlers<StickerHandler>,
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
     video_handlers: Handlers<VideoHandler>,
@@ -71,6 +73,7 @@ impl Bot {
             edited_text_handlers: Vec::new(),
             poll_handlers: Vec::new(),
             photo_handlers: Vec::new(),
+            sticker_handlers: Vec::new(),
             updated_poll_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
             video_handlers: Vec::new(),
@@ -190,6 +193,14 @@ impl Bot {
         handler: impl FnMut(&PhotoContext) + Send + Sync + 'static,
     ) {
         self.photo_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for sticker messages.
+    pub fn sticker(
+        &mut self,
+        handler: impl FnMut(&StickerContext) + Send + Sync + 'static,
+    ) {
+        self.sticker_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for new states of polls
@@ -339,6 +350,19 @@ impl Bot {
                 } else if self.will_handle_unhandled() {
                     let kind =
                         MessageKind::Photo(photo, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Sticker(sticker) => {
+                if self.will_handle_sticker() {
+                    let context = StickerContext::new(mock_bot, data, sticker);
+
+                    self.run_sticker_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Sticker(sticker);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
@@ -578,6 +602,16 @@ impl Bot {
 
     fn run_photo_handlers(&self, context: &PhotoContext) {
         for handler in &self.photo_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_sticker(&self) -> bool {
+        !self.sticker_handlers.is_empty()
+    }
+
+    fn run_sticker_handlers(&self, context: &StickerContext) {
+        for handler in &self.sticker_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
