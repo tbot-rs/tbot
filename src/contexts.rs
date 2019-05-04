@@ -13,6 +13,7 @@ mod animation;
 mod audio;
 mod document;
 mod edited_text;
+mod game;
 mod photo;
 mod poll;
 mod text;
@@ -25,6 +26,7 @@ mod voice;
 pub mod traits;
 
 pub use {
-    animation::*, audio::*, document::*, edited_text::*, photo::*, poll::*,
-    text::*, unhandled::*, update::*, updated_poll::*, video::*, voice::*,
+    animation::*, audio::*, document::*, edited_text::*, game::*, photo::*,
+    poll::*, text::*, unhandled::*, update::*, updated_poll::*, video::*,
+    voice::*,
 };

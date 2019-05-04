@@ -21,6 +21,7 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 type AnimationHandler = dyn FnMut(&AnimationContext) + Send + Sync;
 type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
 type DocumentHandler = dyn FnMut(&DocumentContext) + Send + Sync;
+type GameHandler = dyn FnMut(&GameContext) + Send + Sync;
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
@@ -38,6 +39,7 @@ pub struct Bot {
     animation_handlers: Handlers<AnimationHandler>,
     audio_handlers: Handlers<AudioHandler>,
     document_handlers: Handlers<DocumentHandler>,
+    game_handlers: Handlers<GameHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
@@ -61,6 +63,7 @@ impl Bot {
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
             document_handlers: Vec::new(),
+            game_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
@@ -120,6 +123,14 @@ impl Bot {
         handler: impl FnMut(&DocumentContext) + Send + Sync + 'static,
     ) {
         self.document_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for game messages.
+    pub fn game(
+        &mut self,
+        handler: impl FnMut(&GameContext) + Send + Sync + 'static,
+    ) {
+        self.game_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for errors that happened while polling.
@@ -411,6 +422,19 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::Game(game) => {
+                if self.will_handle_game() {
+                    let context = GameContext::new(mock_bot, data, game);
+
+                    self.run_game_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Game(game);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = UpdateKind::Message(message);
@@ -482,6 +506,16 @@ impl Bot {
 
     fn run_document_handlers(&self, context: &DocumentContext) {
         for handler in &self.document_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_game(&self) -> bool {
+        !self.game_handlers.is_empty()
+    }
+
+    fn run_game_handlers(&self, context: &GameContext) {
+        for handler in &self.game_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
