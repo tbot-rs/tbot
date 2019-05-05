@@ -23,6 +23,7 @@ mod text;
 mod unhandled;
 mod update;
 mod updated_poll;
+mod venue;
 mod video;
 mod video_note;
 mod voice;
@@ -32,5 +33,5 @@ pub mod traits;
 pub use {
     animation::*, audio::*, contact::*, document::*, edited_text::*, game::*,
     location::*, photo::*, poll::*, sticker::*, text::*, unhandled::*,
-    update::*, updated_poll::*, video::*, video_note::*, voice::*,
+    update::*, updated_poll::*, venue::*, video::*, video_note::*, voice::*,
 };

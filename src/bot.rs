@@ -31,6 +31,7 @@ type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
 type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
 type StickerHandler = dyn FnMut(&StickerContext) + Send + Sync;
+type VenueHandler = dyn FnMut(&VenueContext) + Send + Sync;
 type VideoNoteHandler = dyn FnMut(&VideoNoteContext) + Send + Sync;
 type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
@@ -56,6 +57,7 @@ pub struct Bot {
     sticker_handlers: Handlers<StickerHandler>,
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
+    venue_handlers: Handlers<VenueHandler>,
     video_handlers: Handlers<VideoHandler>,
     video_note_handlers: Handlers<VideoNoteHandler>,
     voice_handlers: Handlers<VoiceHandler>,
@@ -84,6 +86,7 @@ impl Bot {
             sticker_handlers: Vec::new(),
             updated_poll_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
+            venue_handlers: Vec::new(),
             video_handlers: Vec::new(),
             video_note_handlers: Vec::new(),
             voice_handlers: Vec::new(),
@@ -244,6 +247,14 @@ impl Bot {
         self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
     }
 
+    /// Adds a new handler for venue messages.
+    pub fn venue(
+        &mut self,
+        handler: impl FnMut(&VenueContext) + Send + Sync + 'static,
+    ) {
+        self.venue_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
     /// Adds a new handler for video messages.
     pub fn video(
         &mut self,
@@ -396,6 +407,19 @@ impl Bot {
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Sticker(sticker);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Venue(venue) => {
+                if self.will_handle_venue() {
+                    let context = VenueContext::new(mock_bot, data, venue);
+
+                    self.run_venue_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Venue(venue);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
@@ -733,6 +757,16 @@ impl Bot {
 
         for handler in &self.unhandled_handlers {
             (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    fn will_handle_venue(&self) -> bool {
+        !self.venue_handlers.is_empty()
+    }
+
+    fn run_venue_handlers(&self, context: &VenueContext) {
+        for handler in &self.venue_handlers {
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
