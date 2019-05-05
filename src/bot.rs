@@ -18,25 +18,27 @@ pub use {mock_bot::*, polling::*, webhook::*};
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
 // Wish trait alises came out soon
-type AnimationHandler = dyn FnMut(&AnimationContext) + Send + Sync;
-type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
-type ContactHandler = dyn FnMut(&ContactContext) + Send + Sync;
-type DocumentHandler = dyn FnMut(&DocumentContext) + Send + Sync;
-type GameHandler = dyn FnMut(&GameContext) + Send + Sync;
-type LocationHandler = dyn FnMut(&LocationContext) + Send + Sync;
-type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
-type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
-type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
-type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
-type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
-type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
-type StickerHandler = dyn FnMut(&StickerContext) + Send + Sync;
-type VenueHandler = dyn FnMut(&VenueContext) + Send + Sync;
-type VideoNoteHandler = dyn FnMut(&VideoNoteContext) + Send + Sync;
-type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
-type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
-type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
-type VoiceHandler = dyn FnMut(&VoiceContext) + Send + Sync;
+type Handler<T> = dyn FnMut(&T) + Send + Sync;
+
+type AnimationHandler = Handler<AnimationContext>;
+type AudioHandler = Handler<AudioContext>;
+type ContactHandler = Handler<ContactContext>;
+type DocumentHandler = Handler<DocumentContext>;
+type EditedTextHandler = Handler<EditedTextContext>;
+type GameHandler = Handler<GameContext>;
+type LocationHandler = Handler<LocationContext>;
+type PhotoHandler = Handler<PhotoContext>;
+type PollHandler = Handler<PollContext>;
+type PollingErrorHandler = Handler<methods::DeliveryError>;
+type StickerHandler = Handler<StickerContext>;
+type TextHandler = Handler<TextContext>;
+type UnhandledHandler = Handler<UnhandledContext>;
+type UpdateHandler = Handler<UpdateContext>;
+type UpdatedPollHandler = Handler<UpdatedPollContext>;
+type VenueHandler = Handler<VenueContext>;
+type VideoHandler = Handler<VideoContext>;
+type VideoNoteHandler = Handler<VideoNoteContext>;
+type VoiceHandler = Handler<VoiceContext>;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
