@@ -29,6 +29,7 @@ type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
 type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
 type StickerHandler = dyn FnMut(&StickerContext) + Send + Sync;
+type VideoNoteHandler = dyn FnMut(&VideoNoteContext) + Send + Sync;
 type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
 type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
@@ -52,6 +53,7 @@ pub struct Bot {
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
     video_handlers: Handlers<VideoHandler>,
+    video_note_handlers: Handlers<VideoNoteHandler>,
     voice_handlers: Handlers<VoiceHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
@@ -77,6 +79,7 @@ impl Bot {
             updated_poll_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
             video_handlers: Vec::new(),
+            video_note_handlers: Vec::new(),
             voice_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
@@ -225,6 +228,14 @@ impl Bot {
         handler: impl FnMut(&VideoContext) + Send + Sync + 'static,
     ) {
         self.video_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for video note messages.
+    pub fn video_note(
+        &mut self,
+        handler: impl FnMut(&VideoNoteContext) + Send + Sync + 'static,
+    ) {
+        self.video_note_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for voice messages.
@@ -383,6 +394,20 @@ impl Bot {
                 } else if self.will_handle_unhandled() {
                     let kind =
                         MessageKind::Video(video, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::VideoNote(video_note) => {
+                if self.will_handle_video_note() {
+                    let context =
+                        VideoNoteContext::new(mock_bot, data, video_note);
+
+                    self.run_video_note_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::VideoNote(video_note);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
@@ -648,6 +673,16 @@ impl Bot {
 
     fn run_video_handlers(&self, context: &VideoContext) {
         for handler in &self.video_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_video_note(&self) -> bool {
+        !self.video_note_handlers.is_empty()
+    }
+
+    fn run_video_note_handlers(&self, context: &VideoNoteContext) {
+        for handler in &self.video_note_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
