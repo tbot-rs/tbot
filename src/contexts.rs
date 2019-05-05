@@ -11,6 +11,7 @@ mod macros;
 
 mod animation;
 mod audio;
+mod contact;
 mod document;
 mod edited_text;
 mod game;
@@ -28,7 +29,7 @@ mod voice;
 pub mod traits;
 
 pub use {
-    animation::*, audio::*, document::*, edited_text::*, game::*, photo::*,
-    poll::*, sticker::*, text::*, unhandled::*, update::*, updated_poll::*,
-    video::*, video_note::*, voice::*,
+    animation::*, audio::*, contact::*, document::*, edited_text::*, game::*,
+    photo::*, poll::*, sticker::*, text::*, unhandled::*, update::*,
+    updated_poll::*, video::*, video_note::*, voice::*,
 };

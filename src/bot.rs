@@ -20,6 +20,7 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 // Wish trait alises came out soon
 type AnimationHandler = dyn FnMut(&AnimationContext) + Send + Sync;
 type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
+type ContactHandler = dyn FnMut(&ContactContext) + Send + Sync;
 type DocumentHandler = dyn FnMut(&DocumentContext) + Send + Sync;
 type GameHandler = dyn FnMut(&GameContext) + Send + Sync;
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
@@ -40,6 +41,7 @@ pub struct Bot {
     token: Arc<String>,
     animation_handlers: Handlers<AnimationHandler>,
     audio_handlers: Handlers<AudioHandler>,
+    contact_handlers: Handlers<ContactHandler>,
     document_handlers: Handlers<DocumentHandler>,
     game_handlers: Handlers<GameHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
@@ -66,6 +68,7 @@ impl Bot {
             token: Arc::new(token),
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
+            contact_handlers: Vec::new(),
             document_handlers: Vec::new(),
             game_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
@@ -121,6 +124,14 @@ impl Bot {
         handler: impl FnMut(&AudioContext) + Send + Sync + 'static,
     ) {
         self.audio_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for contact messages.
+    pub fn contact(
+        &mut self,
+        handler: impl FnMut(&ContactContext) + Send + Sync + 'static,
+    ) {
+        self.contact_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for document messages.
@@ -484,6 +495,19 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::Contact(contact) => {
+                if self.will_handle_contact() {
+                    let context = ContactContext::new(mock_bot, data, contact);
+
+                    self.run_contact_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Contact(contact);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = UpdateKind::Message(message);
@@ -545,6 +569,16 @@ impl Bot {
 
     fn run_audio_handlers(&self, context: &AudioContext) {
         for handler in &self.audio_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_contact(&self) -> bool {
+        !self.contact_handlers.is_empty()
+    }
+
+    fn run_contact_handlers(&self, context: &ContactContext) {
+        for handler in &self.contact_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }
