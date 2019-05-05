@@ -18,25 +18,49 @@ pub use {mock_bot::*, polling::*, webhook::*};
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
 // Wish trait alises came out soon
+type AnimationHandler = dyn FnMut(&AnimationContext) + Send + Sync;
+type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
+type ContactHandler = dyn FnMut(&ContactContext) + Send + Sync;
+type DocumentHandler = dyn FnMut(&DocumentContext) + Send + Sync;
+type GameHandler = dyn FnMut(&GameContext) + Send + Sync;
+type LocationHandler = dyn FnMut(&LocationContext) + Send + Sync;
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
 type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
 type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
+type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
+type StickerHandler = dyn FnMut(&StickerContext) + Send + Sync;
+type VenueHandler = dyn FnMut(&VenueContext) + Send + Sync;
+type VideoNoteHandler = dyn FnMut(&VideoNoteContext) + Send + Sync;
+type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
 type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
 type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
+type VoiceHandler = dyn FnMut(&VoiceContext) + Send + Sync;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: Arc<String>,
+    animation_handlers: Handlers<AnimationHandler>,
+    audio_handlers: Handlers<AudioHandler>,
+    contact_handlers: Handlers<ContactHandler>,
+    document_handlers: Handlers<DocumentHandler>,
+    game_handlers: Handlers<GameHandler>,
+    location_handlers: Handlers<LocationHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
     text_handlers: Handlers<TextHandler>,
     edited_text_handlers: Handlers<EditedTextHandler>,
     poll_handlers: Handlers<PollHandler>,
+    photo_handlers: Handlers<PhotoHandler>,
+    sticker_handlers: Handlers<StickerHandler>,
     updated_poll_handlers: Handlers<UpdatedPollHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
+    venue_handlers: Handlers<VenueHandler>,
+    video_handlers: Handlers<VideoHandler>,
+    video_note_handlers: Handlers<VideoNoteHandler>,
+    voice_handlers: Handlers<VoiceHandler>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
@@ -46,14 +70,26 @@ impl Bot {
     pub fn new(token: String) -> Self {
         Self {
             token: Arc::new(token),
+            animation_handlers: Vec::new(),
+            audio_handlers: Vec::new(),
+            contact_handlers: Vec::new(),
+            document_handlers: Vec::new(),
+            game_handlers: Vec::new(),
+            location_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
             text_handlers: Vec::new(),
             edited_text_handlers: Vec::new(),
             poll_handlers: Vec::new(),
+            photo_handlers: Vec::new(),
+            sticker_handlers: Vec::new(),
             updated_poll_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
+            venue_handlers: Vec::new(),
+            video_handlers: Vec::new(),
+            video_note_handlers: Vec::new(),
+            voice_handlers: Vec::new(),
             #[cfg(feature = "proxy")]
             proxy: None,
         }
@@ -78,6 +114,54 @@ impl Bot {
         Self::new(std::env::var(env_var).unwrap_or_else(|_| {
             panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
         }))
+    }
+
+    /// Adds a new handler for animation messages.
+    pub fn animation(
+        &mut self,
+        handler: impl FnMut(&AnimationContext) + Send + Sync + 'static,
+    ) {
+        self.animation_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for audio messages.
+    pub fn audio(
+        &mut self,
+        handler: impl FnMut(&AudioContext) + Send + Sync + 'static,
+    ) {
+        self.audio_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for contact messages.
+    pub fn contact(
+        &mut self,
+        handler: impl FnMut(&ContactContext) + Send + Sync + 'static,
+    ) {
+        self.contact_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for document messages.
+    pub fn document(
+        &mut self,
+        handler: impl FnMut(&DocumentContext) + Send + Sync + 'static,
+    ) {
+        self.document_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for game messages.
+    pub fn game(
+        &mut self,
+        handler: impl FnMut(&GameContext) + Send + Sync + 'static,
+    ) {
+        self.game_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for location messages.
+    pub fn location(
+        &mut self,
+        handler: impl FnMut(&LocationContext) + Send + Sync + 'static,
+    ) {
+        self.location_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for errors that happened while polling.
@@ -131,6 +215,22 @@ impl Bot {
         self.poll_handlers.push(Mutex::new(Box::new(handler)))
     }
 
+    /// Adds a new handler for photo messages.
+    pub fn photo(
+        &mut self,
+        handler: impl FnMut(&PhotoContext) + Send + Sync + 'static,
+    ) {
+        self.photo_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for sticker messages.
+    pub fn sticker(
+        &mut self,
+        handler: impl FnMut(&StickerContext) + Send + Sync + 'static,
+    ) {
+        self.sticker_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
     /// Adds a new handler for new states of polls
     pub fn updated_poll(
         &mut self,
@@ -145,6 +245,38 @@ impl Bot {
         handler: impl FnMut(&UnhandledContext) + Send + Sync + 'static,
     ) {
         self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for venue messages.
+    pub fn venue(
+        &mut self,
+        handler: impl FnMut(&VenueContext) + Send + Sync + 'static,
+    ) {
+        self.venue_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for video messages.
+    pub fn video(
+        &mut self,
+        handler: impl FnMut(&VideoContext) + Send + Sync + 'static,
+    ) {
+        self.video_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for video note messages.
+    pub fn video_note(
+        &mut self,
+        handler: impl FnMut(&VideoNoteContext) + Send + Sync + 'static,
+    ) {
+        self.video_note_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for voice messages.
+    pub fn voice(
+        &mut self,
+        handler: impl FnMut(&VoiceContext) + Send + Sync + 'static,
+    ) {
+        self.voice_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Starts configuring polling.
@@ -212,6 +344,7 @@ impl Bot {
         self.run_after_update_handlers(&update_context);
     }
 
+    #[allow(clippy::cyclomatic_complexity)]
     fn handle_message_update(
         &self,
         mock_bot: Arc<MockBot>,
@@ -242,6 +375,183 @@ impl Bot {
                     self.run_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Poll(poll);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Photo(photo, caption, media_group_id) => {
+                if self.will_handle_photo() {
+                    let context = PhotoContext::new(
+                        mock_bot,
+                        data,
+                        photo,
+                        caption,
+                        media_group_id,
+                    );
+
+                    self.run_photo_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind =
+                        MessageKind::Photo(photo, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Sticker(sticker) => {
+                if self.will_handle_sticker() {
+                    let context = StickerContext::new(mock_bot, data, sticker);
+
+                    self.run_sticker_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Sticker(sticker);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Venue(venue) => {
+                if self.will_handle_venue() {
+                    let context = VenueContext::new(mock_bot, data, venue);
+
+                    self.run_venue_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Venue(venue);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Video(video, caption, media_group_id) => {
+                if self.will_handle_video() {
+                    let context = VideoContext::new(
+                        mock_bot,
+                        data,
+                        video,
+                        caption,
+                        media_group_id,
+                    );
+
+                    self.run_video_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind =
+                        MessageKind::Video(video, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::VideoNote(video_note) => {
+                if self.will_handle_video_note() {
+                    let context =
+                        VideoNoteContext::new(mock_bot, data, video_note);
+
+                    self.run_video_note_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::VideoNote(video_note);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Voice(voice, caption) => {
+                if self.will_handle_voice() {
+                    let context =
+                        VoiceContext::new(mock_bot, data, voice, caption);
+
+                    self.run_voice_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Voice(voice, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Audio(audio, caption) => {
+                if self.will_handle_audio() {
+                    let context =
+                        AudioContext::new(mock_bot, data, audio, caption);
+
+                    self.run_audio_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Audio(audio, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Animation(animation, caption) => {
+                if self.will_handle_animation() {
+                    let context = AnimationContext::new(
+                        mock_bot, data, animation, caption,
+                    );
+
+                    self.run_animation_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Animation(animation, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Document(document, caption) => {
+                if self.will_handle_document() {
+                    let context =
+                        DocumentContext::new(mock_bot, data, document, caption);
+
+                    self.run_document_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Document(document, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Game(game) => {
+                if self.will_handle_game() {
+                    let context = GameContext::new(mock_bot, data, game);
+
+                    self.run_game_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Game(game);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Location(location) => {
+                if self.will_handle_location() {
+                    let context =
+                        LocationContext::new(mock_bot, data, location);
+
+                    self.run_location_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Contact(contact) => {
+                if self.will_handle_contact() {
+                    let context = ContactContext::new(mock_bot, data, contact);
+
+                    self.run_contact_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Contact(contact);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
@@ -290,6 +600,66 @@ impl Bot {
                 self.run_unhandled_handlers(mock_bot, update)
             }
             _ => (),
+        }
+    }
+
+    fn will_handle_animation(&self) -> bool {
+        !self.animation_handlers.is_empty()
+    }
+
+    fn run_animation_handlers(&self, context: &AnimationContext) {
+        for handler in &self.animation_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_audio(&self) -> bool {
+        !self.audio_handlers.is_empty()
+    }
+
+    fn run_audio_handlers(&self, context: &AudioContext) {
+        for handler in &self.audio_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_contact(&self) -> bool {
+        !self.contact_handlers.is_empty()
+    }
+
+    fn run_contact_handlers(&self, context: &ContactContext) {
+        for handler in &self.contact_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_document(&self) -> bool {
+        !self.document_handlers.is_empty()
+    }
+
+    fn run_document_handlers(&self, context: &DocumentContext) {
+        for handler in &self.document_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_game(&self) -> bool {
+        !self.game_handlers.is_empty()
+    }
+
+    fn run_game_handlers(&self, context: &GameContext) {
+        for handler in &self.game_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_location(&self) -> bool {
+        !self.location_handlers.is_empty()
+    }
+
+    fn run_location_handlers(&self, context: &LocationContext) {
+        for handler in &self.location_handlers {
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 
@@ -345,6 +715,26 @@ impl Bot {
         }
     }
 
+    fn will_handle_photo(&self) -> bool {
+        !self.photo_handlers.is_empty()
+    }
+
+    fn run_photo_handlers(&self, context: &PhotoContext) {
+        for handler in &self.photo_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_sticker(&self) -> bool {
+        !self.sticker_handlers.is_empty()
+    }
+
+    fn run_sticker_handlers(&self, context: &StickerContext) {
+        for handler in &self.sticker_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
     fn will_handle_updated_poll(&self) -> bool {
         !self.updated_poll_handlers.is_empty()
     }
@@ -368,6 +758,46 @@ impl Bot {
 
         for handler in &self.unhandled_handlers {
             (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    fn will_handle_venue(&self) -> bool {
+        !self.venue_handlers.is_empty()
+    }
+
+    fn run_venue_handlers(&self, context: &VenueContext) {
+        for handler in &self.venue_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_video(&self) -> bool {
+        !self.video_handlers.is_empty()
+    }
+
+    fn run_video_handlers(&self, context: &VideoContext) {
+        for handler in &self.video_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_video_note(&self) -> bool {
+        !self.video_note_handlers.is_empty()
+    }
+
+    fn run_video_note_handlers(&self, context: &VideoNoteContext) {
+        for handler in &self.video_note_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_voice(&self) -> bool {
+        !self.voice_handlers.is_empty()
+    }
+
+    fn run_voice_handlers(&self, context: &VoiceContext) {
+        for handler in &self.voice_handlers {
+            (&mut *handler.lock().unwrap())(context);
         }
     }
 }

@@ -144,7 +144,7 @@ pub(crate) struct MessageData {
     pub date: i64,
     pub chat: raw::Chat,
     pub forward: Option<Forward>,
-    pub reply_to: Option<Box<Message>>,
+    pub reply_to: Option<Message>,
     pub edit_date: Option<i64>,
     pub author_signature: Option<String>,
 }
@@ -159,7 +159,7 @@ impl Message {
             date: data.date,
             chat: data.chat,
             forward: data.forward,
-            reply_to: data.reply_to,
+            reply_to: data.reply_to.map(Box::new),
             edit_date: data.edit_date,
             author_signature: data.author_signature,
             kind,
@@ -175,7 +175,7 @@ impl Message {
             date: self.date,
             chat: self.chat,
             forward: self.forward,
-            reply_to: self.reply_to,
+            reply_to: self.reply_to.map(|message| *message),
             edit_date: self.edit_date,
             author_signature: self.author_signature,
         };

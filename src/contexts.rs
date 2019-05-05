@@ -6,15 +6,32 @@
 
 use super::*;
 
+#[macro_use]
+mod macros;
+
+mod animation;
+mod audio;
+mod contact;
+mod document;
 mod edited_text;
+mod game;
+mod location;
+mod photo;
 mod poll;
+mod sticker;
 mod text;
 mod unhandled;
 mod update;
 mod updated_poll;
+mod venue;
+mod video;
+mod video_note;
+mod voice;
 
 pub mod traits;
 
 pub use {
-    edited_text::*, poll::*, text::*, unhandled::*, update::*, updated_poll::*,
+    animation::*, audio::*, contact::*, document::*, edited_text::*, game::*,
+    location::*, photo::*, poll::*, sticker::*, text::*, unhandled::*,
+    update::*, updated_poll::*, venue::*, video::*, video_note::*, voice::*,
 };

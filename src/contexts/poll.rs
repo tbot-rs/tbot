@@ -27,6 +27,8 @@ pub struct PollContext {
 }
 
 impl PollContext {
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: Arc<MockBot>,
         data: types::MessageData,
@@ -39,7 +41,7 @@ impl PollContext {
             date: data.date,
             chat: data.chat,
             forward: data.forward,
-            reply_to: data.reply_to.map(|message| *message),
+            reply_to: data.reply_to,
             author_signature: data.author_signature,
             poll,
         }
