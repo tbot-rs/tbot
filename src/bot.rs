@@ -23,6 +23,7 @@ type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
 type ContactHandler = dyn FnMut(&ContactContext) + Send + Sync;
 type DocumentHandler = dyn FnMut(&DocumentContext) + Send + Sync;
 type GameHandler = dyn FnMut(&GameContext) + Send + Sync;
+type LocationHandler = dyn FnMut(&LocationContext) + Send + Sync;
 type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
 type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
 type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
@@ -44,6 +45,7 @@ pub struct Bot {
     contact_handlers: Handlers<ContactHandler>,
     document_handlers: Handlers<DocumentHandler>,
     game_handlers: Handlers<GameHandler>,
+    location_handlers: Handlers<LocationHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
@@ -71,6 +73,7 @@ impl Bot {
             contact_handlers: Vec::new(),
             document_handlers: Vec::new(),
             game_handlers: Vec::new(),
+            location_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
@@ -148,6 +151,14 @@ impl Bot {
         handler: impl FnMut(&GameContext) + Send + Sync + 'static,
     ) {
         self.game_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    /// Adds a new handler for location messages.
+    pub fn location(
+        &mut self,
+        handler: impl FnMut(&LocationContext) + Send + Sync + 'static,
+    ) {
+        self.location_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Adds a new handler for errors that happened while polling.
@@ -495,6 +506,20 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::Location(location) => {
+                if self.will_handle_location() {
+                    let context =
+                        LocationContext::new(mock_bot, data, location);
+
+                    self.run_location_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             MessageKind::Contact(contact) => {
                 if self.will_handle_contact() {
                     let context = ContactContext::new(mock_bot, data, contact);
@@ -599,6 +624,16 @@ impl Bot {
 
     fn run_game_handlers(&self, context: &GameContext) {
         for handler in &self.game_handlers {
+            (&mut *handler.lock().unwrap())(context);
+        }
+    }
+
+    fn will_handle_location(&self) -> bool {
+        !self.location_handlers.is_empty()
+    }
+
+    fn run_location_handlers(&self, context: &LocationContext) {
+        for handler in &self.location_handlers {
             (&mut *handler.lock().unwrap())(context);
         }
     }

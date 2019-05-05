@@ -15,6 +15,7 @@ mod contact;
 mod document;
 mod edited_text;
 mod game;
+mod location;
 mod photo;
 mod poll;
 mod sticker;
@@ -30,6 +31,6 @@ pub mod traits;
 
 pub use {
     animation::*, audio::*, contact::*, document::*, edited_text::*, game::*,
-    photo::*, poll::*, sticker::*, text::*, unhandled::*, update::*,
-    updated_poll::*, video::*, video_note::*, voice::*,
+    location::*, photo::*, poll::*, sticker::*, text::*, unhandled::*,
+    update::*, updated_poll::*, video::*, video_note::*, voice::*,
 };
