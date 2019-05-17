@@ -4,3 +4,5 @@ mod common;
 mod message_base;
 #[macro_use]
 mod media_message;
+#[macro_use]
+mod edited_message;
