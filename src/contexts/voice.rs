@@ -9,7 +9,6 @@ media_message! {
     fn new(caption: types::Text,) -> Self {
         Self {
             caption: caption,
-            caption_entities: caption.entities,
         }
     }
 }
