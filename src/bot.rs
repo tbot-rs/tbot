@@ -575,13 +575,17 @@ impl Bot {
         message: types::Message,
     ) {
         let (data, kind) = message.split();
+        let edit_date = data.edit_date.expect(
+            "\n[tbot] Expected `edit_date` to exist on an edited message\n",
+        );
 
         match kind {
             MessageKind::Text(text) => {
                 if !text.text.starts_with('/') {
                     if self.will_handle_edited_text() {
-                        let context =
-                            EditedTextContext::new(mock_bot, data, text);
+                        let context = EditedTextContext::new(
+                            mock_bot, data, edit_date, text,
+                        );
 
                         self.run_edited_text_handlers(&context);
                     } else if self.will_handle_unhandled() {
