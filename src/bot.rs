@@ -4,10 +4,12 @@ use std::{
     time::{Duration, Instant},
 };
 use {
-    contexts::*,
     methods::GetUpdates,
     types::{Message, MessageKind, UpdateKind},
 };
+
+#[macro_use]
+mod handlers_macros;
 
 mod mock_bot;
 mod polling;
@@ -18,51 +20,53 @@ pub use {mock_bot::*, polling::*, webhook::*};
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
 // Wish trait alises came out soon
-type AnimationHandler = dyn FnMut(&AnimationContext) + Send + Sync;
-type AudioHandler = dyn FnMut(&AudioContext) + Send + Sync;
-type ContactHandler = dyn FnMut(&ContactContext) + Send + Sync;
-type DocumentHandler = dyn FnMut(&DocumentContext) + Send + Sync;
-type GameHandler = dyn FnMut(&GameContext) + Send + Sync;
-type LocationHandler = dyn FnMut(&LocationContext) + Send + Sync;
-type PollingErrorHandler = dyn FnMut(&methods::DeliveryError) + Send + Sync;
-type UpdateHandler = dyn FnMut(&UpdateContext) + Send + Sync;
-type TextHandler = dyn FnMut(&TextContext) + Send + Sync;
-type EditedTextHandler = dyn FnMut(&EditedTextContext) + Send + Sync;
-type PollHandler = dyn FnMut(&PollContext) + Send + Sync;
-type PhotoHandler = dyn FnMut(&PhotoContext) + Send + Sync;
-type StickerHandler = dyn FnMut(&StickerContext) + Send + Sync;
-type VenueHandler = dyn FnMut(&VenueContext) + Send + Sync;
-type VideoNoteHandler = dyn FnMut(&VideoNoteContext) + Send + Sync;
-type VideoHandler = dyn FnMut(&VideoContext) + Send + Sync;
-type UpdatedPollHandler = dyn FnMut(&UpdatedPollContext) + Send + Sync;
-type UnhandledHandler = dyn FnMut(&UnhandledContext) + Send + Sync;
-type VoiceHandler = dyn FnMut(&VoiceContext) + Send + Sync;
+type Handler<T> = dyn FnMut(&T) + Send + Sync;
+
+type AnimationHandler = Handler<contexts::Animation>;
+type AudioHandler = Handler<contexts::Audio>;
+type ContactHandler = Handler<contexts::Contact>;
+type DocumentHandler = Handler<contexts::Document>;
+type EditedTextHandler = Handler<contexts::EditedText>;
+type GameHandler = Handler<contexts::Game>;
+type LocationHandler = Handler<contexts::Location>;
+type PhotoHandler = Handler<contexts::Photo>;
+type PollHandler = Handler<contexts::Poll>;
+type PollingErrorHandler = Handler<methods::DeliveryError>;
+type StickerHandler = Handler<contexts::Sticker>;
+type TextHandler = Handler<contexts::Text>;
+type UnhandledHandler = Handler<contexts::Unhandled>;
+type UpdatedPollHandler = Handler<contexts::UpdatedPoll>;
+type UpdateHandler = Handler<contexts::Update>;
+type VenueHandler = Handler<contexts::Venue>;
+type VideoHandler = Handler<contexts::Video>;
+type VideoNoteHandler = Handler<contexts::VideoNote>;
+type VoiceHandler = Handler<contexts::Voice>;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
     token: Arc<String>,
+    #[cfg(feature = "proxy")]
+    proxy: Option<proxy::Proxy>,
+    after_update_handlers: Handlers<UpdateHandler>,
     animation_handlers: Handlers<AnimationHandler>,
     audio_handlers: Handlers<AudioHandler>,
+    before_update_handlers: Handlers<UpdateHandler>,
     contact_handlers: Handlers<ContactHandler>,
     document_handlers: Handlers<DocumentHandler>,
+    edited_text_handlers: Handlers<EditedTextHandler>,
     game_handlers: Handlers<GameHandler>,
     location_handlers: Handlers<LocationHandler>,
-    polling_error_handlers: Handlers<PollingErrorHandler>,
-    before_update_handlers: Handlers<UpdateHandler>,
-    after_update_handlers: Handlers<UpdateHandler>,
-    text_handlers: Handlers<TextHandler>,
-    edited_text_handlers: Handlers<EditedTextHandler>,
-    poll_handlers: Handlers<PollHandler>,
     photo_handlers: Handlers<PhotoHandler>,
+    poll_handlers: Handlers<PollHandler>,
+    polling_error_handlers: Handlers<PollingErrorHandler>,
     sticker_handlers: Handlers<StickerHandler>,
-    updated_poll_handlers: Handlers<UpdatedPollHandler>,
+    text_handlers: Handlers<TextHandler>,
     unhandled_handlers: Handlers<UnhandledHandler>,
+    updated_poll_handlers: Handlers<UpdatedPollHandler>,
     venue_handlers: Handlers<VenueHandler>,
     video_handlers: Handlers<VideoHandler>,
     video_note_handlers: Handlers<VideoNoteHandler>,
     voice_handlers: Handlers<VoiceHandler>,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
 }
 
 impl Bot {
@@ -70,28 +74,28 @@ impl Bot {
     pub fn new(token: String) -> Self {
         Self {
             token: Arc::new(token),
+            #[cfg(feature = "proxy")]
+            proxy: None,
+            after_update_handlers: Vec::new(),
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
+            before_update_handlers: Vec::new(),
             contact_handlers: Vec::new(),
             document_handlers: Vec::new(),
+            edited_text_handlers: Vec::new(),
             game_handlers: Vec::new(),
             location_handlers: Vec::new(),
-            polling_error_handlers: Vec::new(),
-            before_update_handlers: Vec::new(),
-            after_update_handlers: Vec::new(),
-            text_handlers: Vec::new(),
-            edited_text_handlers: Vec::new(),
-            poll_handlers: Vec::new(),
             photo_handlers: Vec::new(),
+            poll_handlers: Vec::new(),
+            polling_error_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
-            updated_poll_handlers: Vec::new(),
+            text_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
+            updated_poll_handlers: Vec::new(),
             venue_handlers: Vec::new(),
             video_handlers: Vec::new(),
             video_note_handlers: Vec::new(),
             voice_handlers: Vec::new(),
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -114,169 +118,6 @@ impl Bot {
         Self::new(std::env::var(env_var).unwrap_or_else(|_| {
             panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
         }))
-    }
-
-    /// Adds a new handler for animation messages.
-    pub fn animation(
-        &mut self,
-        handler: impl FnMut(&AnimationContext) + Send + Sync + 'static,
-    ) {
-        self.animation_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for audio messages.
-    pub fn audio(
-        &mut self,
-        handler: impl FnMut(&AudioContext) + Send + Sync + 'static,
-    ) {
-        self.audio_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for contact messages.
-    pub fn contact(
-        &mut self,
-        handler: impl FnMut(&ContactContext) + Send + Sync + 'static,
-    ) {
-        self.contact_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for document messages.
-    pub fn document(
-        &mut self,
-        handler: impl FnMut(&DocumentContext) + Send + Sync + 'static,
-    ) {
-        self.document_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for game messages.
-    pub fn game(
-        &mut self,
-        handler: impl FnMut(&GameContext) + Send + Sync + 'static,
-    ) {
-        self.game_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for location messages.
-    pub fn location(
-        &mut self,
-        handler: impl FnMut(&LocationContext) + Send + Sync + 'static,
-    ) {
-        self.location_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for errors that happened while polling.
-    ///
-    /// If no polling error handler is set and such an error occurs, `tbot` will
-    /// panic printing the error.
-    pub fn polling_error(
-        &mut self,
-        handler: impl FnMut(&methods::DeliveryError) + Send + Sync + 'static,
-    ) {
-        self.polling_error_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for all updates run before the specialized updates.
-    pub fn before_update(
-        &mut self,
-        handler: impl FnMut(&UpdateContext) + Send + Sync + 'static,
-    ) {
-        self.before_update_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for all updates run after the specialized updates.
-    pub fn after_update(
-        &mut self,
-        handler: impl FnMut(&UpdateContext) + Send + Sync + 'static,
-    ) {
-        self.after_update_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for text messages.
-    pub fn text(
-        &mut self,
-        handler: impl FnMut(&TextContext) + Send + Sync + 'static,
-    ) {
-        self.text_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for edited text messages.
-    pub fn edited_text(
-        &mut self,
-        handler: impl FnMut(&EditedTextContext) + Send + Sync + 'static,
-    ) {
-        self.edited_text_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for poll messages.
-    pub fn poll(
-        &mut self,
-        handler: impl FnMut(&PollContext) + Send + Sync + 'static,
-    ) {
-        self.poll_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for photo messages.
-    pub fn photo(
-        &mut self,
-        handler: impl FnMut(&PhotoContext) + Send + Sync + 'static,
-    ) {
-        self.photo_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for sticker messages.
-    pub fn sticker(
-        &mut self,
-        handler: impl FnMut(&StickerContext) + Send + Sync + 'static,
-    ) {
-        self.sticker_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for new states of polls
-    pub fn updated_poll(
-        &mut self,
-        handler: impl FnMut(&UpdatedPollContext) + Send + Sync + 'static,
-    ) {
-        self.updated_poll_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for unhandled events.
-    pub fn unhandled(
-        &mut self,
-        handler: impl FnMut(&UnhandledContext) + Send + Sync + 'static,
-    ) {
-        self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for venue messages.
-    pub fn venue(
-        &mut self,
-        handler: impl FnMut(&VenueContext) + Send + Sync + 'static,
-    ) {
-        self.venue_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for video messages.
-    pub fn video(
-        &mut self,
-        handler: impl FnMut(&VideoContext) + Send + Sync + 'static,
-    ) {
-        self.video_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for video note messages.
-    pub fn video_note(
-        &mut self,
-        handler: impl FnMut(&VideoNoteContext) + Send + Sync + 'static,
-    ) {
-        self.video_note_handlers.push(Mutex::new(Box::new(handler)))
-    }
-
-    /// Adds a new handler for voice messages.
-    pub fn voice(
-        &mut self,
-        handler: impl FnMut(&VoiceContext) + Send + Sync + 'static,
-    ) {
-        self.voice_handlers.push(Mutex::new(Box::new(handler)))
     }
 
     /// Starts configuring polling.
@@ -309,10 +150,182 @@ impl Bot {
         )
     }
 
+    handler! {
+        after_update_handlers,
+        after_update,
+        contexts::Update,
+        run_after_update_handlers,
+    }
+
+    handler! {
+        animation_handlers,
+        animation,
+        contexts::Animation,
+        run_animation_handlers,
+        will_handle_animation,
+    }
+
+    handler! {
+        audio_handlers,
+        audio,
+        contexts::Audio,
+        run_audio_handlers,
+        will_handle_audio,
+    }
+
+    handler! {
+        before_update_handlers,
+        before_update,
+        contexts::Update,
+        run_before_update_handlers,
+    }
+
+    handler! {
+        contact_handlers,
+        contact,
+        contexts::Contact,
+        run_contact_handlers,
+        will_handle_contact,
+    }
+
+    handler! {
+        document_handlers,
+        document,
+        contexts::Document,
+        run_document_handlers,
+        will_handle_document,
+    }
+
+    handler! {
+        edited_text_handlers,
+        edited_text,
+        contexts::EditedText,
+        run_edited_text_handlers,
+        will_handle_edited_text,
+    }
+
+    handler! {
+        game_handlers,
+        game,
+        contexts::Game,
+        run_game_handlers,
+        will_handle_game,
+    }
+    handler! {
+        location_handlers,
+        location,
+        contexts::Location,
+        run_location_handlers,
+        will_handle_location,
+    }
+
+    handler! {
+        photo_handlers,
+        photo,
+        contexts::Photo,
+        run_photo_handlers,
+        will_handle_photo,
+    }
+
+    handler! {
+        poll_handlers,
+        poll,
+        contexts::Poll,
+        run_poll_handlers,
+        will_handle_poll,
+    }
+
+    handler! {
+        polling_error_handlers,
+        polling_error,
+        methods::DeliveryError,
+        run_polling_error_handlers,
+    }
+
+    handler! {
+        sticker_handlers,
+        sticker,
+        contexts::Sticker,
+        run_sticker_handlers,
+        will_handle_sticker,
+    }
+
+    handler! {
+        text_handlers,
+        text,
+        contexts::Text,
+        run_text_handlers,
+        will_handle_text,
+    }
+
+    /// Adds a new handler for unhandled events.
+    pub fn unhandled(
+        &mut self,
+        handler: impl FnMut(&contexts::Unhandled) + Send + Sync + 'static,
+    ) {
+        self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
+    }
+
+    fn will_handle_unhandled(&self) -> bool {
+        !self.unhandled_handlers.is_empty()
+    }
+
+    fn run_unhandled_handlers(
+        &self,
+        mock_bot: Arc<MockBot>,
+        update: UpdateKind,
+    ) {
+        let context = contexts::Unhandled::new(mock_bot, update);
+
+        for handler in &self.unhandled_handlers {
+            (&mut *handler.lock().unwrap())(&context);
+        }
+    }
+
+    handler! {
+        updated_poll_handlers,
+        updated_poll,
+        contexts::UpdatedPoll,
+        run_updated_poll_handlers,
+        will_handle_updated_poll,
+    }
+
+    handler! {
+        venue_handlers,
+        venue,
+        contexts::Venue,
+        run_venue_handlers,
+        will_handle_venue,
+    }
+
+    handler! {
+        video_handlers,
+        video,
+        contexts::Video,
+        run_video_handlers,
+        will_handle_video,
+    }
+
+    handler! {
+        video_note_handlers,
+        video_note,
+        contexts::VideoNote,
+        run_video_note_handlers,
+        will_handle_video_note,
+    }
+
+    handler! {
+        voice_handlers,
+        voice,
+        contexts::Voice,
+        run_voice_handlers,
+        will_handle_voice,
+    }
+
     fn handle_update(&self, update: types::Update) {
         let mock_bot = Arc::new(self.mock());
         let update_context =
-            UpdateContext::new(Arc::clone(&mock_bot), update.id);
+            contexts::Update::new(Arc::clone(&mock_bot), update.id);
 
         self.run_before_update_handlers(&update_context);
 
@@ -327,7 +340,7 @@ impl Bot {
             UpdateKind::Poll(poll) => {
                 if self.will_handle_updated_poll() {
                     let context =
-                        UpdatedPollContext::new(Arc::clone(&mock_bot), poll);
+                        contexts::UpdatedPoll::new(Arc::clone(&mock_bot), poll);
 
                     self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -344,7 +357,7 @@ impl Bot {
         self.run_after_update_handlers(&update_context);
     }
 
-    #[allow(clippy::cyclomatic_complexity)]
+    #[allow(clippy::cognitive_complexity)]
     fn handle_message_update(
         &self,
         mock_bot: Arc<MockBot>,
@@ -356,7 +369,7 @@ impl Bot {
             MessageKind::Text(text) => {
                 if !text.text.starts_with('/') {
                     if self.will_handle_text() {
-                        let context = TextContext::new(mock_bot, data, text);
+                        let context = contexts::Text::new(mock_bot, data, text);
 
                         self.run_text_handlers(&context);
                     } else if self.will_handle_unhandled() {
@@ -370,7 +383,7 @@ impl Bot {
             }
             MessageKind::Poll(poll) => {
                 if self.will_handle_poll() {
-                    let context = PollContext::new(mock_bot, data, poll);
+                    let context = contexts::Poll::new(mock_bot, data, poll);
 
                     self.run_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -383,7 +396,7 @@ impl Bot {
             }
             MessageKind::Photo(photo, caption, media_group_id) => {
                 if self.will_handle_photo() {
-                    let context = PhotoContext::new(
+                    let context = contexts::Photo::new(
                         mock_bot,
                         data,
                         photo,
@@ -403,7 +416,8 @@ impl Bot {
             }
             MessageKind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
-                    let context = StickerContext::new(mock_bot, data, sticker);
+                    let context =
+                        contexts::Sticker::new(mock_bot, data, sticker);
 
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -416,7 +430,7 @@ impl Bot {
             }
             MessageKind::Venue(venue) => {
                 if self.will_handle_venue() {
-                    let context = VenueContext::new(mock_bot, data, venue);
+                    let context = contexts::Venue::new(mock_bot, data, venue);
 
                     self.run_venue_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -429,7 +443,7 @@ impl Bot {
             }
             MessageKind::Video(video, caption, media_group_id) => {
                 if self.will_handle_video() {
-                    let context = VideoContext::new(
+                    let context = contexts::Video::new(
                         mock_bot,
                         data,
                         video,
@@ -450,7 +464,7 @@ impl Bot {
             MessageKind::VideoNote(video_note) => {
                 if self.will_handle_video_note() {
                     let context =
-                        VideoNoteContext::new(mock_bot, data, video_note);
+                        contexts::VideoNote::new(mock_bot, data, video_note);
 
                     self.run_video_note_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -464,7 +478,7 @@ impl Bot {
             MessageKind::Voice(voice, caption) => {
                 if self.will_handle_voice() {
                     let context =
-                        VoiceContext::new(mock_bot, data, voice, caption);
+                        contexts::Voice::new(mock_bot, data, voice, caption);
 
                     self.run_voice_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -478,7 +492,7 @@ impl Bot {
             MessageKind::Audio(audio, caption) => {
                 if self.will_handle_audio() {
                     let context =
-                        AudioContext::new(mock_bot, data, audio, caption);
+                        contexts::Audio::new(mock_bot, data, audio, caption);
 
                     self.run_audio_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -491,7 +505,7 @@ impl Bot {
             }
             MessageKind::Animation(animation, caption) => {
                 if self.will_handle_animation() {
-                    let context = AnimationContext::new(
+                    let context = contexts::Animation::new(
                         mock_bot, data, animation, caption,
                     );
 
@@ -506,8 +520,9 @@ impl Bot {
             }
             MessageKind::Document(document, caption) => {
                 if self.will_handle_document() {
-                    let context =
-                        DocumentContext::new(mock_bot, data, document, caption);
+                    let context = contexts::Document::new(
+                        mock_bot, data, document, caption,
+                    );
 
                     self.run_document_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -520,7 +535,7 @@ impl Bot {
             }
             MessageKind::Game(game) => {
                 if self.will_handle_game() {
-                    let context = GameContext::new(mock_bot, data, game);
+                    let context = contexts::Game::new(mock_bot, data, game);
 
                     self.run_game_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -534,7 +549,7 @@ impl Bot {
             MessageKind::Location(location) => {
                 if self.will_handle_location() {
                     let context =
-                        LocationContext::new(mock_bot, data, location);
+                        contexts::Location::new(mock_bot, data, location);
 
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -547,7 +562,8 @@ impl Bot {
             }
             MessageKind::Contact(contact) => {
                 if self.will_handle_contact() {
-                    let context = ContactContext::new(mock_bot, data, contact);
+                    let context =
+                        contexts::Contact::new(mock_bot, data, contact);
 
                     self.run_contact_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -573,13 +589,17 @@ impl Bot {
         message: types::Message,
     ) {
         let (data, kind) = message.split();
+        let edit_date = data.edit_date.expect(
+            "\n[tbot] Expected `edit_date` to exist on an edited message\n",
+        );
 
         match kind {
             MessageKind::Text(text) => {
                 if !text.text.starts_with('/') {
                     if self.will_handle_edited_text() {
-                        let context =
-                            EditedTextContext::new(mock_bot, data, text);
+                        let context = contexts::EditedText::new(
+                            mock_bot, data, edit_date, text,
+                        );
 
                         self.run_edited_text_handlers(&context);
                     } else if self.will_handle_unhandled() {
@@ -600,204 +620,6 @@ impl Bot {
                 self.run_unhandled_handlers(mock_bot, update)
             }
             _ => (),
-        }
-    }
-
-    fn will_handle_animation(&self) -> bool {
-        !self.animation_handlers.is_empty()
-    }
-
-    fn run_animation_handlers(&self, context: &AnimationContext) {
-        for handler in &self.animation_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_audio(&self) -> bool {
-        !self.audio_handlers.is_empty()
-    }
-
-    fn run_audio_handlers(&self, context: &AudioContext) {
-        for handler in &self.audio_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_contact(&self) -> bool {
-        !self.contact_handlers.is_empty()
-    }
-
-    fn run_contact_handlers(&self, context: &ContactContext) {
-        for handler in &self.contact_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_document(&self) -> bool {
-        !self.document_handlers.is_empty()
-    }
-
-    fn run_document_handlers(&self, context: &DocumentContext) {
-        for handler in &self.document_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_game(&self) -> bool {
-        !self.game_handlers.is_empty()
-    }
-
-    fn run_game_handlers(&self, context: &GameContext) {
-        for handler in &self.game_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_location(&self) -> bool {
-        !self.location_handlers.is_empty()
-    }
-
-    fn run_location_handlers(&self, context: &LocationContext) {
-        for handler in &self.location_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn run_polling_error_handlers(&self, error: &methods::DeliveryError) {
-        if self.polling_error_handlers.is_empty() {
-            panic!("\n[tbot] Unhandled polling error: {:#?}\n", error);
-        }
-
-        for handler in &self.polling_error_handlers {
-            (&mut *handler.lock().unwrap())(error);
-        }
-    }
-
-    fn run_before_update_handlers(&self, context: &UpdateContext) {
-        for handler in &self.before_update_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn run_after_update_handlers(&self, context: &UpdateContext) {
-        for handler in &self.after_update_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_text(&self) -> bool {
-        !self.text_handlers.is_empty()
-    }
-
-    fn run_text_handlers(&self, context: &TextContext) {
-        for handler in &self.text_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_edited_text(&self) -> bool {
-        !self.edited_text_handlers.is_empty()
-    }
-
-    fn run_edited_text_handlers(&self, context: &EditedTextContext) {
-        for handler in &self.edited_text_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_poll(&self) -> bool {
-        !self.poll_handlers.is_empty()
-    }
-
-    fn run_poll_handlers(&self, context: &PollContext) {
-        for handler in &self.poll_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_photo(&self) -> bool {
-        !self.photo_handlers.is_empty()
-    }
-
-    fn run_photo_handlers(&self, context: &PhotoContext) {
-        for handler in &self.photo_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_sticker(&self) -> bool {
-        !self.sticker_handlers.is_empty()
-    }
-
-    fn run_sticker_handlers(&self, context: &StickerContext) {
-        for handler in &self.sticker_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_updated_poll(&self) -> bool {
-        !self.updated_poll_handlers.is_empty()
-    }
-
-    fn run_updated_poll_handlers(&self, context: &UpdatedPollContext) {
-        for handler in &self.updated_poll_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_unhandled(&self) -> bool {
-        !self.unhandled_handlers.is_empty()
-    }
-
-    fn run_unhandled_handlers(
-        &self,
-        mock_bot: Arc<MockBot>,
-        update: UpdateKind,
-    ) {
-        let context = UnhandledContext::new(mock_bot, update);
-
-        for handler in &self.unhandled_handlers {
-            (&mut *handler.lock().unwrap())(&context);
-        }
-    }
-
-    fn will_handle_venue(&self) -> bool {
-        !self.venue_handlers.is_empty()
-    }
-
-    fn run_venue_handlers(&self, context: &VenueContext) {
-        for handler in &self.venue_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_video(&self) -> bool {
-        !self.video_handlers.is_empty()
-    }
-
-    fn run_video_handlers(&self, context: &VideoContext) {
-        for handler in &self.video_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_video_note(&self) -> bool {
-        !self.video_note_handlers.is_empty()
-    }
-
-    fn run_video_note_handlers(&self, context: &VideoNoteContext) {
-        for handler in &self.video_note_handlers {
-            (&mut *handler.lock().unwrap())(context);
-        }
-    }
-
-    fn will_handle_voice(&self) -> bool {
-        !self.voice_handlers.is_empty()
-    }
-
-    fn run_voice_handlers(&self, context: &VoiceContext) {
-        for handler in &self.voice_handlers {
-            (&mut *handler.lock().unwrap())(context);
         }
     }
 }

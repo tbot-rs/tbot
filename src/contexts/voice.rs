@@ -1,17 +1,14 @@
 media_message! {
-    struct VoiceContext {
+    struct Voice {
         /// The voice.
         voice: types::Voice,
-        /// The voice's caption.
-        caption: String,
-        /// Entities in the caption (links, formatting, etc).
-        caption_entities: Vec<types::MessageEntity>,
+        /// The caption of the voice.
+        caption: types::Text,
     } -> Bot::voice
 
     fn new(caption: types::Text,) -> Self {
         Self {
-            caption: caption.text,
-            caption_entities: caption.entities,
+            caption: caption,
         }
     }
 }

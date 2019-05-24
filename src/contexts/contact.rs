@@ -1,5 +1,5 @@
 media_message! {
-    struct ContactContext {
+    struct Contact {
         /// The contact.
         contact: types::Contact,
     } -> Bot::contact

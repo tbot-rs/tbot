@@ -1,5 +1,5 @@
 media_message! {
-    struct VenueContext {
+    struct Venue {
         /// The venue.
         venue: types::Venue,
     } -> Bot::venue

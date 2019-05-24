@@ -1,5 +1,5 @@
 media_message! {
-    struct LocationContext {
+    struct Location {
         /// The location.
         location: types::Location,
     } -> Bot::location

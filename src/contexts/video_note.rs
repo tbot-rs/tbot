@@ -1,5 +1,5 @@
 media_message! {
-    struct VideoNoteContext {
+    struct VideoNote {
         /// The video note.
         video_note: types::VideoNote,
     } -> Bot::video_note

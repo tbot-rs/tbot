@@ -1,5 +1,5 @@
 media_message! {
-    struct GameContext {
+    struct Game {
         /// The game.
         game: types::Game,
     } -> Bot::game
