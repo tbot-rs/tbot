@@ -357,7 +357,7 @@ impl Bot {
         self.run_after_update_handlers(&update_context);
     }
 
-    #[allow(clippy::cyclomatic_complexity)]
+    #[allow(clippy::cognitive_complexity)]
     fn handle_message_update(
         &self,
         mock_bot: Arc<MockBot>,
