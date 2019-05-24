@@ -1,15 +1,11 @@
-use super::*;
-use std::sync::Arc;
-
-/// Context for the [`unhandled`] handler.
-///
-/// [`unhandled`]: ../struct.Bot.html#method.unhandled
-#[derive(Clone)]
-pub struct UnhandledContext {
-    /// A mock bot with all API methods.
-    pub bot: Arc<MockBot>,
-    /// The unhandled update.
-    pub update: types::UpdateKind,
+common! {
+    /// Context for the [`unhandled`] handler.
+    ///
+    /// [`unhandled`]: ../struct.Bot.html#method.unhandled
+    struct UnhandledContext {
+        /// The unhandled update.
+        update: types::UpdateKind,
+    }
 }
 
 impl UnhandledContext {
