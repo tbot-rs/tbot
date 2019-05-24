@@ -1,5 +1,5 @@
 media_message! {
-    struct StickerContext {
+    struct Sticker {
         /// The sticker.
         sticker: types::Sticker,
     } -> Bot::sticker

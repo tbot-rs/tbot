@@ -4,7 +4,6 @@ use std::{
     time::{Duration, Instant},
 };
 use {
-    contexts::*,
     methods::GetUpdates,
     types::{Message, MessageKind, UpdateKind},
 };
@@ -23,25 +22,25 @@ type Handlers<T> = Vec<Mutex<Box<T>>>;
 // Wish trait alises came out soon
 type Handler<T> = dyn FnMut(&T) + Send + Sync;
 
-type AnimationHandler = Handler<AnimationContext>;
-type AudioHandler = Handler<AudioContext>;
-type ContactHandler = Handler<ContactContext>;
-type DocumentHandler = Handler<DocumentContext>;
-type EditedTextHandler = Handler<EditedTextContext>;
-type GameHandler = Handler<GameContext>;
-type LocationHandler = Handler<LocationContext>;
-type PhotoHandler = Handler<PhotoContext>;
-type PollHandler = Handler<PollContext>;
+type AnimationHandler = Handler<contexts::Animation>;
+type AudioHandler = Handler<contexts::Audio>;
+type ContactHandler = Handler<contexts::Contact>;
+type DocumentHandler = Handler<contexts::Document>;
+type EditedTextHandler = Handler<contexts::EditedText>;
+type GameHandler = Handler<contexts::Game>;
+type LocationHandler = Handler<contexts::Location>;
+type PhotoHandler = Handler<contexts::Photo>;
+type PollHandler = Handler<contexts::Poll>;
 type PollingErrorHandler = Handler<methods::DeliveryError>;
-type StickerHandler = Handler<StickerContext>;
-type TextHandler = Handler<TextContext>;
-type UnhandledHandler = Handler<UnhandledContext>;
-type UpdatedPollHandler = Handler<UpdatedPollContext>;
-type UpdateHandler = Handler<UpdateContext>;
-type VenueHandler = Handler<VenueContext>;
-type VideoHandler = Handler<VideoContext>;
-type VideoNoteHandler = Handler<VideoNoteContext>;
-type VoiceHandler = Handler<VoiceContext>;
+type StickerHandler = Handler<contexts::Sticker>;
+type TextHandler = Handler<contexts::Text>;
+type UnhandledHandler = Handler<contexts::Unhandled>;
+type UpdatedPollHandler = Handler<contexts::UpdatedPoll>;
+type UpdateHandler = Handler<contexts::Update>;
+type VenueHandler = Handler<contexts::Venue>;
+type VideoHandler = Handler<contexts::Video>;
+type VideoNoteHandler = Handler<contexts::VideoNote>;
+type VoiceHandler = Handler<contexts::Voice>;
 
 /// Represents a bot and provides convenient methods to work with the API.
 pub struct Bot {
@@ -154,14 +153,14 @@ impl Bot {
     handler! {
         after_update_handlers,
         after_update,
-        UpdateContext,
+        contexts::Update,
         run_after_update_handlers,
     }
 
     handler! {
         animation_handlers,
         animation,
-        AnimationContext,
+        contexts::Animation,
         run_animation_handlers,
         will_handle_animation,
     }
@@ -169,7 +168,7 @@ impl Bot {
     handler! {
         audio_handlers,
         audio,
-        AudioContext,
+        contexts::Audio,
         run_audio_handlers,
         will_handle_audio,
     }
@@ -177,14 +176,14 @@ impl Bot {
     handler! {
         before_update_handlers,
         before_update,
-        UpdateContext,
+        contexts::Update,
         run_before_update_handlers,
     }
 
     handler! {
         contact_handlers,
         contact,
-        ContactContext,
+        contexts::Contact,
         run_contact_handlers,
         will_handle_contact,
     }
@@ -192,7 +191,7 @@ impl Bot {
     handler! {
         document_handlers,
         document,
-        DocumentContext,
+        contexts::Document,
         run_document_handlers,
         will_handle_document,
     }
@@ -200,7 +199,7 @@ impl Bot {
     handler! {
         edited_text_handlers,
         edited_text,
-        EditedTextContext,
+        contexts::EditedText,
         run_edited_text_handlers,
         will_handle_edited_text,
     }
@@ -208,14 +207,14 @@ impl Bot {
     handler! {
         game_handlers,
         game,
-        GameContext,
+        contexts::Game,
         run_game_handlers,
         will_handle_game,
     }
     handler! {
         location_handlers,
         location,
-        LocationContext,
+        contexts::Location,
         run_location_handlers,
         will_handle_location,
     }
@@ -223,7 +222,7 @@ impl Bot {
     handler! {
         photo_handlers,
         photo,
-        PhotoContext,
+        contexts::Photo,
         run_photo_handlers,
         will_handle_photo,
     }
@@ -231,7 +230,7 @@ impl Bot {
     handler! {
         poll_handlers,
         poll,
-        PollContext,
+        contexts::Poll,
         run_poll_handlers,
         will_handle_poll,
     }
@@ -246,7 +245,7 @@ impl Bot {
     handler! {
         sticker_handlers,
         sticker,
-        StickerContext,
+        contexts::Sticker,
         run_sticker_handlers,
         will_handle_sticker,
     }
@@ -254,7 +253,7 @@ impl Bot {
     handler! {
         text_handlers,
         text,
-        TextContext,
+        contexts::Text,
         run_text_handlers,
         will_handle_text,
     }
@@ -262,7 +261,7 @@ impl Bot {
     /// Adds a new handler for unhandled events.
     pub fn unhandled(
         &mut self,
-        handler: impl FnMut(&UnhandledContext) + Send + Sync + 'static,
+        handler: impl FnMut(&contexts::Unhandled) + Send + Sync + 'static,
     ) {
         self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
     }
@@ -276,7 +275,7 @@ impl Bot {
         mock_bot: Arc<MockBot>,
         update: UpdateKind,
     ) {
-        let context = UnhandledContext::new(mock_bot, update);
+        let context = contexts::Unhandled::new(mock_bot, update);
 
         for handler in &self.unhandled_handlers {
             (&mut *handler.lock().unwrap())(&context);
@@ -286,7 +285,7 @@ impl Bot {
     handler! {
         updated_poll_handlers,
         updated_poll,
-        UpdatedPollContext,
+        contexts::UpdatedPoll,
         run_updated_poll_handlers,
         will_handle_updated_poll,
     }
@@ -294,7 +293,7 @@ impl Bot {
     handler! {
         venue_handlers,
         venue,
-        VenueContext,
+        contexts::Venue,
         run_venue_handlers,
         will_handle_venue,
     }
@@ -302,7 +301,7 @@ impl Bot {
     handler! {
         video_handlers,
         video,
-        VideoContext,
+        contexts::Video,
         run_video_handlers,
         will_handle_video,
     }
@@ -310,7 +309,7 @@ impl Bot {
     handler! {
         video_note_handlers,
         video_note,
-        VideoNoteContext,
+        contexts::VideoNote,
         run_video_note_handlers,
         will_handle_video_note,
     }
@@ -318,7 +317,7 @@ impl Bot {
     handler! {
         voice_handlers,
         voice,
-        VoiceContext,
+        contexts::Voice,
         run_voice_handlers,
         will_handle_voice,
     }
@@ -326,7 +325,7 @@ impl Bot {
     fn handle_update(&self, update: types::Update) {
         let mock_bot = Arc::new(self.mock());
         let update_context =
-            UpdateContext::new(Arc::clone(&mock_bot), update.id);
+            contexts::Update::new(Arc::clone(&mock_bot), update.id);
 
         self.run_before_update_handlers(&update_context);
 
@@ -341,7 +340,7 @@ impl Bot {
             UpdateKind::Poll(poll) => {
                 if self.will_handle_updated_poll() {
                     let context =
-                        UpdatedPollContext::new(Arc::clone(&mock_bot), poll);
+                        contexts::UpdatedPoll::new(Arc::clone(&mock_bot), poll);
 
                     self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -370,7 +369,7 @@ impl Bot {
             MessageKind::Text(text) => {
                 if !text.text.starts_with('/') {
                     if self.will_handle_text() {
-                        let context = TextContext::new(mock_bot, data, text);
+                        let context = contexts::Text::new(mock_bot, data, text);
 
                         self.run_text_handlers(&context);
                     } else if self.will_handle_unhandled() {
@@ -384,7 +383,7 @@ impl Bot {
             }
             MessageKind::Poll(poll) => {
                 if self.will_handle_poll() {
-                    let context = PollContext::new(mock_bot, data, poll);
+                    let context = contexts::Poll::new(mock_bot, data, poll);
 
                     self.run_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -397,7 +396,7 @@ impl Bot {
             }
             MessageKind::Photo(photo, caption, media_group_id) => {
                 if self.will_handle_photo() {
-                    let context = PhotoContext::new(
+                    let context = contexts::Photo::new(
                         mock_bot,
                         data,
                         photo,
@@ -417,7 +416,7 @@ impl Bot {
             }
             MessageKind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
-                    let context = StickerContext::new(mock_bot, data, sticker);
+                    let context = contexts::Sticker::new(mock_bot, data, sticker);
 
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -430,7 +429,7 @@ impl Bot {
             }
             MessageKind::Venue(venue) => {
                 if self.will_handle_venue() {
-                    let context = VenueContext::new(mock_bot, data, venue);
+                    let context = contexts::Venue::new(mock_bot, data, venue);
 
                     self.run_venue_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -443,7 +442,7 @@ impl Bot {
             }
             MessageKind::Video(video, caption, media_group_id) => {
                 if self.will_handle_video() {
-                    let context = VideoContext::new(
+                    let context = contexts::Video::new(
                         mock_bot,
                         data,
                         video,
@@ -464,7 +463,7 @@ impl Bot {
             MessageKind::VideoNote(video_note) => {
                 if self.will_handle_video_note() {
                     let context =
-                        VideoNoteContext::new(mock_bot, data, video_note);
+                        contexts::VideoNote::new(mock_bot, data, video_note);
 
                     self.run_video_note_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -478,7 +477,7 @@ impl Bot {
             MessageKind::Voice(voice, caption) => {
                 if self.will_handle_voice() {
                     let context =
-                        VoiceContext::new(mock_bot, data, voice, caption);
+                        contexts::Voice::new(mock_bot, data, voice, caption);
 
                     self.run_voice_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -492,7 +491,7 @@ impl Bot {
             MessageKind::Audio(audio, caption) => {
                 if self.will_handle_audio() {
                     let context =
-                        AudioContext::new(mock_bot, data, audio, caption);
+                        contexts::Audio::new(mock_bot, data, audio, caption);
 
                     self.run_audio_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -505,7 +504,7 @@ impl Bot {
             }
             MessageKind::Animation(animation, caption) => {
                 if self.will_handle_animation() {
-                    let context = AnimationContext::new(
+                    let context = contexts::Animation::new(
                         mock_bot, data, animation, caption,
                     );
 
@@ -521,7 +520,7 @@ impl Bot {
             MessageKind::Document(document, caption) => {
                 if self.will_handle_document() {
                     let context =
-                        DocumentContext::new(mock_bot, data, document, caption);
+                        contexts::Document::new(mock_bot, data, document, caption);
 
                     self.run_document_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -534,7 +533,7 @@ impl Bot {
             }
             MessageKind::Game(game) => {
                 if self.will_handle_game() {
-                    let context = GameContext::new(mock_bot, data, game);
+                    let context = contexts::Game::new(mock_bot, data, game);
 
                     self.run_game_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -548,7 +547,7 @@ impl Bot {
             MessageKind::Location(location) => {
                 if self.will_handle_location() {
                     let context =
-                        LocationContext::new(mock_bot, data, location);
+                        contexts::Location::new(mock_bot, data, location);
 
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -561,7 +560,7 @@ impl Bot {
             }
             MessageKind::Contact(contact) => {
                 if self.will_handle_contact() {
-                    let context = ContactContext::new(mock_bot, data, contact);
+                    let context = contexts::Contact::new(mock_bot, data, contact);
 
                     self.run_contact_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -595,7 +594,7 @@ impl Bot {
             MessageKind::Text(text) => {
                 if !text.text.starts_with('/') {
                     if self.will_handle_edited_text() {
-                        let context = EditedTextContext::new(
+                        let context = contexts::EditedText::new(
                             mock_bot, data, edit_date, text,
                         );
 

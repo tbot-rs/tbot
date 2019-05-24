@@ -1,5 +1,9 @@
-use super::*;
-use crate::types::input_file::*;
+use super::{MockBot};
+use crate::{
+    types,
+    methods::*,
+    types::input_file::*,
+};
 
 /// Contains general methods which can infer some data from the context.
 pub trait ChatMethods<'a> {

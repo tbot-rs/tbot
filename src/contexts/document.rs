@@ -1,5 +1,5 @@
 media_message! {
-    struct DocumentContext {
+    struct Document {
         /// The document.
         document: types::Document,
         /// The caption of the document.

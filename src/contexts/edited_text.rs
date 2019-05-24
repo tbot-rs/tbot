@@ -1,5 +1,5 @@
 edited_message! {
-    struct EditedTextContext {
+    struct EditedText {
         /// The text of the message.
         text: types::Text,
     } -> Bot::edited_text

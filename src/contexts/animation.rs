@@ -1,5 +1,5 @@
 media_message! {
-    struct AnimationContext {
+    struct Animation {
         /// The animation.
         animation: types::Animation,
         /// The caption of the animation.

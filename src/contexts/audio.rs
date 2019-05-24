@@ -1,5 +1,5 @@
 media_message! {
-    struct AudioContext {
+    struct Audio {
         /// The audio.
         audio: types::Audio,
         /// The caption of the audio.

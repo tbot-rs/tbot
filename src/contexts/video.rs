@@ -1,5 +1,5 @@
 media_message! {
-    struct VideoContext {
+    struct Video {
         /// The video.
         video: types::Video,
         /// The caption of the video.

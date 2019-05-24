@@ -1,5 +1,5 @@
 media_message! {
-    struct TextContext {
+    struct Text {
         /// The text of the message.
         text: types::Text,
     } -> Bot::text

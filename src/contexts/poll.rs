@@ -1,5 +1,5 @@
 media_message! {
-    struct PollContext {
+    struct Poll {
         /// The poll.
         poll: types::Poll,
     } -> Bot::poll

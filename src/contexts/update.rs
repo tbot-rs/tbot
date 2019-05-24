@@ -9,7 +9,7 @@ use std::sync::Arc;
 /// [`before_update`]: ../struct.Bot.html#method.before_update
 /// [`after_update`]: ../struct.Bot.html#method.after_update
 #[derive(Clone)]
-pub struct UpdateContext {
+pub struct Update {
     private: (),
     /// A mock bot with all API methods.
     pub bot: Arc<MockBot>,
@@ -17,7 +17,7 @@ pub struct UpdateContext {
     pub update_id: u32,
 }
 
-impl UpdateContext {
+impl Update {
     pub(crate) const fn new(bot: Arc<MockBot>, update_id: u32) -> Self {
         Self {
             bot,

@@ -1,5 +1,5 @@
 media_message! {
-    struct PhotoContext {
+    struct Photo {
         /// The photo.
         photo: Vec<types::PhotoSize>,
         /// The caption of the photo.
