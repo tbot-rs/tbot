@@ -267,8 +267,8 @@ impl Bot {
     }
 
     fn will_handle_unhandled(&self) -> bool {
-            !self.unhandled_handlers.is_empty()
-        }
+        !self.unhandled_handlers.is_empty()
+    }
 
     fn run_unhandled_handlers(
         &self,
@@ -416,7 +416,8 @@ impl Bot {
             }
             MessageKind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
-                    let context = contexts::Sticker::new(mock_bot, data, sticker);
+                    let context =
+                        contexts::Sticker::new(mock_bot, data, sticker);
 
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -519,8 +520,9 @@ impl Bot {
             }
             MessageKind::Document(document, caption) => {
                 if self.will_handle_document() {
-                    let context =
-                        contexts::Document::new(mock_bot, data, document, caption);
+                    let context = contexts::Document::new(
+                        mock_bot, data, document, caption,
+                    );
 
                     self.run_document_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -560,7 +562,8 @@ impl Bot {
             }
             MessageKind::Contact(contact) => {
                 if self.will_handle_contact() {
-                    let context = contexts::Contact::new(mock_bot, data, contact);
+                    let context =
+                        contexts::Contact::new(mock_bot, data, contact);
 
                     self.run_contact_handlers(&context);
                 } else if self.will_handle_unhandled() {
