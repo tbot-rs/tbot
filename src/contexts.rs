@@ -13,7 +13,13 @@ mod animation;
 mod audio;
 mod contact;
 mod document;
+mod edited_animation;
+mod edited_audio;
+mod edited_document;
+mod edited_location;
+mod edited_photo;
 mod edited_text;
+mod edited_video;
 mod game;
 mod location;
 mod photo;
@@ -31,7 +37,9 @@ mod voice;
 pub mod traits;
 
 pub use {
-    animation::*, audio::*, contact::*, document::*, edited_text::*, game::*,
-    location::*, photo::*, poll::*, sticker::*, text::*, unhandled::*,
-    update::*, updated_poll::*, venue::*, video::*, video_note::*, voice::*,
+    animation::*, audio::*, contact::*, document::*, edited_animation::*,
+    edited_audio::*, edited_document::*, edited_location::*, edited_photo::*,
+    edited_text::*, edited_video::*, game::*, location::*, photo::*, poll::*,
+    sticker::*, text::*, unhandled::*, update::*, updated_poll::*, venue::*,
+    video::*, video_note::*, voice::*,
 };

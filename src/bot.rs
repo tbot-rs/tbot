@@ -26,7 +26,13 @@ type AnimationHandler = Handler<contexts::Animation>;
 type AudioHandler = Handler<contexts::Audio>;
 type ContactHandler = Handler<contexts::Contact>;
 type DocumentHandler = Handler<contexts::Document>;
+type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
+type EditedAudioHandler = Handler<contexts::EditedAudio>;
+type EditedDocumentHandler = Handler<contexts::EditedDocument>;
+type EditedLocationHandler = Handler<contexts::EditedLocation>;
+type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
 type EditedTextHandler = Handler<contexts::EditedText>;
+type EditedVideoHandler = Handler<contexts::EditedVideo>;
 type GameHandler = Handler<contexts::Game>;
 type LocationHandler = Handler<contexts::Location>;
 type PhotoHandler = Handler<contexts::Photo>;
@@ -53,7 +59,13 @@ pub struct Bot {
     before_update_handlers: Handlers<UpdateHandler>,
     contact_handlers: Handlers<ContactHandler>,
     document_handlers: Handlers<DocumentHandler>,
+    edited_animation_handlers: Handlers<EditedAnimationHandler>,
+    edited_audio_handlers: Handlers<EditedAudioHandler>,
+    edited_document_handlers: Handlers<EditedDocumentHandler>,
+    edited_location_handlers: Handlers<EditedLocationHandler>,
+    edited_photo_handlers: Handlers<EditedPhotoHandler>,
     edited_text_handlers: Handlers<EditedTextHandler>,
+    edited_video_handlers: Handlers<EditedVideoHandler>,
     game_handlers: Handlers<GameHandler>,
     location_handlers: Handlers<LocationHandler>,
     photo_handlers: Handlers<PhotoHandler>,
@@ -82,7 +94,13 @@ impl Bot {
             before_update_handlers: Vec::new(),
             contact_handlers: Vec::new(),
             document_handlers: Vec::new(),
+            edited_animation_handlers: Vec::new(),
+            edited_audio_handlers: Vec::new(),
+            edited_document_handlers: Vec::new(),
+            edited_location_handlers: Vec::new(),
+            edited_photo_handlers: Vec::new(),
             edited_text_handlers: Vec::new(),
+            edited_video_handlers: Vec::new(),
             game_handlers: Vec::new(),
             location_handlers: Vec::new(),
             photo_handlers: Vec::new(),
@@ -197,11 +215,59 @@ impl Bot {
     }
 
     handler! {
+        edited_animation_handlers,
+        edited_animation,
+        contexts::EditedAnimation,
+        run_edited_animation_handlers,
+        will_handle_edited_animation,
+    }
+
+    handler! {
+        edited_audio_handlers,
+        edited_audio,
+        contexts::EditedAudio,
+        run_edited_audio_handlers,
+        will_handle_edited_audio,
+    }
+
+    handler! {
+        edited_document_handlers,
+        edited_document,
+        contexts::EditedDocument,
+        run_edited_document_handlers,
+        will_handle_edited_document,
+    }
+
+    handler! {
+        edited_location_handlers,
+        edited_location,
+        contexts::EditedLocation,
+        run_edited_location_handlers,
+        will_handle_edited_location,
+    }
+
+    handler! {
+        edited_photo_handlers,
+        edited_photo,
+        contexts::EditedPhoto,
+        run_edited_photo_handlers,
+        will_handle_edited_photo,
+    }
+
+    handler! {
         edited_text_handlers,
         edited_text,
         contexts::EditedText,
         run_edited_text_handlers,
         will_handle_edited_text,
+    }
+
+    handler! {
+        edited_video_handlers,
+        edited_video,
+        contexts::EditedVideo,
+        run_edited_video_handlers,
+        will_handle_edited_video,
     }
 
     handler! {
@@ -594,6 +660,87 @@ impl Bot {
         );
 
         match kind {
+            MessageKind::Animation(animation, caption) => {
+                if self.will_handle_edited_animation() {
+                    let context = contexts::EditedAnimation::new(
+                        mock_bot, data, edit_date, animation, caption,
+                    );
+
+                    self.run_edited_animation_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Animation(animation, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Audio(audio, caption) => {
+                if self.will_handle_edited_audio() {
+                    let context = contexts::EditedAudio::new(
+                        mock_bot, data, edit_date, audio, caption,
+                    );
+
+                    self.run_edited_audio_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Audio(audio, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Document(document, caption) => {
+                if self.will_handle_edited_document() {
+                    let context = contexts::EditedDocument::new(
+                        mock_bot, data, edit_date, document, caption,
+                    );
+
+                    self.run_edited_document_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Document(document, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Location(location) => {
+                if self.will_handle_edited_location() {
+                    let context = contexts::EditedLocation::new(
+                        mock_bot, data, edit_date, location,
+                    );
+
+                    self.run_edited_location_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Photo(photo, caption, media_group_id) => {
+                if self.will_handle_edited_photo() {
+                    let context = contexts::EditedPhoto::new(
+                        mock_bot,
+                        data,
+                        edit_date,
+                        photo,
+                        caption,
+                        media_group_id,
+                    );
+
+                    self.run_edited_photo_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind =
+                        MessageKind::Photo(photo, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             MessageKind::Text(text) => {
                 if !text.text.starts_with('/') {
                     if self.will_handle_edited_text() {
@@ -609,6 +756,27 @@ impl Bot {
 
                         self.run_unhandled_handlers(mock_bot, update);
                     }
+                }
+            }
+            MessageKind::Video(video, caption, media_group_id) => {
+                if self.will_handle_edited_video() {
+                    let context = contexts::EditedVideo::new(
+                        mock_bot,
+                        data,
+                        edit_date,
+                        video,
+                        caption,
+                        media_group_id,
+                    );
+
+                    self.run_edited_video_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind =
+                        MessageKind::Video(video, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
                 }
             }
             MessageKind::Poll(_) => unreachable!(
