@@ -36,6 +36,7 @@ type EditedVideoHandler = Handler<contexts::EditedVideo>;
 type GameHandler = Handler<contexts::Game>;
 type LeftMemberHandler = Handler<contexts::LeftMember>;
 type LocationHandler = Handler<contexts::Location>;
+type NewMembersHandler = Handler<contexts::NewMembers>;
 type PhotoHandler = Handler<contexts::Photo>;
 type PollHandler = Handler<contexts::Poll>;
 type PollingErrorHandler = Handler<methods::DeliveryError>;
@@ -70,6 +71,7 @@ pub struct Bot {
     game_handlers: Handlers<GameHandler>,
     left_member_handlers: Handlers<LeftMemberHandler>,
     location_handlers: Handlers<LocationHandler>,
+    new_members_handlers: Handlers<NewMembersHandler>,
     photo_handlers: Handlers<PhotoHandler>,
     poll_handlers: Handlers<PollHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
@@ -106,6 +108,7 @@ impl Bot {
             game_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
+            new_members_handlers: Vec::new(),
             photo_handlers: Vec::new(),
             poll_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
@@ -295,6 +298,14 @@ impl Bot {
         contexts::Location,
         run_location_handlers,
         will_handle_location,
+    }
+
+    handler! {
+        new_members_handlers,
+        new_members,
+        contexts::NewMembers,
+        run_new_members_handlers,
+        will_handle_new_members,
     }
 
     handler! {
@@ -646,6 +657,20 @@ impl Bot {
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::NewChatMembers(members) => {
+                if self.will_handle_new_members() {
+                    let context =
+                        contexts::NewMembers::new(mock_bot, data, members);
+
+                    self.run_new_members_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::NewChatMembers(members);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 

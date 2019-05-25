@@ -23,6 +23,7 @@ mod edited_video;
 mod game;
 mod left_member;
 mod location;
+mod new_members;
 mod photo;
 mod poll;
 mod sticker;
@@ -41,6 +42,6 @@ pub use {
     animation::*, audio::*, contact::*, document::*, edited_animation::*,
     edited_audio::*, edited_document::*, edited_location::*, edited_photo::*,
     edited_text::*, edited_video::*, game::*, left_member::*, location::*,
-    photo::*, poll::*, sticker::*, text::*, unhandled::*, update::*,
-    updated_poll::*, venue::*, video::*, video_note::*, voice::*,
+    new_members::*, photo::*, poll::*, sticker::*, text::*, unhandled::*,
+    update::*, updated_poll::*, venue::*, video::*, video_note::*, voice::*,
 };
