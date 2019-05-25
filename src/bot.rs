@@ -36,6 +36,7 @@ type EditedVideoHandler = Handler<contexts::EditedVideo>;
 type GameHandler = Handler<contexts::Game>;
 type LeftMemberHandler = Handler<contexts::LeftMember>;
 type LocationHandler = Handler<contexts::Location>;
+type NewChatTitleHandler = Handler<contexts::NewChatTitle>;
 type NewMembersHandler = Handler<contexts::NewMembers>;
 type PhotoHandler = Handler<contexts::Photo>;
 type PollHandler = Handler<contexts::Poll>;
@@ -71,6 +72,7 @@ pub struct Bot {
     game_handlers: Handlers<GameHandler>,
     left_member_handlers: Handlers<LeftMemberHandler>,
     location_handlers: Handlers<LocationHandler>,
+    new_chat_title_handlers: Handlers<NewChatTitleHandler>,
     new_members_handlers: Handlers<NewMembersHandler>,
     photo_handlers: Handlers<PhotoHandler>,
     poll_handlers: Handlers<PollHandler>,
@@ -108,6 +110,7 @@ impl Bot {
             game_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
+            new_chat_title_handlers: Vec::new(),
             new_members_handlers: Vec::new(),
             photo_handlers: Vec::new(),
             poll_handlers: Vec::new(),
@@ -298,6 +301,14 @@ impl Bot {
         contexts::Location,
         run_location_handlers,
         will_handle_location,
+    }
+
+    handler! {
+        new_chat_title_handlers,
+        new_chat_title,
+        contexts::NewChatTitle,
+        run_new_chat_title_handlers,
+        will_handle_new_chat_title,
     }
 
     handler! {
@@ -657,6 +668,20 @@ impl Bot {
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::NewChatTitle(title) => {
+                if self.will_handle_new_chat_title() {
+                    let context =
+                        contexts::NewChatTitle::new(mock_bot, data, title);
+
+                    self.run_new_chat_title_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::NewChatTitle(title);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
