@@ -756,11 +756,11 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::MigrateTo(..) => (), // ignored on purpose
             MessageKind::MigrateFrom(old_id) => {
                 if self.will_handle_migration() {
-                    let context = contexts::Migration::new(
-                        mock_bot, data, old_id
-                    );
+                    let context =
+                        contexts::Migration::new(mock_bot, data, old_id);
 
                     self.run_migration_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -838,6 +838,12 @@ impl Bot {
 
                     self.run_unhandled_handlers(mock_bot, update);
                 }
+            }
+            MessageKind::SupergroupCreated | MessageKind::ChannelCreated => {
+                unreachable!(
+                "\n[tbot] Expected a `{supergroup,channel}_created` update to \
+                never exist\n",
+            )
             }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
@@ -980,6 +986,19 @@ impl Bot {
             }
             MessageKind::Poll(_) => unreachable!(
                 "\n[tbot] Unexpected poll as an edited message update\n"
+            ),
+            MessageKind::NewChatMembers(..)
+            | MessageKind::LeftChatMember(..)
+            | MessageKind::ChatPhotoDeleted
+            | MessageKind::NewChatPhoto(..)
+            | MessageKind::NewChatTitle(..)
+            | MessageKind::GroupCreated
+            | MessageKind::SupergroupCreated
+            | MessageKind::ChannelCreated
+            | MessageKind::Pinned(..)
+            | MessageKind::MigrateTo(..)
+            | MessageKind::MigrateFrom(..) => unreachable!(
+                "\n[tbot]\nExpected service messages not to be edited\n"
             ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
