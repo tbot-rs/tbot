@@ -48,8 +48,8 @@ pub use {
     animation::*, audio::*, contact::*, created_group::*,
     deleted_chat_photo::*, document::*, edited_animation::*, edited_audio::*,
     edited_document::*, edited_location::*, edited_photo::*, edited_text::*,
-    edited_video::*, game::*, left_member::*, location::*, migration::*, new_chat_photo::*,
-    new_chat_title::*, new_members::*, photo::*, pinned_message::*, poll::*,
-    sticker::*, text::*, unhandled::*, update::*, updated_poll::*, venue::*,
-    video::*, video_note::*, voice::*,
+    edited_video::*, game::*, left_member::*, location::*, migration::*,
+    new_chat_photo::*, new_chat_title::*, new_members::*, photo::*,
+    pinned_message::*, poll::*, sticker::*, text::*, unhandled::*, update::*,
+    updated_poll::*, venue::*, video::*, video_note::*, voice::*,
 };

@@ -20,7 +20,11 @@ common! {
 }
 
 impl Migration {
-    pub(crate) fn new(bot: Arc<MockBot>, data: types::MessageData, old_id: i64,) -> Self {
+    pub(crate) fn new(
+        bot: Arc<MockBot>,
+        data: types::MessageData,
+        old_id: i64,
+    ) -> Self {
         Self {
             bot,
             message_id: data.id,
