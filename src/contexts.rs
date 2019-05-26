@@ -12,6 +12,7 @@ mod macros;
 mod animation;
 mod audio;
 mod contact;
+mod deleted_chat_photo;
 mod document;
 mod edited_animation;
 mod edited_audio;
@@ -41,10 +42,10 @@ mod voice;
 pub mod traits;
 
 pub use {
-    animation::*, audio::*, contact::*, document::*, edited_animation::*,
-    edited_audio::*, edited_document::*, edited_location::*, edited_photo::*,
-    edited_text::*, edited_video::*, game::*, left_member::*, location::*,
-    new_chat_photo::*, new_chat_title::*, new_members::*, photo::*, poll::*,
-    sticker::*, text::*, unhandled::*, update::*, updated_poll::*, venue::*,
-    video::*, video_note::*, voice::*,
+    animation::*, audio::*, contact::*, deleted_chat_photo::*, document::*,
+    edited_animation::*, edited_audio::*, edited_document::*,
+    edited_location::*, edited_photo::*, edited_text::*, edited_video::*,
+    game::*, left_member::*, location::*, new_chat_photo::*, new_chat_title::*,
+    new_members::*, photo::*, poll::*, sticker::*, text::*, unhandled::*,
+    update::*, updated_poll::*, venue::*, video::*, video_note::*, voice::*,
 };

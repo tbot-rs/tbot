@@ -25,6 +25,7 @@ type Handler<T> = dyn FnMut(&T) + Send + Sync;
 type AnimationHandler = Handler<contexts::Animation>;
 type AudioHandler = Handler<contexts::Audio>;
 type ContactHandler = Handler<contexts::Contact>;
+type DeletedChatPhotoHandler = Handler<contexts::DeletedChatPhoto>;
 type DocumentHandler = Handler<contexts::Document>;
 type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
 type EditedAudioHandler = Handler<contexts::EditedAudio>;
@@ -62,6 +63,7 @@ pub struct Bot {
     audio_handlers: Handlers<AudioHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     contact_handlers: Handlers<ContactHandler>,
+    deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler>,
     document_handlers: Handlers<DocumentHandler>,
     edited_animation_handlers: Handlers<EditedAnimationHandler>,
     edited_audio_handlers: Handlers<EditedAudioHandler>,
@@ -101,6 +103,7 @@ impl Bot {
             audio_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             contact_handlers: Vec::new(),
+            deleted_chat_photo_handlers: Vec::new(),
             document_handlers: Vec::new(),
             edited_animation_handlers: Vec::new(),
             edited_audio_handlers: Vec::new(),
@@ -216,6 +219,14 @@ impl Bot {
         contexts::Contact,
         run_contact_handlers,
         will_handle_contact,
+    }
+
+    handler! {
+        deleted_chat_photo_handlers,
+        deleted_chat_photo,
+        contexts::DeletedChatPhoto,
+        run_deleted_chat_photo_handlers,
+        will_handle_deleted_chat_photo,
     }
 
     handler! {
@@ -623,6 +634,19 @@ impl Bot {
                     self.run_animation_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Animation(animation, caption);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            kind @ MessageKind::ChatPhotoDeleted => {
+                if self.will_handle_deleted_chat_photo() {
+                    let context =
+                        contexts::DeletedChatPhoto::new(mock_bot, data);
+
+                    self.run_deleted_chat_photo_handlers(&context);
+                } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
