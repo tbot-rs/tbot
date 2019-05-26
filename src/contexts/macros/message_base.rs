@@ -1,16 +1,16 @@
 macro_rules! message_base {
     (
         struct $name:ident {
-            $(#[doc = $field_doc:literal] $field:ident: $type:ty,)+
+            $(#[doc = $field_doc:literal] $field:ident: $type:ty,)*
         } -> Bot::$handler:ident
 
         fn new(
-            $($param:ident: $param_type:ty,)+
+            $($param:ident: $param_type:ty,)*
         ) -> Self {
             $(infer $infer:ident;)*
 
             Self {
-                $($new_field:ident: $value:expr,)+
+                $($new_field:ident: $value:expr,)*
             }
         }
     ) => {
@@ -28,7 +28,7 @@ macro_rules! message_base {
                 date: i64,
                 /// The chat where the message was sent.
                 chat: types::raw::Chat,
-                $(#[doc = $field_doc] $field: $type,)+
+                $(#[doc = $field_doc] $field: $type,)*
             }
         }
 
@@ -38,7 +38,7 @@ macro_rules! message_base {
             pub(crate) fn new(
                 bot: Arc<MockBot>,
                 data: types::MessageData,
-                $($param: $param_type,)+
+                $($param: $param_type,)*
             ) -> Self {
                 Self {
                     bot,
@@ -46,7 +46,7 @@ macro_rules! message_base {
                     from: data.from,
                     date: data.date,
                     chat: data.chat,
-                    $($new_field: $value,)+
+                    $($new_field: $value,)*
                     $($infer: data.$infer,)*
                 }
             }

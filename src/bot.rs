@@ -25,6 +25,8 @@ type Handler<T> = dyn FnMut(&T) + Send + Sync;
 type AnimationHandler = Handler<contexts::Animation>;
 type AudioHandler = Handler<contexts::Audio>;
 type ContactHandler = Handler<contexts::Contact>;
+type CreatedGroupHandler = Handler<contexts::CreatedGroup>;
+type DeletedChatPhotoHandler = Handler<contexts::DeletedChatPhoto>;
 type DocumentHandler = Handler<contexts::Document>;
 type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
 type EditedAudioHandler = Handler<contexts::EditedAudio>;
@@ -34,8 +36,14 @@ type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
 type EditedTextHandler = Handler<contexts::EditedText>;
 type EditedVideoHandler = Handler<contexts::EditedVideo>;
 type GameHandler = Handler<contexts::Game>;
+type LeftMemberHandler = Handler<contexts::LeftMember>;
 type LocationHandler = Handler<contexts::Location>;
+type MigrationHandler = Handler<contexts::Migration>;
+type NewChatPhotoHandler = Handler<contexts::NewChatPhoto>;
+type NewChatTitleHandler = Handler<contexts::NewChatTitle>;
+type NewMembersHandler = Handler<contexts::NewMembers>;
 type PhotoHandler = Handler<contexts::Photo>;
+type PinnedMessageHandler = Handler<contexts::PinnedMessage>;
 type PollHandler = Handler<contexts::Poll>;
 type PollingErrorHandler = Handler<methods::DeliveryError>;
 type StickerHandler = Handler<contexts::Sticker>;
@@ -58,6 +66,8 @@ pub struct Bot {
     audio_handlers: Handlers<AudioHandler>,
     before_update_handlers: Handlers<UpdateHandler>,
     contact_handlers: Handlers<ContactHandler>,
+    created_group_handlers: Handlers<CreatedGroupHandler>,
+    deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler>,
     document_handlers: Handlers<DocumentHandler>,
     edited_animation_handlers: Handlers<EditedAnimationHandler>,
     edited_audio_handlers: Handlers<EditedAudioHandler>,
@@ -67,8 +77,14 @@ pub struct Bot {
     edited_text_handlers: Handlers<EditedTextHandler>,
     edited_video_handlers: Handlers<EditedVideoHandler>,
     game_handlers: Handlers<GameHandler>,
+    left_member_handlers: Handlers<LeftMemberHandler>,
     location_handlers: Handlers<LocationHandler>,
+    migration_handlers: Handlers<MigrationHandler>,
+    new_chat_photo_handlers: Handlers<NewChatPhotoHandler>,
+    new_chat_title_handlers: Handlers<NewChatTitleHandler>,
+    new_members_handlers: Handlers<NewMembersHandler>,
     photo_handlers: Handlers<PhotoHandler>,
+    pinned_message_handlers: Handlers<PinnedMessageHandler>,
     poll_handlers: Handlers<PollHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     sticker_handlers: Handlers<StickerHandler>,
@@ -93,6 +109,8 @@ impl Bot {
             audio_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
             contact_handlers: Vec::new(),
+            created_group_handlers: Vec::new(),
+            deleted_chat_photo_handlers: Vec::new(),
             document_handlers: Vec::new(),
             edited_animation_handlers: Vec::new(),
             edited_audio_handlers: Vec::new(),
@@ -102,8 +120,14 @@ impl Bot {
             edited_text_handlers: Vec::new(),
             edited_video_handlers: Vec::new(),
             game_handlers: Vec::new(),
+            left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
+            migration_handlers: Vec::new(),
+            new_chat_photo_handlers: Vec::new(),
+            new_chat_title_handlers: Vec::new(),
+            new_members_handlers: Vec::new(),
             photo_handlers: Vec::new(),
+            pinned_message_handlers: Vec::new(),
             poll_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
@@ -207,6 +231,22 @@ impl Bot {
     }
 
     handler! {
+        created_group_handlers,
+        created_group,
+        contexts::CreatedGroup,
+        run_created_group_handlers,
+        will_handle_created_group,
+    }
+
+    handler! {
+        deleted_chat_photo_handlers,
+        deleted_chat_photo,
+        contexts::DeletedChatPhoto,
+        run_deleted_chat_photo_handlers,
+        will_handle_deleted_chat_photo,
+    }
+
+    handler! {
         document_handlers,
         document,
         contexts::Document,
@@ -277,6 +317,15 @@ impl Bot {
         run_game_handlers,
         will_handle_game,
     }
+
+    handler! {
+        left_member_handlers,
+        left_member,
+        contexts::LeftMember,
+        run_left_member_handlers,
+        will_handle_left_member,
+    }
+
     handler! {
         location_handlers,
         location,
@@ -286,11 +335,51 @@ impl Bot {
     }
 
     handler! {
+        migration_handlers,
+        migration,
+        contexts::Migration,
+        run_migration_handlers,
+        will_handle_migration,
+    }
+
+    handler! {
+        new_chat_photo_handlers,
+        new_chat_photo,
+        contexts::NewChatPhoto,
+        run_new_chat_photo_handlers,
+        will_handle_new_chat_photo,
+    }
+
+    handler! {
+        new_chat_title_handlers,
+        new_chat_title,
+        contexts::NewChatTitle,
+        run_new_chat_title_handlers,
+        will_handle_new_chat_title,
+    }
+
+    handler! {
+        new_members_handlers,
+        new_members,
+        contexts::NewMembers,
+        run_new_members_handlers,
+        will_handle_new_members,
+    }
+
+    handler! {
         photo_handlers,
         photo,
         contexts::Photo,
         run_photo_handlers,
         will_handle_photo,
+    }
+
+    handler! {
+        pinned_message_handlers,
+        pinned_message,
+        contexts::PinnedMessage,
+        run_pinned_message_handlers,
+        will_handle_pinned_message,
     }
 
     handler! {
@@ -480,6 +569,20 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::Pinned(message) => {
+                if self.will_handle_pinned_message() {
+                    let context =
+                        contexts::PinnedMessage::new(mock_bot, data, *message);
+
+                    self.run_pinned_message_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Pinned(message);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             MessageKind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
                     let context =
@@ -584,6 +687,19 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            kind @ MessageKind::ChatPhotoDeleted => {
+                if self.will_handle_deleted_chat_photo() {
+                    let context =
+                        contexts::DeletedChatPhoto::new(mock_bot, data);
+
+                    self.run_deleted_chat_photo_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             MessageKind::Document(document, caption) => {
                 if self.will_handle_document() {
                     let context = contexts::Document::new(
@@ -612,6 +728,20 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            MessageKind::LeftChatMember(member) => {
+                if self.will_handle_left_member() {
+                    let context =
+                        contexts::LeftMember::new(mock_bot, data, member);
+
+                    self.run_left_member_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::LeftChatMember(member);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
             MessageKind::Location(location) => {
                 if self.will_handle_location() {
                     let context =
@@ -620,6 +750,63 @@ impl Bot {
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::MigrateTo(..) => (), // ignored on purpose
+            MessageKind::MigrateFrom(old_id) => {
+                if self.will_handle_migration() {
+                    let context =
+                        contexts::Migration::new(mock_bot, data, old_id);
+
+                    self.run_migration_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::MigrateFrom(old_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::NewChatPhoto(photo) => {
+                if self.will_handle_new_chat_photo() {
+                    let context =
+                        contexts::NewChatPhoto::new(mock_bot, data, photo);
+
+                    self.run_new_chat_photo_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::NewChatPhoto(photo);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::NewChatTitle(title) => {
+                if self.will_handle_new_chat_title() {
+                    let context =
+                        contexts::NewChatTitle::new(mock_bot, data, title);
+
+                    self.run_new_chat_title_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::NewChatTitle(title);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::NewChatMembers(members) => {
+                if self.will_handle_new_members() {
+                    let context =
+                        contexts::NewMembers::new(mock_bot, data, members);
+
+                    self.run_new_members_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::NewChatMembers(members);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
@@ -639,6 +826,24 @@ impl Bot {
 
                     self.run_unhandled_handlers(mock_bot, update);
                 }
+            }
+            kind @ MessageKind::GroupCreated => {
+                if self.will_handle_created_group() {
+                    let context = contexts::CreatedGroup::new(mock_bot, data);
+
+                    self.run_created_group_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::SupergroupCreated | MessageKind::ChannelCreated => {
+                unreachable!(
+                "\n[tbot] Expected a `{supergroup,channel}_created` update to \
+                never exist\n",
+            )
             }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
@@ -781,6 +986,19 @@ impl Bot {
             }
             MessageKind::Poll(_) => unreachable!(
                 "\n[tbot] Unexpected poll as an edited message update\n"
+            ),
+            MessageKind::NewChatMembers(..)
+            | MessageKind::LeftChatMember(..)
+            | MessageKind::ChatPhotoDeleted
+            | MessageKind::NewChatPhoto(..)
+            | MessageKind::NewChatTitle(..)
+            | MessageKind::GroupCreated
+            | MessageKind::SupergroupCreated
+            | MessageKind::ChannelCreated
+            | MessageKind::Pinned(..)
+            | MessageKind::MigrateTo(..)
+            | MessageKind::MigrateFrom(..) => unreachable!(
+                "\n[tbot]\nExpected service messages not to be edited\n"
             ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
