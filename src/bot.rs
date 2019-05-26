@@ -38,6 +38,7 @@ type EditedVideoHandler = Handler<contexts::EditedVideo>;
 type GameHandler = Handler<contexts::Game>;
 type LeftMemberHandler = Handler<contexts::LeftMember>;
 type LocationHandler = Handler<contexts::Location>;
+type MigrationHandler = Handler<contexts::Migration>;
 type NewChatPhotoHandler = Handler<contexts::NewChatPhoto>;
 type NewChatTitleHandler = Handler<contexts::NewChatTitle>;
 type NewMembersHandler = Handler<contexts::NewMembers>;
@@ -78,6 +79,7 @@ pub struct Bot {
     game_handlers: Handlers<GameHandler>,
     left_member_handlers: Handlers<LeftMemberHandler>,
     location_handlers: Handlers<LocationHandler>,
+    migration_handlers: Handlers<MigrationHandler>,
     new_chat_photo_handlers: Handlers<NewChatPhotoHandler>,
     new_chat_title_handlers: Handlers<NewChatTitleHandler>,
     new_members_handlers: Handlers<NewMembersHandler>,
@@ -120,6 +122,7 @@ impl Bot {
             game_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
+            migration_handlers: Vec::new(),
             new_chat_photo_handlers: Vec::new(),
             new_chat_title_handlers: Vec::new(),
             new_members_handlers: Vec::new(),
@@ -329,6 +332,14 @@ impl Bot {
         contexts::Location,
         run_location_handlers,
         will_handle_location,
+    }
+
+    handler! {
+        migration_handlers,
+        migration,
+        contexts::Migration,
+        run_migration_handlers,
+        will_handle_migration,
     }
 
     handler! {
@@ -739,6 +750,21 @@ impl Bot {
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = MessageKind::Location(location);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::MigrateFrom(old_id) => {
+                if self.will_handle_migration() {
+                    let context = contexts::Migration::new(
+                        mock_bot, data, old_id
+                    );
+
+                    self.run_migration_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::MigrateFrom(old_id);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
