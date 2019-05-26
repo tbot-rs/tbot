@@ -29,6 +29,7 @@ mod new_chat_photo;
 mod new_chat_title;
 mod new_members;
 mod photo;
+mod pinned_message;
 mod poll;
 mod sticker;
 mod text;
@@ -47,7 +48,7 @@ pub use {
     deleted_chat_photo::*, document::*, edited_animation::*, edited_audio::*,
     edited_document::*, edited_location::*, edited_photo::*, edited_text::*,
     edited_video::*, game::*, left_member::*, location::*, new_chat_photo::*,
-    new_chat_title::*, new_members::*, photo::*, poll::*, sticker::*, text::*,
-    unhandled::*, update::*, updated_poll::*, venue::*, video::*,
-    video_note::*, voice::*,
+    new_chat_title::*, new_members::*, photo::*, pinned_message::*, poll::*,
+    sticker::*, text::*, unhandled::*, update::*, updated_poll::*, venue::*,
+    video::*, video_note::*, voice::*,
 };

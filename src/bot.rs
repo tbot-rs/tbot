@@ -42,6 +42,7 @@ type NewChatPhotoHandler = Handler<contexts::NewChatPhoto>;
 type NewChatTitleHandler = Handler<contexts::NewChatTitle>;
 type NewMembersHandler = Handler<contexts::NewMembers>;
 type PhotoHandler = Handler<contexts::Photo>;
+type PinnedMessageHandler = Handler<contexts::PinnedMessage>;
 type PollHandler = Handler<contexts::Poll>;
 type PollingErrorHandler = Handler<methods::DeliveryError>;
 type StickerHandler = Handler<contexts::Sticker>;
@@ -81,6 +82,7 @@ pub struct Bot {
     new_chat_title_handlers: Handlers<NewChatTitleHandler>,
     new_members_handlers: Handlers<NewMembersHandler>,
     photo_handlers: Handlers<PhotoHandler>,
+    pinned_message_handlers: Handlers<PinnedMessageHandler>,
     poll_handlers: Handlers<PollHandler>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
     sticker_handlers: Handlers<StickerHandler>,
@@ -122,6 +124,7 @@ impl Bot {
             new_chat_title_handlers: Vec::new(),
             new_members_handlers: Vec::new(),
             photo_handlers: Vec::new(),
+            pinned_message_handlers: Vec::new(),
             poll_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
@@ -361,6 +364,14 @@ impl Bot {
     }
 
     handler! {
+        pinned_message_handlers,
+        pinned_message,
+        contexts::PinnedMessage,
+        run_pinned_message_handlers,
+        will_handle_pinned_message,
+    }
+
+    handler! {
         poll_handlers,
         poll,
         contexts::Poll,
@@ -541,6 +552,20 @@ impl Bot {
                 } else if self.will_handle_unhandled() {
                     let kind =
                         MessageKind::Photo(photo, caption, media_group_id);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
+            }
+            MessageKind::Pinned(message) => {
+                if self.will_handle_pinned_message() {
+                    let context =
+                        contexts::PinnedMessage::new(mock_bot, data, *message);
+
+                    self.run_pinned_message_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Pinned(message);
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
