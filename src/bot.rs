@@ -63,6 +63,7 @@ pub struct Bot {
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     command_handlers: HashMap<&'static str, Handlers<TextHandler>>,
+    edited_command_handlers: HashMap<&'static str, Handlers<EditedTextHandler>>,
     after_update_handlers: Handlers<UpdateHandler>,
     animation_handlers: Handlers<AnimationHandler>,
     audio_handlers: Handlers<AudioHandler>,
@@ -108,6 +109,7 @@ impl Bot {
             #[cfg(feature = "proxy")]
             proxy: None,
             command_handlers: HashMap::new(),
+            edited_command_handlers: HashMap::new(),
             after_update_handlers: Vec::new(),
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
@@ -255,6 +257,34 @@ impl Bot {
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
     ) {
         self.command("help", handler);
+    }
+
+    /// Adds a new handler for an edited command.
+    pub fn edited_command(
+        &mut self,
+        command: &'static str,
+        handler: impl FnMut(&contexts::EditedText) + Send + Sync + 'static,
+    ) {
+        self.edited_command_handlers
+            .entry(command)
+            .or_insert_with(Vec::new)
+            .push(Mutex::new(Box::new(handler)));
+    }
+
+    fn will_handle_edited_command(&self, command: &'static str) -> bool {
+        self.edited_command_handlers.contains_key(&command)
+    }
+
+    fn run_edited_command_handlers(
+        &self,
+        command: &'static str,
+        context: &contexts::EditedText,
+    ) {
+        if let Some(handlers) = self.edited_command_handlers.get(&command) {
+            for handler in handlers {
+                (&mut *handler.lock().unwrap())(context);
+            }
+        }
     }
 
     handler! {
@@ -1032,13 +1062,23 @@ impl Bot {
                 }
             }
             MessageKind::Text(text) => {
-                if !text.text.starts_with('/') {
-                    if self.will_handle_edited_text() {
+                if is_command(&text) {
+                    let (command, username) = parse_command(&text);
+
+                    if self.is_for_this_bot(username) {
+                        return;
+                    }
+
+                    let command = Box::leak(Box::new(command.to_string()));
+
+                    if self.will_handle_edited_command(command) {
+                        let text = trim_command(text);
+
                         let context = contexts::EditedText::new(
                             mock_bot, data, edit_date, text,
                         );
 
-                        self.run_edited_text_handlers(&context);
+                        self.run_edited_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
                         let kind = MessageKind::Text(text);
                         let message = Message::new(data, kind);
@@ -1046,6 +1086,18 @@ impl Bot {
 
                         self.run_unhandled_handlers(mock_bot, update);
                     }
+                } else if self.will_handle_edited_text() {
+                    let context = contexts::EditedText::new(
+                        mock_bot, data, edit_date, text,
+                    );
+
+                    self.run_edited_text_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Text(text);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::EditedMessage(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
                 }
             }
             MessageKind::Video(video, caption, media_group_id) => {
