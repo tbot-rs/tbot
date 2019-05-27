@@ -1,5 +1,6 @@
 use super::*;
 use std::{
+    collections::HashMap,
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
@@ -61,6 +62,8 @@ pub struct Bot {
     token: Arc<String>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
+    command_handlers: HashMap<&'static str, Handlers<TextHandler>>,
+    edited_command_handlers: HashMap<&'static str, Handlers<EditedTextHandler>>,
     after_update_handlers: Handlers<UpdateHandler>,
     animation_handlers: Handlers<AnimationHandler>,
     audio_handlers: Handlers<AudioHandler>,
@@ -95,6 +98,7 @@ pub struct Bot {
     video_handlers: Handlers<VideoHandler>,
     video_note_handlers: Handlers<VideoNoteHandler>,
     voice_handlers: Handlers<VoiceHandler>,
+    username: Option<&'static str>,
 }
 
 impl Bot {
@@ -104,6 +108,8 @@ impl Bot {
             token: Arc::new(token),
             #[cfg(feature = "proxy")]
             proxy: None,
+            command_handlers: HashMap::new(),
+            edited_command_handlers: HashMap::new(),
             after_update_handlers: Vec::new(),
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
@@ -138,6 +144,59 @@ impl Bot {
             video_handlers: Vec::new(),
             video_note_handlers: Vec::new(),
             voice_handlers: Vec::new(),
+            username: None,
+        }
+    }
+
+    /// Sets the bot's username.
+    ///
+    /// The username is used when checking whether a command e
+    /// `/command@username` was directed to this bot.
+    pub fn username(&mut self, username: &'static str) {
+        self.username = Some(username);
+    }
+
+    /// Fetches this bot's username.
+    ///
+    /// # Panics
+    ///
+    /// This method panics if there was an error during calling the `getMe`
+    /// method.
+    pub fn fetch_username(&mut self) {
+        let result = Arc::new(Mutex::new(None));
+        let on_ok = Arc::clone(&result);
+        let on_err = Arc::clone(&result);
+
+        let get_me = self
+            .get_me()
+            .into_future()
+            .map_err(move |error| {
+                *on_err.lock().unwrap() = Some(Err(error));
+            })
+            .map(move |me| {
+                *on_ok.lock().unwrap() = Some(Ok(me));
+            });
+
+        crate::run(get_me);
+
+        let result = Arc::try_unwrap(result).unwrap().into_inner().unwrap();
+
+        if let Some(result) = result {
+            // will always run
+            match result {
+                Ok(me) => {
+                    let username: String = me.username.expect(
+                        "\n[tbot] Expected the bot to have a username\n",
+                    );
+                    let username = Box::leak(Box::new(username));
+
+                    self.username(username);
+                }
+                Err(error) => panic!(
+                    "\n[tbot] Error during fetching username: {:#?}\n",
+                    error
+                ),
+            }
         }
     }
 
@@ -190,6 +249,86 @@ impl Bot {
             #[cfg(feature = "proxy")]
             self.proxy.clone(),
         )
+    }
+
+    /// Adds a new handler for a command.
+    pub fn command(
+        &mut self,
+        command: &'static str,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command_handlers
+            .entry(command)
+            .or_insert_with(Vec::new)
+            .push(Mutex::new(Box::new(handler)));
+    }
+
+    fn will_handle_command(&self, command: &'static str) -> bool {
+        self.command_handlers.contains_key(&command)
+    }
+
+    fn run_command_handlers(
+        &self,
+        command: &'static str,
+        context: &contexts::Text,
+    ) {
+        if let Some(handlers) = self.command_handlers.get(&command) {
+            for handler in handlers {
+                (&mut *handler.lock().unwrap())(context);
+            }
+        }
+    }
+
+    /// Adds a new handler for the /start command.
+    pub fn start(
+        &mut self,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command("start", handler);
+    }
+
+    /// Adds a new handler for the /settings command.
+    pub fn settings(
+        &mut self,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command("settings", handler);
+    }
+
+    /// Adds a new handler for the /help command.
+    pub fn help(
+        &mut self,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command("help", handler);
+    }
+
+    /// Adds a new handler for an edited command.
+    pub fn edited_command(
+        &mut self,
+        command: &'static str,
+        handler: impl FnMut(&contexts::EditedText) + Send + Sync + 'static,
+    ) {
+        self.edited_command_handlers
+            .entry(command)
+            .or_insert_with(Vec::new)
+            .push(Mutex::new(Box::new(handler)));
+    }
+
+    fn will_handle_edited_command(&self, command: &'static str) -> bool {
+        self.edited_command_handlers.contains_key(&command)
+    }
+
+    fn run_edited_command_handlers(
+        &self,
+        command: &'static str,
+        context: &contexts::EditedText,
+    ) {
+        if let Some(handlers) = self.edited_command_handlers.get(&command) {
+            for handler in handlers {
+                (&mut *handler.lock().unwrap())(context);
+            }
+        }
     }
 
     handler! {
@@ -522,11 +661,21 @@ impl Bot {
 
         match kind {
             MessageKind::Text(text) => {
-                if !text.text.starts_with('/') {
-                    if self.will_handle_text() {
+                if is_command(&text) {
+                    let (command, username) = parse_command(&text);
+
+                    if !self.is_for_this_bot(username) {
+                        return;
+                    }
+
+                    let command = Box::leak(Box::new(command.to_string()));
+
+                    if self.will_handle_command(command) {
+                        let text = trim_command(text);
+
                         let context = contexts::Text::new(mock_bot, data, text);
 
-                        self.run_text_handlers(&context);
+                        self.run_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
                         let kind = MessageKind::Text(text);
                         let message = Message::new(data, kind);
@@ -534,7 +683,17 @@ impl Bot {
 
                         self.run_unhandled_handlers(mock_bot, update);
                     }
-                } // TODO: command handlers
+                } else if self.will_handle_text() {
+                    let context = contexts::Text::new(mock_bot, data, text);
+
+                    self.run_text_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Text(text);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
             }
             MessageKind::Poll(poll) => {
                 if self.will_handle_poll() {
@@ -947,13 +1106,23 @@ impl Bot {
                 }
             }
             MessageKind::Text(text) => {
-                if !text.text.starts_with('/') {
-                    if self.will_handle_edited_text() {
+                if is_command(&text) {
+                    let (command, username) = parse_command(&text);
+
+                    if !self.is_for_this_bot(username) {
+                        return;
+                    }
+
+                    let command = Box::leak(Box::new(command.to_string()));
+
+                    if self.will_handle_edited_command(command) {
+                        let text = trim_command(text);
+
                         let context = contexts::EditedText::new(
                             mock_bot, data, edit_date, text,
                         );
 
-                        self.run_edited_text_handlers(&context);
+                        self.run_edited_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
                         let kind = MessageKind::Text(text);
                         let message = Message::new(data, kind);
@@ -961,6 +1130,18 @@ impl Bot {
 
                         self.run_unhandled_handlers(mock_bot, update);
                     }
+                } else if self.will_handle_edited_text() {
+                    let context = contexts::EditedText::new(
+                        mock_bot, data, edit_date, text,
+                    );
+
+                    self.run_edited_text_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Text(text);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::EditedMessage(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
                 }
             }
             MessageKind::Video(video, caption, media_group_id) => {
@@ -1008,6 +1189,14 @@ impl Bot {
             _ => (),
         }
     }
+
+    fn is_for_this_bot(&self, username: Option<&str>) -> bool {
+        if let Some(username) = username {
+            self.username.as_ref().map(|x| x == &username) == Some(true)
+        } else {
+            true
+        }
+    }
 }
 
 impl Methods<'_> for Bot {
@@ -1050,4 +1239,47 @@ macro_rules! bot {
     ($($x:tt)+) => {
         $crate::bot!()
     };
+}
+
+fn is_command(text: &types::Text) -> bool {
+    text.entities.get(0).map(|entity| {
+        entity.kind == types::MessageEntityKind::BotCommand
+            && entity.offset == 0
+    }) == Some(true)
+}
+
+fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
+    let mut iter = text.text.split_whitespace().next().unwrap()[1..].split('@');
+
+    let command = iter.next().unwrap();
+    let username = iter.next();
+
+    (command, username)
+}
+
+fn trim_command(text: types::Text) -> types::Text {
+    let mut entities = text.entities.into_iter();
+    let command_entity = entities.next().unwrap();
+    let old_length = text.text.chars().count();
+
+    let text: String = text
+        .text
+        .chars()
+        .skip(command_entity.length)
+        .skip_while(|x| x.is_whitespace())
+        .collect();
+    let new_length = text.chars().count();
+
+    let entities = entities
+        .map(|entity| types::MessageEntity {
+            kind: entity.kind,
+            length: entity.length,
+            offset: entity.offset - (old_length - new_length),
+        })
+        .collect();
+
+    types::Text {
+        text,
+        entities,
+    }
 }
