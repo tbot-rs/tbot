@@ -156,6 +156,40 @@ impl Bot {
         self.username = Some(username);
     }
 
+    /// Fetches this bot's username.
+    ///
+    /// # Panics
+    ///
+    /// This method panics if there was an error during calling the `getMe`
+    /// method.
+    pub fn fetch_username(&mut self) {
+        let result = Arc::new(Mutex::new(None));
+        let on_ok = Arc::clone(&result);
+        let on_err = Arc::clone(&result);
+
+        let get_me = self.get_me().into_future().map_err(move |error| {
+            *on_err.lock().unwrap() = Some(Err(error));
+        }).map(move |me| {
+            *on_ok.lock().unwrap() = Some(Ok(me));
+        });
+
+        crate::run(get_me);
+
+        let result = Arc::try_unwrap(result).unwrap().into_inner().unwrap();
+
+        if let Some(result) = result { // will always run
+            match result {
+                Ok(me) => {
+                    let username: String = me.username.expect("\n[tbot] Expected the bot to have a username\n");
+                    let username = Box::leak(Box::new(username));
+
+                    self.username(username);
+                },
+                Err(error) => panic!("\n[tbot] Error during fetching username: {:#?}\n", error),
+            }
+        }
+    }
+
     /// Constructs a new `Bot`, extracting the token from the environment at
     /// _runtime_.
     /// If you need to extract the token at _compile time_, use [`bot!`].
