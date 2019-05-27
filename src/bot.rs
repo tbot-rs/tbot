@@ -587,60 +587,17 @@ impl Bot {
 
         match kind {
             MessageKind::Text(text) => {
-                let is_command = text.entities.get(0).map(|entity| {
-                    entity.kind == types::MessageEntityKind::BotCommand
-                        && entity.offset == 0
-                }) == Some(true);
+                if is_command(&text) {
+                    let (command, username) = parse_command(&text);
 
-                if is_command {
-                    let mut iter = text.text.split_whitespace().next().unwrap()
-                        [1..]
-                        .split('@');
-                    // guarenteed by `is_command`
-                    let command = iter.next().unwrap();
-                    let username = iter.next();
-
-                    if let Some(username) = username {
-                        // We'd also like to return if self.username is None.
-                        if self.username.as_ref().map(|x| x == &username)
-                            != Some(true)
-                        {
-                            // We're returning because this update is not
-                            // for this bot.
-                            return;
-                        }
+                    if self.is_for_this_bot(username) {
+                        return;
                     }
 
                     let command = Box::leak(Box::new(command.to_string()));
-                    std::mem::drop(iter);
 
                     if self.will_handle_command(command) {
-                        let mut entities = text.entities.into_iter();
-                        // guaranteed by `is_command`
-                        let command_entity = entities.next().unwrap();
-                        let old_length = text.text.chars().count();
-
-                        let text: String = text
-                            .text
-                            .chars()
-                            .skip(command_entity.length)
-                            .skip_while(|x| x.is_whitespace())
-                            .collect();
-                        let new_length = text.chars().count();
-
-                        let entities = entities
-                            .map(|entity| types::MessageEntity {
-                                kind: entity.kind,
-                                length: entity.length,
-                                offset: entity.offset
-                                    - (old_length - new_length),
-                            })
-                            .collect();
-
-                        let text = types::Text {
-                            text,
-                            entities,
-                        };
+                        let text = trim_command(text);
 
                         let context = contexts::Text::new(mock_bot, data, text);
 
@@ -1136,6 +1093,14 @@ impl Bot {
             _ => (),
         }
     }
+
+    fn is_for_this_bot(&self, username: Option<&str>) -> bool {
+        if let Some(username) = username {
+            self.username.as_ref().map(|x| x == &username) == Some(true)
+        } else {
+            true
+        }
+    }
 }
 
 impl Methods<'_> for Bot {
@@ -1178,4 +1143,47 @@ macro_rules! bot {
     ($($x:tt)+) => {
         $crate::bot!()
     };
+}
+
+fn is_command(text: &types::Text) -> bool {
+    text.entities.get(0).map(|entity| {
+        entity.kind == types::MessageEntityKind::BotCommand
+            && entity.offset == 0
+    }) == Some(true)
+}
+
+fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
+    let mut iter = text.text.split_whitespace().next().unwrap()[1..].split('@');
+
+    let command = iter.next().unwrap();
+    let username = iter.next();
+
+    (command, username)
+}
+
+fn trim_command(text: types::Text) -> types::Text {
+    let mut entities = text.entities.into_iter();
+    let command_entity = entities.next().unwrap();
+    let old_length = text.text.chars().count();
+
+    let text: String = text
+        .text
+        .chars()
+        .skip(command_entity.length)
+        .skip_while(|x| x.is_whitespace())
+        .collect();
+    let new_length = text.chars().count();
+
+    let entities = entities
+        .map(|entity| types::MessageEntity {
+            kind: entity.kind,
+            length: entity.length,
+            offset: entity.offset - (old_length - new_length),
+        })
+        .collect();
+
+    types::Text {
+        text,
+        entities,
+    }
 }
