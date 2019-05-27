@@ -107,6 +107,14 @@ pub trait ChatMethods<'a> {
         self.bot().kick_chat_member(self.chat_id(), user_id)
     }
 
+    /// Constructs a new [`PromoteChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`PromoteChatMember`]: ../methods/struct.PromoteChatMember.html
+    fn promote_chat_member(&'a self, user_id: i64) -> PromoteChatMember<'a> {
+        self.bot().promote_chat_member(self.chat_id(), user_id)
+    }
+
     /// Constructs a new [`RestrictChatMember`] inferring the token and the
     /// destination chat ID.
     ///
