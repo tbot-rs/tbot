@@ -312,13 +312,11 @@ pub trait Methods<'a> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         user_id: i64,
-        until_date: i64,
     ) -> methods::KickChatMember<'a> {
         self.prepare_method(methods::KickChatMember::new(
             self.token(),
             chat_id,
             user_id,
-            until_date,
         ))
     }
 

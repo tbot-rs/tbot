@@ -103,12 +103,8 @@ pub trait ChatMethods<'a> {
     /// destination chat ID.
     ///
     /// [`KickChatMember`]: ../methods/struct.KickChatMember.html
-    fn kick_chat_member(
-        &'a self,
-        user_id: i64,
-        until_date: i64,
-    ) -> KickChatMember<'a> {
-        self.bot().kick_chat_member(self.chat_id(), user_id, until_date)
+    fn kick_chat_member(&'a self, user_id: i64) -> KickChatMember<'a> {
+        self.bot().kick_chat_member(self.chat_id(), user_id)
     }
 
     /// Constructs a new [`RestrictChatMember`] inferring the token and the

@@ -13,7 +13,8 @@ pub struct KickChatMember<'a> {
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     user_id: i64,
-    until_date: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    until_date: Option<i64>,
 }
 
 impl<'a> KickChatMember<'a> {
@@ -22,16 +23,21 @@ impl<'a> KickChatMember<'a> {
         token: &'a str,
         chat_id: impl Into<types::ChatId<'a>>,
         user_id: i64,
-        until_date: i64,
     ) -> Self {
         Self {
             token,
             chat_id: chat_id.into(),
             user_id,
-            until_date,
+            until_date: None,
             #[cfg(feature = "proxy")]
             proxy: None,
         }
+    }
+
+    /// Configures `until_date`.
+    pub fn until_date(mut self, date: i64) -> Self {
+        self.until_date = Some(date);
+        self
     }
 
     /// Prepares the request and returns a `Future`.
