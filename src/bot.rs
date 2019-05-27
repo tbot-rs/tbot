@@ -1,5 +1,6 @@
 use super::*;
 use std::{
+    collections::HashMap,
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
@@ -61,6 +62,7 @@ pub struct Bot {
     token: Arc<String>,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
+    command_handlers: HashMap<&'static str, Handlers<TextHandler>>,
     after_update_handlers: Handlers<UpdateHandler>,
     animation_handlers: Handlers<AnimationHandler>,
     audio_handlers: Handlers<AudioHandler>,
@@ -105,6 +107,7 @@ impl Bot {
             token: Arc::new(token),
             #[cfg(feature = "proxy")]
             proxy: None,
+            command_handlers: HashMap::new(),
             after_update_handlers: Vec::new(),
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
@@ -200,6 +203,58 @@ impl Bot {
             #[cfg(feature = "proxy")]
             self.proxy.clone(),
         )
+    }
+
+    /// Adds a new handler for a command.
+    pub fn command(
+        &mut self,
+        command: &'static str,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command_handlers
+            .entry(command)
+            .or_insert_with(Vec::new)
+            .push(Mutex::new(Box::new(handler)));
+    }
+
+    fn will_handle_command(&self, command: &'static str) -> bool {
+        self.command_handlers.contains_key(&command)
+    }
+
+    fn run_command_handlers(
+        &self,
+        command: &'static str,
+        context: &contexts::Text,
+    ) {
+        if let Some(handlers) = self.command_handlers.get(&command) {
+            for handler in handlers {
+                (&mut *handler.lock().unwrap())(context);
+            }
+        }
+    }
+
+    /// Adds a new handler for the /start command.
+    pub fn start(
+        &mut self,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command("start", handler);
+    }
+
+    /// Adds a new handler for the /settings command.
+    pub fn settings(
+        &mut self,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command("settings", handler);
+    }
+
+    /// Adds a new handler for the /help command.
+    pub fn help(
+        &mut self,
+        handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
+    ) {
+        self.command("help", handler);
     }
 
     handler! {
@@ -532,11 +587,64 @@ impl Bot {
 
         match kind {
             MessageKind::Text(text) => {
-                if !text.text.starts_with('/') {
-                    if self.will_handle_text() {
+                let is_command = text.entities.get(0).map(|entity| {
+                    entity.kind == types::MessageEntityKind::BotCommand
+                        && entity.offset == 0
+                }) == Some(true);
+
+                if is_command {
+                    let mut iter = text.text.split_whitespace().next().unwrap()
+                        [1..]
+                        .split('@');
+                    // guarenteed by `is_command`
+                    let command = iter.next().unwrap();
+                    let username = iter.next();
+
+                    if let Some(username) = username {
+                        // We'd also like to return if self.username is None.
+                        if self.username.as_ref().map(|x| x == &username)
+                            != Some(true)
+                        {
+                            // We're returning because this update is not
+                            // for this bot.
+                            return;
+                        }
+                    }
+
+                    let command = Box::leak(Box::new(command.to_string()));
+                    std::mem::drop(iter);
+
+                    if self.will_handle_command(command) {
+                        let mut entities = text.entities.into_iter();
+                        // guaranteed by `is_command`
+                        let command_entity = entities.next().unwrap();
+                        let old_length = text.text.chars().count();
+
+                        let text: String = text
+                            .text
+                            .chars()
+                            .skip(command_entity.length)
+                            .skip_while(|x| x.is_whitespace())
+                            .collect();
+                        let new_length = text.chars().count();
+
+                        let entities = entities
+                            .map(|entity| types::MessageEntity {
+                                kind: entity.kind,
+                                length: entity.length,
+                                offset: entity.offset
+                                    - (old_length - new_length),
+                            })
+                            .collect();
+
+                        let text = types::Text {
+                            text,
+                            entities,
+                        };
+
                         let context = contexts::Text::new(mock_bot, data, text);
 
-                        self.run_text_handlers(&context);
+                        self.run_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
                         let kind = MessageKind::Text(text);
                         let message = Message::new(data, kind);
@@ -544,7 +652,17 @@ impl Bot {
 
                         self.run_unhandled_handlers(mock_bot, update);
                     }
-                } // TODO: command handlers
+                } else if self.will_handle_text() {
+                    let context = contexts::Text::new(mock_bot, data, text);
+
+                    self.run_text_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = MessageKind::Text(text);
+                    let message = Message::new(data, kind);
+                    let update = UpdateKind::Message(message);
+
+                    self.run_unhandled_handlers(mock_bot, update);
+                }
             }
             MessageKind::Poll(poll) => {
                 if self.will_handle_poll() {
