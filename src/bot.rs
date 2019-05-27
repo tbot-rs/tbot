@@ -95,6 +95,7 @@ pub struct Bot {
     video_handlers: Handlers<VideoHandler>,
     video_note_handlers: Handlers<VideoNoteHandler>,
     voice_handlers: Handlers<VoiceHandler>,
+    username: Option<&'static str>,
 }
 
 impl Bot {
@@ -138,7 +139,16 @@ impl Bot {
             video_handlers: Vec::new(),
             video_note_handlers: Vec::new(),
             voice_handlers: Vec::new(),
+            username: None,
         }
+    }
+
+    /// Sets the bot's username.
+    ///
+    /// The username is used when checking whether a command e
+    /// `/command@username` was directed to this bot.
+    pub fn username(&mut self, username: &'static str) {
+        self.username = Some(username);
     }
 
     /// Constructs a new `Bot`, extracting the token from the environment at
