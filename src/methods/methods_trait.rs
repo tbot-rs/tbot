@@ -596,6 +596,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SetChatPhoto`] inferring `token`.
+    ///
+    /// [`SetChatPhoto`]: ./struct.SetChatPhoto.html
+    fn set_chat_photo(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        photo: &'a ChatPhoto<'a>,
+    ) -> methods::SetChatPhoto<'a> {
+        self.prepare_method(methods::SetChatPhoto::new(
+            self.token(),
+            chat_id,
+            photo,
+        ))
+    }
+
     /// Constructs a new [`SetStickerPositionInSet`] inferring `token`.
     ///
     /// [`SetStickerPositionInSet`]: ./struct.SetStickerPositionInSet.html

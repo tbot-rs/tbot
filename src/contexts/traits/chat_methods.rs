@@ -392,6 +392,13 @@ pub trait ChatMethods<'a> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SetChatPhoto`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatPhoto`]: ../methods/struct.SetChatPhoto.html
+    fn set_chat_photo(&'a self, photo: &'a ChatPhoto<'a>) -> SetChatPhoto<'a> {
+        self.bot().set_chat_photo(self.chat_id(), photo)
+    }
+
     /// Constructs a new [`UnbanChatMember`] inferring the token and the
     /// destination chat ID.
     ///
