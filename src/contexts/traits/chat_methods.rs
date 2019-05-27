@@ -87,6 +87,13 @@ pub trait ChatMethods<'a> {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
     }
 
+    /// Constructs an [`ExportChatInviteLink`] inferring the token and the chat ID.
+    ///
+    /// [`ExportChatInviteLink`]: ../methods/struct.ExportChatInviteLink.html
+    fn export_chat_invite_link(&'a self) -> ExportChatInviteLink<'a> {
+        self.bot().export_chat_invite_link(self.chat_id())
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring the token and the
     /// destination chat ID.
     ///

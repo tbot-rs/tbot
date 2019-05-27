@@ -47,6 +47,7 @@ mod edit_message_location;
 mod edit_message_media;
 mod edit_message_reply_markup;
 mod edit_message_text;
+mod export_chat_invite_link;
 mod forward_message;
 mod get_me;
 mod get_sticker_set;
@@ -85,12 +86,12 @@ pub use {
     edit_inline_location::*, edit_inline_media::*, edit_inline_reply_markup::*,
     edit_inline_text::*, edit_message_caption::*, edit_message_location::*,
     edit_message_media::*, edit_message_reply_markup::*, edit_message_text::*,
-    forward_message::*, get_me::*, get_sticker_set::*,
-    get_user_profile_photos::*, get_webhook_info::*, kick_chat_member::*,
-    promote_chat_member::*, restrict_chat_member::*, send_animation::*,
-    send_audio::*, send_chat_action::*, send_contact::*, send_document::*,
-    send_location::*, send_media_group::*, send_message::*, send_photo::*,
-    send_poll::*, send_sticker::*, send_venue::*, send_video::*,
+    export_chat_invite_link::*, forward_message::*, get_me::*,
+    get_sticker_set::*, get_user_profile_photos::*, get_webhook_info::*,
+    kick_chat_member::*, promote_chat_member::*, restrict_chat_member::*,
+    send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
+    send_document::*, send_location::*, send_media_group::*, send_message::*,
+    send_photo::*, send_poll::*, send_sticker::*, send_venue::*, send_video::*,
     send_video_note::*, send_voice::*, set_sticker_position_in_set::*,
     stop_inline_location::*, stop_message_location::*, stop_poll::*,
     unban_chat_member::*, upload_sticker_file::*,

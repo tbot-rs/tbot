@@ -254,6 +254,19 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`ExportChatInviteLink`] inferring `token`.
+    ///
+    /// [`ExportChatInviteLink`]: ./struct.ExportChatInviteLink.html
+    fn export_chat_invite_link(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::ExportChatInviteLink<'a> {
+        self.prepare_method(methods::ExportChatInviteLink::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html
