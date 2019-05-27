@@ -11,7 +11,7 @@ struct ResponseParameters {
 struct Response<T> {
     result: Option<T>,
     description: Option<String>,
-    error_code: Option<u8>,
+    error_code: Option<u16>,
     parameters: Option<ResponseParameters>,
 }
 
