@@ -305,6 +305,23 @@ pub trait Methods<'a> {
         self.prepare_method(methods::GetWebhookInfo::new(self.token()))
     }
 
+    /// Constructs a new [`KickChatMember`] inferring `token`.
+    ///
+    /// [`KickChatMember`]: ./struct.KickChatMember.html
+    fn kick_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+        until_date: i64,
+    ) -> methods::KickChatMember<'a> {
+        self.prepare_method(methods::KickChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+            until_date,
+        ))
+    }
+
     /// Constructs a new [`SendAnimation`] inferring `token`.
     ///
     /// [`SendAnimation`]: ./struct.SendAnimation.html

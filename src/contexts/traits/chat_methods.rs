@@ -99,6 +99,18 @@ pub trait ChatMethods<'a> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
     }
 
+    /// Constructs a new [`KickChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`KickChatMember`]: ../methods/struct.KickChatMember.html
+    fn kick_chat_member(
+        &'a self,
+        user_id: i64,
+        until_date: i64,
+    ) -> KickChatMember<'a> {
+        self.bot().kick_chat_member(self.chat_id(), user_id, until_date)
+    }
+
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html
