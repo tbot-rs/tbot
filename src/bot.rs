@@ -167,25 +167,35 @@ impl Bot {
         let on_ok = Arc::clone(&result);
         let on_err = Arc::clone(&result);
 
-        let get_me = self.get_me().into_future().map_err(move |error| {
-            *on_err.lock().unwrap() = Some(Err(error));
-        }).map(move |me| {
-            *on_ok.lock().unwrap() = Some(Ok(me));
-        });
+        let get_me = self
+            .get_me()
+            .into_future()
+            .map_err(move |error| {
+                *on_err.lock().unwrap() = Some(Err(error));
+            })
+            .map(move |me| {
+                *on_ok.lock().unwrap() = Some(Ok(me));
+            });
 
         crate::run(get_me);
 
         let result = Arc::try_unwrap(result).unwrap().into_inner().unwrap();
 
-        if let Some(result) = result { // will always run
+        if let Some(result) = result {
+            // will always run
             match result {
                 Ok(me) => {
-                    let username: String = me.username.expect("\n[tbot] Expected the bot to have a username\n");
+                    let username: String = me.username.expect(
+                        "\n[tbot] Expected the bot to have a username\n",
+                    );
                     let username = Box::leak(Box::new(username));
 
                     self.username(username);
-                },
-                Err(error) => panic!("\n[tbot] Error during fetching username: {:#?}\n", error),
+                }
+                Err(error) => panic!(
+                    "\n[tbot] Error during fetching username: {:#?}\n",
+                    error
+                ),
             }
         }
     }
