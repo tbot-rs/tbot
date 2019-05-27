@@ -74,6 +74,7 @@ mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
 mod stop_poll;
+mod unban_chat_member;
 mod upload_sticker_file;
 
 pub use {
@@ -89,7 +90,7 @@ pub use {
     send_photo::*, send_poll::*, send_sticker::*, send_venue::*, send_video::*,
     send_video_note::*, send_voice::*, set_sticker_position_in_set::*,
     stop_inline_location::*, stop_message_location::*, stop_poll::*,
-    upload_sticker_file::*,
+    unban_chat_member::*, upload_sticker_file::*,
 };
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};

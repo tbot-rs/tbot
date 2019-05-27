@@ -613,6 +613,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`UnbanChatMember`] inferring `token`.
+    ///
+    /// [`UnbanChatMember`]: ./struct.UnbanChatMember.html
+    fn unban_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::UnbanChatMember<'a> {
+        self.prepare_method(methods::UnbanChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
+    }
+
     /// Constructs a new [`UploadStickerFile`] inferring `token`.
     ///
     /// [`UploadStickerFile`]: ./struct.UploadStickerFile.html

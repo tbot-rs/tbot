@@ -372,4 +372,12 @@ pub trait ChatMethods<'a> {
     fn send_voice_in_reply(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
+
+    /// Constructs a new [`UnbanChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`UnbanChatMember`]: ../methods/struct.UnbanChatMember.html
+    fn unban_chat_member(&'a self, user_id: i64) -> UnbanChatMember<'a> {
+        self.bot().unban_chat_member(self.chat_id(), user_id)
+    }
 }
