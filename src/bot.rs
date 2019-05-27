@@ -620,7 +620,7 @@ impl Bot {
                 if is_command(&text) {
                     let (command, username) = parse_command(&text);
 
-                    if self.is_for_this_bot(username) {
+                    if !self.is_for_this_bot(username) {
                         return;
                     }
 
@@ -1065,7 +1065,7 @@ impl Bot {
                 if is_command(&text) {
                     let (command, username) = parse_command(&text);
 
-                    if self.is_for_this_bot(username) {
+                    if !self.is_for_this_bot(username) {
                         return;
                     }
 
