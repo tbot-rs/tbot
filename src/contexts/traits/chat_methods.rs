@@ -111,6 +111,14 @@ pub trait ChatMethods<'a> {
         self.bot().kick_chat_member(self.chat_id(), user_id, until_date)
     }
 
+    /// Constructs a new [`RestrictChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`RestrictChatMember`]: ../methods/struct.RestrictChatMember.html
+    fn restrict_chat_member(&'a self, user_id: i64) -> RestrictChatMember<'a> {
+        self.bot().restrict_chat_member(self.chat_id(), user_id)
+    }
+
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
     ///
     /// [`SendAnimation`]: ../methods/struct.SendAnimation.html

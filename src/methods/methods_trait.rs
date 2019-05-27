@@ -322,6 +322,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`RestrictChatMember`] inferring `token`.
+    ///
+    /// [`RestrictChatMember`]: ./struct.RestrictChatMember.html
+    fn restrict_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::RestrictChatMember<'a> {
+        self.prepare_method(methods::RestrictChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
+    }
+
     /// Constructs a new [`SendAnimation`] inferring `token`.
     ///
     /// [`SendAnimation`]: ./struct.SendAnimation.html
