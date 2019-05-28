@@ -134,9 +134,9 @@ pub trait ChatMethods<'a> {
         self.bot().get_chat_member(self.chat_id(), user_id)
     }
 
-    /// Constructs an [`GetChatAdministrators`] inferring the token and the chat ID.
+    /// Constructs an [`GetChatMembersCount`] inferring the token and the chat ID.
     ///
-    /// [`GetChatAdministrators`]: ../methods/struct.GetChatAdministrators.html
+    /// [`GetChatMembersCount`]: ../methods/struct.GetChatMembersCount.html
     fn get_chat_members_count(&'a self) -> GetChatMembersCount<'a> {
         self.bot().get_chat_members_count(self.chat_id())
     }
