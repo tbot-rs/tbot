@@ -17,6 +17,14 @@ pub trait ChatMethods<'a> {
         self.bot().delete_chat_photo(self.chat_id())
     }
 
+    /// Constructs a [`DeleteChatStickerSet`] inferring the token and the chat
+    /// ID.
+    ///
+    /// [`DeleteChatStickerSet`]: ../methods/struct.DeleteChatStickerSet.html
+    fn delete_chat_sticker_set(&'a self) -> DeleteChatStickerSet<'a> {
+        self.bot().delete_chat_sticker_set(self.chat_id())
+    }
+
     /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
     ///
     /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html

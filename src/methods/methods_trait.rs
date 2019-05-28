@@ -79,6 +79,19 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`DeleteChatStickerSet`] inferring `token`.
+    ///
+    /// [`DeleteChatStickerSet`]: ./struct.DeleteChatStickerSet.html
+    fn delete_chat_sticker_set(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::DeleteChatStickerSet<'a> {
+        self.prepare_method(methods::DeleteChatStickerSet::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`DeleteMessage`] inferring `token`.
     ///
     /// [`DeleteMessage`]: ./struct.DeleteMessage.html
