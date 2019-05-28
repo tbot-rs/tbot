@@ -120,6 +120,13 @@ pub trait ChatMethods<'a> {
         self.bot().get_chat(self.chat_id())
     }
 
+    /// Constructs an [`GetChatAdministrators`] inferring the token and the chat ID.
+    ///
+    /// [`GetChatAdministrators`]: ../methods/struct.GetChatAdministrators.html
+    fn get_chat_administrators(&'a self) -> GetChatAdministrators<'a> {
+        self.bot().get_chat_administrators(self.chat_id())
+    }
+
     /// Constructs a new [`KickChatMember`] inferring the token and the
     /// destination chat ID.
     ///

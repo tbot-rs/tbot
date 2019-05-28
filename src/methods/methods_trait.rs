@@ -307,6 +307,19 @@ pub trait Methods<'a> {
         self.prepare_method(methods::GetChat::new(self.token(), chat_id))
     }
 
+    /// Constructs a new [`GetChatAdministrators`] inferring `token`.
+    ///
+    /// [`GetChatAdministrators`]: ./struct.GetChatAdministrators.html
+    fn get_chat_administrators(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::GetChatAdministrators<'a> {
+        self.prepare_method(methods::GetChatAdministrators::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`GetMe`] inferring `token`.
     ///
     /// [`GetMe`]: ./struct.GetMe.html
