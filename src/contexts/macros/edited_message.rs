@@ -43,5 +43,6 @@ macro_rules! edited_message {
         }
 
         impl<'a> Forwardable<'a> for $name {}
+        impl<'a> Pinnable<'a> for $name {}
     };
 }

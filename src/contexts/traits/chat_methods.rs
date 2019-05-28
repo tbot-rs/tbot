@@ -121,14 +121,6 @@ pub trait ChatMethods<'a> {
         self.bot().kick_chat_member(self.chat_id(), user_id)
     }
 
-    /// Constructs a new [`PinChatMessage`] inferring the token, the chat ID and
-    /// the message ID.
-    ///
-    /// [`PinChatMessage`]: ../methods/struct.PinChatMessage.html
-    fn pin_this_message(&'a self) -> PinChatMessage<'a> {
-        self.bot().pin_chat_message(self.chat_id(), self.message_id())
-    }
-
     /// Constructs a new [`PromoteChatMember`] inferring the token and the
     /// destination chat ID.
     ///
