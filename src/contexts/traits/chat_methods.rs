@@ -127,6 +127,13 @@ pub trait ChatMethods<'a> {
         self.bot().get_chat_administrators(self.chat_id())
     }
 
+    /// Constructs an [`GetChatMember`] inferring the token and the chat ID.
+    ///
+    /// [`GetChatMember`]: ../methods/struct.GetChatMember.html
+    fn get_chat_member(&'a self, user_id: i64) -> GetChatMember<'a> {
+        self.bot().get_chat_member(self.chat_id(), user_id)
+    }
+
     /// Constructs an [`GetChatAdministrators`] inferring the token and the chat ID.
     ///
     /// [`GetChatAdministrators`]: ../methods/struct.GetChatAdministrators.html
