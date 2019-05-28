@@ -527,6 +527,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SendGame`] inferring `token`.
+    ///
+    /// [`SendGame`]: ./struct.SendGame.html
+    fn send_game(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        game_short_name: &'a str,
+    ) -> methods::SendGame<'a> {
+        self.prepare_method(methods::SendGame::new(
+            self.token(),
+            chat_id,
+            game_short_name,
+        ))
+    }
+
     /// Constructs a new [`SendDocument`] inferring `token`.
     ///
     /// [`SendDocument`]: ./struct.SendDocument.html

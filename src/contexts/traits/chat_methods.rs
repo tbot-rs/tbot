@@ -246,6 +246,20 @@ pub trait ChatMethods<'a> {
             .reply_to_message_id(self.message_id())
     }
 
+    /// Construct a [`SendGame`] inferring the token and the chat ID.
+    ///
+    /// [`SendGame`]: ../methods/struct.SendGame.html
+    fn send_game(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+        self.bot().send_game(self.chat_id(), game_short_name)
+    }
+
+    /// Construct a [`SendGame`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendGame`]: ../methods/struct.SendGame.html
+    fn send_game_in_reply(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+        self.send_game(game_short_name).reply_to_message_id(self.message_id())
+    }
+
     /// Constructs a [`SendDocument`] inferring the token and the chat ID.
     ///
     /// [`SendDocument`]: ../methods/struct.SendDocument.html
