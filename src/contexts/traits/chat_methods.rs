@@ -113,6 +113,13 @@ pub trait ChatMethods<'a> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
     }
 
+    /// Constructs an [`GetChat`] inferring the token and the chat ID.
+    ///
+    /// [`GetChat`]: ../methods/struct.GetChat.html
+    fn get_chat(&'a self) -> GetChat<'a> {
+        self.bot().get_chat(self.chat_id())
+    }
+
     /// Constructs a new [`KickChatMember`] inferring the token and the
     /// destination chat ID.
     ///

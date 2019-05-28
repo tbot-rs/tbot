@@ -50,6 +50,7 @@ mod edit_message_reply_markup;
 mod edit_message_text;
 mod export_chat_invite_link;
 mod forward_message;
+mod get_chat;
 mod get_me;
 mod get_sticker_set;
 mod get_updates;
@@ -93,7 +94,7 @@ pub use {
     edit_inline_location::*, edit_inline_media::*, edit_inline_reply_markup::*,
     edit_inline_text::*, edit_message_caption::*, edit_message_location::*,
     edit_message_media::*, edit_message_reply_markup::*, edit_message_text::*,
-    export_chat_invite_link::*, forward_message::*, get_me::*,
+    export_chat_invite_link::*, forward_message::*, get_chat::*, get_me::*,
     get_sticker_set::*, get_user_profile_photos::*, get_webhook_info::*,
     kick_chat_member::*, leave_chat::*, pin_chat_message::*,
     promote_chat_member::*, restrict_chat_member::*, send_animation::*,

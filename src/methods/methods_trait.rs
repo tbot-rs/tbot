@@ -297,6 +297,16 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`GetChat`] inferring `token`.
+    ///
+    /// [`GetChat`]: ./struct.GetChat.html
+    fn get_chat(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::GetChat<'a> {
+        self.prepare_method(methods::GetChat::new(self.token(), chat_id))
+    }
+
     /// Constructs a new [`GetMe`] inferring `token`.
     ///
     /// [`GetMe`]: ./struct.GetMe.html
