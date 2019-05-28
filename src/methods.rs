@@ -34,6 +34,7 @@ use super::*;
 
 mod add_sticker_to_set;
 mod create_new_sticker_set;
+mod delete_chat_photo;
 mod delete_message;
 mod delete_sticker_from_set;
 mod delete_webhook;
@@ -82,8 +83,8 @@ mod unban_chat_member;
 mod upload_sticker_file;
 
 pub use {
-    add_sticker_to_set::*, create_new_sticker_set::*, delete_message::*,
-    delete_sticker_from_set::*, edit_inline_caption::*,
+    add_sticker_to_set::*, create_new_sticker_set::*, delete_chat_photo::*,
+    delete_message::*, delete_sticker_from_set::*, edit_inline_caption::*,
     edit_inline_location::*, edit_inline_media::*, edit_inline_reply_markup::*,
     edit_inline_text::*, edit_message_caption::*, edit_message_location::*,
     edit_message_media::*, edit_message_reply_markup::*, edit_message_text::*,

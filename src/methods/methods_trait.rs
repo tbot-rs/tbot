@@ -66,6 +66,19 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`DeleteChatPhoto`] inferring `token`.
+    ///
+    /// [`DeleteChatPhoto`]: ./struct.DeleteChatPhoto.html
+    fn delete_chat_photo(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::DeleteChatPhoto<'a> {
+        self.prepare_method(methods::DeleteChatPhoto::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`DeleteMessage`] inferring `token`.
     ///
     /// [`DeleteMessage`]: ./struct.DeleteMessage.html

@@ -10,6 +10,13 @@ pub trait ChatMethods<'a> {
     #[doc(hidden)]
     fn message_id(&self) -> u32;
 
+    /// Constructs a [`DeleteChatPhoto`] inferring the token and the chat ID.
+    ///
+    /// [`DeleteChatPhoto`]: ../methods/struct.DeleteChatPhoto.html
+    fn delete_chat_photo(&'a self) -> DeleteChatPhoto<'a> {
+        self.bot().delete_chat_photo(self.chat_id())
+    }
+
     /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
     ///
     /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
