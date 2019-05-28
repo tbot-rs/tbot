@@ -56,6 +56,7 @@ mod get_updates;
 mod get_user_profile_photos;
 mod get_webhook_info;
 mod kick_chat_member;
+mod pin_chat_message;
 mod promote_chat_member;
 mod restrict_chat_member;
 mod send_animation;
@@ -92,14 +93,15 @@ pub use {
     edit_message_media::*, edit_message_reply_markup::*, edit_message_text::*,
     export_chat_invite_link::*, forward_message::*, get_me::*,
     get_sticker_set::*, get_user_profile_photos::*, get_webhook_info::*,
-    kick_chat_member::*, promote_chat_member::*, restrict_chat_member::*,
-    send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
-    send_document::*, send_location::*, send_media_group::*, send_message::*,
-    send_photo::*, send_poll::*, send_sticker::*, send_venue::*, send_video::*,
-    send_video_note::*, send_voice::*, set_chat_description::*,
-    set_chat_photo::*, set_chat_title::*, set_sticker_position_in_set::*,
-    stop_inline_location::*, stop_message_location::*, stop_poll::*,
-    unban_chat_member::*, upload_sticker_file::*,
+    kick_chat_member::*, pin_chat_message::*, promote_chat_member::*,
+    restrict_chat_member::*, send_animation::*, send_audio::*,
+    send_chat_action::*, send_contact::*, send_document::*, send_location::*,
+    send_media_group::*, send_message::*, send_photo::*, send_poll::*,
+    send_sticker::*, send_venue::*, send_video::*, send_video_note::*,
+    send_voice::*, set_chat_description::*, set_chat_photo::*,
+    set_chat_title::*, set_sticker_position_in_set::*, stop_inline_location::*,
+    stop_message_location::*, stop_poll::*, unban_chat_member::*,
+    upload_sticker_file::*,
 };
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};

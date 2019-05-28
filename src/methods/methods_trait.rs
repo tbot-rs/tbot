@@ -346,6 +346,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`PinChatMessage`] inferring `token`.
+    ///
+    /// [`PinChatMessage`]: ./struct.ForwardMessage.html
+    fn pin_chat_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+    ) -> methods::PinChatMessage<'a> {
+        self.prepare_method(methods::PinChatMessage::new(
+            self.token(),
+            chat_id,
+            message_id,
+        ))
+    }
+
     /// Constructs a new [`PromoteChatMember`] inferring `token`.
     ///
     /// [`PromoteChatMember`]: ./struct.PromoteChatMember.html
