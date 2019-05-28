@@ -34,6 +34,8 @@ use super::*;
 
 mod add_sticker_to_set;
 mod create_new_sticker_set;
+mod delete_chat_photo;
+mod delete_chat_sticker_set;
 mod delete_message;
 mod delete_sticker_from_set;
 mod delete_webhook;
@@ -47,12 +49,22 @@ mod edit_message_location;
 mod edit_message_media;
 mod edit_message_reply_markup;
 mod edit_message_text;
+mod export_chat_invite_link;
 mod forward_message;
+mod get_chat;
+mod get_chat_administrators;
+mod get_chat_member;
+mod get_chat_members_count;
 mod get_me;
 mod get_sticker_set;
 mod get_updates;
 mod get_user_profile_photos;
 mod get_webhook_info;
+mod kick_chat_member;
+mod leave_chat;
+mod pin_chat_message;
+mod promote_chat_member;
+mod restrict_chat_member;
 mod send_animation;
 mod send_audio;
 mod send_chat_action;
@@ -68,27 +80,44 @@ mod send_venue;
 mod send_video;
 mod send_video_note;
 mod send_voice;
+mod set_chat_description;
+mod set_chat_photo;
+mod set_chat_sticker_set;
+mod set_chat_title;
 mod set_sticker_position_in_set;
 mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
 mod stop_poll;
+mod unban_chat_member;
+mod unpin_chat_message;
 mod upload_sticker_file;
 
 pub use {
-    add_sticker_to_set::*, create_new_sticker_set::*, delete_message::*,
-    delete_sticker_from_set::*, edit_inline_caption::*,
-    edit_inline_location::*, edit_inline_media::*, edit_inline_reply_markup::*,
-    edit_inline_text::*, edit_message_caption::*, edit_message_location::*,
-    edit_message_media::*, edit_message_reply_markup::*, edit_message_text::*,
-    forward_message::*, get_me::*, get_sticker_set::*,
-    get_user_profile_photos::*, get_webhook_info::*, send_animation::*,
-    send_audio::*, send_chat_action::*, send_contact::*, send_document::*,
-    send_location::*, send_media_group::*, send_message::*, send_photo::*,
-    send_poll::*, send_sticker::*, send_venue::*, send_video::*,
-    send_video_note::*, send_voice::*, set_sticker_position_in_set::*,
-    stop_inline_location::*, stop_message_location::*, stop_poll::*,
-    upload_sticker_file::*,
+    add_sticker_to_set::*, create_new_sticker_set::*, delete_chat_photo::*,
+    delete_chat_sticker_set::*, delete_message::*, delete_sticker_from_set::*,
+    edit_inline_caption::*, edit_inline_location::*, edit_inline_media::*,
+    edit_inline_reply_markup::*, edit_inline_text::*, edit_message_caption::*,
+    edit_message_location::*, edit_message_media::*,
+    edit_message_reply_markup::*, edit_message_text::*,
+    export_chat_invite_link::*, forward_message::*, get_chat::*,
+    get_chat_administrators::*, get_chat_member::*, get_chat_members_count::*,
+    get_me::*, get_sticker_set::*, get_user_profile_photos::*,
+    get_webhook_info::*, kick_chat_member::*, leave_chat::*,
+    pin_chat_message::*, promote_chat_member::*, restrict_chat_member::*,
+    send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
+    send_document::*, send_location::*, send_media_group::*, send_message::*,
+    send_photo::*, send_photo::*, send_poll::*, send_poll::*, send_sticker::*,
+    send_sticker::*, send_venue::*, send_venue::*, send_video::*,
+    send_video::*, send_video_note::*, send_video_note::*, send_voice::*,
+    send_voice::*, set_chat_description::*, set_chat_description::*,
+    set_chat_photo::*, set_chat_photo::*, set_chat_sticker_set::*,
+    set_chat_title::*, set_chat_title::*, set_sticker_position_in_set::*,
+    set_sticker_position_in_set::*, stop_inline_location::*,
+    stop_inline_location::*, stop_message_location::*,
+    stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,
+    unban_chat_member::*, unpin_chat_message::*, unpin_chat_message::*,
+    upload_sticker_file::*, upload_sticker_file::*,
 };
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
@@ -120,7 +149,7 @@ pub enum DeliveryError {
         /// Human-readable description of the error.
         description: String,
         /// Error code reflected through HTTP error codes (for example, 401).
-        error_code: u8,
+        error_code: u16,
         /// The group moved to a supergroup.
         migrate_to_chat_id: Option<i64>,
         /// When exceeding flood control, you must wait for this amount of

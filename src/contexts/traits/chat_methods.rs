@@ -10,6 +10,21 @@ pub trait ChatMethods<'a> {
     #[doc(hidden)]
     fn message_id(&self) -> u32;
 
+    /// Constructs a [`DeleteChatPhoto`] inferring the token and the chat ID.
+    ///
+    /// [`DeleteChatPhoto`]: ../methods/struct.DeleteChatPhoto.html
+    fn delete_chat_photo(&'a self) -> DeleteChatPhoto<'a> {
+        self.bot().delete_chat_photo(self.chat_id())
+    }
+
+    /// Constructs a [`DeleteChatStickerSet`] inferring the token and the chat
+    /// ID.
+    ///
+    /// [`DeleteChatStickerSet`]: ../methods/struct.DeleteChatStickerSet.html
+    fn delete_chat_sticker_set(&'a self) -> DeleteChatStickerSet<'a> {
+        self.bot().delete_chat_sticker_set(self.chat_id())
+    }
+
     /// Constructs a [`DeleteMessage`] inferring the token and the chat ID.
     ///
     /// [`DeleteMessage`]: ../methods/struct.DeleteMessage.html
@@ -87,6 +102,13 @@ pub trait ChatMethods<'a> {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
     }
 
+    /// Constructs an [`ExportChatInviteLink`] inferring the token and the chat ID.
+    ///
+    /// [`ExportChatInviteLink`]: ../methods/struct.ExportChatInviteLink.html
+    fn export_chat_invite_link(&'a self) -> ExportChatInviteLink<'a> {
+        self.bot().export_chat_invite_link(self.chat_id())
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring the token and the
     /// destination chat ID.
     ///
@@ -97,6 +119,66 @@ pub trait ChatMethods<'a> {
         message_id: u32,
     ) -> ForwardMessage<'a> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
+    }
+
+    /// Constructs an [`GetChat`] inferring the token and the chat ID.
+    ///
+    /// [`GetChat`]: ../methods/struct.GetChat.html
+    fn get_chat(&'a self) -> GetChat<'a> {
+        self.bot().get_chat(self.chat_id())
+    }
+
+    /// Constructs an [`GetChatAdministrators`] inferring the token and the chat ID.
+    ///
+    /// [`GetChatAdministrators`]: ../methods/struct.GetChatAdministrators.html
+    fn get_chat_administrators(&'a self) -> GetChatAdministrators<'a> {
+        self.bot().get_chat_administrators(self.chat_id())
+    }
+
+    /// Constructs an [`GetChatMember`] inferring the token and the chat ID.
+    ///
+    /// [`GetChatMember`]: ../methods/struct.GetChatMember.html
+    fn get_chat_member(&'a self, user_id: i64) -> GetChatMember<'a> {
+        self.bot().get_chat_member(self.chat_id(), user_id)
+    }
+
+    /// Constructs an [`GetChatMembersCount`] inferring the token and the chat ID.
+    ///
+    /// [`GetChatMembersCount`]: ../methods/struct.GetChatMembersCount.html
+    fn get_chat_members_count(&'a self) -> GetChatMembersCount<'a> {
+        self.bot().get_chat_members_count(self.chat_id())
+    }
+
+    /// Constructs a new [`KickChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`KickChatMember`]: ../methods/struct.KickChatMember.html
+    fn kick_chat_member(&'a self, user_id: i64) -> KickChatMember<'a> {
+        self.bot().kick_chat_member(self.chat_id(), user_id)
+    }
+
+    /// Constructs a new [`LeaveChat`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`LeaveChat`]: ../methods/struct.LeaveChat.html
+    fn leave_chat(&'a self) -> LeaveChat<'a> {
+        self.bot().leave_chat(self.chat_id())
+    }
+
+    /// Constructs a new [`PromoteChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`PromoteChatMember`]: ../methods/struct.PromoteChatMember.html
+    fn promote_chat_member(&'a self, user_id: i64) -> PromoteChatMember<'a> {
+        self.bot().promote_chat_member(self.chat_id(), user_id)
+    }
+
+    /// Constructs a new [`RestrictChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`RestrictChatMember`]: ../methods/struct.RestrictChatMember.html
+    fn restrict_chat_member(&'a self, user_id: i64) -> RestrictChatMember<'a> {
+        self.bot().restrict_chat_member(self.chat_id(), user_id)
     }
 
     /// Constructs a [`SendAnimation`] inferring the token and the chat ID.
@@ -359,5 +441,54 @@ pub trait ChatMethods<'a> {
     /// [`SendVoice`]: ../methods/struct.SendVoice.html
     fn send_voice_in_reply(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
+    }
+
+    /// Constructs a [`SetChatDescription`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatDescription`]: ../methods/struct.SetChatDescription.html
+    fn set_chat_description(
+        &'a self,
+        description: &'a str,
+    ) -> SetChatDescription<'a> {
+        self.bot().set_chat_description(self.chat_id(), description)
+    }
+
+    /// Constructs a [`SetChatPhoto`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatPhoto`]: ../methods/struct.SetChatPhoto.html
+    fn set_chat_photo(&'a self, photo: &'a ChatPhoto<'a>) -> SetChatPhoto<'a> {
+        self.bot().set_chat_photo(self.chat_id(), photo)
+    }
+
+    /// Constructs a [`SetChatStickerSet`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatStickerSet`]: ../methods/struct.SetChatStickerSet.html
+    fn set_chat_sticker_set(
+        &'a self,
+        sticker_set_name: &'a str,
+    ) -> SetChatStickerSet<'a> {
+        self.bot().set_chat_sticker_set(self.chat_id(), sticker_set_name)
+    }
+
+    /// Constructs a [`SetChatTitle`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatTitle`]: ../methods/struct.SetChatTitle.html
+    fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a> {
+        self.bot().set_chat_title(self.chat_id(), title)
+    }
+
+    /// Constructs a new [`UnbanChatMember`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`UnbanChatMember`]: ../methods/struct.UnbanChatMember.html
+    fn unban_chat_member(&'a self, user_id: i64) -> UnbanChatMember<'a> {
+        self.bot().unban_chat_member(self.chat_id(), user_id)
+    }
+
+    /// Constructs a [`UnpinChatMessage`] inferring the token and the chat ID.
+    ///
+    /// [`UnpinChatMessage`]: ../methods/struct.UnpinChatMessage.html
+    fn unpin_chat_message(&'a self) -> UnpinChatMessage<'a> {
+        self.bot().unpin_chat_message(self.chat_id())
     }
 }

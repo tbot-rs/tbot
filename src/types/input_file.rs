@@ -4,6 +4,7 @@ use super::{types, ParseMode, Serialize};
 
 mod animation;
 mod audio;
+mod chat_photo;
 mod document;
 mod editable_media;
 mod group_media;
@@ -16,9 +17,9 @@ mod video_note;
 mod voice;
 
 pub use {
-    animation::*, audio::*, document::*, editable_media::*, group_media::*,
-    photo::*, png_sticker::*, sticker::*, thumb::*, video::*, video_note::*,
-    voice::*,
+    animation::*, audio::*, chat_photo::*, document::*, editable_media::*,
+    group_media::*, photo::*, png_sticker::*, sticker::*, thumb::*, video::*,
+    video_note::*, voice::*,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]

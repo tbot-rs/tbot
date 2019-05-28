@@ -66,6 +66,32 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`DeleteChatPhoto`] inferring `token`.
+    ///
+    /// [`DeleteChatPhoto`]: ./struct.DeleteChatPhoto.html
+    fn delete_chat_photo(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::DeleteChatPhoto<'a> {
+        self.prepare_method(methods::DeleteChatPhoto::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
+    /// Constructs a new [`DeleteChatStickerSet`] inferring `token`.
+    ///
+    /// [`DeleteChatStickerSet`]: ./struct.DeleteChatStickerSet.html
+    fn delete_chat_sticker_set(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::DeleteChatStickerSet<'a> {
+        self.prepare_method(methods::DeleteChatStickerSet::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`DeleteMessage`] inferring `token`.
     ///
     /// [`DeleteMessage`]: ./struct.DeleteMessage.html
@@ -254,6 +280,19 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`ExportChatInviteLink`] inferring `token`.
+    ///
+    /// [`ExportChatInviteLink`]: ./struct.ExportChatInviteLink.html
+    fn export_chat_invite_link(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::ExportChatInviteLink<'a> {
+        self.prepare_method(methods::ExportChatInviteLink::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`ForwardMessage`] inferring `token`.
     ///
     /// [`ForwardMessage`]: ./struct.ForwardMessage.html
@@ -268,6 +307,57 @@ pub trait Methods<'a> {
             chat_id,
             from_chat_id,
             message_id,
+        ))
+    }
+
+    /// Constructs a new [`GetChat`] inferring `token`.
+    ///
+    /// [`GetChat`]: ./struct.GetChat.html
+    fn get_chat(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::GetChat<'a> {
+        self.prepare_method(methods::GetChat::new(self.token(), chat_id))
+    }
+
+    /// Constructs a new [`GetChatAdministrators`] inferring `token`.
+    ///
+    /// [`GetChatAdministrators`]: ./struct.GetChatAdministrators.html
+    fn get_chat_administrators(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::GetChatAdministrators<'a> {
+        self.prepare_method(methods::GetChatAdministrators::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
+    /// Constructs a new [`GetChatMember`] inferring `token`.
+    ///
+    /// [`GetChatMember`]: ./struct.GetChatMember.html
+    fn get_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::GetChatMember<'a> {
+        self.prepare_method(methods::GetChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
+    }
+
+    /// Constructs a new [`GetChatMembersCount`] inferring `token`.
+    ///
+    /// [`GetChatMembersCount`]: ./struct.GetChatMembersCount.html
+    fn get_chat_members_count(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::GetChatMembersCount<'a> {
+        self.prepare_method(methods::GetChatMembersCount::new(
+            self.token(),
+            chat_id,
         ))
     }
 
@@ -303,6 +393,76 @@ pub trait Methods<'a> {
     /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
     fn get_webhook_info(&'a self) -> methods::GetWebhookInfo<'a> {
         self.prepare_method(methods::GetWebhookInfo::new(self.token()))
+    }
+
+    /// Constructs a new [`KickChatMember`] inferring `token`.
+    ///
+    /// [`KickChatMember`]: ./struct.KickChatMember.html
+    fn kick_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::KickChatMember<'a> {
+        self.prepare_method(methods::KickChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
+    }
+
+    /// Constructs a new [`LeaveChat`] inferring `token`.
+    ///
+    /// [`LeaveChat`]: ./struct.LeaveChat.html
+    fn leave_chat(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::LeaveChat<'a> {
+        self.prepare_method(methods::LeaveChat::new(self.token(), chat_id))
+    }
+
+    /// Constructs a new [`PinChatMessage`] inferring `token`.
+    ///
+    /// [`PinChatMessage`]: ./struct.ForwardMessage.html
+    fn pin_chat_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+    ) -> methods::PinChatMessage<'a> {
+        self.prepare_method(methods::PinChatMessage::new(
+            self.token(),
+            chat_id,
+            message_id,
+        ))
+    }
+
+    /// Constructs a new [`PromoteChatMember`] inferring `token`.
+    ///
+    /// [`PromoteChatMember`]: ./struct.PromoteChatMember.html
+    fn promote_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::PromoteChatMember<'a> {
+        self.prepare_method(methods::PromoteChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
+    }
+
+    /// Constructs a new [`RestrictChatMember`] inferring `token`.
+    ///
+    /// [`RestrictChatMember`]: ./struct.RestrictChatMember.html
+    fn restrict_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::RestrictChatMember<'a> {
+        self.prepare_method(methods::RestrictChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
     }
 
     /// Constructs a new [`SendAnimation`] inferring `token`.
@@ -538,6 +698,66 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SetChatDescription`] inferring `token`.
+    ///
+    /// [`SetChatDescription`]: ./struct.SetChatDescription.html
+    fn set_chat_description(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        description: &'a str,
+    ) -> methods::SetChatDescription<'a> {
+        self.prepare_method(methods::SetChatDescription::new(
+            self.token(),
+            chat_id,
+            description,
+        ))
+    }
+
+    /// Constructs a new [`SetChatPhoto`] inferring `token`.
+    ///
+    /// [`SetChatPhoto`]: ./struct.SetChatPhoto.html
+    fn set_chat_photo(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        photo: &'a ChatPhoto<'a>,
+    ) -> methods::SetChatPhoto<'a> {
+        self.prepare_method(methods::SetChatPhoto::new(
+            self.token(),
+            chat_id,
+            photo,
+        ))
+    }
+
+    /// Constructs a new [`SetChatStickerSet`] inferring `token`.
+    ///
+    /// [`SetChatStickerSet`]: ./struct.SetChatStickerSet.html
+    fn set_chat_sticker_set(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        sticker_set_name: &'a str,
+    ) -> methods::SetChatStickerSet<'a> {
+        self.prepare_method(methods::SetChatStickerSet::new(
+            self.token(),
+            chat_id,
+            sticker_set_name,
+        ))
+    }
+
+    /// Constructs a new [`SetChatTitle`] inferring `token`.
+    ///
+    /// [`SetChatTitle`]: ./struct.SetChatTitle.html
+    fn set_chat_title(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        title: &'a str,
+    ) -> methods::SetChatTitle<'a> {
+        self.prepare_method(methods::SetChatTitle::new(
+            self.token(),
+            chat_id,
+            title,
+        ))
+    }
+
     /// Constructs a new [`SetStickerPositionInSet`] inferring `token`.
     ///
     /// [`SetStickerPositionInSet`]: ./struct.SetStickerPositionInSet.html
@@ -593,6 +813,34 @@ pub trait Methods<'a> {
             self.token(),
             chat_id,
             message_id,
+        ))
+    }
+
+    /// Constructs a new [`UnbanChatMember`] inferring `token`.
+    ///
+    /// [`UnbanChatMember`]: ./struct.UnbanChatMember.html
+    fn unban_chat_member(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        user_id: i64,
+    ) -> methods::UnbanChatMember<'a> {
+        self.prepare_method(methods::UnbanChatMember::new(
+            self.token(),
+            chat_id,
+            user_id,
+        ))
+    }
+
+    /// Constructs a new [`UnpinChatMessage`] inferring `token`.
+    ///
+    /// [`UnpinChatMessage`]: ./struct.UnpinChatMessage.html
+    fn unpin_chat_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::UnpinChatMessage<'a> {
+        self.prepare_method(methods::UnpinChatMessage::new(
+            self.token(),
+            chat_id,
         ))
     }
 
