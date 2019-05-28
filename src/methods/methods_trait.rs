@@ -609,6 +609,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SetChatDescription`] inferring `token`.
+    ///
+    /// [`SetChatDescription`]: ./struct.SetChatDescription.html
+    fn set_chat_description(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        description: &'a str,
+    ) -> methods::SetChatDescription<'a> {
+        self.prepare_method(methods::SetChatDescription::new(
+            self.token(),
+            chat_id,
+            description,
+        ))
+    }
+
     /// Constructs a new [`SetChatPhoto`] inferring `token`.
     ///
     /// [`SetChatPhoto`]: ./struct.SetChatPhoto.html

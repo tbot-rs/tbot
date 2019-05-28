@@ -399,6 +399,16 @@ pub trait ChatMethods<'a> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
+    /// Constructs a [`SetChatDescription`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatDescription`]: ../methods/struct.SetChatDescription.html
+    fn set_chat_description(
+        &'a self,
+        description: &'a str,
+    ) -> SetChatDescription<'a> {
+        self.bot().set_chat_description(self.chat_id(), description)
+    }
+
     /// Constructs a [`SetChatPhoto`] inferring the token and the chat ID.
     ///
     /// [`SetChatPhoto`]: ../methods/struct.SetChatPhoto.html
