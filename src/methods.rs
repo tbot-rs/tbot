@@ -83,6 +83,7 @@ mod stop_inline_location;
 mod stop_message_location;
 mod stop_poll;
 mod unban_chat_member;
+mod unpin_chat_message;
 mod upload_sticker_file;
 
 pub use {
@@ -101,7 +102,7 @@ pub use {
     send_voice::*, set_chat_description::*, set_chat_photo::*,
     set_chat_title::*, set_sticker_position_in_set::*, stop_inline_location::*,
     stop_message_location::*, stop_poll::*, unban_chat_member::*,
-    upload_sticker_file::*,
+    unpin_chat_message::*, upload_sticker_file::*,
 };
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};

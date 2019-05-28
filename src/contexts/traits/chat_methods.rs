@@ -438,4 +438,11 @@ pub trait ChatMethods<'a> {
     fn unban_chat_member(&'a self, user_id: i64) -> UnbanChatMember<'a> {
         self.bot().unban_chat_member(self.chat_id(), user_id)
     }
+
+    /// Constructs a [`UnpinChatMessage`] inferring the token and the chat ID.
+    ///
+    /// [`UnpinChatMessage`]: ../methods/struct.UnpinChatMessage.html
+    fn unpin_chat_message(&'a self) -> UnpinChatMessage<'a> {
+        self.bot().unpin_chat_message(self.chat_id())
+    }
 }

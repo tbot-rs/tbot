@@ -742,6 +742,19 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`UnpinChatMessage`] inferring `token`.
+    ///
+    /// [`UnpinChatMessage`]: ./struct.UnpinChatMessage.html
+    fn unpin_chat_message(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::UnpinChatMessage<'a> {
+        self.prepare_method(methods::UnpinChatMessage::new(
+            self.token(),
+            chat_id,
+        ))
+    }
+
     /// Constructs a new [`UploadStickerFile`] inferring `token`.
     ///
     /// [`UploadStickerFile`]: ./struct.UploadStickerFile.html
