@@ -406,6 +406,13 @@ pub trait ChatMethods<'a> {
         self.bot().set_chat_photo(self.chat_id(), photo)
     }
 
+    /// Constructs a [`SetChatTitle`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatTitle`]: ../methods/struct.SetChatTitle.html
+    fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a> {
+        self.bot().set_chat_title(self.chat_id(), title)
+    }
+
     /// Constructs a new [`UnbanChatMember`] inferring the token and the
     /// destination chat ID.
     ///
