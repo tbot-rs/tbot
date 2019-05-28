@@ -346,6 +346,16 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`LeaveChat`] inferring `token`.
+    ///
+    /// [`LeaveChat`]: ./struct.LeaveChat.html
+    fn leave_chat(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+    ) -> methods::LeaveChat<'a> {
+        self.prepare_method(methods::LeaveChat::new(self.token(), chat_id))
+    }
+
     /// Constructs a new [`PinChatMessage`] inferring `token`.
     ///
     /// [`PinChatMessage`]: ./struct.ForwardMessage.html

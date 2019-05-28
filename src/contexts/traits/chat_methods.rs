@@ -121,6 +121,14 @@ pub trait ChatMethods<'a> {
         self.bot().kick_chat_member(self.chat_id(), user_id)
     }
 
+    /// Constructs a new [`LeaveChat`] inferring the token and the
+    /// destination chat ID.
+    ///
+    /// [`LeaveChat`]: ../methods/struct.LeaveChat.html
+    fn leave_chat(&'a self) -> LeaveChat<'a> {
+        self.bot().leave_chat(self.chat_id())
+    }
+
     /// Constructs a new [`PromoteChatMember`] inferring the token and the
     /// destination chat ID.
     ///
