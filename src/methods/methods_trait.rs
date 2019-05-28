@@ -715,6 +715,21 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SetChatStickerSet`] inferring `token`.
+    ///
+    /// [`SetChatStickerSet`]: ./struct.SetChatStickerSet.html
+    fn set_chat_sticker_set(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        sticker_set_name: &'a str,
+    ) -> methods::SetChatStickerSet<'a> {
+        self.prepare_method(methods::SetChatStickerSet::new(
+            self.token(),
+            chat_id,
+            sticker_set_name,
+        ))
+    }
+
     /// Constructs a new [`SetChatTitle`] inferring `token`.
     ///
     /// [`SetChatTitle`]: ./struct.SetChatTitle.html

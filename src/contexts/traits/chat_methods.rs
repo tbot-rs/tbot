@@ -452,6 +452,16 @@ pub trait ChatMethods<'a> {
         self.bot().set_chat_photo(self.chat_id(), photo)
     }
 
+    /// Constructs a [`SetChatStickerSet`] inferring the token and the chat ID.
+    ///
+    /// [`SetChatStickerSet`]: ../methods/struct.SetChatStickerSet.html
+    fn set_chat_sticker_set(
+        &'a self,
+        sticker_set_name: &'a str,
+    ) -> SetChatStickerSet<'a> {
+        self.bot().set_chat_sticker_set(self.chat_id(), sticker_set_name)
+    }
+
     /// Constructs a [`SetChatTitle`] inferring the token and the chat ID.
     ///
     /// [`SetChatTitle`]: ../methods/struct.SetChatTitle.html

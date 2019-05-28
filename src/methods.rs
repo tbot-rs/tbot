@@ -81,6 +81,7 @@ mod send_video_note;
 mod send_voice;
 mod set_chat_description;
 mod set_chat_photo;
+mod set_chat_sticker_set;
 mod set_chat_title;
 mod set_sticker_position_in_set;
 mod set_webhook;
@@ -104,16 +105,17 @@ pub use {
     pin_chat_message::*, promote_chat_member::*, restrict_chat_member::*,
     send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
     send_document::*, send_location::*, send_media_group::*, send_message::*,
-    send_photo::*, send_poll::*, send_sticker::*, send_venue::*, send_video::*,
-    send_video_note::*, send_voice::*, set_chat_description::*,
-    set_chat_photo::*, set_chat_title::*, set_sticker_position_in_set::*,
-    stop_inline_location::*, stop_message_location::*, stop_poll::*,
-    unban_chat_member::*, unpin_chat_message::*, upload_sticker_file::*,
-    send_photo::*, send_poll::*, send_sticker::*, send_venue::*, send_video::*,
-    send_video_note::*, send_voice::*, set_chat_description::*,
-    set_chat_photo::*, set_chat_title::*, set_sticker_position_in_set::*,
-    stop_inline_location::*, stop_message_location::*, stop_poll::*,
-    unban_chat_member::*, unpin_chat_message::*, upload_sticker_file::*,
+    send_photo::*, send_photo::*, send_poll::*, send_poll::*, send_sticker::*,
+    send_sticker::*, send_venue::*, send_venue::*, send_video::*,
+    send_video::*, send_video_note::*, send_video_note::*, send_voice::*,
+    send_voice::*, set_chat_description::*, set_chat_description::*,
+    set_chat_photo::*, set_chat_photo::*, set_chat_sticker_set::*,
+    set_chat_title::*, set_chat_title::*, set_sticker_position_in_set::*,
+    set_sticker_position_in_set::*, stop_inline_location::*,
+    stop_inline_location::*, stop_message_location::*,
+    stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,
+    unban_chat_member::*, unpin_chat_message::*, unpin_chat_message::*,
+    upload_sticker_file::*, upload_sticker_file::*,
 };
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
