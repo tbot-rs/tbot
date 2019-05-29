@@ -23,7 +23,7 @@ pub struct SetInlineGameScore<'a> {
 
 impl<'a> SetInlineGameScore<'a> {
     /// Constructs a new `SetInlineGameScore`.
-    pub fn new(
+    pub const fn new(
         token: &'a str,
         inline_message_id: u32,
         user_id: i64,
