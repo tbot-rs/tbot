@@ -361,6 +361,23 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`GetMessageGameHighScores`] inferring `token`.
+    ///
+    /// [`GetMessageGameHighScores`]: ./struct.GetMessageGameHighScores.html
+    fn get_message_game_high_scores(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+        user_id: i64,
+    ) -> methods::GetMessageGameHighScores<'a> {
+        self.prepare_method(methods::GetMessageGameHighScores::new(
+            self.token(),
+            chat_id,
+            message_id,
+            user_id,
+        ))
+    }
+
     /// Constructs a new [`GetMe`] inferring `token`.
     ///
     /// [`GetMe`]: ./struct.GetMe.html

@@ -149,6 +149,21 @@ pub trait ChatMethods<'a> {
         self.bot().get_chat_members_count(self.chat_id())
     }
 
+    /// Constructs a new [`GetMessageGameHighScores`] inferring the token and the chat ID.
+    ///
+    /// [`GetMessageGameHighScores`]: ./struct.GetMessageGameHighScores.html
+    fn get_message_game_high_scores(
+        &'a self,
+        message_id: u32,
+        user_id: i64,
+    ) -> GetMessageGameHighScores<'a> {
+        self.bot().get_message_game_high_scores(
+            self.chat_id(),
+            message_id,
+            user_id,
+        )
+    }
+
     /// Constructs a new [`KickChatMember`] inferring the token and the
     /// destination chat ID.
     ///
