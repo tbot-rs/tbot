@@ -55,7 +55,9 @@ mod get_chat;
 mod get_chat_administrators;
 mod get_chat_member;
 mod get_chat_members_count;
+mod get_inline_game_high_scores;
 mod get_me;
+mod get_message_game_high_scores;
 mod get_sticker_set;
 mod get_updates;
 mod get_user_profile_photos;
@@ -70,6 +72,7 @@ mod send_audio;
 mod send_chat_action;
 mod send_contact;
 mod send_document;
+mod send_game;
 mod send_location;
 mod send_media_group;
 mod send_message;
@@ -84,6 +87,8 @@ mod set_chat_description;
 mod set_chat_photo;
 mod set_chat_sticker_set;
 mod set_chat_title;
+mod set_inline_game_score;
+mod set_message_game_score;
 mod set_sticker_position_in_set;
 mod set_webhook;
 mod stop_inline_location;
@@ -102,17 +107,19 @@ pub use {
     edit_message_reply_markup::*, edit_message_text::*,
     export_chat_invite_link::*, forward_message::*, get_chat::*,
     get_chat_administrators::*, get_chat_member::*, get_chat_members_count::*,
-    get_me::*, get_sticker_set::*, get_user_profile_photos::*,
-    get_webhook_info::*, kick_chat_member::*, leave_chat::*,
-    pin_chat_message::*, promote_chat_member::*, restrict_chat_member::*,
-    send_animation::*, send_audio::*, send_chat_action::*, send_contact::*,
-    send_document::*, send_location::*, send_media_group::*, send_message::*,
+    get_inline_game_high_scores::*, get_me::*, get_message_game_high_scores::*,
+    get_sticker_set::*, get_user_profile_photos::*, get_webhook_info::*,
+    kick_chat_member::*, leave_chat::*, pin_chat_message::*,
+    promote_chat_member::*, restrict_chat_member::*, send_animation::*,
+    send_audio::*, send_chat_action::*, send_contact::*, send_document::*,
+    send_game::*, send_location::*, send_media_group::*, send_message::*,
     send_photo::*, send_photo::*, send_poll::*, send_poll::*, send_sticker::*,
     send_sticker::*, send_venue::*, send_venue::*, send_video::*,
     send_video::*, send_video_note::*, send_video_note::*, send_voice::*,
     send_voice::*, set_chat_description::*, set_chat_description::*,
     set_chat_photo::*, set_chat_photo::*, set_chat_sticker_set::*,
-    set_chat_title::*, set_chat_title::*, set_sticker_position_in_set::*,
+    set_chat_title::*, set_chat_title::*, set_inline_game_score::*,
+    set_message_game_score::*, set_sticker_position_in_set::*,
     set_sticker_position_in_set::*, stop_inline_location::*,
     stop_inline_location::*, stop_message_location::*,
     stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,

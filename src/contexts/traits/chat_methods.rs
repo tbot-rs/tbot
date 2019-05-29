@@ -149,6 +149,21 @@ pub trait ChatMethods<'a> {
         self.bot().get_chat_members_count(self.chat_id())
     }
 
+    /// Constructs a new [`GetMessageGameHighScores`] inferring the token and the chat ID.
+    ///
+    /// [`GetMessageGameHighScores`]: ./struct.GetMessageGameHighScores.html
+    fn get_message_game_high_scores(
+        &'a self,
+        message_id: u32,
+        user_id: i64,
+    ) -> GetMessageGameHighScores<'a> {
+        self.bot().get_message_game_high_scores(
+            self.chat_id(),
+            message_id,
+            user_id,
+        )
+    }
+
     /// Constructs a new [`KickChatMember`] inferring the token and the
     /// destination chat ID.
     ///
@@ -244,6 +259,20 @@ pub trait ChatMethods<'a> {
     ) -> SendContact<'a> {
         self.send_contact(phone_number, first_name)
             .reply_to_message_id(self.message_id())
+    }
+
+    /// Construct a [`SendGame`] inferring the token and the chat ID.
+    ///
+    /// [`SendGame`]: ../methods/struct.SendGame.html
+    fn send_game(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+        self.bot().send_game(self.chat_id(), game_short_name)
+    }
+
+    /// Construct a [`SendGame`] inferring the token, chat ID and message ID.
+    ///
+    /// [`SendGame`]: ../methods/struct.SendGame.html
+    fn send_game_in_reply(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+        self.send_game(game_short_name).reply_to_message_id(self.message_id())
     }
 
     /// Constructs a [`SendDocument`] inferring the token and the chat ID.
@@ -475,6 +504,23 @@ pub trait ChatMethods<'a> {
     /// [`SetChatTitle`]: ../methods/struct.SetChatTitle.html
     fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a> {
         self.bot().set_chat_title(self.chat_id(), title)
+    }
+
+    /// Constructs a [`SetMessageGameScore`] inferring the token and the chat ID.
+    ///
+    /// [`SetMessageGameScore`]: ../methods/struct.SetMessageGameScore.html
+    fn set_message_game_score(
+        &'a self,
+        message_id: u32,
+        user_id: i64,
+        score: u32,
+    ) -> SetMessageGameScore<'a> {
+        self.bot().set_message_game_score(
+            self.chat_id(),
+            message_id,
+            user_id,
+            score,
+        )
     }
 
     /// Constructs a new [`UnbanChatMember`] inferring the token and the

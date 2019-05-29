@@ -320,6 +320,21 @@ pub trait Methods<'a> {
         self.prepare_method(methods::GetChat::new(self.token(), chat_id))
     }
 
+    /// Constructs a new [`GetInlineGameHighScores`] inferring `token`.
+    ///
+    /// [`GetInlineGameHighScores`]: ./struct.GetInlineGameHighScores.html
+    fn get_inline_game_high_scores(
+        &'a self,
+        inline_message_id: &'a str,
+        user_id: i64,
+    ) -> methods::GetInlineGameHighScores<'a> {
+        self.prepare_method(methods::GetInlineGameHighScores::new(
+            self.token(),
+            inline_message_id,
+            user_id,
+        ))
+    }
+
     /// Constructs a new [`GetChatAdministrators`] inferring `token`.
     ///
     /// [`GetChatAdministrators`]: ./struct.GetChatAdministrators.html
@@ -358,6 +373,23 @@ pub trait Methods<'a> {
         self.prepare_method(methods::GetChatMembersCount::new(
             self.token(),
             chat_id,
+        ))
+    }
+
+    /// Constructs a new [`GetMessageGameHighScores`] inferring `token`.
+    ///
+    /// [`GetMessageGameHighScores`]: ./struct.GetMessageGameHighScores.html
+    fn get_message_game_high_scores(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+        user_id: i64,
+    ) -> methods::GetMessageGameHighScores<'a> {
+        self.prepare_method(methods::GetMessageGameHighScores::new(
+            self.token(),
+            chat_id,
+            message_id,
+            user_id,
         ))
     }
 
@@ -524,6 +556,21 @@ pub trait Methods<'a> {
             chat_id,
             phone_number,
             first_name,
+        ))
+    }
+
+    /// Constructs a new [`SendGame`] inferring `token`.
+    ///
+    /// [`SendGame`]: ./struct.SendGame.html
+    fn send_game(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        game_short_name: &'a str,
+    ) -> methods::SendGame<'a> {
+        self.prepare_method(methods::SendGame::new(
+            self.token(),
+            chat_id,
+            game_short_name,
         ))
     }
 
@@ -755,6 +802,42 @@ pub trait Methods<'a> {
             self.token(),
             chat_id,
             title,
+        ))
+    }
+
+    /// Constructs a new [`SetInlineGameScore`] inferring `token`.
+    ///
+    /// [`SetInlineGameScore`]: ./struct.SetInlineGameScore.html
+    fn set_inline_game_score(
+        &'a self,
+        inline_message_id: u32,
+        user_id: i64,
+        score: u32,
+    ) -> methods::SetInlineGameScore<'a> {
+        self.prepare_method(methods::SetInlineGameScore::new(
+            self.token(),
+            inline_message_id,
+            user_id,
+            score,
+        ))
+    }
+
+    /// Constructs a new [`SetMessageGameScore`] inferring `token`.
+    ///
+    /// [`SetMessageGameScore`]: ./struct.SetMessageGameScore.html
+    fn set_message_game_score(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+        user_id: i64,
+        score: u32,
+    ) -> methods::SetMessageGameScore<'a> {
+        self.prepare_method(methods::SetMessageGameScore::new(
+            self.token(),
+            chat_id,
+            message_id,
+            user_id,
+            score,
         ))
     }
 
