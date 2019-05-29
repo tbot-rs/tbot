@@ -773,6 +773,25 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SetMessageGameScore`] inferring `token`.
+    ///
+    /// [`SetMessageGameScore`]: ./struct.SetMessageGameScore.html
+    fn set_message_game_score(
+        &'a self,
+        chat_id: impl Into<types::ChatId<'a>>,
+        message_id: u32,
+        user_id: i64,
+        score: u32,
+    ) -> methods::SetMessageGameScore<'a> {
+        self.prepare_method(methods::SetMessageGameScore::new(
+            self.token(),
+            chat_id,
+            message_id,
+            user_id,
+            score,
+        ))
+    }
+
     /// Constructs a new [`SetStickerPositionInSet`] inferring `token`.
     ///
     /// [`SetStickerPositionInSet`]: ./struct.SetStickerPositionInSet.html

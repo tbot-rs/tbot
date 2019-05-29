@@ -491,6 +491,23 @@ pub trait ChatMethods<'a> {
         self.bot().set_chat_title(self.chat_id(), title)
     }
 
+    /// Constructs a [`SetMessageGameScore`] inferring the token and the chat ID.
+    ///
+    /// [`SetMessageGameScore`]: ../methods/struct.SetMessageGameScore.html
+    fn set_message_game_score(
+        &'a self,
+        message_id: u32,
+        user_id: i64,
+        score: u32,
+    ) -> SetMessageGameScore<'a> {
+        self.bot().set_message_game_score(
+            self.chat_id(),
+            message_id,
+            user_id,
+            score,
+        )
+    }
+
     /// Constructs a new [`UnbanChatMember`] inferring the token and the
     /// destination chat ID.
     ///
