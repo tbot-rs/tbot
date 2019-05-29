@@ -773,6 +773,23 @@ pub trait Methods<'a> {
         ))
     }
 
+    /// Constructs a new [`SetInlineGameScore`] inferring `token`.
+    ///
+    /// [`SetInlineGameScore`]: ./struct.SetInlineGameScore.html
+    fn set_inline_game_score(
+        &'a self,
+        inline_message_id: u32,
+        user_id: i64,
+        score: u32,
+    ) -> methods::SetInlineGameScore<'a> {
+        self.prepare_method(methods::SetInlineGameScore::new(
+            self.token(),
+            inline_message_id,
+            user_id,
+            score,
+        ))
+    }
+
     /// Constructs a new [`SetMessageGameScore`] inferring `token`.
     ///
     /// [`SetMessageGameScore`]: ./struct.SetMessageGameScore.html

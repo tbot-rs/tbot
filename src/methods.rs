@@ -85,6 +85,7 @@ mod set_chat_description;
 mod set_chat_photo;
 mod set_chat_sticker_set;
 mod set_chat_title;
+mod set_inline_game_score;
 mod set_message_game_score;
 mod set_sticker_position_in_set;
 mod set_webhook;
@@ -115,9 +116,9 @@ pub use {
     send_voice::*, send_voice::*, set_chat_description::*,
     set_chat_description::*, set_chat_photo::*, set_chat_photo::*,
     set_chat_sticker_set::*, set_chat_title::*, set_chat_title::*,
-    set_message_game_score::*, set_sticker_position_in_set::*,
-    set_sticker_position_in_set::*, stop_inline_location::*,
-    stop_inline_location::*, stop_message_location::*,
+    set_inline_game_score::*, set_message_game_score::*,
+    set_sticker_position_in_set::*, set_sticker_position_in_set::*,
+    stop_inline_location::*, stop_inline_location::*, stop_message_location::*,
     stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,
     unban_chat_member::*, unpin_chat_message::*, unpin_chat_message::*,
     upload_sticker_file::*, upload_sticker_file::*,
