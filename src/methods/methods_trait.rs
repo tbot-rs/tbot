@@ -320,6 +320,21 @@ pub trait Methods<'a> {
         self.prepare_method(methods::GetChat::new(self.token(), chat_id))
     }
 
+    /// Constructs a new [`GetInlineGameHighScores`] inferring `token`.
+    ///
+    /// [`GetInlineGameHighScores`]: ./struct.GetInlineGameHighScores.html
+    fn get_inline_game_high_scores(
+        &'a self,
+        inline_message_id: &'a str,
+        user_id: i64,
+    ) -> methods::GetInlineGameHighScores<'a> {
+        self.prepare_method(methods::GetInlineGameHighScores::new(
+            self.token(),
+            inline_message_id,
+            user_id,
+        ))
+    }
+
     /// Constructs a new [`GetChatAdministrators`] inferring `token`.
     ///
     /// [`GetChatAdministrators`]: ./struct.GetChatAdministrators.html
