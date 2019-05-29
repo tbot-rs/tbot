@@ -20,7 +20,7 @@ macro_rules! message_base {
                 "[handler]: ../struct.Bot.html#method.", stringify!($handler),
             )]
             struct $name {
-                /// Id of the message.
+                /// ID of the message.
                 message_id: u32,
                 /// The sender of the message.
                 from: Option<types::User>,
