@@ -29,8 +29,7 @@ impl<'a> GetChatAdministrators<'a> {
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
-    ) -> impl Future<Item = Vec<types::raw::ChatMember>, Error = DeliveryError>
-    {
+    ) -> impl Future<Item = Vec<types::ChatMember>, Error = DeliveryError> {
         send_method(
             self.token,
             "getChatAdministrators",
