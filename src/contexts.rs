@@ -1,4 +1,4 @@
-//! This module contants contexts that are passed to handlers.
+//! Contains contexts that are passed to handlers.
 
 #![allow(clippy::too_many_arguments)] // can't do much
                                       // we re-export everything under one namespace

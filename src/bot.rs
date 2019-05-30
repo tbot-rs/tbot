@@ -1210,11 +1210,12 @@ impl Methods<'_> for Bot {
     }
 }
 
-/// Constructs a new `Bot`, extracting the token from the environment at
+/// Constructs a new [`Bot`], extracting the token from the environment at
 /// _compile time_.
 ///
 /// If you need to extract the token at _runtime_, use [`Bot::from_env`].
 ///
+/// [`Bot`]: ./struct.Bot.html
 /// [`Bot::from_env`]: ./struct.Bot.html#method.from_env
 ///
 /// # Example

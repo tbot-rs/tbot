@@ -22,9 +22,6 @@
 //! If you have a question, ask it in [our group] on Telegram. If you find
 //! a bug, fill an issue on either our [GitLab] or [GitHub] repository.
 //!
-//! If you get stuck or find a bug, fill an issue on either our [GitLab] or
-//! [GitHub] repository.
-//!
 //! [our group]: t.me/tbot_group
 //! [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 //! [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
@@ -56,7 +53,7 @@ use {multipart::*, prelude::*};
 #[cfg(feature = "proxy")]
 pub use hyper_proxy as proxy;
 
-/// Like `tokio::run`, but doesn't require `future::Item` to be `()`.
+/// Like `tokio::run`, but doesn't require `F::Item` to be `()`.
 ///
 /// Most use-caces of `tbot` do not need to use the future's `Item` value,
 /// leading to many `.map(|_| ())` in the code. This function will implicitly
@@ -69,7 +66,7 @@ where
     tokio::run(future.map(|_| ()));
 }
 
-/// Like `tokio::spawn`, but doesn't require `future::Item` to be `()`.
+/// Like `tokio::spawn`, but doesn't require `F::Item` to be `()`.
 ///
 /// Most use-caces of `tbot` do not need to use the future's `Item` value,
 /// leading to many `.map(|_| ())` in the code. This function will implicitly
