@@ -1,6 +1,6 @@
 use super::*;
 
-type HighScores = Vec<types::raw::GameHighScore>;
+type HighScores = Vec<types::GameHighScore>;
 
 /// Represents the [`getGameHighScores`][docs] method for when the game was
 /// sent by the bot.

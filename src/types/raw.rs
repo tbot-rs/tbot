@@ -214,10 +214,3 @@ pub enum PassportElementError {
         message: String,
     },
 }
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct GameHighScore {
-    pub position: u32,
-    pub user: User,
-    pub score: i32,
-}
