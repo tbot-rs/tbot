@@ -10,7 +10,7 @@ pub struct EditInlineMedia<'a> {
     token: &'a str,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
-    inline_message_id: u32,
+    inline_message_id: &'a str,
     media: EditableMedia<'a>,
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
@@ -19,7 +19,7 @@ impl<'a> EditInlineMedia<'a> {
     /// Constructs a new `EditInlineMedia`.
     pub fn new(
         token: &'a str,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
@@ -41,12 +41,11 @@ impl<'a> EditInlineMedia<'a> {
     /// Prepares the request and returns a `Future`.
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
-        let inline_message_id = self.inline_message_id.to_string();
         let reply_markup =
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
 
         let mut multipart = Multipart::new(3)
-            .str("inline_message_id", &inline_message_id)
+            .str("inline_message_id", self.inline_message_id)
             .maybe_string("reply_markup", &reply_markup);
 
         match &self.media {
