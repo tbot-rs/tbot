@@ -23,24 +23,6 @@ pub struct ChatMember {
     pub can_add_web_page_previews: Option<bool>,
 }
 
-#[derive(Debug, PartialEq, Clone, Deserialize)]
-pub struct Chat {
-    pub id: i64,
-    #[serde(rename = "type")]
-    pub chat_type: ChatTypes,
-    pub title: Option<String>,
-    pub username: Option<String>,
-    pub first_name: Option<String>,
-    pub last_name: Option<String>,
-    pub all_members_are_administrators: Option<bool>,
-    pub photo: Option<ChatPhoto>,
-    pub description: Option<String>,
-    pub invite_link: Option<String>,
-    pub pinned_message: Option<Box<Message>>,
-    pub sticker_set_name: Option<String>,
-    pub can_set_sticker_set: Option<bool>,
-}
-
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 pub struct SuccessfulPayment {
     pub currency: String,

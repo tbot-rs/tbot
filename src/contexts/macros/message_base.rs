@@ -27,7 +27,7 @@ macro_rules! message_base {
                 /// The time the message was sent at.
                 date: i64,
                 /// The chat where the message was sent.
-                chat: types::raw::Chat,
+                chat: types::Chat,
                 $(#[doc = $field_doc] $field: $type,)*
             }
         }
