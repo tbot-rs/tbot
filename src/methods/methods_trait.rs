@@ -125,7 +125,7 @@ pub trait Methods<'a> {
     /// [`EditInlineCaption`]: ./struct.EditInlineCaption.html
     fn edit_inline_caption(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         caption: &'a str,
     ) -> methods::EditInlineCaption<'a> {
         self.prepare_method(methods::EditInlineCaption::new(
@@ -140,7 +140,7 @@ pub trait Methods<'a> {
     /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
     fn edit_inline_location(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         position: (f64, f64),
     ) -> methods::EditInlineLocation<'a> {
         self.prepare_method(methods::EditInlineLocation::new(
@@ -155,7 +155,7 @@ pub trait Methods<'a> {
     /// [`EditInlineMedia`]: ./struct.EditInlineMedia.html
     fn edit_inline_media(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditInlineMedia<'a> {
         self.prepare_method(methods::EditInlineMedia::new(
@@ -170,7 +170,7 @@ pub trait Methods<'a> {
     /// [`EditInlineReplyMarkup`]: ./struct.EditInlineReplyMarkup.html
     fn edit_inline_reply_markup(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> methods::EditInlineReplyMarkup<'a> {
         self.prepare_method(methods::EditInlineReplyMarkup::new(
@@ -185,7 +185,7 @@ pub trait Methods<'a> {
     /// [`EditInlineText`]: ./struct.EditInlineText.html
     fn edit_inline_text(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         text: &'a str,
     ) -> methods::EditInlineText<'a> {
         self.prepare_method(methods::EditInlineText::new(
@@ -810,7 +810,7 @@ pub trait Methods<'a> {
     /// [`SetInlineGameScore`]: ./struct.SetInlineGameScore.html
     fn set_inline_game_score(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         user_id: i64,
         score: u32,
     ) -> methods::SetInlineGameScore<'a> {
@@ -861,7 +861,7 @@ pub trait Methods<'a> {
     /// [`StopInlineLocation`]: ./struct.StopInlineLocation.html
     fn stop_inline_location(
         &'a self,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
     ) -> methods::StopInlineLocation<'a> {
         self.prepare_method(methods::StopInlineLocation::new(
             self.token(),

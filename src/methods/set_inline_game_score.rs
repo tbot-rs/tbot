@@ -14,7 +14,7 @@ pub struct SetInlineGameScore<'a> {
     proxy: Option<proxy::Proxy>,
     user_id: i64,
     score: u32,
-    inline_message_id: u32,
+    inline_message_id: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,7 +25,7 @@ impl<'a> SetInlineGameScore<'a> {
     /// Constructs a new `SetInlineGameScore`.
     pub const fn new(
         token: &'a str,
-        inline_message_id: u32,
+        inline_message_id: &'a str,
         user_id: i64,
         score: u32,
     ) -> Self {
