@@ -29,7 +29,7 @@ impl<'a> GetChat<'a> {
     #[must_use = "futures do nothing unless polled"]
     pub fn into_future(
         self,
-    ) -> impl Future<Item = types::raw::Chat, Error = DeliveryError> {
+    ) -> impl Future<Item = types::Chat, Error = DeliveryError> {
         send_method(
             self.token,
             "getChat",

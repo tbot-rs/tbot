@@ -13,7 +13,7 @@ pub enum ForwardSource {
     /// The forward is from a channel.
     Channel {
         /// Information about the channel.
-        chat: raw::Chat,
+        chat: Chat,
         /// The original message's ID.
         message_id: u32,
         /// The author's signature.
@@ -125,7 +125,7 @@ pub struct Message {
     /// The message's date.
     pub date: i64,
     /// The chat where the message is from.
-    pub chat: raw::Chat,
+    pub chat: Chat,
     /// if this message is a foward, information about the original message.
     pub forward: Option<Forward>,
     /// Reply to this message.
@@ -142,7 +142,7 @@ pub(crate) struct MessageData {
     pub id: u32,
     pub from: Option<User>,
     pub date: i64,
-    pub chat: raw::Chat,
+    pub chat: Chat,
     pub forward: Option<Forward>,
     pub reply_to: Option<Message>,
     pub edit_date: Option<i64>,
