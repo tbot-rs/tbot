@@ -49,7 +49,7 @@ pub trait ChatMethods<'a> {
         self.bot().edit_message_location(self.chat_id(), message_id, location)
     }
 
-    /// Updates the media of a message in this group. 
+    /// Updates the media of a message in this group.
     fn edit_message_media(
         &'a self,
         message_id: u32,
@@ -58,7 +58,7 @@ pub trait ChatMethods<'a> {
         self.bot().edit_message_media(self.chat_id(), message_id, media)
     }
 
-    /// Updates the reply markup of a message in this group. 
+    /// Updates the reply markup of a message in this group.
     fn edit_message_reply_markup(
         &'a self,
         message_id: u32,
