@@ -1,34 +1,66 @@
-//! Telegram Bots API methods in form of structs.
+//! Contains structs for calling API methods.
 //!
-//! Note that structs here are somewhat raw, because they require tokens when
-//! construcing. You would more like using construction methods on `Tbot` that
-//! infer `token`, and methods on context structs that in addition infer things
-//! like `chat_id` or `callback_query_id`.
+//! The methods from this module are low-level: you have to pass everything
+//! a method needs to their `new` methods. More likely, you'd like to use
+//! [`Bot`] to infer your bot's token when calling methods. Moreover, when
+//! handling updates, their [contexts] provide methods that infer even more
+//! information from the update.
 //!
-//! Though methods don't implement a trait like `Method` for reasons, they all
-//! have methods `new` with varying number of parameters and `into_future` that
-//! returns a `Future` which resolves with either Telegram's response or an
-//! error. The design philosophy is that all required parameters are passed
-//! through `new` and all optional parameters are set with a dedicated method.
-//! Then `into_future` is called to get the `Future`, handling is done and the
-//! future is passed to a runner. For convenience, we re-export
-//! `tokio::{run, spawn}` as `tbot::{run, spawn}`.
+//! All the methods have a common pattern:
 //!
-//! For example, here's how you'd call `getMe`:
+//! - Methods are constructed using their `new` method. This methods accepts
+//!   required parameters for this method;
+//! - Methods provide the builder pattern for optional parameters;
+//! - Methods have the `into_future` method you need to call before actually
+//!   calling the method.
 //!
-//! ```
-//! # use tbot::prelude::*;
-//! let request = tbot::methods::GetMe::new(env!("BOT_TOKEN"))
+//! Note that `tbot` does not call the method, it only provides you with
+//! a handy way to construct futures. Instead, you need to run by yourself.
+//! For example, here's how to call [`SendMessage`]:
+//!
+//! ```no_run
+//! use tbot::{
+//!     prelude::*,
+//!     types::ParseMode::Markdown,
+//! };
+//!
+//! const TOKEN: &str = env!("BOT_TOKEN");
+//! const CHAT: i64 = 0;
+//! const MESSAGE: &str = "`tbot` is a super-cool crate!";
+//!
+//! let request = tbot::methods::SendMessage::new(TOKEN, CHAT, MESSAGE)
+//!     .parse_mode(Markdown)
 //!     .into_future()
 //!     .map_err(|error| {
 //!         dbg!(error);
-//!     })
-//!     .map(|me| {
-//!         dbg!(me);
 //!     });
 //!
 //! tbot::run(request);
 //! ```
+//!
+//! You may see that we use [`tbot::run`]. It is a thin wrapper around
+//! `tokio::run` which doesn't require a `Future::Item` to be `()`.
+//! In addition, we also have [`tbot::spawn`] with the same mitigations.
+//!
+//! # Inline/message methods
+//!
+//! Several API methods accept either (`chat_id` and `message_id`) or
+//! `inline_message_id`, and their return type depends on the chosen
+//! parameters. For such methods, `tbot` provides two structs, e.g. for
+//! [`editMessageText`][tg-doc] there are [`EditMessageText`] which resolves to
+//! `()` and [`EditInlineText`] which resolves to [`types::Message`]. This
+//! brings a more straightforward API wrapper, unlike if we only had one method
+//! which would resolve to `(() | types::Message)`.
+//!
+//! [`Bot`]: ../struct.Bot.html
+//! [contexts]: ../contexts/
+//! [`SendMessage`]: ./struct.SendMessage.html
+//! [`tbot::run`]: ../fn.run.html
+//! [`tbot::spawn`]: ../fn.spawn.html
+//! [tg-doc]: https://core.telegram.org/bots/api#editmessagetext
+//! [`EditMessageText`]: ./struct.EditMessageText.html
+//! [`EditInlineText`]: ./struct.EditInlineText.html
+//! [`types::Message`]: ../types/struct.Message.html
 
 use super::*;
 
