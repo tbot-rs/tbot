@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`stopMessageLiveLocation`][docs] method for when
-/// the message was sent via the inline mode.
+/// Represents the [`stopMessageLiveLocation`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize)]

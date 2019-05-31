@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`editMessageCaption`][docs] method for when the message was
-/// sent by the bot.
+/// Represents the [`editMessageCaption`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
 #[derive(Serialize)]

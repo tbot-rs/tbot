@@ -18,8 +18,8 @@ pub struct SendMediaGroup<'a> {
 impl<'a> SendMediaGroup<'a> {
     /// Contructs a new `SendMediaGroup`.
     ///
-    /// Note: unlike other methods, this one takes ownership of the media
-    /// because it modifies the media's metadata and thus further reuse of the
+    /// **Note:** unlike other methods, this one takes ownership of the media
+    /// because it modifies the media's metadata, and thus further reuse of the
     /// media would lead to errors.
     pub fn new(
         token: &'a str,
