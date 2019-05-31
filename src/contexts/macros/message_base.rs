@@ -16,17 +16,17 @@ macro_rules! message_base {
     ) => {
         common! {
             #[doc = concat!(
-                "Context for the [`", stringify!($handler), "`][handler] handler.\n\n",
+                "The context for [`", stringify!($handler), "`][handler] handlers.\n\n",
                 "[handler]: ../struct.Bot.html#method.", stringify!($handler),
             )]
             struct $name {
                 /// ID of the message.
                 message_id: u32,
-                /// The sender of the message.
+                /// The author of the message.
                 from: Option<types::User>,
-                /// The time the message was sent at.
+                /// The timestamp of the message.
                 date: i64,
-                /// The chat where the message was sent.
+                /// The chat to which the message was sent.
                 chat: types::Chat,
                 $(#[doc = $field_doc] $field: $type,)*
             }

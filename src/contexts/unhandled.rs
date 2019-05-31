@@ -1,5 +1,5 @@
 common! {
-    /// Context for the [`unhandled`] handler.
+    /// The context for [`unhandled`] handlers.
     ///
     /// [`unhandled`]: ../struct.Bot.html#method.unhandled
     struct Unhandled {

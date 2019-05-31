@@ -1,5 +1,5 @@
-//! Contains traits for different types of updates to simplify calling several
-//! methods.
+//! Contains traits for updates that infer some data from them, simplifying
+//! calling several methods.
 
 use super::*;
 use crate::methods::*;

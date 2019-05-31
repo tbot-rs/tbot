@@ -1,7 +1,7 @@
 use super::*;
 use std::sync::Arc;
 
-/// Context for the [`before_update`] and [`after_update`] handlers.
+/// The context for [`before_update`] and [`after_update`] handlers.
 ///
 /// This context does _not_ provide the contents of the update. Use dedicated
 /// update handlers instead.

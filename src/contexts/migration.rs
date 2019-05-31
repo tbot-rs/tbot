@@ -1,5 +1,5 @@
 common! {
-    /// Context for the [`migration`][handler] handler.
+    /// The context for [`migration`][handler] handlers.
     ///
     /// This context does not provide the `chat` field to prevent possible
     /// wrong expectations for `chat.id` to be the old ID.
@@ -8,9 +8,9 @@ common! {
     struct Migration {
         /// ID of the message.
         message_id: u32,
-        /// The sender of the message.
+        /// The author of the message.
         from: types::User,
-        /// The time the message was sent at.
+        /// The timestamp of the message.
         date: i64,
         /// The old ID of the group.
         old_id: i64,

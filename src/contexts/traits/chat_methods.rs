@@ -1,8 +1,7 @@
 use super::MockBot;
 use crate::{methods::*, types, types::input_file::*};
 
-/// Provides methods that infer data from the message and simplify calling
-/// certain chat methods.
+/// Provides methods appliable to all messages.
 pub trait ChatMethods<'a> {
     #[doc(hidden)]
     fn bot(&self) -> &MockBot;

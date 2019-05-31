@@ -1,9 +1,9 @@
 common! {
-    /// Context for the [`updated_poll`] handler.
+    /// The context for [`updated_poll`][handler] handlers.
     ///
-    /// [`updated_poll`]: ../struct.Bot.html#method.updated_poll
+    /// [handler]: ../struct.Bot.html#method.updated_poll
     struct UpdatedPoll {
-        /// The unhandled update.
+        /// The new state of the poll.
         poll: types::Poll,
     }
 }
