@@ -1,4 +1,4 @@
-//! Contains contexts for handlers.
+//! Contexts for update handlers.
 //!
 //! A context is a struct that is passed to update handlers, contains data about
 //! the update, and provides methods that infer certain data from the update.

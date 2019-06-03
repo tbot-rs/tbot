@@ -1,4 +1,4 @@
-//! Contains structs for calling API methods.
+//! Structs for calling API methods.
 //!
 //! The methods from this module are low-level: you have to pass everything
 //! a method needs to their `new` methods. More likely, you'd like to use
