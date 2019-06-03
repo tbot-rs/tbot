@@ -381,6 +381,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler which is run after handling an update.
         after_update_handlers,
         after_update,
         contexts::Update,
@@ -388,6 +389,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for animations.
         animation_handlers,
         animation,
         contexts::Animation,
@@ -396,6 +398,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for audio.
         audio_handlers,
         audio,
         contexts::Audio,
@@ -404,6 +407,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler which is run before handling an update.
         before_update_handlers,
         before_update,
         contexts::Update,
@@ -411,6 +415,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for contacts.
         contact_handlers,
         contact,
         contexts::Contact,
@@ -419,6 +424,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for created groups.
         created_group_handlers,
         created_group,
         contexts::CreatedGroup,
@@ -427,6 +433,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for deleted chat photos.
         deleted_chat_photo_handlers,
         deleted_chat_photo,
         contexts::DeletedChatPhoto,
@@ -435,6 +442,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for documents.
         document_handlers,
         document,
         contexts::Document,
@@ -443,6 +451,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited animations.
         edited_animation_handlers,
         edited_animation,
         contexts::EditedAnimation,
@@ -451,6 +460,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited audio.
         edited_audio_handlers,
         edited_audio,
         contexts::EditedAudio,
@@ -459,6 +469,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited documents.
         edited_document_handlers,
         edited_document,
         contexts::EditedDocument,
@@ -467,6 +478,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited locations.
         edited_location_handlers,
         edited_location,
         contexts::EditedLocation,
@@ -475,6 +487,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited photos.
         edited_photo_handlers,
         edited_photo,
         contexts::EditedPhoto,
@@ -483,6 +496,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited text messages.
         edited_text_handlers,
         edited_text,
         contexts::EditedText,
@@ -491,6 +505,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited videos.
         edited_video_handlers,
         edited_video,
         contexts::EditedVideo,
@@ -499,6 +514,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for games.
         game_handlers,
         game,
         contexts::Game,
@@ -507,6 +523,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for left members.
         left_member_handlers,
         left_member,
         contexts::LeftMember,
@@ -515,6 +532,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for locations.
         location_handlers,
         location,
         contexts::Location,
@@ -523,6 +541,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for migrations.
         migration_handlers,
         migration,
         contexts::Migration,
@@ -531,6 +550,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new chat photos.
         new_chat_photo_handlers,
         new_chat_photo,
         contexts::NewChatPhoto,
@@ -539,6 +559,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new chat titles.
         new_chat_title_handlers,
         new_chat_title,
         contexts::NewChatTitle,
@@ -547,6 +568,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new members.
         new_members_handlers,
         new_members,
         contexts::NewMembers,
@@ -555,6 +577,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for photos.
         photo_handlers,
         photo,
         contexts::Photo,
@@ -563,6 +586,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for pinned messages.
         pinned_message_handlers,
         pinned_message,
         contexts::PinnedMessage,
@@ -571,6 +595,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for poll messages.
         poll_handlers,
         poll,
         contexts::Poll,
@@ -579,6 +604,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for polling errors.
         polling_error_handlers,
         polling_error,
         methods::DeliveryError,
@@ -586,6 +612,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for stickers.
         sticker_handlers,
         sticker,
         contexts::Sticker,
@@ -594,6 +621,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for text messages.
         text_handlers,
         text,
         contexts::Text,
@@ -626,6 +654,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new states of polls.
         updated_poll_handlers,
         updated_poll,
         contexts::UpdatedPoll,
@@ -634,6 +663,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for venues.
         venue_handlers,
         venue,
         contexts::Venue,
@@ -642,6 +672,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for videos.
         video_handlers,
         video,
         contexts::Video,
@@ -650,6 +681,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for video notes.
         video_note_handlers,
         video_note,
         contexts::VideoNote,
@@ -658,6 +690,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for voice messages.
         voice_handlers,
         voice,
         contexts::Voice,
