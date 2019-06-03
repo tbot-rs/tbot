@@ -19,6 +19,10 @@
 //! bot.polling().start();
 //! ```
 //!
+//! If you're new to `tbot`, we recommend you go through the [tutorial] first.
+//! We also have several [How-to guides][how-to] with snippets to solve your
+//! problems.
+//!
 //! If you have a question, ask it in [our group] on Telegram. If you find
 //! a bug, fill an issue on either our [GitLab] or [GitHub] repository.
 //!
