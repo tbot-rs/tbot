@@ -6,11 +6,13 @@ use super::*;
 /// you can't do it because a [`Bot`] also contains data for updata handling.
 /// Instead, you can call [`Bot::mock`] to construct this struct that implements
 /// the [`Methods`] trait but has no handling logic. For example, `tbot` uses
-/// `MockBot` to provide the ability to call any API method inside a handler.
+/// `MockBot` in [contexts] to provide the ability to call any API method
+/// in a handler.
 ///
 /// [`Methods`]: ./methods/trait.Method.html
 /// [`Bot`]: ./struct.Bot.html
 /// [`Bot::mock`]: ./struct.Bot.html#method.mock
+/// [contexts]: ./contexts/
 #[derive(Clone)]
 pub struct MockBot {
     token: Arc<String>,
