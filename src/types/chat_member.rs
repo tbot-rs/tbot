@@ -7,23 +7,23 @@ pub enum MemberStatus {
     Creator,
     /// The user is an administrator of the chat.
     Administator {
-        /// Whether the bot can edit this admin's rights.
+        /// `true` if the bot can edit this admin's rights.
         can_be_edited: bool,
-        /// Whether the admin can change the group's info.
+        /// `true` if the admin can change the group's info.
         can_change_info: bool,
-        /// Whether the admin can post messages (channels only).
+        /// `true` if the admin can post messages (channels only).
         can_post_messages: Option<bool>,
-        /// Whether the admin can edit messages (channels only).
+        /// `true` if the admin can edit messages (channels only).
         can_edit_messages: Option<bool>,
-        /// Whether the admin can delete messages.
+        /// `true` if the admin can delete messages.
         can_delete_messages: bool,
-        /// Whether the admin can invite users.
+        /// `true` if the admin can invite users.
         can_invite_users: bool,
-        /// Whether the admin can restruct users.
+        /// `true` if the admin can restruct users.
         can_restrict_members: bool,
-        /// Whether the admin can pin messages.
+        /// `true` if the admin can pin messages.
         can_pin_messages: bool,
-        /// Whether the admin can promote members.
+        /// `true` if the admin can promote members.
         can_promote_members: bool,
     },
     /// The user is a member of the chat.
@@ -32,15 +32,15 @@ pub enum MemberStatus {
     Restricted {
         /// Time when the restriction will be lifted.
         until_date: Option<i64>,
-        /// Whether the user is a member of the chat.
+        /// `true` if the user is a member of the chat.
         is_member: bool,
-        /// Whether the user can send messages.
+        /// `true` if the user can send messages.
         can_send_mesages: bool,
-        /// Whether the user can send media messages.
+        /// `true` if the user can send media messages.
         can_send_media_messages: bool,
-        /// Whether the user can send other messages, such as games.
+        /// `true` if the user can send other messages, such as games.
         can_send_other_messages: bool,
-        /// Whehter the user can semd messages with link previews.
+        /// `true` if the user can semd messages with link previews.
         can_add_web_page_previews: bool,
     },
     /// The user left the chat.

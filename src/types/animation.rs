@@ -17,6 +17,6 @@ pub struct Animation {
     pub thumb: Option<PhotoSize>,
     /// The MIME type of the animation.
     pub mime_type: Option<String>,
-    /// The animation file's size.
+    /// The file size of the animation.
     pub file_size: Option<u32>,
 }

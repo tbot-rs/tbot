@@ -13,13 +13,13 @@ use InlineButtonType::{
 pub enum InlineButtonType<'a> {
     /// Represents a URL button.
     Url(&'a str),
-    /// Represents some callback data.
+    /// Represents callback data.
     CallbackData(&'a str),
-    /// Represets query inserted when switched to inline.
+    /// Represents query inserted when switched to inline.
     SwitchInlineQuery(&'a str),
-    /// Represets query inserted when switched to inline in the curent chat.
+    /// Represents query inserted when switched to inline in the curent chat.
     SwitchInlineQueryCurrentChat(&'a str),
-    /// Will represent a description of the game to be laucnhed one day.
+    /// Represent a description of the game to be laucnhed.
     CallbackGame(CallbackGame),
     /// If `true`, a pay button is sent.
     Pay(bool),
@@ -27,7 +27,7 @@ pub enum InlineButtonType<'a> {
 
 /// Represents an [`InlineKeyboardButton`].
 ///
-/// [`InlineKeybaordButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
+/// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use]
 pub struct InlineButton<'a> {

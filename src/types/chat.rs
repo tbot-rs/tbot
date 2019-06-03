@@ -1,54 +1,54 @@
 use super::*;
 
-/// Kind of the chat.
+/// Represents the kind of a chat.
 #[derive(Debug, PartialEq, Clone)]
 pub enum ChatKind {
-    /// A private chat.
+    /// The chat is private.
     Private {
-        /// The user's username.
+        /// The username of the user.
         username: Option<String>,
-        /// The user's first name.
+        /// The first name of the user.
         first_name: String,
-        /// The user's last name,
+        /// The last name of the user.
         last_name: Option<String>,
     },
-    /// A group.
+    /// The chat is a group.
     Group {
-        /// The group's title.
+        /// The title of the group.
         title: String,
-        /// Whether all membmers of this group have admin rights.
+        /// `true` if all membmers of this group have admin rights.
         all_members_are_administrators: bool,
-        /// The group's pinned message.
+        /// The pinned message of the group.
         pinned_message: Option<Box<Message>>,
     },
-    /// A supergroup.
+    /// The chat is a supergroup.
     Supergroup {
-        /// The supergroup's title.
+        /// The title of the supergroup.
         title: String,
-        /// The supergroup's username.
+        /// The username of the supergroup.
         username: Option<String>,
-        /// The supergroup's description.
+        /// The description of the supergroup.
         description: Option<String>,
-        /// The supergroup's invite link.
+        /// The invite link of the supergroup.
         invite_link: Option<String>,
-        /// The supergroup's pinned message.
+        /// The pinned message of the supergroup.
         pinned_message: Option<Box<Message>>,
-        /// The supergroup's sticker set name.
+        /// The name of the sticker set of the supergroup.
         sticker_set_name: Option<String>,
-        /// Whether bot can send sticker set.
+        /// `true` if the bot can set the sticker set of the supergroup.
         can_set_sticker_set: Option<bool>,
     },
-    /// A channel.
+    /// The chat is a channel.
     Channel {
-        /// The channel's title.
+        /// The title of the channel.
         title: String,
-        /// The channel's username.
+        /// The username of the channel.
         username: Option<String>,
-        /// The channel's description.
+        /// The description of the channel.
         description: Option<String>,
-        /// The channel's invite link.
+        /// The invite link of the channel.
         invite_link: Option<String>,
-        /// The channel's pinned message.
+        /// The pinned message of the channel.
         pinned_message: Option<Box<Message>>,
     },
 }
@@ -58,11 +58,11 @@ pub enum ChatKind {
 /// [`Chat`]: https://core.telegram.org/bots/api#chat
 #[derive(Debug, PartialEq, Clone)]
 pub struct Chat {
-    /// The chat's ID.
+    /// The ID of the chat.
     pub id: i64,
-    /// The chat's kind.
+    /// The kind of the chat.
     pub kind: ChatKind,
-    /// The chat's photo.
+    /// The photo of the chat.
     pub photo: Option<ChatPhoto>,
 }
 

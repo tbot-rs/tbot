@@ -5,8 +5,8 @@ use super::*;
 /// [`ChatPhoto`]: https://core.telegram.org/bots/api#chatphoto
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct ChatPhoto {
-    /// Small (160×160) photo's File ID.
+    /// The file ID of the small photo.
     pub small_file_id: String,
-    /// Big (640×640) photo's File ID.
+    /// THe file ID of the big photo.
     pub big_file_id: String,
 }

@@ -14,17 +14,17 @@ pub enum MaskPositionPoint {
     Chin,
 }
 
-/// Reperesents [`MaskPosition`].
+/// Represents a [`MaskPosition`].
 ///
 /// [`MaskPosition`]: https://core.telegram.org/bots/api#maskposition
 #[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
 pub struct MaskPosition {
-    /// The mask's position point.
+    /// The position point of the mask.
     pub point: MaskPositionPoint,
-    /// The mask's shift by X.
+    /// The shift of the mask by X.
     pub x_shift: f64,
-    /// The mask's shift by Y.
+    /// The shift of the mask by Y.
     pub y_shift: f64,
-    /// The mask's scale.
+    /// The scale of the mask.
     pub scale: f64,
 }

@@ -18,7 +18,7 @@ impl ReplyKeyboardRemove {
         }
     }
 
-    /// Sets `selective` to `Some(is_selective)`.
+    /// Configures `selective`.
     pub fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self

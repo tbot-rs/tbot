@@ -15,10 +15,10 @@ pub struct Sticker {
     pub thumb: Option<PhotoSize>,
     /// The emoji of the sticker.
     pub emoji: Option<String>,
-    /// The sticker set name with the sticker.
+    /// The sticker set name which contains the sticker.
     pub set_name: Option<String>,
-    /// The sticket's position if it is a mask.
+    /// The position of the sticker if it's a mask.
     pub mask_position: Option<MaskPosition>,
-    /// The sticker file's size.
+    /// The file size of the sticker.
     pub file_size: Option<u32>,
 }

@@ -11,6 +11,6 @@ pub struct Voice {
     pub duration: u32,
     /// The MIME type of the voice.
     pub mime_type: Option<String>,
-    /// The voice file's size.
+    /// The file size of the voice.
     pub file_size: Option<u32>,
 }

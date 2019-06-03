@@ -1,16 +1,16 @@
 use super::*;
 
-/// Represents [`PhotoSize`].
+/// Represents a [`PhotoSize`].
 ///
 /// [`PhotoSize`]: https://core.telegram.org/bots/api#photosize
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PhotoSize {
-    /// Photo's file ID.
+    /// The file ID of the photo.
     pub file_id: String,
-    /// Photo's width.
+    /// The width of the photo.
     pub width: u32,
-    /// Photo's height.
+    /// The height of the photo.
     pub height: u32,
-    /// Photo's file size.
+    /// The file size of the photo.
     pub file_size: Option<u32>,
 }
