@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`deleteMessage`][docs] method for when the message was
-/// sent by the bot.
+/// Represents the [`deleteMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#deletemessage
 #[derive(Serialize)]

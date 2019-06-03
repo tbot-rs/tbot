@@ -1,8 +1,7 @@
 use super::*;
 use types::input_file::*;
 
-/// Represents the [`editMessageMedia`][docs] method for when the message was
-/// sent via inline mode.
+/// Represents the [`editMessageMedia`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[must_use = "methods do nothing unless turned into a future"]

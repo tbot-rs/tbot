@@ -4,9 +4,9 @@ use serde::de::Error;
 /// Represents information about the last error.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct LastError {
-    /// Unix time of the error.
+    /// The timestamp of the error.
     pub date: i64,
-    /// Human-readable description of the error.
+    /// A human-readable description of the error.
     pub message: String,
 }
 
@@ -15,13 +15,13 @@ pub struct LastError {
 /// [`WebhookInfo`]: https://core.telegram.org/bots/api#webhookinfo
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct WebhookInfo {
-    /// Webhook URL.
+    /// The URL to which Telegram sends Webhook updates.
     pub url: String,
-    /// Wether a custom certificate was provided.
+    /// `true` if a custom certificate was provided.
     pub has_custom_certificate: bool,
     /// Number of pending updates.
     pub pending_update_count: u32,
-    /// Information about the last error while delivering an update.
+    /// Information about the last error that happened during sending an update.
     pub last_error: Option<LastError>,
     /// Maximum allowed number of connections at a time.
     pub max_connections: Option<u8>,

@@ -9,10 +9,10 @@ pub struct Document {
     pub file_id: String,
     /// The thumb of the document.
     pub thumb: Option<PhotoSize>,
-    /// The document file's name.
+    /// The file name of the document.
     pub file_name: Option<String>,
     /// The MIME type of the document.
     pub mime_type: Option<String>,
-    /// The document file's size.
+    /// The file size of the document.
     pub file_size: Option<u32>,
 }

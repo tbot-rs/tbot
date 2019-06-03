@@ -15,11 +15,11 @@ macro_rules! media_message {
     ) => {
         message_base! {
             struct $name {
-                /// If `Some`, the original message.
+                /// The replied message.
                 reply_to: Option<types::Message>,
-                /// The author's signature, if turned for the channel.
+                /// The author's signature, if enabled for the channel.
                 author_signature: Option<String>,
-                /// The origin of the message if it is a forward.
+                /// The origin of the message if it's a forward.
                 forward: Option<types::Forward>,
                 #[doc = $media_doc]
                 $media: $media_type,

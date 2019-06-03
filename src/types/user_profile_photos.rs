@@ -5,7 +5,7 @@ use super::*;
 /// [`UserProfilePhotos`]: https://core.telegram.org/bots/api#userprofilephotos
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct UserProfilePhotos {
-    /// Overall amount of user's photos.
+    /// Overall amount of photos of the user.
     pub total_count: u32,
     /// Vector of photos in different sizes.
     pub photos: Vec<Vec<PhotoSize>>,

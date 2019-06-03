@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`setGameScore`][docs] method for when the game was
-/// sent via the inline mode.
+/// Represents the [`setGameScore`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
 #[derive(Serialize)]

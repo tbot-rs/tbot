@@ -12,9 +12,9 @@ pub enum ChatAction {
     RecordVideo,
     /// About to send a video.
     UploadVideo,
-    /// About to send an audio.
-    RecordAudio,
     /// About to send a generated audio.
+    RecordAudio,
+    /// About to send an audio.
     UploadAudio,
     /// About to send a document.
     UploadDocument,

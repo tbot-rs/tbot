@@ -11,7 +11,7 @@ pub struct Venue {
     pub title: String,
     /// The address of the venue.
     pub address: String,
-    /// The foursquare id of the venue.
+    /// The foursquare ID of the venue.
     pub foursquare_id: Option<String>,
     /// The foursquare type of the venue.
     pub foursquare_type: Option<String>,

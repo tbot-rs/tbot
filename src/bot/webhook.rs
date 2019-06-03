@@ -5,7 +5,7 @@ use hyper::{
 };
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-// Configures webhook and starts a server.
+/// Configures webhook and starts a server.
 ///
 /// To construct a `Webhook`, use [`Bot::webhook`].
 ///

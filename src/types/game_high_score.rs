@@ -1,6 +1,6 @@
 use super::*;
 
-/// Represent a [`GameHighScore`].
+/// Represents a [`GameHighScore`].
 ///
 /// [`GameHighScore`]: https://core.telegram.org/bots/api#gamehighscore
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]

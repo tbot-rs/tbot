@@ -1,9 +1,9 @@
 /// Represents possible ways to specify the destination chat.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub enum ChatId<'a> {
-    /// A user's ID.
+    /// The ID of a chat.
     Id(i64),
-    /// A user's `@username`.
+    /// The `@username` of a chat.
     Username(&'a str),
 }
 

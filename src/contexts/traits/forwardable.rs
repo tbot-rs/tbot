@@ -1,11 +1,8 @@
 use super::*;
 
-/// Contains methods for forwardable messages.
+/// Provides methods for forwardable messages.
 pub trait Forwardable<'a>: ChatMethods<'a> {
-    /// Constructs a [`ForwardMessage`] inferring the token, chat ID and
-    /// message ID.
-    ///
-    /// [`ForwardMessage`]: ../methods/struct.ForwardMessage.html
+    /// Forwards this message to another chat.
     fn forward_to(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,

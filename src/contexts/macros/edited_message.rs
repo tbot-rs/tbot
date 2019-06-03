@@ -15,11 +15,11 @@ macro_rules! edited_message {
     ) => {
         message_base! {
             struct $name {
-                /// If `Some`, the original message.
+                /// The replied message.
                 reply_to: Option<types::Message>,
-                /// The author's signature, if turned for the channel.
+                /// The author's signature, if enabled for the channel.
                 author_signature: Option<String>,
-                /// Last time when the message was edited.
+                /// The last time when the message was edited.
                 edit_date: i64,
                 #[doc = $media_doc]
                 $media: $media_type,

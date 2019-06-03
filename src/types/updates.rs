@@ -1,23 +1,25 @@
 use super::*;
 
-/// Represents updates names to subscribe with Webhooks or getUpdates.
+/// Represents update types to subscribe with [`Webhook`] or [`Polling`].
+///
+/// [`Webhook`]: ../struct.Webhook.html
+/// [`Polling`]: ../struct.Polling.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Updates {
-    /// Handles messages in a chat of any kind.
+    /// Handles chat messages of any kind.
     Message,
-    /// Handles a message edit.
+    /// Handles chat message edits.
     EditedMessage,
-    /// Handles a message in a channel of any kind.
+    /// Handles channel posts of any kind.
     ChannelPost,
-    /// Handles a channel message edit.
+    /// Handles channel post edits.
     EditedChannelPost,
-    /// Handles inline queries (when you type your bot's username in the
-    /// beginning of a message)
+    /// Handles inline queries.
     InlineQuery,
-    /// When subscribed for chosen inline results, handles them.
+    /// Handles chosen inline results.
     ChosenInlineResult,
-    /// Handles inline buttons clicks.
+    /// Handles inline button clicks.
     CallbackQuery,
     /// Handles shpping query.
     ShippingQuery,
@@ -31,13 +33,13 @@ pub enum Updates {
 // so I think it's better not to box them.
 #[allow(clippy::large_enum_variant)]
 pub enum UpdateKind {
-    /// A new incoming message.
+    /// A new chat message.
     Message(Message),
-    /// A message was edited.
+    /// An edited message.
     EditedMessage(Message),
     /// A new channel post.
     ChannelPost(Message),
-    /// A channel post was edited.
+    /// An edited channel post.
     EditedChannelPost(Message),
     /// A new state of a poll.
     Poll(Poll),
@@ -49,9 +51,9 @@ pub enum UpdateKind {
 #[derive(Debug)]
 pub struct Update {
     private: (),
-    /// Update's ID.
+    /// The ID of the update.
     pub id: u32,
-    /// Update's type.
+    /// The kind of the update.
     pub kind: UpdateKind,
 }
 

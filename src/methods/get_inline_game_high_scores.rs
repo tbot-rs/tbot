@@ -2,8 +2,7 @@ use super::*;
 
 type HighScores = Vec<types::GameHighScore>;
 
-/// Represents the [`getGameHighScores`][docs] method for when the game was
-/// sent by the bot.
+/// Represents the [`getGameHighScores`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getgamehighscores
 #[derive(Serialize)]

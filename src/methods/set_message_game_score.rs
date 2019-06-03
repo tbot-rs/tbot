@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`setGameScore`][docs] method for when the game was
-/// sent by the bot.
+/// Represents the [`setGameScore`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
 #[derive(Serialize)]

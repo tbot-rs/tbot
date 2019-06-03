@@ -17,6 +17,6 @@ pub struct Video {
     pub thumb: Option<PhotoSize>,
     /// The MIME type of the video.
     pub mime_type: Option<String>,
-    /// The video file's size.
+    /// The file size of the video.
     pub file_size: Option<u32>,
 }

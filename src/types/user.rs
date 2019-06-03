@@ -5,16 +5,16 @@ use super::*;
 /// [`User`]: https://core.telegram.org/bots/api#user
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct User {
-    /// The user's ID.
+    /// The ID of the user.
     pub id: i64,
-    /// Whether the user is a bot.
+    /// `true` if the user is a bot.
     pub is_bot: bool,
-    /// The user's first name.
+    /// The first name of the user.
     pub first_name: String,
-    /// The user's last name.
+    /// The last name of the user.
     pub last_name: Option<String>,
-    /// The user's username.
+    /// The username of the user.
     pub username: Option<String>,
-    /// The user's language.
+    /// The language of the user.
     pub language_code: Option<String>,
 }

@@ -8,13 +8,13 @@ use super::*;
 pub enum ForwardSource {
     /// The forward is from a user.
     User(User),
-    /// The forward is from a user woh decided to hide their profile.
+    /// The forward is from a user who decided to hide their profile.
     HiddenUser(String),
     /// The forward is from a channel.
     Channel {
         /// Information about the channel.
         chat: Chat,
-        /// The original message's ID.
+        /// The ID of the original message.
         message_id: u32,
         /// The author's signature.
         signature: Option<String>,
@@ -24,18 +24,18 @@ pub enum ForwardSource {
 /// Represents forward information.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Forward {
-    /// The original message's author.
+    /// The author of the original message.
     pub from: ForwardSource,
-    /// The original message's date.
+    /// The timestamp of the original message.
     pub date: i64,
 }
 
 /// Represents either a text message or a caption.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Text {
-    /// The text/caption. Empty string if no caption.
+    /// The text/caption. If there's no text, will be empty.
     pub text: String,
-    /// The entities in the text/caption. Empty if none.
+    /// The entities in the text/caption. If there are none, will be empty.
     pub entities: Vec<MessageEntity>,
 }
 
@@ -105,36 +105,31 @@ pub enum MessageKind {
     ConnectedWebsite(String),
     /// Passport data.
     PassportData(raw::PassportData),
-    /// Some unkonwn message kind. Probably means tbot is outdated.
-    ///
-    /// We couldn't return an error if tbot faces an unknown kind because, if
-    /// we did return an error, parsing response would fail and it would be
-    /// impossible to update the last offset, and it would lead to an endless
-    /// loop.
+    /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }
 
-/// Represents a message
+/// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
 pub struct Message {
-    /// The message's ID.
+    /// The ID of the message.
     pub id: u32,
-    /// The message's author. Note that this field is `None` for messages from
-    /// channels.
+    /// The author of the message. Note that this field is `None` for messages
+    /// from channels.
     pub from: Option<User>,
-    /// The message's date.
+    /// The timestamp of the messagr.
     pub date: i64,
-    /// The chat where the message is from.
+    /// The chat to which the message was sent.
     pub chat: Chat,
-    /// if this message is a foward, information about the original message.
+    /// If this message is a forward, information about the original message.
     pub forward: Option<Forward>,
-    /// Reply to this message.
+    /// If `Some`, the message that this message replies to.
     pub reply_to: Option<Box<Message>>,
     /// If the message was edited, the date of last edit.
     pub edit_date: Option<i64>,
-    /// The author's signature, if turned for the channel.
+    /// The author's signature, if enabled for the channel.
     pub author_signature: Option<String>,
-    /// The message's kind.
+    /// The kind of the message.
     pub kind: MessageKind,
 }
 
