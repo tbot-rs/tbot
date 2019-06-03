@@ -53,12 +53,13 @@ use {multipart::*, prelude::*};
 #[cfg(feature = "proxy")]
 pub use hyper_proxy as proxy;
 
-/// Like `tokio::run`, but doesn't require `F::Item` to be `()`.
+/// A wrapper around `tokio::run` without `F::Item: ()`.
 ///
-/// Most use-caces of `tbot` do not need to use the future's `Item` value,
-/// leading to many `.map(|_| ())` in the code. This function will implicitly
-/// map `Item` to `()`. Note that it does **not** map `Error` to `()`, because
-/// error handling must be done on your own.
+/// When calling an API method, you'll most likely throw away its result.
+/// However, `tokio` requires that `F::Item` be `()`. `tbot` provides
+/// a thin wrapper around `tokio::run` that maps `F::Item` to `()`.
+/// On the other hand, `tbot` still requires that you handle possible errors
+/// properly before running a future.
 pub fn run<F>(future: F)
 where
     F: futures::Future<Error = ()> + Send + 'static,
@@ -66,12 +67,13 @@ where
     tokio::run(future.map(|_| ()));
 }
 
-/// Like `tokio::spawn`, but doesn't require `F::Item` to be `()`.
+/// A wrapper around `tokio::spawn` without `F::Item: ()`.
 ///
-/// Most use-caces of `tbot` do not need to use the future's `Item` value,
-/// leading to many `.map(|_| ())` in the code. This function will implicitly
-/// map `Item` to `()`. Note that it does **not** map `Error` to `()`, because
-/// error handling must be done on your own.
+/// When calling an API method, you'll most likely throw away its result.
+/// However, `tokio` requires that `F::Item` be `()`. `tbot` provides
+/// a thin wrapper around `tokio::spawn` that maps `F::Item` to `()`.
+/// On the other hand, `tbot` still requires that you handle possible errors
+/// properly before running a future.
 pub fn spawn<F>(future: F) -> tokio::executor::Spawn
 where
     F: futures::Future<Error = ()> + Send + 'static,
@@ -80,7 +82,7 @@ where
 }
 
 pub mod prelude {
-    //! Re-exports some traits the compiler may demand when working with `tbot`.
+    //! Traits needed when working with `tbot`.
     pub use super::{contexts::traits::*, methods::Methods};
     pub use futures::Future;
 }
