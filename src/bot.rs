@@ -57,7 +57,56 @@ type VideoHandler = Handler<contexts::Video>;
 type VideoNoteHandler = Handler<contexts::VideoNote>;
 type VoiceHandler = Handler<contexts::Voice>;
 
-/// Represents a bot and provides convenient methods to work with the API.
+/// Provides an event loop for handling Telegram updates, as well as methods
+/// to call API methods.
+///
+/// The main purpose of a `Bot` is to configure update handlers and start
+/// the event loop:
+///
+/// ```no_run
+/// let mut bot = tbot::bot!("BOT_TOKEN");
+///
+/// bot.text(|_| println!("Got a text message"));
+///
+/// bot.polling().start();
+/// ```
+///
+/// `tbot` has many update handlers, such as [`text`] you have seen
+/// in the example. You can find all of them below on this page. Speaking
+/// of the event loop, `tbot` supports [polling] and [webhook].
+///
+/// A `Bot` also implements the [`Methods`] trait which provides handy methods
+/// on the struct to call API methods:
+///
+/// ```no_run
+/// use tbot::prelude::*;
+///
+/// let bot = tbot::bot!("BOT_TOKEN");
+///
+/// let me = bot
+///     .get_me()
+///     .into_future()
+///     .map(|me| {
+///         dbg!(me);
+///     })
+///     .map_err(|err| {
+///         dbg!(err);
+///     });
+///
+/// tbot::run(me);
+/// ```
+///
+/// Note, however, that starting an event loop takes ownership of `Bot`, so, if
+/// you need to call an API method after that, construct a [`MockBot`] with
+/// [`Bot::mock`] that has no handling logic and thus can be cloned as much
+/// as needed.
+///
+/// [polling]: #method.polling
+/// [webhooks]: #method.webhook
+/// [`text`]: #method.text
+/// [`MockBot`]: ./struct.MockBot.html
+/// [`Bot::mock`]: #method.mock
+/// [`Methods`]: ./methods/trait.Methods.html
 pub struct Bot {
     token: Arc<String>,
     #[cfg(feature = "proxy")]
@@ -102,7 +151,7 @@ pub struct Bot {
 }
 
 impl Bot {
-    /// Creates a new `Bot`.
+    /// Constructs a new `Bot`.
     pub fn new(token: String) -> Self {
         Self {
             token: Arc::new(token),
@@ -150,13 +199,13 @@ impl Bot {
 
     /// Sets the bot's username.
     ///
-    /// The username is used when checking whether a command e
-    /// `/command@username` was directed to this bot.
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
     pub fn username(&mut self, username: &'static str) {
         self.username = Some(username);
     }
 
-    /// Fetches this bot's username.
+    /// Fetches the bot's username.
     ///
     /// # Panics
     ///
@@ -202,6 +251,7 @@ impl Bot {
 
     /// Constructs a new `Bot`, extracting the token from the environment at
     /// _runtime_.
+    ///
     /// If you need to extract the token at _compile time_, use [`bot!`].
     ///
     /// [`bot!`]: ./macro.bot.html
@@ -221,13 +271,14 @@ impl Bot {
         }))
     }
 
-    /// Starts configuring polling.
+    /// Starts polling configuration.
     pub const fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
     }
 
-    /// Starts configuring webhook. See our [wiki] to learn how to use webhook
-    /// with `tbot`.
+    /// Starts webhook configuration.
+    ///
+    /// See our [wiki] to learn how to use webhook with `tbot`.
     ///
     /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
     pub fn webhook(self, url: &str, port: u16) -> Webhook<'_> {
@@ -240,9 +291,7 @@ impl Bot {
         self.proxy = Some(proxy);
     }
 
-    /// Creates a new [`MockBot`] based on this bot.
-    ///
-    /// [`MockBot`]: ./struct.MockBot.html
+    /// Creates a new `MockBot` inheriting the token from this bot.
     pub fn mock(&self) -> MockBot {
         MockBot::new(
             Arc::clone(&self.token),
@@ -279,7 +328,7 @@ impl Bot {
         }
     }
 
-    /// Adds a new handler for the /start command.
+    /// Adds a new handler for the `/start` command.
     pub fn start(
         &mut self,
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
@@ -287,7 +336,7 @@ impl Bot {
         self.command("start", handler);
     }
 
-    /// Adds a new handler for the /settings command.
+    /// Adds a new handler for the `/settings` command.
     pub fn settings(
         &mut self,
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
@@ -295,7 +344,7 @@ impl Bot {
         self.command("settings", handler);
     }
 
-    /// Adds a new handler for the /help command.
+    /// Adds a new handler for the `/help` command.
     pub fn help(
         &mut self,
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
@@ -552,7 +601,7 @@ impl Bot {
         will_handle_text,
     }
 
-    /// Adds a new handler for unhandled events.
+    /// Adds a new handler for unhandled updates.
     pub fn unhandled(
         &mut self,
         handler: impl FnMut(&contexts::Unhandled) + Send + Sync + 'static,
