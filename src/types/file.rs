@@ -6,9 +6,12 @@ use serde::*;
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct File {
     /// The ID of the file.
-    pub file_id: String,
+    #[serde(rename = "file_id")]
+    pub id: String,
     /// The size fo the file.
-    pub file_size: Option<u32>,
+    #[serde(rename = "file_size")]
+    pub size: Option<u32>,
     /// The path of the file.
-    pub file_path: Option<String>,
+    #[serde(rename = "file_path")]
+    pub path: Option<String>,
 }
