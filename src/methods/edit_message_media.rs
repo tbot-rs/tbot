@@ -53,7 +53,7 @@ impl<'a> EditMessageMedia<'a> {
         let reply_markup =
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
 
-        let mut multipart = Multipart::new(4)
+        let mut multipart = Multipart::new(5)
             .str("chat_id", &chat_id)
             .str("message_id", &message_id)
             .maybe_string("reply_markup", &reply_markup);

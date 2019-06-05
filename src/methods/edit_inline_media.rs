@@ -43,7 +43,7 @@ impl<'a> EditInlineMedia<'a> {
         let reply_markup =
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
 
-        let mut multipart = Multipart::new(3)
+        let mut multipart = Multipart::new(4)
             .str("inline_message_id", self.inline_message_id)
             .maybe_string("reply_markup", &reply_markup);
 
