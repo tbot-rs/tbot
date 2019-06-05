@@ -72,7 +72,7 @@ impl<'a> SendSticker<'a> {
             .reply_markup
             .and_then(|markup| serde_json::to_string(&markup).ok());
 
-        let mut multipart = Multipart::new(7)
+        let mut multipart = Multipart::new(5)
             .str("chat_id", &chat_id)
             .maybe_string("disabled_notification", &is_disabled)
             .maybe_string("reply_to_message_id", &reply_to)
