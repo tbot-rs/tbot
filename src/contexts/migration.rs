@@ -1,37 +1,12 @@
-common! {
-    /// The context for [`migration`][handler] handlers.
-    ///
-    /// This context does not provide the `chat` field to prevent possible
-    /// wrong expectations for `chat.id` to be the old ID.
-    ///
-    /// [handler]: ../struct.Bot.html#method.migration
+message_base! {
     struct Migration {
-        /// ID of the message.
-        message_id: u32,
-        /// The author of the message.
-        from: types::User,
-        /// The timestamp of the message.
-        date: i64,
         /// The old ID of the group.
         old_id: i64,
-        /// The new ID of the group.
-        new_id: i64,
-    }
-}
+    } -> Bot::migration
 
-impl Migration {
-    pub(crate) fn new(
-        bot: Arc<MockBot>,
-        data: types::MessageData,
-        old_id: i64,
-    ) -> Self {
+    fn new(old_id: i64,) -> Self {
         Self {
-            bot,
-            message_id: data.id,
-            from: data.from.expect("\n[tbot] Expected `from` to exist on a `migration_from_chat_id` update\n"),
-            date: data.date,
-            old_id,
-            new_id: data.chat.id,
+            old_id: old_id,
         }
     }
 }
