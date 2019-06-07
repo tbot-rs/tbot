@@ -25,6 +25,8 @@ pub enum Updates {
     ShippingQuery,
     /// Handles pre-checkout query.
     PreCheckoutQuery,
+    /// Handles poll state updates.
+    Poll,
 }
 
 /// Represents different types of updates from Telegram.
