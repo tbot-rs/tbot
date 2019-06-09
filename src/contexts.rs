@@ -10,7 +10,7 @@
 //! let mut bot = tbot::bot!("BOT_TOKEN");
 //!
 //! bot.text(|context| {
-//!     let reversed: String = context.text.text.chars().rev().collect();
+//!     let reversed: String = context.text.value.chars().rev().collect();
 //!     let reply = context
 //!         .send_message_in_reply(&reversed)
 //!         .into_future()

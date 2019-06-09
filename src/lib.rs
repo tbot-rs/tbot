@@ -7,7 +7,7 @@
 //!
 //! bot.text(|context| {
 //!     let reply = context
-//!         .send_message(&context.text.text)
+//!         .send_message(&context.text.value)
 //!         .into_future()
 //!         .map_err(|error| {
 //!             dbg!(error);
