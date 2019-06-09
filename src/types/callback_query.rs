@@ -5,7 +5,7 @@ use super::*;
 // todo: #[non_exhaustive]
 pub enum CallbackOrigin {
     /// The callback comes from this message.
-    Message(Message),
+    Message(Box<Message>),
     /// The callback comes from an inline message with this ID.
     Inline(String),
 }
