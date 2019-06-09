@@ -34,7 +34,7 @@ pub struct Forward {
 #[derive(Debug, PartialEq, Clone)]
 pub struct Text {
     /// The text/caption. If there's no text, will be empty.
-    pub text: String,
+    pub value: String,
     /// The entities in the text/caption. If there are none, will be empty.
     pub entities: Vec<MessageEntity>,
 }
@@ -391,13 +391,13 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         };
 
         let caption = Text {
-            text: caption.unwrap_or_else(String::new),
+            value: caption.unwrap_or_else(String::new),
             entities: caption_entities.unwrap_or_else(Vec::new),
         };
 
-        let kind = if let Some(text) = text {
+        let kind = if let Some(value) = text {
             let text = Text {
-                text,
+                value,
                 entities: entities.unwrap_or_else(Vec::new),
             };
 

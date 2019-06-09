@@ -1334,7 +1334,8 @@ fn is_command(text: &types::Text) -> bool {
 }
 
 fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
-    let mut iter = text.text.split_whitespace().next().unwrap()[1..].split('@');
+    let mut iter =
+        text.value.split_whitespace().next().unwrap()[1..].split('@');
 
     let command = iter.next().unwrap();
     let username = iter.next();
@@ -1345,15 +1346,15 @@ fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
 fn trim_command(text: types::Text) -> types::Text {
     let mut entities = text.entities.into_iter();
     let command_entity = entities.next().unwrap();
-    let old_length = text.text.chars().count();
+    let old_length = text.value.chars().count();
 
-    let text: String = text
-        .text
+    let value: String = text
+        .value
         .chars()
         .skip(command_entity.length)
         .skip_while(|x| x.is_whitespace())
         .collect();
-    let new_length = text.chars().count();
+    let new_length = value.chars().count();
 
     let entities = entities
         .map(|entity| types::MessageEntity {
@@ -1364,7 +1365,7 @@ fn trim_command(text: types::Text) -> types::Text {
         .collect();
 
     types::Text {
-        text,
+        value,
         entities,
     }
 }

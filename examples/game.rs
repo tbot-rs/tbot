@@ -35,7 +35,7 @@ fn main() {
 
     bot.text(move |context| {
         if let Some(user) = &context.from {
-            let text = context.text.text.to_lowercase();
+            let text = context.text.value.to_lowercase();
             let good_score = text.matches(GOOD_PHRASE).count() as i32;
             let bad_score = text.matches(BAD_PHRASE).count() as i32;
             let score =
