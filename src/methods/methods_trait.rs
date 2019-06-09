@@ -2,7 +2,7 @@ use super::*;
 use types::input_file::*;
 
 /// Provides methods for calling API that infer your bot's token.
-pub trait Methods<'a> {
+pub trait Methods<'a>: crate::Sealed {
     #[doc(hidden)]
     fn token(&self) -> &str;
 

@@ -15,5 +15,7 @@ macro_rules! common {
             pub bot: Arc<MockBot>,
             $(#[doc = $field_doc] pub $field: $type,)+
         }
+
+        impl crate::Sealed for $name { }
     }
 }

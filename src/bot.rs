@@ -1281,6 +1281,8 @@ impl Bot {
     }
 }
 
+impl crate::Sealed for Bot {}
+
 impl Methods<'_> for Bot {
     fn token(&self) -> &str {
         &self.token

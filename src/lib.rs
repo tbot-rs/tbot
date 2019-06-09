@@ -44,6 +44,7 @@
 #![allow(clippy::multiple_crate_versions)] // can't do much
 
 mod bot;
+mod internal;
 mod multipart;
 
 pub mod contexts;
@@ -52,7 +53,7 @@ pub mod types;
 
 pub use bot::*;
 use serde::{Deserialize, Serialize};
-use {multipart::*, prelude::*};
+use {internal::*, multipart::*, prelude::*};
 
 #[cfg(feature = "proxy")]
 pub use hyper_proxy as proxy;
