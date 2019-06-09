@@ -6,3 +6,5 @@ mod message_base;
 mod media_message;
 #[macro_use]
 mod edited_message;
+#[macro_use]
+mod callback;

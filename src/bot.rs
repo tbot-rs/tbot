@@ -6,7 +6,7 @@ use std::{
 };
 use {
     methods::GetUpdates,
-    types::{Message, MessageKind, UpdateKind},
+    types::{Message, MessageKind, UpdateKind, CallbackKind, CallbackQuery},
 };
 
 #[macro_use]
@@ -27,6 +27,7 @@ type AnimationHandler = Handler<contexts::Animation>;
 type AudioHandler = Handler<contexts::Audio>;
 type ContactHandler = Handler<contexts::Contact>;
 type CreatedGroupHandler = Handler<contexts::CreatedGroup>;
+type DataCallbackHandler = Handler<contexts::DataCallback>;
 type DeletedChatPhotoHandler = Handler<contexts::DeletedChatPhoto>;
 type DocumentHandler = Handler<contexts::Document>;
 type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
@@ -36,6 +37,7 @@ type EditedLocationHandler = Handler<contexts::EditedLocation>;
 type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
 type EditedTextHandler = Handler<contexts::EditedText>;
 type EditedVideoHandler = Handler<contexts::EditedVideo>;
+type GameCallbackHandler = Handler<contexts::GameCallback>;
 type GameHandler = Handler<contexts::Game>;
 type LeftMemberHandler = Handler<contexts::LeftMember>;
 type LocationHandler = Handler<contexts::Location>;
@@ -70,6 +72,7 @@ pub struct Bot {
     before_update_handlers: Handlers<UpdateHandler>,
     contact_handlers: Handlers<ContactHandler>,
     created_group_handlers: Handlers<CreatedGroupHandler>,
+    data_callback_handlers: Handlers<DataCallbackHandler>,
     deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler>,
     document_handlers: Handlers<DocumentHandler>,
     edited_animation_handlers: Handlers<EditedAnimationHandler>,
@@ -79,6 +82,7 @@ pub struct Bot {
     edited_photo_handlers: Handlers<EditedPhotoHandler>,
     edited_text_handlers: Handlers<EditedTextHandler>,
     edited_video_handlers: Handlers<EditedVideoHandler>,
+    game_callback_handlers: Handlers<GameCallbackHandler>,
     game_handlers: Handlers<GameHandler>,
     left_member_handlers: Handlers<LeftMemberHandler>,
     location_handlers: Handlers<LocationHandler>,
@@ -116,6 +120,7 @@ impl Bot {
             before_update_handlers: Vec::new(),
             contact_handlers: Vec::new(),
             created_group_handlers: Vec::new(),
+            data_callback_handlers: Vec::new(),
             deleted_chat_photo_handlers: Vec::new(),
             document_handlers: Vec::new(),
             edited_animation_handlers: Vec::new(),
@@ -125,6 +130,7 @@ impl Bot {
             edited_photo_handlers: Vec::new(),
             edited_text_handlers: Vec::new(),
             edited_video_handlers: Vec::new(),
+            game_callback_handlers: Vec::new(),
             game_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
@@ -378,6 +384,14 @@ impl Bot {
     }
 
     handler! {
+        data_callback_handlers,
+        data_callback,
+        contexts::DataCallback,
+        run_data_callback_handlers,
+        will_handle_data_callback,
+    }
+
+    handler! {
         deleted_chat_photo_handlers,
         deleted_chat_photo,
         contexts::DeletedChatPhoto,
@@ -447,6 +461,14 @@ impl Bot {
         contexts::EditedVideo,
         run_edited_video_handlers,
         will_handle_edited_video,
+    }
+
+    handler! {
+        game_callback_handlers,
+        game_callback,
+        contexts::GameCallback,
+        run_game_callback_handlers,
+        will_handle_game_callback,
     }
 
     handler! {
@@ -643,6 +665,40 @@ impl Bot {
                     self.run_unhandled_handlers(mock_bot, update);
                 }
             }
+            UpdateKind::CallbackQuery(query) => match query.kind {
+                CallbackKind::Data(data) => {
+                    if self.will_handle_data_callback() {
+                        let context = contexts::DataCallback::new(mock_bot, query.id, query.from, query.origin, query.chat_instance, data);
+
+                        self.run_data_callback_handlers(&context);
+                    } else if self.will_handle_unhandled() {
+                        let kind = CallbackKind::Data(data);
+                        let query = CallbackQuery {
+                            kind,
+                            ..query
+                        };
+                        let update = UpdateKind::CallbackQuery(query);
+
+                        self.run_unhandled_handlers(mock_bot, update);
+                    }
+                }
+                CallbackKind::Game(game) => {
+                    if self.will_handle_game_callback() {
+                        let context = contexts::GameCallback::new(mock_bot, query.id, query.from, query.origin, query.chat_instance, game);
+
+                        self.run_game_callback_handlers(&context);
+                    } else if self.will_handle_unhandled() {
+                        let kind = CallbackKind::Game(game);
+                        let query = CallbackQuery {
+                            kind,
+                            ..query
+                        };
+                        let update = UpdateKind::CallbackQuery(query);
+
+                        self.run_unhandled_handlers(mock_bot, update);
+                    }
+                }
+            },
             update @ UpdateKind::Unknown => {
                 self.run_unhandled_handlers(mock_bot, update);
             }
