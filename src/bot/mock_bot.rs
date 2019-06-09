@@ -40,6 +40,8 @@ impl MockBot {
     }
 }
 
+impl crate::Sealed for MockBot {}
+
 impl Methods<'_> for MockBot {
     fn token(&self) -> &str {
         &self.token
