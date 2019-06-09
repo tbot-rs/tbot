@@ -6,7 +6,7 @@ use std::{
 };
 use {
     methods::GetUpdates,
-    types::{Message, MessageKind, UpdateKind, CallbackKind, CallbackQuery},
+    types::{CallbackKind, CallbackQuery, Message, MessageKind, UpdateKind},
 };
 
 #[macro_use]
@@ -668,7 +668,14 @@ impl Bot {
             UpdateKind::CallbackQuery(query) => match query.kind {
                 CallbackKind::Data(data) => {
                     if self.will_handle_data_callback() {
-                        let context = contexts::DataCallback::new(mock_bot, query.id, query.from, query.origin, query.chat_instance, data);
+                        let context = contexts::DataCallback::new(
+                            mock_bot,
+                            query.id,
+                            query.from,
+                            query.origin,
+                            query.chat_instance,
+                            data,
+                        );
 
                         self.run_data_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
@@ -684,7 +691,14 @@ impl Bot {
                 }
                 CallbackKind::Game(game) => {
                     if self.will_handle_game_callback() {
-                        let context = contexts::GameCallback::new(mock_bot, query.id, query.from, query.origin, query.chat_instance, game);
+                        let context = contexts::GameCallback::new(
+                            mock_bot,
+                            query.id,
+                            query.from,
+                            query.origin,
+                            query.chat_instance,
+                            game,
+                        );
 
                         self.run_game_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
