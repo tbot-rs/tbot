@@ -26,6 +26,7 @@ mod game_high_score;
 mod invoice;
 mod keyboards;
 mod location;
+mod login_url;
 mod mask_position;
 mod message;
 mod message_entity;
@@ -47,8 +48,8 @@ pub use {
     animation::*, audio::*, callback_game::*, callback_query::*, chat::*,
     chat_action::*, chat_id::*, chat_member::*, chat_photo::*, chat_types::*,
     contact::*, document::*, file::*, game::*, game_high_score::*, invoice::*,
-    keyboards::*, location::*, mask_position::*, message::*, message_entity::*,
-    parse_mode::*, photo_size::*, poll::*, sticker::*, sticker_set::*,
-    updates::*, user::*, user_profile_photos::*, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::*,
+    keyboards::*, location::*, login_url::*, mask_position::*, message::*,
+    message_entity::*, parse_mode::*, photo_size::*, poll::*, sticker::*,
+    sticker_set::*, updates::*, user::*, user_profile_photos::*, venue::*,
+    video::*, video_note::*, voice::*, webhook_info::*,
 };
