@@ -72,9 +72,13 @@ pub struct AnswerCallbackQuery<'a> {
     #[serde(skip)]
     token: &'a str,
     callback_query_id: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     show_alert: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u32>,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
