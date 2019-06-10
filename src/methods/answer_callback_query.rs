@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
-/// 
+///
 /// Though you can consturct variants directly, there are convenient methods
 /// to do that: [`none`], [`notification`], [`alert`], [`url`].
 ///
@@ -22,7 +22,7 @@ pub enum CallbackAnswerAction<'a> {
 
 impl<'a> CallbackAnswerAction<'a> {
     /// Constructs the `None` variant.
-    pub fn none() -> Self {
+    pub const fn none() -> Self {
         CallbackAnswerAction::None
     }
 
