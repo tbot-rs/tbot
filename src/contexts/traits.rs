@@ -1,5 +1,5 @@
-//! This module contains several traits for different types of events
-//! to simplify calling some methods.
+//! Contains traits for updates that infer some data from them, simplifying
+//! calling several methods.
 
 use super::*;
 use crate::methods::*;

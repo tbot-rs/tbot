@@ -23,20 +23,20 @@ impl<'a> ReplyButton<'a> {
         }
     }
 
-    /// Sets `request_contact` to `Some(is_requested)`.
+    /// Configures `request_contact`.
     pub fn request_contact(mut self, is_requested: bool) -> Self {
         self.request_contact = Some(is_requested);
         self
     }
 
-    /// Sets `request_localization` to `Some(is_requested)`.
+    /// Configures `request_localization`.
     pub fn request_localization(mut self, is_requested: bool) -> Self {
         self.request_localization = Some(is_requested);
         self
     }
 }
 
-/// Represents Telegram's [`ReplyKeyboardMarkup`].
+/// Represents a [`ReplyKeyboardMarkup`].
 ///
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
@@ -61,19 +61,19 @@ impl<'a> ReplyKeyboard<'a> {
         }
     }
 
-    /// Sets `resize_keyboard` to `Some(is_resized)`.
+    /// Configures `resize_keyboard`.
     pub fn resize_keyboard(mut self, is_resized: bool) -> Self {
         self.resize_keyboard = Some(is_resized);
         self
     }
 
-    /// Sets `one_time_keyboard` to `Some(is_one_time)`.
+    /// Configures `one_time_keyboard`.
     pub fn one_time_keyboard(mut self, is_one_time: bool) -> Self {
         self.one_time_keyboard = Some(is_one_time);
         self
     }
 
-    /// Sets `selective` to `Some(is_selective)`.
+    /// Configures `selective`.
     pub fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self

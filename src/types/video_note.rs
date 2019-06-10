@@ -11,8 +11,8 @@ pub struct VideoNote {
     pub length: u32,
     /// The duration of the video note.
     pub duration: u32,
-    /// The thumb ID of the video_note.
+    /// The thumb ID of the video note.
     pub thumb: Option<PhotoSize>,
-    /// The video note file's size.
+    /// The file size of the video note.
     pub file_size: Option<u32>,
 }

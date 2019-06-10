@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`editMessageReplyMarkup`][docs] method for when the
-/// message was sent by the bot.
+/// Represents the [`editMessageReplyMarkup`][docs] method for chat messsages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagereplymarkup
 #[derive(Serialize)]

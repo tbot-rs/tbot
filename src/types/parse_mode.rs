@@ -1,6 +1,6 @@
 use super::*;
 
-/// Represents what markup the text is in.
+/// Represents the markup language of a message.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub enum ParseMode {
     /// The message will be parsed as Markdown.

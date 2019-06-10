@@ -1,17 +1,18 @@
 use super::*;
 
-/// Struct that isn't actually a [`Bot`], but has all the methods for calling
-/// the API inferring token.
+/// A struct that implementes [`Methods`] and inherits the token from a [`Bot`].
 ///
-/// It is used in contexts to imitate that `context.bot` is a [`Bot`], but it
-/// actually isn't. Using the real `Bot` is complicated and could actually lead
-/// to confusing error messages by the compiler on the user's side.
+/// In some cases, you may want to clone a [`Bot`] to call a method. However,
+/// you can't do it because a [`Bot`] also contains data for updata handling.
+/// Instead, you can call [`Bot::mock`] to construct this struct that implements
+/// the [`Methods`] trait but has no handling logic. For example, `tbot` uses
+/// `MockBot` in [contexts] to provide the ability to call any API method
+/// in a handler.
 ///
-/// You can also construct it with [`Bot::mock`] whenever you feel like cloning
-/// a [`Bot`] to call API methods outside `tbot`.
-///
+/// [`Methods`]: ./methods/trait.Method.html
 /// [`Bot`]: ./struct.Bot.html
 /// [`Bot::mock`]: ./struct.Bot.html#method.mock
+/// [contexts]: ./contexts/
 #[derive(Clone)]
 pub struct MockBot {
     token: Arc<String>,
@@ -38,6 +39,8 @@ impl MockBot {
         }
     }
 }
+
+impl crate::Sealed for MockBot {}
 
 impl Methods<'_> for MockBot {
     fn token(&self) -> &str {

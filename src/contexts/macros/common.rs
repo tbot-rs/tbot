@@ -11,9 +11,11 @@ macro_rules! common {
         $(#[doc = $doc])+
         #[derive(Clone)]
         pub struct $name {
-            /// A mock bot with all API methods.
+            /// A mock bot for calling API without information inference.
             pub bot: Arc<MockBot>,
             $(#[doc = $field_doc] pub $field: $type,)+
         }
+
+        impl crate::Sealed for $name { }
     }
 }

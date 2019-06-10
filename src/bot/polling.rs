@@ -1,6 +1,6 @@
 use super::{methods::DeleteWebhook, *};
 
-/// Configures polling and runs it.
+/// Configures and starts polling.
 ///
 /// To construct `Polling`, use [`Bot::polling`].
 ///

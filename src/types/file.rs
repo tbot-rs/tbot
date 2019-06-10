@@ -5,10 +5,13 @@ use serde::*;
 /// [`File`]: https://core.telegram.org/bots/api#file
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct File {
-    /// The file's ID.
-    pub file_id: String,
-    /// The file's size.
-    pub file_size: Option<u32>,
-    /// The file's name.
-    pub file_path: Option<String>,
+    /// The ID of the file.
+    #[serde(rename = "file_id")]
+    pub id: String,
+    /// The size fo the file.
+    #[serde(rename = "file_size")]
+    pub size: Option<u32>,
+    /// The path of the file.
+    #[serde(rename = "file_path")]
+    pub path: Option<String>,
 }

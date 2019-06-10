@@ -1,8 +1,7 @@
 use super::*;
 use types::input_file::*;
 
-/// Represents the [`editMessageMedia`][docs] method for when the message was
-/// sent by the bot.
+/// Represents the [`editMessageMedia`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[must_use = "methods do nothing unless turned into a future"]
@@ -54,7 +53,7 @@ impl<'a> EditMessageMedia<'a> {
         let reply_markup =
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
 
-        let mut multipart = Multipart::new(4)
+        let mut multipart = Multipart::new(5)
             .str("chat_id", &chat_id)
             .str("message_id", &message_id)
             .maybe_string("reply_markup", &reply_markup);

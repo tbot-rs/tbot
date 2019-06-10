@@ -2,15 +2,15 @@ use super::*;
 
 /// Represents a [`StickerSet`].
 ///
-/// [`SticketSet`]: https://core.telegram.org/bots/api#stickerset
+/// [`StickerSet`]: https://core.telegram.org/bots/api#stickerset
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct StickerSet {
-    /// The sticker set's name.
+    /// The name of the sticker set (used in URLs).
     pub name: String,
-    /// The sticker set's title.
+    /// The title of the sticker set (shown to the user).
     pub title: String,
-    /// Whehter the sticket set has masks.
+    /// `true` if the sticket set has masks.
     pub contains_masks: bool,
-    /// The stickers of this set.
+    /// The stickers from this set.
     pub stickers: Vec<Sticker>,
 }

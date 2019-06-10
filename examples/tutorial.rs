@@ -4,7 +4,7 @@ fn main() {
     let mut bot = tbot::bot!("BOT_TOKEN");
 
     bot.text(|context| {
-        let message = match meval::eval_str(&context.text.text) {
+        let message = match meval::eval_str(&context.text.value) {
             Ok(result) => format!("= `{}`", result),
             Err(_) => "Whops, I couldn't evaluate your expression :(".into(),
         };

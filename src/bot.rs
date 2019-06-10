@@ -59,7 +59,56 @@ type VideoHandler = Handler<contexts::Video>;
 type VideoNoteHandler = Handler<contexts::VideoNote>;
 type VoiceHandler = Handler<contexts::Voice>;
 
-/// Represents a bot and provides convenient methods to work with the API.
+/// Provides an event loop for handling Telegram updates, as well as methods
+/// to call API methods.
+///
+/// The main purpose of a `Bot` is to configure update handlers and start
+/// the event loop:
+///
+/// ```no_run
+/// let mut bot = tbot::bot!("BOT_TOKEN");
+///
+/// bot.text(|_| println!("Got a text message"));
+///
+/// bot.polling().start();
+/// ```
+///
+/// `tbot` has many update handlers, such as [`text`] you have seen
+/// in the example. You can find all of them below on this page. Speaking
+/// of the event loop, `tbot` supports [polling] and [webhook].
+///
+/// A `Bot` also implements the [`Methods`] trait which provides handy methods
+/// on the struct to call API methods:
+///
+/// ```no_run
+/// use tbot::prelude::*;
+///
+/// let bot = tbot::bot!("BOT_TOKEN");
+///
+/// let me = bot
+///     .get_me()
+///     .into_future()
+///     .map(|me| {
+///         dbg!(me);
+///     })
+///     .map_err(|err| {
+///         dbg!(err);
+///     });
+///
+/// tbot::run(me);
+/// ```
+///
+/// Note, however, that starting an event loop takes ownership of `Bot`, so, if
+/// you need to call an API method after that, construct a [`MockBot`] with
+/// [`Bot::mock`] that has no handling logic and thus can be cloned as much
+/// as needed.
+///
+/// [polling]: #method.polling
+/// [webhooks]: #method.webhook
+/// [`text`]: #method.text
+/// [`MockBot`]: ./struct.MockBot.html
+/// [`Bot::mock`]: #method.mock
+/// [`Methods`]: ./methods/trait.Methods.html
 pub struct Bot {
     token: Arc<String>,
     #[cfg(feature = "proxy")]
@@ -106,7 +155,7 @@ pub struct Bot {
 }
 
 impl Bot {
-    /// Creates a new `Bot`.
+    /// Constructs a new `Bot`.
     pub fn new(token: String) -> Self {
         Self {
             token: Arc::new(token),
@@ -156,13 +205,13 @@ impl Bot {
 
     /// Sets the bot's username.
     ///
-    /// The username is used when checking whether a command e
-    /// `/command@username` was directed to this bot.
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
     pub fn username(&mut self, username: &'static str) {
         self.username = Some(username);
     }
 
-    /// Fetches this bot's username.
+    /// Fetches the bot's username.
     ///
     /// # Panics
     ///
@@ -208,6 +257,7 @@ impl Bot {
 
     /// Constructs a new `Bot`, extracting the token from the environment at
     /// _runtime_.
+    ///
     /// If you need to extract the token at _compile time_, use [`bot!`].
     ///
     /// [`bot!`]: ./macro.bot.html
@@ -227,13 +277,14 @@ impl Bot {
         }))
     }
 
-    /// Starts configuring polling.
+    /// Starts polling configuration.
     pub const fn polling<'a>(self) -> Polling<'a> {
         Polling::new(self)
     }
 
-    /// Starts configuring webhook. See our [wiki] to learn how to use webhook
-    /// with `tbot`.
+    /// Starts webhook configuration.
+    ///
+    /// See our [wiki] to learn how to use webhook with `tbot`.
     ///
     /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
     pub fn webhook(self, url: &str, port: u16) -> Webhook<'_> {
@@ -246,9 +297,7 @@ impl Bot {
         self.proxy = Some(proxy);
     }
 
-    /// Creates a new [`MockBot`] based on this bot.
-    ///
-    /// [`MockBot`]: ./struct.MockBot.html
+    /// Creates a new `MockBot` inheriting the token from this bot.
     pub fn mock(&self) -> MockBot {
         MockBot::new(
             Arc::clone(&self.token),
@@ -285,7 +334,7 @@ impl Bot {
         }
     }
 
-    /// Adds a new handler for the /start command.
+    /// Adds a new handler for the `/start` command.
     pub fn start(
         &mut self,
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
@@ -293,7 +342,7 @@ impl Bot {
         self.command("start", handler);
     }
 
-    /// Adds a new handler for the /settings command.
+    /// Adds a new handler for the `/settings` command.
     pub fn settings(
         &mut self,
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
@@ -301,7 +350,7 @@ impl Bot {
         self.command("settings", handler);
     }
 
-    /// Adds a new handler for the /help command.
+    /// Adds a new handler for the `/help` command.
     pub fn help(
         &mut self,
         handler: impl FnMut(&contexts::Text) + Send + Sync + 'static,
@@ -338,6 +387,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler which is run after handling an update.
         after_update_handlers,
         after_update,
         contexts::Update,
@@ -345,6 +395,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for animations.
         animation_handlers,
         animation,
         contexts::Animation,
@@ -353,6 +404,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for audio.
         audio_handlers,
         audio,
         contexts::Audio,
@@ -361,6 +413,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler which is run before handling an update.
         before_update_handlers,
         before_update,
         contexts::Update,
@@ -368,6 +421,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for contacts.
         contact_handlers,
         contact,
         contexts::Contact,
@@ -376,6 +430,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for created groups.
         created_group_handlers,
         created_group,
         contexts::CreatedGroup,
@@ -400,6 +455,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for documents.
         document_handlers,
         document,
         contexts::Document,
@@ -408,6 +464,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited animations.
         edited_animation_handlers,
         edited_animation,
         contexts::EditedAnimation,
@@ -416,6 +473,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited audio.
         edited_audio_handlers,
         edited_audio,
         contexts::EditedAudio,
@@ -424,6 +482,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited documents.
         edited_document_handlers,
         edited_document,
         contexts::EditedDocument,
@@ -432,6 +491,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited locations.
         edited_location_handlers,
         edited_location,
         contexts::EditedLocation,
@@ -440,6 +500,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited photos.
         edited_photo_handlers,
         edited_photo,
         contexts::EditedPhoto,
@@ -448,6 +509,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited text messages.
         edited_text_handlers,
         edited_text,
         contexts::EditedText,
@@ -456,6 +518,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for edited videos.
         edited_video_handlers,
         edited_video,
         contexts::EditedVideo,
@@ -480,6 +543,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for left members.
         left_member_handlers,
         left_member,
         contexts::LeftMember,
@@ -488,6 +552,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for locations.
         location_handlers,
         location,
         contexts::Location,
@@ -496,6 +561,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for migrations.
         migration_handlers,
         migration,
         contexts::Migration,
@@ -504,6 +570,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new chat photos.
         new_chat_photo_handlers,
         new_chat_photo,
         contexts::NewChatPhoto,
@@ -512,6 +579,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new chat titles.
         new_chat_title_handlers,
         new_chat_title,
         contexts::NewChatTitle,
@@ -520,6 +588,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new members.
         new_members_handlers,
         new_members,
         contexts::NewMembers,
@@ -528,6 +597,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for photos.
         photo_handlers,
         photo,
         contexts::Photo,
@@ -536,6 +606,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for pinned messages.
         pinned_message_handlers,
         pinned_message,
         contexts::PinnedMessage,
@@ -544,6 +615,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for poll messages.
         poll_handlers,
         poll,
         contexts::Poll,
@@ -552,6 +624,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for polling errors.
         polling_error_handlers,
         polling_error,
         methods::DeliveryError,
@@ -559,6 +632,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for stickers.
         sticker_handlers,
         sticker,
         contexts::Sticker,
@@ -567,6 +641,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for text messages.
         text_handlers,
         text,
         contexts::Text,
@@ -574,7 +649,7 @@ impl Bot {
         will_handle_text,
     }
 
-    /// Adds a new handler for unhandled events.
+    /// Adds a new handler for unhandled updates.
     pub fn unhandled(
         &mut self,
         handler: impl FnMut(&contexts::Unhandled) + Send + Sync + 'static,
@@ -599,6 +674,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for new states of polls.
         updated_poll_handlers,
         updated_poll,
         contexts::UpdatedPoll,
@@ -607,6 +683,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for venues.
         venue_handlers,
         venue,
         contexts::Venue,
@@ -615,6 +692,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for videos.
         video_handlers,
         video,
         contexts::Video,
@@ -623,6 +701,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for video notes.
         video_note_handlers,
         video_note,
         contexts::VideoNote,
@@ -631,6 +710,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for voice messages.
         voice_handlers,
         voice,
         contexts::Voice,
@@ -1269,6 +1349,8 @@ impl Bot {
     }
 }
 
+impl crate::Sealed for Bot {}
+
 impl Methods<'_> for Bot {
     fn token(&self) -> &str {
         &self.token
@@ -1280,11 +1362,12 @@ impl Methods<'_> for Bot {
     }
 }
 
-/// Constructs a new `Bot`, extracting the token from the environment at
+/// Constructs a new [`Bot`], extracting the token from the environment at
 /// _compile time_.
 ///
 /// If you need to extract the token at _runtime_, use [`Bot::from_env`].
 ///
+/// [`Bot`]: ./struct.Bot.html
 /// [`Bot::from_env`]: ./struct.Bot.html#method.from_env
 ///
 /// # Example
@@ -1319,7 +1402,8 @@ fn is_command(text: &types::Text) -> bool {
 }
 
 fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
-    let mut iter = text.text.split_whitespace().next().unwrap()[1..].split('@');
+    let mut iter =
+        text.value.split_whitespace().next().unwrap()[1..].split('@');
 
     let command = iter.next().unwrap();
     let username = iter.next();
@@ -1330,15 +1414,15 @@ fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
 fn trim_command(text: types::Text) -> types::Text {
     let mut entities = text.entities.into_iter();
     let command_entity = entities.next().unwrap();
-    let old_length = text.text.chars().count();
+    let old_length = text.value.chars().count();
 
-    let text: String = text
-        .text
+    let value: String = text
+        .value
         .chars()
         .skip(command_entity.length)
         .skip_while(|x| x.is_whitespace())
         .collect();
-    let new_length = text.chars().count();
+    let new_length = value.chars().count();
 
     let entities = entities
         .map(|entity| types::MessageEntity {
@@ -1349,7 +1433,7 @@ fn trim_command(text: types::Text) -> types::Text {
         .collect();
 
     types::Text {
-        text,
+        value,
         entities,
     }
 }

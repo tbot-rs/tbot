@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`editMessageText`][docs] method for when the message was
-/// sent by the bot via the inline mode.
+/// Represents the [`editMessageText`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagetext
 #[derive(Serialize)]

@@ -1,8 +1,8 @@
 use super::*;
 use types::input_file::*;
 
-/// Provides API methods that infer the bot's token.
-pub trait Methods<'a> {
+/// Provides methods for calling API that infer your bot's token.
+pub trait Methods<'a>: crate::Sealed {
     #[doc(hidden)]
     fn token(&self) -> &str;
 
@@ -26,9 +26,7 @@ pub trait Methods<'a> {
         method
     }
 
-    /// Constructs a new [`AddStickerToSet`] inferring `token`.
-    ///
-    /// [`AddStickerToSet`]: ./struct.AddStickerToSet.html
+    /// Constructs a new `AddStickerToSet` inferring your bot's token.
     fn add_sticker_to_set(
         &'a self,
         user_id: i64,
@@ -45,9 +43,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`CreateNewStickerSet`] inferring `token`.
-    ///
-    /// [`CreateNewStickerSet`]: ./struct.CreateNewStickerSet.html
+    /// Constructs a new `CreateNewStickerSet` inferring your bot's token.
     fn create_new_sticker_set(
         &'a self,
         user_id: i64,
@@ -66,9 +62,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`DeleteChatPhoto`] inferring `token`.
-    ///
-    /// [`DeleteChatPhoto`]: ./struct.DeleteChatPhoto.html
+    /// Constructs a new `DeleteChatPhoto` inferring your bot's token.
     fn delete_chat_photo(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -79,9 +73,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`DeleteChatStickerSet`] inferring `token`.
-    ///
-    /// [`DeleteChatStickerSet`]: ./struct.DeleteChatStickerSet.html
+    /// Constructs a new `DeleteChatStickerSet` inferring your bot's token.
     fn delete_chat_sticker_set(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -92,9 +84,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`DeleteMessage`] inferring `token`.
-    ///
-    /// [`DeleteMessage`]: ./struct.DeleteMessage.html
+    /// Constructs a new `DeleteMessage` inferring your bot's token.
     fn delete_message(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -107,9 +97,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`DeleteStickerFromSet`] inferring `token`.
-    ///
-    /// [`DeleteStickerFromSet`]: ./struct.DeleteStickerFromSet.html
+    /// Constructs a new `DeleteStickerFromSet` inferring your bot's token.
     fn delete_sticker_from_set(
         &'a self,
         sticker: &'a str,
@@ -120,9 +108,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditInlineCaption`] inferring `token`.
-    ///
-    /// [`EditInlineCaption`]: ./struct.EditInlineCaption.html
+    /// Constructs a new `EditInlineCaption` inferring your bot's token.
     fn edit_inline_caption(
         &'a self,
         inline_message_id: &'a str,
@@ -135,9 +121,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditInlineLocation`] inferring `token`.
-    ///
-    /// [`EditInlineLocation`]: ./struct.EditInlineLocation.html
+    /// Constructs a new `EditInlineLocation` inferring your bot's token.
     fn edit_inline_location(
         &'a self,
         inline_message_id: &'a str,
@@ -150,9 +134,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditInlineMedia`] inferring `token`.
-    ///
-    /// [`EditInlineMedia`]: ./struct.EditInlineMedia.html
+    /// Constructs a new `EditInlineMedia` inferring your bot's token.
     fn edit_inline_media(
         &'a self,
         inline_message_id: &'a str,
@@ -165,9 +147,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditInlineReplyMarkup`] inferring `token`.
-    ///
-    /// [`EditInlineReplyMarkup`]: ./struct.EditInlineReplyMarkup.html
+    /// Constructs a new `EditInlineReplyMarkup` inferring your bot's token.
     fn edit_inline_reply_markup(
         &'a self,
         inline_message_id: &'a str,
@@ -180,9 +160,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditInlineText`] inferring `token`.
-    ///
-    /// [`EditInlineText`]: ./struct.EditInlineText.html
+    /// Constructs a new `EditInlineText` inferring your bot's token.
     fn edit_inline_text(
         &'a self,
         inline_message_id: &'a str,
@@ -195,9 +173,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditMessageCaption`] inferring `token`.
-    ///
-    /// [`EditMessageCaption`]: ./struct.EditMessageCaption.html
+    /// Constructs a new `EditMessageCaption` inferring your bot's token.
     fn edit_message_caption(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -212,9 +188,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditMessageLocation`] inferring `token`.
-    ///
-    /// [`EditMessageLocation`]: ./struct.EditMessageLocation.html
+    /// Constructs a new `EditMessageLocation` inferring your bot's token.
     fn edit_message_location(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -229,9 +203,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditMessageMedia`] inferring `token`.
-    ///
-    /// [`EditMessageMedia`]: ./struct.EditMessageMedia.html
+    /// Constructs a new `EditMessageMedia` inferring your bot's token.
     fn edit_message_media(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -246,9 +218,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditMessageReplyMarkup`] inferring `token`.
-    ///
-    /// [`EditMessageReplyMarkup`]: ./struct.EditMessageReplyMarkup.html
+    /// Constructs a new `EditMessageReplyMarkup` inferring your bot's token.
     fn edit_message_reply_markup(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -263,9 +233,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`EditMessageText`] inferring `token`.
-    ///
-    /// [`EditMessageText`]: ./struct.EditMessageText.html
+    /// Constructs a new `EditMessageText` inferring your bot's token.
     fn edit_message_text(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -280,9 +248,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`ExportChatInviteLink`] inferring `token`.
-    ///
-    /// [`ExportChatInviteLink`]: ./struct.ExportChatInviteLink.html
+    /// Constructs a new `ExportChatInviteLink` inferring your bot's token.
     fn export_chat_invite_link(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -293,9 +259,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`ForwardMessage`] inferring `token`.
-    ///
-    /// [`ForwardMessage`]: ./struct.ForwardMessage.html
+    /// Constructs a new `ForwardMessage` inferring your bot's token.
     fn forward_message(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -310,9 +274,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetChat`] inferring `token`.
-    ///
-    /// [`GetChat`]: ./struct.GetChat.html
+    /// Constructs a new `GetChat` inferring your bot's token.
     fn get_chat(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -320,9 +282,7 @@ pub trait Methods<'a> {
         self.prepare_method(methods::GetChat::new(self.token(), chat_id))
     }
 
-    /// Constructs a new [`GetInlineGameHighScores`] inferring `token`.
-    ///
-    /// [`GetInlineGameHighScores`]: ./struct.GetInlineGameHighScores.html
+    /// Constructs a new `GetInlineGameHighScores` inferring your bot's token.
     fn get_inline_game_high_scores(
         &'a self,
         inline_message_id: &'a str,
@@ -335,9 +295,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetChatAdministrators`] inferring `token`.
-    ///
-    /// [`GetChatAdministrators`]: ./struct.GetChatAdministrators.html
+    /// Constructs a new `GetChatAdministrators` inferring your bot's token.
     fn get_chat_administrators(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -348,9 +306,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetChatMember`] inferring `token`.
-    ///
-    /// [`GetChatMember`]: ./struct.GetChatMember.html
+    /// Constructs a new `GetChatMember` inferring your bot's token.
     fn get_chat_member(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -363,9 +319,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetChatMembersCount`] inferring `token`.
-    ///
-    /// [`GetChatMembersCount`]: ./struct.GetChatMembersCount.html
+    /// Constructs a new `GetChatMembersCount` inferring your bot's token.
     fn get_chat_members_count(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -376,9 +330,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetMessageGameHighScores`] inferring `token`.
-    ///
-    /// [`GetMessageGameHighScores`]: ./struct.GetMessageGameHighScores.html
+    /// Constructs a new `GetMessageGameHighScores` inferring your bot's token.
     fn get_message_game_high_scores(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -393,23 +345,17 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetMe`] inferring `token`.
-    ///
-    /// [`GetMe`]: ./struct.GetMe.html
+    /// Constructs a new `GetMe` inferring your bot's token.
     fn get_me(&'a self) -> methods::GetMe<'a> {
         self.prepare_method(methods::GetMe::new(self.token()))
     }
 
-    /// Constructs a new [`GetStickerSet`] inferring `token`.
-    ///
-    /// [`GetStickerSet`]: ./struct.GetStickerSet.html
+    /// Constructs a new `GetStickerSet` inferring your bot's token.
     fn get_sticker_set(&'a self, name: &'a str) -> methods::GetStickerSet<'a> {
         self.prepare_method(methods::GetStickerSet::new(self.token(), name))
     }
 
-    /// Constructs a new [`GetUserProfilePhotos`] inferring `token`.
-    ///
-    /// [`GetUserProfilePhotos`]: ./struct.GetUserProfilePhotos.html
+    /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
     fn get_user_profile_photos(
         &'a self,
         user_id: i64,
@@ -420,16 +366,12 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`GetWebhookInfo`] inferring `token`.
-    ///
-    /// [`GetWebhookInfo`]: ./struct.GetWebhookInfo.html
+    /// Constructs a new `GetWebhookInfo` inferring your bot's token.
     fn get_webhook_info(&'a self) -> methods::GetWebhookInfo<'a> {
         self.prepare_method(methods::GetWebhookInfo::new(self.token()))
     }
 
-    /// Constructs a new [`KickChatMember`] inferring `token`.
-    ///
-    /// [`KickChatMember`]: ./struct.KickChatMember.html
+    /// Constructs a new `KickChatMember` inferring your bot's token.
     fn kick_chat_member(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -442,9 +384,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`LeaveChat`] inferring `token`.
-    ///
-    /// [`LeaveChat`]: ./struct.LeaveChat.html
+    /// Constructs a new `LeaveChat` inferring your bot's token.
     fn leave_chat(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -452,9 +392,7 @@ pub trait Methods<'a> {
         self.prepare_method(methods::LeaveChat::new(self.token(), chat_id))
     }
 
-    /// Constructs a new [`PinChatMessage`] inferring `token`.
-    ///
-    /// [`PinChatMessage`]: ./struct.ForwardMessage.html
+    /// Constructs a new `PinChatMessage` inferring your bot's token.
     fn pin_chat_message(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -467,9 +405,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`PromoteChatMember`] inferring `token`.
-    ///
-    /// [`PromoteChatMember`]: ./struct.PromoteChatMember.html
+    /// Constructs a new `PromoteChatMember` inferring your bot's token.
     fn promote_chat_member(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -482,9 +418,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`RestrictChatMember`] inferring `token`.
-    ///
-    /// [`RestrictChatMember`]: ./struct.RestrictChatMember.html
+    /// Constructs a new `RestrictChatMember` inferring your bot's token.
     fn restrict_chat_member(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -497,9 +431,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendAnimation`] inferring `token`.
-    ///
-    /// [`SendAnimation`]: ./struct.SendAnimation.html
+    /// Constructs a new `SendAnimation` inferring your bot's token.
     fn send_animation(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -512,9 +444,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendAudio`] inferring `token`.
-    ///
-    /// [`SendAudio`]: ./struct.SendAudio.html
+    /// Constructs a new `SendAudio` inferring your bot's token.
     fn send_audio(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -527,9 +457,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendChatAction`] inferring `token`.
-    ///
-    /// [`SendChatAction`]: ./struct.SendChatAction.html
+    /// Constructs a new `SendChatAction` inferring your bot's token.
     fn send_chat_action(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -542,9 +470,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendContact`] inferring `token`.
-    ///
-    /// [`SendContact`]: ./struct.SendContact.html
+    /// Constructs a new `SendContact` inferring your bot's token.
     fn send_contact(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -559,9 +485,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendGame`] inferring `token`.
-    ///
-    /// [`SendGame`]: ./struct.SendGame.html
+    /// Constructs a new `SendGame` inferring your bot's token.
     fn send_game(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -574,9 +498,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendDocument`] inferring `token`.
-    ///
-    /// [`SendDocument`]: ./struct.SendDocument.html
+    /// Constructs a new `SendDocument` inferring your bot's token.
     fn send_document(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -589,9 +511,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendLocation`] inferring `token`.
-    ///
-    /// [`SendLocation`]: ./struct.SendLocation.html
+    /// Constructs a new `SendLocation` inferring your bot's token.
     fn send_location(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -604,9 +524,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendMediaGroup`] inferring `token`.
-    ///
-    /// [`SendMediaGroup`]: ./struct.SendMediaGroup.html
+    /// Constructs a new `SendMediaGroup` inferring your bot's token.
     fn send_media_group(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -619,9 +537,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendMessage`] inferring `token`.
-    ///
-    /// [`SendMessage`]: ./struct.SendMessage.html
+    /// Constructs a new `SendMessage` inferring your bot's token.
     fn send_message(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -634,9 +550,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendPhoto`] inferring `token`.
-    ///
-    /// [`SendPhoto`]: ./struct.SendPhoto.html
+    /// Constructs a new `SendPhoto` inferring your bot's token.
     fn send_photo(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -649,9 +563,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendPoll`] inferring `token`.
-    ///
-    /// [`SendPoll`]: ./struct.SendPoll.html
+    /// Constructs a new `SendPoll` inferring your bot's token.
     fn send_poll(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -666,9 +578,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendSticker`] inferring `token`.
-    ///
-    /// [`SendSticker`]: ./struct.SendSticker.html
+    /// Constructs a new `SendSticker` inferring your bot's token.
     fn send_sticker(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -681,9 +591,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendVenue`] inferring `token`.
-    ///
-    /// [`SendVenue`]: ./struct.SendVenue.html
+    /// Constructs a new `SendVenue` inferring your bot's token.
     fn send_venue(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -700,9 +608,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendVideoNote`] inferring `token`.
-    ///
-    /// [`SendVideoNote`]: ./struct.SendVideoNote.html
+    /// Constructs a new `SendVideoNote` inferring your bot's token.
     fn send_video_note(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -715,9 +621,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendVideo`] inferring `token`.
-    ///
-    /// [`SendVideo`]: ./struct.SendVideo.html
+    /// Constructs a new `SendVideo` inferring your bot's token.
     fn send_video(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -730,9 +634,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SendVoice`] inferring `token`.
-    ///
-    /// [`SendVoice`]: ./struct.SendVoice.html
+    /// Constructs a new `SendVoice` inferring your bot's token.
     fn send_voice(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -745,9 +647,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetChatDescription`] inferring `token`.
-    ///
-    /// [`SetChatDescription`]: ./struct.SetChatDescription.html
+    /// Constructs a new `SetChatDescription` inferring your bot's token.
     fn set_chat_description(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -760,9 +660,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetChatPhoto`] inferring `token`.
-    ///
-    /// [`SetChatPhoto`]: ./struct.SetChatPhoto.html
+    /// Constructs a new `SetChatPhoto` inferring your bot's token.
     fn set_chat_photo(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -775,9 +673,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetChatStickerSet`] inferring `token`.
-    ///
-    /// [`SetChatStickerSet`]: ./struct.SetChatStickerSet.html
+    /// Constructs a new `SetChatStickerSet` inferring your bot's token.
     fn set_chat_sticker_set(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -790,9 +686,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetChatTitle`] inferring `token`.
-    ///
-    /// [`SetChatTitle`]: ./struct.SetChatTitle.html
+    /// Constructs a new `SetChatTitle` inferring your bot's token.
     fn set_chat_title(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -805,9 +699,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetInlineGameScore`] inferring `token`.
-    ///
-    /// [`SetInlineGameScore`]: ./struct.SetInlineGameScore.html
+    /// Constructs a new `SetInlineGameScore` inferring your bot's token.
     fn set_inline_game_score(
         &'a self,
         inline_message_id: &'a str,
@@ -822,9 +714,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetMessageGameScore`] inferring `token`.
-    ///
-    /// [`SetMessageGameScore`]: ./struct.SetMessageGameScore.html
+    /// Constructs a new `SetMessageGameScore` inferring your bot's token.
     fn set_message_game_score(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -841,9 +731,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`SetStickerPositionInSet`] inferring `token`.
-    ///
-    /// [`SetStickerPositionInSet`]: ./struct.SetStickerPositionInSet.html
+    /// Constructs a new `SetStickerPositionInSet` inferring your bot's token.
     fn set_sticker_position_in_set(
         &'a self,
         sticker: &'a str,
@@ -856,9 +744,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`StopInlineLocation`] inferring `token`.
-    ///
-    /// [`StopInlineLocation`]: ./struct.StopInlineLocation.html
+    /// Constructs a new `StopInlineLocation` inferring your bot's token.
     fn stop_inline_location(
         &'a self,
         inline_message_id: &'a str,
@@ -869,9 +755,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`StopMessageLocation`] inferring `token`.
-    ///
-    /// [`StopMessageLocation`]: ./struct.StopMessageLocation.html
+    /// Constructs a new `StopMessageLocation` inferring your bot's token.
     fn stop_message_location(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -884,9 +768,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`StopPoll`] inferring `token`.
-    ///
-    /// [`StopPoll`]: ./struct.StopPoll.html
+    /// Constructs a new `StopPoll` inferring your bot's token.
     fn stop_poll(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -899,9 +781,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`UnbanChatMember`] inferring `token`.
-    ///
-    /// [`UnbanChatMember`]: ./struct.UnbanChatMember.html
+    /// Constructs a new `UnbanChatMember` inferring your bot's token.
     fn unban_chat_member(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -914,9 +794,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`UnpinChatMessage`] inferring `token`.
-    ///
-    /// [`UnpinChatMessage`]: ./struct.UnpinChatMessage.html
+    /// Constructs a new `UnpinChatMessage` inferring your bot's token.
     fn unpin_chat_message(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
@@ -927,9 +805,7 @@ pub trait Methods<'a> {
         ))
     }
 
-    /// Constructs a new [`UploadStickerFile`] inferring `token`.
-    ///
-    /// [`UploadStickerFile`]: ./struct.UploadStickerFile.html
+    /// Constructs a new `UploadStickerFile` inferring your bot's token.
     fn upload_sticker_file(
         &'a self,
         user_id: i64,

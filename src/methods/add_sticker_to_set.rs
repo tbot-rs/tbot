@@ -51,7 +51,7 @@ impl<'a> AddStickerToSet<'a> {
         let mask_position =
             self.mask_position.and_then(|x| serde_json::to_string(&x).ok());
 
-        let mut multipart = Multipart::new(7)
+        let mut multipart = Multipart::new(5)
             .str("user_id", &user_id)
             .str("name", self.name)
             .str("emojis", self.emojis)

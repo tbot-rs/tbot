@@ -31,7 +31,7 @@ pub enum MessageEntityKind {
     TextMention(User),
 }
 
-/// Represents a message's entity.
+/// Represents an entity of a message.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct MessageEntity {
     /// The kind of the entity.

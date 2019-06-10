@@ -15,7 +15,7 @@ pub struct Audio {
     pub title: Option<String>,
     /// The MIME type of the audio.
     pub mime_type: Option<String>,
-    /// The audio file's size.
+    /// The file size of the audio.
     pub file_size: Option<u32>,
     /// The thumb of the audio.
     pub thumb: Option<PhotoSize>,

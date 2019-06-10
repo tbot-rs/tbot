@@ -1,4 +1,4 @@
-//! Contains types used in Telegram Bots API.
+//! Types used when interacting with the API.
 
 // we re-export everything under one namespace
 #![allow(clippy::module_name_repetitions)]

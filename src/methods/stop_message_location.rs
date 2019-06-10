@@ -1,7 +1,6 @@
 use super::*;
 
-/// Represents the [`stopMessageLiveLocation`][docs] method for when
-/// the message was sent by the bot.
+/// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize)]
