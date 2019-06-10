@@ -45,6 +45,7 @@ pub trait Methods<'a>: crate::Sealed {
 
     /// Constructs a new `AnswerCallbackQuery` inferring your bot's token.
     fn answer_callback_query(
+        &'a self,
         callback_query_id: &'a str,
         action: CallbackAnswerAction<'a>,
     ) -> methods::AnswerCallbackQuery<'a> {

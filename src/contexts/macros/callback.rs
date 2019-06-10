@@ -24,6 +24,7 @@ macro_rules! callback {
                 $kind: $kind_type,
             }
         }
+
         impl $name {
             // https://github.com/rust-lang/rust-clippy/issues/4041
             #[allow(clippy::missing_const_for_fn)]
@@ -43,6 +44,16 @@ macro_rules! callback {
                     chat_instance,
                     $kind,
                 }
+            }
+        }
+
+        impl<'a> traits::Callback<'a> for $name {
+            fn bot(&self) -> &MockBot {
+                &self.bot
+            }
+
+            fn id(&self) -> &str {
+                &self.id
             }
         }
     }
