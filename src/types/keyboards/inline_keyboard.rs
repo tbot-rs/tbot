@@ -1,7 +1,8 @@
 use super::*;
 use serde::ser::SerializeMap;
 use InlineButtonType::{
-    CallbackData, Pay, SwitchInlineQuery, SwitchInlineQueryCurrentChat, Url,
+    CallbackData, LoginUrl, Pay, SwitchInlineQuery,
+    SwitchInlineQueryCurrentChat, Url,
 };
 
 /// Represents different types an inline button can be.
@@ -13,6 +14,8 @@ use InlineButtonType::{
 pub enum InlineButtonType<'a> {
     /// Represents a URL button.
     Url(&'a str),
+    /// Represents a login button.
+    LoginUrl(&'a types::LoginUrl<'a>),
     /// Represents callback data.
     CallbackData(&'a str),
     /// Represents query inserted when switched to inline.
@@ -53,6 +56,7 @@ impl serde::Serialize for InlineButton<'_> {
 
         match self.button_type {
             Url(url) => map.serialize_entry("url", url),
+            LoginUrl(login_url) => map.serialize_entry("login_url", login_url),
             CallbackData(callback_data) => {
                 map.serialize_entry("callback_data", callback_data)
             }
