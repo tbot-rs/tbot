@@ -16,7 +16,7 @@ pub struct LoginUrl<'a> {
 
 impl<'a> LoginUrl<'a> {
     /// Constructs a new `LoginUrl`.
-    pub fn new(url: &'a str) -> Self {
+    pub const fn new(url: &'a str) -> Self {
         Self {
             url,
             forward_text: None,
