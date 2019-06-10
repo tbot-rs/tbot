@@ -4,8 +4,9 @@
 use super::*;
 use crate::methods::*;
 
+mod callback;
 mod chat_methods;
 mod forwardable;
 mod pinnable;
 
-pub use {chat_methods::*, forwardable::*, pinnable::*};
+pub use {callback::*, chat_methods::*, forwardable::*, pinnable::*};

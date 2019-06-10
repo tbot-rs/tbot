@@ -43,6 +43,8 @@ pub enum UpdateKind {
     ChannelPost(Message),
     /// An edited channel post.
     EditedChannelPost(Message),
+    /// An incoming callback query.
+    CallbackQuery(CallbackQuery),
     /// A new state of a poll.
     Poll(Poll),
     /// Unknown update kind.
@@ -64,6 +66,7 @@ const MESSAGE: &str = "message";
 const EDITED_MESSAGE: &str = "edited_message";
 const CHANNEL_POST: &str = "channel_post";
 const EDITED_CHANNEL_POST: &str = "edited_channel_post";
+const CALLBACK_QUERY: &str = "callback_query";
 const POLL: &str = "poll";
 
 impl<'de> serde::Deserialize<'de> for Update {
@@ -107,6 +110,11 @@ impl<'de> serde::Deserialize<'de> for Update {
                         }
                         EDITED_CHANNEL_POST => {
                             kind = Some(UpdateKind::EditedChannelPost(
+                                map.next_value()?,
+                            ))
+                        }
+                        CALLBACK_QUERY => {
+                            kind = Some(UpdateKind::CallbackQuery(
                                 map.next_value()?,
                             ))
                         }
