@@ -439,6 +439,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for data callbacks.
         data_callback_handlers,
         data_callback,
         contexts::DataCallback,
@@ -447,6 +448,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for deleted chat photos.
         deleted_chat_photo_handlers,
         deleted_chat_photo,
         contexts::DeletedChatPhoto,
@@ -527,6 +529,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for game callbacks.
         game_callback_handlers,
         game_callback,
         contexts::GameCallback,
@@ -535,6 +538,7 @@ impl Bot {
     }
 
     handler! {
+        /// Adds a new handler for game messages.
         game_handlers,
         game,
         contexts::Game,
