@@ -65,6 +65,7 @@
 use super::*;
 
 mod add_sticker_to_set;
+mod answer_callback_query;
 mod create_new_sticker_set;
 mod delete_chat_photo;
 mod delete_chat_sticker_set;
@@ -131,12 +132,12 @@ mod unpin_chat_message;
 mod upload_sticker_file;
 
 pub use {
-    add_sticker_to_set::*, create_new_sticker_set::*, delete_chat_photo::*,
-    delete_chat_sticker_set::*, delete_message::*, delete_sticker_from_set::*,
-    edit_inline_caption::*, edit_inline_location::*, edit_inline_media::*,
-    edit_inline_reply_markup::*, edit_inline_text::*, edit_message_caption::*,
-    edit_message_location::*, edit_message_media::*,
-    edit_message_reply_markup::*, edit_message_text::*,
+    add_sticker_to_set::*, answer_callback_query::*, create_new_sticker_set::*,
+    delete_chat_photo::*, delete_chat_sticker_set::*, delete_message::*,
+    delete_sticker_from_set::*, edit_inline_caption::*,
+    edit_inline_location::*, edit_inline_media::*, edit_inline_reply_markup::*,
+    edit_inline_text::*, edit_message_caption::*, edit_message_location::*,
+    edit_message_media::*, edit_message_reply_markup::*, edit_message_text::*,
     export_chat_invite_link::*, forward_message::*, get_chat::*,
     get_chat_administrators::*, get_chat_member::*, get_chat_members_count::*,
     get_inline_game_high_scores::*, get_me::*, get_message_game_high_scores::*,

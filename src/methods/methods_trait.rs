@@ -43,6 +43,18 @@ pub trait Methods<'a>: crate::Sealed {
         ))
     }
 
+    /// Constructs a new `AnswerCallbackQuery` inferring your bot's token.
+    fn answer_callback_query(
+        callback_query_id: &'a str,
+        action: CallbackAnswerAction<'a>,
+    ) -> methods::AnswerCallbackQuery<'a> {
+        self.prepare_method(methods::AnswerCallbackQuery::new(
+            self.token(),
+            callback_query_id,
+            action,
+        ))
+    }
+
     /// Constructs a new `CreateNewStickerSet` inferring your bot's token.
     fn create_new_sticker_set(
         &'a self,
