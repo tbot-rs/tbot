@@ -114,14 +114,14 @@ impl IntoFuture for SendVideo<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(
+        Box::new(send_method(
             self.token,
             "sendVideo",
             Some(boundary),
             body,
             #[cfg(feature = "proxy")]
             self.proxy,
-        )
+        ))
     }
 }
 

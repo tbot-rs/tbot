@@ -39,15 +39,17 @@ impl IntoFuture for SetChatDescription<'_> {
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {
-        send_method::<bool>(
-            self.token,
-            "setChatDescription",
-            None,
-            serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
+        Box::new(
+            send_method::<bool>(
+                self.token,
+                "setChatDescription",
+                None,
+                serde_json::to_vec(&self).unwrap(),
+                #[cfg(feature = "proxy")]
+                self.proxy,
+            )
+            .map(|_| ()), // Only `true` is returned on success
         )
-        .map(|_| ()) // Only `true` is returned on success
     }
 }
 

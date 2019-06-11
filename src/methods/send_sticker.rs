@@ -55,13 +55,6 @@ impl<'a> SendSticker<'a> {
         self.reply_markup = Some(markup.into());
         self
     }
-
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = types::Message, Error = DeliveryError> {
-    }
 }
 
 impl IntoFuture for SendSticker<'_> {
