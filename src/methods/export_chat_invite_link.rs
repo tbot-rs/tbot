@@ -24,20 +24,23 @@ impl<'a> ExportChatInviteLink<'a> {
             proxy: None,
         }
     }
+}
 
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = String, Error = DeliveryError> {
-        send_method(
+impl IntoFuture for ExportChatInviteLink<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = String;
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
+        Box::new(send_method(
             self.token,
             "exportChatInviteLink",
             None,
             serde_json::to_vec(&self).unwrap(),
             #[cfg(feature = "proxy")]
             self.proxy,
-        )
+        ))
     }
 }
 

@@ -90,4 +90,5 @@ pub mod prelude {
     //! Traits needed when working with `tbot`.
     pub use super::{contexts::traits::*, methods::Methods};
     pub use futures::Future;
+    pub use futures::IntoFuture;
 }

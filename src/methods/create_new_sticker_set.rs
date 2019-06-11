@@ -54,10 +54,15 @@ impl<'a> CreateNewStickerSet<'a> {
         self.mask_position = Some(mask_position);
         self
     }
+}
 
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
+impl IntoFuture for CreateNewStickerSet<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = ();
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
         let user_id = self.user_id.to_string();
         let contains_mask = self.contains_masks.map(|x| x.to_string());
         let mask_position =
@@ -84,15 +89,17 @@ impl<'a> CreateNewStickerSet<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method::<bool>(
-            self.token,
-            "createNewStickerSet",
-            Some(boundary),
-            body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
+        Box::new(
+            send_method::<bool>(
+                self.token,
+                "createNewStickerSet",
+                Some(boundary),
+                body,
+                #[cfg(feature = "proxy")]
+                self.proxy,
+            )
+            .map(|_| ()),
         )
-        .map(|_| ())
     }
 }
 

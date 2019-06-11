@@ -48,9 +48,15 @@ impl<'a> SetWebhook<'a> {
             allowed_updates,
         }
     }
+}
 
-    #[must_use]
-    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
+impl IntoFuture for SetWebhook<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = ();
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
         let max_connections = self.max_connections.map(|x| x.to_string());
         let allowed_updates =
             self.allowed_updates.and_then(|x| serde_json::to_string(&x).ok());
@@ -62,14 +68,16 @@ impl<'a> SetWebhook<'a> {
             .maybe_string("allowed_updates", &allowed_updates)
             .finish();
 
-        send_method::<bool>(
-            self.token,
-            "setWebhook",
-            Some(boundary),
-            body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
+        Box::new(
+            send_method::<bool>(
+                self.token,
+                "setWebhook",
+                Some(boundary),
+                body,
+                #[cfg(feature = "proxy")]
+                self.proxy,
+            )
+            .map(|_| ()),
         )
-        .map(|_| ())
     }
 }

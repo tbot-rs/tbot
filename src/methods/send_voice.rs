@@ -55,12 +55,15 @@ impl<'a> SendVoice<'a> {
         self.reply_markup = Some(markup.into());
         self
     }
+}
 
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = types::Message, Error = DeliveryError> {
+impl IntoFuture for SendVoice<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = types::Message;
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
             types::ChatId::Id(id) => id.to_string(),
             types::ChatId::Username(username) => username.into(),
@@ -95,14 +98,14 @@ impl<'a> SendVoice<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(
+        Box::new(send_method(
             self.token,
             "sendVoice",
             Some(boundary),
             body,
             #[cfg(feature = "proxy")]
             self.proxy,
-        )
+        ))
     }
 }
 
