@@ -9,7 +9,7 @@ type HighScores = Vec<types::GameHighScore>;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMessageGameHighScores<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -21,7 +21,7 @@ pub struct GetMessageGameHighScores<'a> {
 impl<'a> GetMessageGameHighScores<'a> {
     /// Constructs a new `GetMessageGameHighScores`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
         user_id: i64,
@@ -45,7 +45,7 @@ impl IntoFuture for GetMessageGameHighScores<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            self.token,
+            &self.token,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),

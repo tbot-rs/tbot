@@ -7,7 +7,7 @@ use types::MaskPosition;
 /// [docs]: https://core.telegram.org/bots/api#createnewstickerset
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct CreateNewStickerSet<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     user_id: i64,
@@ -22,7 +22,7 @@ pub struct CreateNewStickerSet<'a> {
 impl<'a> CreateNewStickerSet<'a> {
     /// Constructs a new `CreateNewStickerSet`.
     pub const fn new(
-        token: &'a str,
+        token: Token,
         user_id: i64,
         name: &'a str,
         title: &'a str,
@@ -91,7 +91,7 @@ impl IntoFuture for CreateNewStickerSet<'_> {
 
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "createNewStickerSet",
                 Some(boundary),
                 body,

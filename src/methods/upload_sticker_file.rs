@@ -5,7 +5,7 @@ use super::*;
 /// [docs]: https://core.telegram.org/bots/api#uploadstickerfile
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct UploadStickerFile<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     user_id: i64,
@@ -15,7 +15,7 @@ pub struct UploadStickerFile<'a> {
 impl<'a> UploadStickerFile<'a> {
     /// Constructs a new `UploadStickerFile`.
     pub const fn new(
-        token: &'a str,
+        token: Token,
         user_id: i64,
         png_sticker: &'a [u8],
     ) -> Self {
@@ -42,7 +42,7 @@ impl IntoFuture for UploadStickerFile<'_> {
             .finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "uploadStickerFile",
             Some(boundary),
             body,

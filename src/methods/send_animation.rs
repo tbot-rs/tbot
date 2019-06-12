@@ -6,7 +6,7 @@ use types::input_file::{Animation, InputFile};
 /// [docs]: https://core.telegram.org/bots/api#sendanimation
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -19,7 +19,7 @@ pub struct SendAnimation<'a> {
 impl<'a> SendAnimation<'a> {
     /// Constructs a new `SendAnimation`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         animation: &'a Animation<'a>,
     ) -> Self {
@@ -112,7 +112,7 @@ impl IntoFuture for SendAnimation<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendAnimation",
             Some(boundary),
             body,

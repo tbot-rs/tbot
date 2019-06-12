@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendPoll<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -25,7 +25,7 @@ pub struct SendPoll<'a> {
 impl<'a> SendPoll<'a> {
     /// Constructs a new `SendPoll`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         question: &'a str,
         options: &'a [&'a str],
@@ -73,7 +73,7 @@ impl IntoFuture for SendPoll<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendPoll",
             None,
             serde_json::to_vec(&self).unwrap(),

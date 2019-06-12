@@ -16,18 +16,18 @@ struct Response<T> {
 }
 
 #[must_use]
-fn create_method_url(token: &str, method: &'static str) -> hyper::Uri {
+fn create_method_url(token: &Token, method: &'static str) -> hyper::Uri {
     hyper::Uri::builder()
         .scheme("https")
         .authority("api.telegram.org")
-        .path_and_query(format!("/bot{}/{}", token, method).as_str())
+        .path_and_query(format!("/bot{}/{}", token.as_str(), method).as_str())
         .build()
         .unwrap()
 }
 
 #[must_use]
 fn create_request(
-    token: &str,
+    token: &Token,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
@@ -101,7 +101,7 @@ fn process_response<T: serde::de::DeserializeOwned + std::fmt::Debug>(
 #[cfg(not(feature = "proxy"))]
 #[must_use]
 pub fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
-    token: &str,
+    token: &Token,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
@@ -119,7 +119,7 @@ pub fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
 #[cfg(feature = "proxy")]
 #[must_use]
 pub fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
-    token: &str,
+    token: &Token,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,

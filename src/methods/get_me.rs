@@ -4,15 +4,15 @@ use super::*;
 ///
 /// [docs]: https://core.telegram.org/bots/api#getme
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetMe<'a> {
-    token: &'a str,
+pub struct GetMe {
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
 
-impl<'a> GetMe<'a> {
+impl GetMe {
     /// Constructs a new `GetMe`.
-    pub const fn new(token: &'a str) -> Self {
+    pub const fn new(token: Token) -> Self {
         Self {
             token,
             #[cfg(feature = "proxy")]
@@ -21,7 +21,7 @@ impl<'a> GetMe<'a> {
     }
 }
 
-impl IntoFuture for GetMe<'_> {
+impl IntoFuture for GetMe {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::User;
@@ -29,7 +29,7 @@ impl IntoFuture for GetMe<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            self.token,
+            &self.token,
             "getMe",
             None,
             Vec::new(),
@@ -40,7 +40,7 @@ impl IntoFuture for GetMe<'_> {
 }
 
 #[cfg(feature = "proxy")]
-impl ProxyMethod for GetMe<'_> {
+impl ProxyMethod for GetMe {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

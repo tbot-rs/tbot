@@ -4,7 +4,7 @@ use super::*;
 #[must_use]
 pub(crate) struct GetUpdates<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -21,7 +21,7 @@ pub(crate) struct GetUpdates<'a> {
 impl<'a> GetUpdates<'a> {
     #[cfg(feature = "proxy")]
     pub const fn new(
-        token: &'a str,
+        token: Token,
         offset: Option<u32>,
         limit: Option<u8>,
         timeout: Option<u32>,
@@ -40,7 +40,7 @@ impl<'a> GetUpdates<'a> {
 
     #[cfg(not(feature = "proxy"))]
     pub const fn new(
-        token: &'a str,
+        token: Token,
         offset: Option<u32>,
         limit: Option<u8>,
         timeout: Option<u32>,
@@ -64,7 +64,7 @@ impl IntoFuture for GetUpdates<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            self.token,
+            &self.token,
             "getUpdates",
             None,
             serde_json::to_vec(&self).unwrap(),

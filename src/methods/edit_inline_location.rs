@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineLocation<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -21,7 +21,7 @@ pub struct EditInlineLocation<'a> {
 impl<'a> EditInlineLocation<'a> {
     /// Constructs a new `EditInlineLocation`.
     pub const fn new(
-        token: &'a str,
+        token: Token,
         inline_message_id: &'a str,
         (latitude, longitude): (f64, f64),
     ) -> Self {
@@ -52,7 +52,7 @@ impl IntoFuture for EditInlineLocation<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "editMessageLiveLocation",
                 None,
                 serde_json::to_vec(&self).unwrap(),

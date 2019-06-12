@@ -15,17 +15,14 @@ use super::*;
 /// [contexts]: ./contexts/
 #[derive(Clone)]
 pub struct MockBot {
-    token: Arc<String>,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
 
 impl MockBot {
     #[cfg(feature = "proxy")]
-    pub(crate) const fn new(
-        token: Arc<String>,
-        proxy: Option<proxy::Proxy>,
-    ) -> Self {
+    pub(crate) const fn new(token: Token, proxy: Option<proxy::Proxy>) -> Self {
         Self {
             token,
             proxy,
@@ -33,7 +30,7 @@ impl MockBot {
     }
 
     #[cfg(not(feature = "proxy"))]
-    pub(crate) const fn new(token: Arc<String>) -> Self {
+    pub(crate) const fn new(token: Token) -> Self {
         Self {
             token,
         }
@@ -43,8 +40,8 @@ impl MockBot {
 impl crate::Sealed for MockBot {}
 
 impl Methods<'_> for MockBot {
-    fn token(&self) -> &str {
-        &self.token
+    fn token(&self) -> Token {
+        self.token.clone()
     }
 
     #[cfg(feature = "proxy")]

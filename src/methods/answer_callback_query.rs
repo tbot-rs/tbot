@@ -70,7 +70,7 @@ impl<'a> CallbackAnswerAction<'a> {
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerCallbackQuery<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     callback_query_id: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<&'a str>,
@@ -88,7 +88,7 @@ pub struct AnswerCallbackQuery<'a> {
 impl<'a> AnswerCallbackQuery<'a> {
     /// Constructs a new `AnswerCallbackQuery`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         callback_query_id: &'a str,
         action: CallbackAnswerAction<'a>,
     ) -> Self {
@@ -120,7 +120,7 @@ impl IntoFuture for AnswerCallbackQuery<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "answerCallbackQuery",
                 None,
                 serde_json::to_vec(&self).unwrap(),

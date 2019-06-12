@@ -1,22 +1,22 @@
 use super::*;
 
 #[must_use]
-pub struct DeleteWebhook<'a> {
-    token: &'a str,
+pub struct DeleteWebhook {
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
 }
 
-impl<'a> DeleteWebhook<'a> {
+impl DeleteWebhook {
     #[cfg(not(feature = "proxy"))]
-    pub const fn new(token: &'a str) -> Self {
+    pub const fn new(token: Token) -> Self {
         Self {
             token,
         }
     }
 
     #[cfg(feature = "proxy")]
-    pub const fn new(token: &'a str, proxy: Option<proxy::Proxy>) -> Self {
+    pub const fn new(token: Token, proxy: Option<proxy::Proxy>) -> Self {
         Self {
             token,
             proxy,
@@ -24,7 +24,7 @@ impl<'a> DeleteWebhook<'a> {
     }
 }
 
-impl IntoFuture for DeleteWebhook<'_> {
+impl IntoFuture for DeleteWebhook {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -33,7 +33,7 @@ impl IntoFuture for DeleteWebhook<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "deleteWebhook",
                 None,
                 Vec::new(),

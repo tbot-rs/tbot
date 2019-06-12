@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct DeleteStickerFromSet<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     sticker: &'a str,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
@@ -16,7 +16,7 @@ pub struct DeleteStickerFromSet<'a> {
 
 impl<'a> DeleteStickerFromSet<'a> {
     /// Constructs a new `DeleteStickerFromSet`.
-    pub const fn new(token: &'a str, sticker: &'a str) -> Self {
+    pub const fn new(token: Token, sticker: &'a str) -> Self {
         Self {
             token,
             sticker,
@@ -35,7 +35,7 @@ impl IntoFuture for DeleteStickerFromSet<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "deleteStickerFromSet",
                 None,
                 serde_json::to_vec(&self).unwrap(),

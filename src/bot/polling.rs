@@ -63,7 +63,7 @@ impl<'a> Polling<'a> {
         let outer_error = Arc::clone(&error);
 
         let delete_webhook = DeleteWebhook::new(
-            &self.bot.token,
+            self.bot.token.clone(),
             #[cfg(feature = "proxy")]
             self.bot.proxy.clone(),
         )
@@ -96,7 +96,7 @@ impl<'a> Polling<'a> {
             last_send_timestamp = Instant::now();
 
             let updates = GetUpdates::new(
-                &bot.token,
+                bot.token.clone(),
                 *last_offset.lock().unwrap(),
                 self.limit,
                 self.timeout,
