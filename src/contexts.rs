@@ -36,7 +36,7 @@
 //!
 //! ```no_run
 //! # use tbot::prelude::*;
-//! # let mut bot = tbot::Bot::new(String::new());
+//! # let mut bot = tbot::Bot::new(tbot::Token::new(String::new()));
 //! const ADMIN_CHAT: i64 = 0;
 //!
 //! bot.text(|context| {
