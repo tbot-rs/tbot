@@ -597,8 +597,8 @@ impl EventLoop {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn run_unhandled_handlers(&self, mock_bot: Arc<Bot>, update: UpdateKind) {
-        let context = contexts::Unhandled::new(mock_bot, update);
+    fn run_unhandled_handlers(&self, bot: Arc<Bot>, update: UpdateKind) {
+        let context = contexts::Unhandled::new(bot, update);
 
         for handler in &self.unhandled_handlers {
             (&mut *handler.lock().unwrap())(&context);
@@ -650,38 +650,37 @@ impl EventLoop {
         will_handle_voice,
     }
 
-    fn handle_update(&self, update: types::Update) {
-        let mock_bot = Arc::new(self.bot.clone());
+    fn handle_update(&self, bot: Arc<Bot>, update: types::Update) {
         let update_context =
-            contexts::Update::new(Arc::clone(&mock_bot), update.id);
+            contexts::Update::new(Arc::clone(&bot), update.id);
 
         self.run_before_update_handlers(&update_context);
 
         match update.kind {
             UpdateKind::Message(message) | UpdateKind::ChannelPost(message) => {
-                self.handle_message_update(mock_bot, message);
+                self.handle_message_update(bot, message);
             }
             UpdateKind::EditedMessage(message)
             | UpdateKind::EditedChannelPost(message) => {
-                self.handle_message_edit_update(mock_bot, message);
+                self.handle_message_edit_update(bot, message);
             }
             UpdateKind::Poll(poll) => {
                 if self.will_handle_updated_poll() {
                     let context =
-                        contexts::UpdatedPoll::new(Arc::clone(&mock_bot), poll);
+                        contexts::UpdatedPoll::new(Arc::clone(&bot), poll);
 
                     self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let update = UpdateKind::Poll(poll);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             UpdateKind::CallbackQuery(query) => match query.kind {
                 CallbackKind::Data(data) => {
                     if self.will_handle_data_callback() {
                         let context = contexts::DataCallback::new(
-                            mock_bot,
+                            bot,
                             query.id,
                             query.from,
                             query.origin,
@@ -698,13 +697,13 @@ impl EventLoop {
                         };
                         let update = UpdateKind::CallbackQuery(query);
 
-                        self.run_unhandled_handlers(mock_bot, update);
+                        self.run_unhandled_handlers(bot, update);
                     }
                 }
                 CallbackKind::Game(game) => {
                     if self.will_handle_game_callback() {
                         let context = contexts::GameCallback::new(
-                            mock_bot,
+                            bot,
                             query.id,
                             query.from,
                             query.origin,
@@ -721,12 +720,12 @@ impl EventLoop {
                         };
                         let update = UpdateKind::CallbackQuery(query);
 
-                        self.run_unhandled_handlers(mock_bot, update);
+                        self.run_unhandled_handlers(bot, update);
                     }
                 }
             },
             update @ UpdateKind::Unknown => {
-                self.run_unhandled_handlers(mock_bot, update);
+                self.run_unhandled_handlers(bot, update);
             }
         }
 
@@ -736,7 +735,7 @@ impl EventLoop {
     #[allow(clippy::cognitive_complexity)]
     fn handle_message_update(
         &self,
-        mock_bot: Arc<Bot>,
+        bot: Arc<Bot>,
         message: types::Message,
     ) {
         let (data, kind) = message.split();
@@ -755,7 +754,7 @@ impl EventLoop {
                     if self.will_handle_command(command) {
                         let text = trim_command(text);
 
-                        let context = contexts::Text::new(mock_bot, data, text);
+                        let context = contexts::Text::new(bot, data, text);
 
                         self.run_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
@@ -763,10 +762,10 @@ impl EventLoop {
                         let message = Message::new(data, kind);
                         let update = UpdateKind::Message(message);
 
-                        self.run_unhandled_handlers(mock_bot, update);
+                        self.run_unhandled_handlers(bot, update);
                     }
                 } else if self.will_handle_text() {
-                    let context = contexts::Text::new(mock_bot, data, text);
+                    let context = contexts::Text::new(bot, data, text);
 
                     self.run_text_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -774,12 +773,12 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Poll(poll) => {
                 if self.will_handle_poll() {
-                    let context = contexts::Poll::new(mock_bot, data, poll);
+                    let context = contexts::Poll::new(bot, data, poll);
 
                     self.run_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -787,13 +786,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Photo(photo, caption, media_group_id) => {
                 if self.will_handle_photo() {
                     let context = contexts::Photo::new(
-                        mock_bot,
+                        bot,
                         data,
                         photo,
                         caption,
@@ -807,13 +806,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Pinned(message) => {
                 if self.will_handle_pinned_message() {
                     let context =
-                        contexts::PinnedMessage::new(mock_bot, data, *message);
+                        contexts::PinnedMessage::new(bot, data, *message);
 
                     self.run_pinned_message_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -821,13 +820,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
                     let context =
-                        contexts::Sticker::new(mock_bot, data, sticker);
+                        contexts::Sticker::new(bot, data, sticker);
 
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -835,12 +834,12 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Venue(venue) => {
                 if self.will_handle_venue() {
-                    let context = contexts::Venue::new(mock_bot, data, venue);
+                    let context = contexts::Venue::new(bot, data, venue);
 
                     self.run_venue_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -848,13 +847,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Video(video, caption, media_group_id) => {
                 if self.will_handle_video() {
                     let context = contexts::Video::new(
-                        mock_bot,
+                        bot,
                         data,
                         video,
                         caption,
@@ -868,13 +867,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::VideoNote(video_note) => {
                 if self.will_handle_video_note() {
                     let context =
-                        contexts::VideoNote::new(mock_bot, data, video_note);
+                        contexts::VideoNote::new(bot, data, video_note);
 
                     self.run_video_note_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -882,13 +881,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Voice(voice, caption) => {
                 if self.will_handle_voice() {
                     let context =
-                        contexts::Voice::new(mock_bot, data, voice, caption);
+                        contexts::Voice::new(bot, data, voice, caption);
 
                     self.run_voice_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -896,13 +895,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Audio(audio, caption) => {
                 if self.will_handle_audio() {
                     let context =
-                        contexts::Audio::new(mock_bot, data, audio, caption);
+                        contexts::Audio::new(bot, data, audio, caption);
 
                     self.run_audio_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -910,13 +909,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Animation(animation, caption) => {
                 if self.will_handle_animation() {
                     let context = contexts::Animation::new(
-                        mock_bot, data, animation, caption,
+                        bot, data, animation, caption,
                     );
 
                     self.run_animation_handlers(&context);
@@ -925,26 +924,26 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             kind @ MessageKind::ChatPhotoDeleted => {
                 if self.will_handle_deleted_chat_photo() {
                     let context =
-                        contexts::DeletedChatPhoto::new(mock_bot, data);
+                        contexts::DeletedChatPhoto::new(bot, data);
 
                     self.run_deleted_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Document(document, caption) => {
                 if self.will_handle_document() {
                     let context = contexts::Document::new(
-                        mock_bot, data, document, caption,
+                        bot, data, document, caption,
                     );
 
                     self.run_document_handlers(&context);
@@ -953,12 +952,12 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Game(game) => {
                 if self.will_handle_game() {
-                    let context = contexts::Game::new(mock_bot, data, game);
+                    let context = contexts::Game::new(bot, data, game);
 
                     self.run_game_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -966,13 +965,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::LeftChatMember(member) => {
                 if self.will_handle_left_member() {
                     let context =
-                        contexts::LeftMember::new(mock_bot, data, member);
+                        contexts::LeftMember::new(bot, data, member);
 
                     self.run_left_member_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -980,13 +979,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Location(location) => {
                 if self.will_handle_location() {
                     let context =
-                        contexts::Location::new(mock_bot, data, location);
+                        contexts::Location::new(bot, data, location);
 
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -994,14 +993,14 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::MigrateTo(..) => (), // ignored on purpose
             MessageKind::MigrateFrom(old_id) => {
                 if self.will_handle_migration() {
                     let context =
-                        contexts::Migration::new(mock_bot, data, old_id);
+                        contexts::Migration::new(bot, data, old_id);
 
                     self.run_migration_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1009,13 +1008,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::NewChatPhoto(photo) => {
                 if self.will_handle_new_chat_photo() {
                     let context =
-                        contexts::NewChatPhoto::new(mock_bot, data, photo);
+                        contexts::NewChatPhoto::new(bot, data, photo);
 
                     self.run_new_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1023,13 +1022,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::NewChatTitle(title) => {
                 if self.will_handle_new_chat_title() {
                     let context =
-                        contexts::NewChatTitle::new(mock_bot, data, title);
+                        contexts::NewChatTitle::new(bot, data, title);
 
                     self.run_new_chat_title_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1037,13 +1036,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::NewChatMembers(members) => {
                 if self.will_handle_new_members() {
                     let context =
-                        contexts::NewMembers::new(mock_bot, data, members);
+                        contexts::NewMembers::new(bot, data, members);
 
                     self.run_new_members_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1051,13 +1050,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Contact(contact) => {
                 if self.will_handle_contact() {
                     let context =
-                        contexts::Contact::new(mock_bot, data, contact);
+                        contexts::Contact::new(bot, data, contact);
 
                     self.run_contact_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1065,19 +1064,19 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             kind @ MessageKind::GroupCreated => {
                 if self.will_handle_created_group() {
-                    let context = contexts::CreatedGroup::new(mock_bot, data);
+                    let context = contexts::CreatedGroup::new(bot, data);
 
                     self.run_created_group_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::SupergroupCreated | MessageKind::ChannelCreated => {
@@ -1089,7 +1088,7 @@ impl EventLoop {
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = UpdateKind::Message(message);
-                self.run_unhandled_handlers(mock_bot, update);
+                self.run_unhandled_handlers(bot, update);
             }
             _ => (),
         }
@@ -1097,7 +1096,7 @@ impl EventLoop {
 
     fn handle_message_edit_update(
         &self,
-        mock_bot: Arc<Bot>,
+        bot: Arc<Bot>,
         message: types::Message,
     ) {
         let (data, kind) = message.split();
@@ -1109,7 +1108,7 @@ impl EventLoop {
             MessageKind::Animation(animation, caption) => {
                 if self.will_handle_edited_animation() {
                     let context = contexts::EditedAnimation::new(
-                        mock_bot, data, edit_date, animation, caption,
+                        bot, data, edit_date, animation, caption,
                     );
 
                     self.run_edited_animation_handlers(&context);
@@ -1118,13 +1117,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Audio(audio, caption) => {
                 if self.will_handle_edited_audio() {
                     let context = contexts::EditedAudio::new(
-                        mock_bot, data, edit_date, audio, caption,
+                        bot, data, edit_date, audio, caption,
                     );
 
                     self.run_edited_audio_handlers(&context);
@@ -1133,13 +1132,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Document(document, caption) => {
                 if self.will_handle_edited_document() {
                     let context = contexts::EditedDocument::new(
-                        mock_bot, data, edit_date, document, caption,
+                        bot, data, edit_date, document, caption,
                     );
 
                     self.run_edited_document_handlers(&context);
@@ -1148,13 +1147,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Location(location) => {
                 if self.will_handle_edited_location() {
                     let context = contexts::EditedLocation::new(
-                        mock_bot, data, edit_date, location,
+                        bot, data, edit_date, location,
                     );
 
                     self.run_edited_location_handlers(&context);
@@ -1163,13 +1162,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Photo(photo, caption, media_group_id) => {
                 if self.will_handle_edited_photo() {
                     let context = contexts::EditedPhoto::new(
-                        mock_bot,
+                        bot,
                         data,
                         edit_date,
                         photo,
@@ -1184,7 +1183,7 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Text(text) => {
@@ -1201,7 +1200,7 @@ impl EventLoop {
                         let text = trim_command(text);
 
                         let context = contexts::EditedText::new(
-                            mock_bot, data, edit_date, text,
+                            bot, data, edit_date, text,
                         );
 
                         self.run_edited_command_handlers(command, &context);
@@ -1210,11 +1209,11 @@ impl EventLoop {
                         let message = Message::new(data, kind);
                         let update = UpdateKind::EditedMessage(message);
 
-                        self.run_unhandled_handlers(mock_bot, update);
+                        self.run_unhandled_handlers(bot, update);
                     }
                 } else if self.will_handle_edited_text() {
                     let context = contexts::EditedText::new(
-                        mock_bot, data, edit_date, text,
+                        bot, data, edit_date, text,
                     );
 
                     self.run_edited_text_handlers(&context);
@@ -1223,13 +1222,13 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::EditedMessage(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Video(video, caption, media_group_id) => {
                 if self.will_handle_edited_video() {
                     let context = contexts::EditedVideo::new(
-                        mock_bot,
+                        bot,
                         data,
                         edit_date,
                         video,
@@ -1244,7 +1243,7 @@ impl EventLoop {
                     let message = Message::new(data, kind);
                     let update = UpdateKind::Message(message);
 
-                    self.run_unhandled_handlers(mock_bot, update);
+                    self.run_unhandled_handlers(bot, update);
                 }
             }
             MessageKind::Poll(_) => unreachable!(
@@ -1266,7 +1265,7 @@ impl EventLoop {
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = UpdateKind::EditedMessage(message);
-                self.run_unhandled_handlers(mock_bot, update)
+                self.run_unhandled_handlers(bot, update)
             }
             _ => (),
         }

@@ -1,6 +1,6 @@
 // use super::*;
 use super::EventLoop;
-use crate::{methods, prelude::*, types};
+use crate::{Bot, methods, prelude::*, types};
 use futures::Stream;
 use hyper::{
     service::service_fn, Body, Error, Method, Request, Response, Server,
@@ -125,6 +125,7 @@ fn is_request_correct(request: &Request<Body>) -> bool {
 }
 
 fn handle(
+    bot: Arc<Bot>,
     event_loop: Arc<EventLoop>,
     request: Request<Body>,
 ) -> Box<dyn Future<Item = Response<Body>, Error = Error> + Send> {
@@ -136,7 +137,7 @@ fn handle(
                     panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
                 });
 
-            event_loop.handle_update(update);
+            event_loop.handle_update(bot, update);
 
             Response::new(Body::empty())
         });
@@ -155,11 +156,13 @@ fn init_server(
     ip: IpAddr,
     port: u16,
 ) -> impl Future<Error = Error> {
+    let bot = Arc::new(event_loop.bot.clone());
     let event_loop = Arc::new(event_loop);
     let addr = SocketAddr::new(ip, port);
 
     Server::bind(&addr).serve(move || {
+        let bot = Arc::clone(&bot);
         let event_loop = Arc::clone(&event_loop);
-        service_fn(move |request| handle(Arc::clone(&event_loop), request))
+        service_fn(move |request| handle(Arc::clone(&bot), Arc::clone(&event_loop), request))
     })
 }

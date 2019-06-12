@@ -93,12 +93,14 @@ impl<'a> Polling<'a> {
     }
 
     fn start_event_loop(self) -> ! {
+        let bot = Arc::new(self.event_loop.bot.clone());
         let event_loop = Arc::new(self.event_loop);
         let interval = Duration::from_millis(self.poll_interval);
         let last_offset = Arc::new(Mutex::new(None));
         let mut last_send_timestamp;
 
         loop {
+            let bot = Arc::clone(&bot);
             let on_ok = Arc::clone(&event_loop);
             let on_error = Arc::clone(&event_loop);
             let new_offset = Arc::clone(&last_offset);
@@ -123,7 +125,7 @@ impl<'a> Polling<'a> {
                     }
 
                     for update in updates {
-                        on_ok.handle_update(update);
+                        on_ok.handle_update(Arc::clone(&bot), update);
                     }
                 })
                 .map_err(move |error| {
