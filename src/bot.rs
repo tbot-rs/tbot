@@ -4,11 +4,6 @@ use crate::{
     types::input_file::*,
     methods::*,
 };
-use std::sync::Arc;
-
-mod token;
-
-pub use token::*;
 
 /// Provides methods to call the Bots API.
 ///

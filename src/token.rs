@@ -1,4 +1,4 @@
-use super::*;
+use std::{sync::Arc, fmt::{self, Debug, Formatter}};
 
 /// Represents a token.
 ///
@@ -18,8 +18,8 @@ impl Token {
     }
 }
 
-impl std::fmt::Debug for Token {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl Debug for Token {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         formatter.write_str("Token(..)")
     }
 }

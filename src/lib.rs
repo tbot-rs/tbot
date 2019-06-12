@@ -46,6 +46,7 @@
 mod bot;
 mod internal;
 mod multipart;
+mod token;
 
 pub mod contexts;
 pub mod event_loop;
@@ -54,7 +55,7 @@ pub mod types;
 
 pub use bot::*;
 use serde::{Deserialize, Serialize};
-use {internal::*, multipart::*, prelude::*};
+use {internal::*, multipart::*, prelude::*, token::*};
 
 #[cfg(feature = "proxy")]
 pub use hyper_proxy as proxy;
