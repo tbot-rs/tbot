@@ -10,10 +10,9 @@ mod token;
 
 pub use token::*;
 
-/// Provides methods to call API methods.
+/// Provides methods to call the Bots API.
 ///
-/// A `Bot` implements the [`Methods`] trait which provides handy methods
-/// on the struct to call API methods:
+/// A `Bot` provides all methods from the [methods] module, inferring the token:
 ///
 /// ```no_run
 /// use tbot::prelude::*;
@@ -33,12 +32,10 @@ pub use token::*;
 /// tbot::run(me);
 /// ```
 ///
-/// [polling]: #method.polling
-/// [webhooks]: #method.webhook
-/// [`text`]: #method.text
-/// [`MockBot`]: ./struct.MockBot.html
-/// [`Bot::mock`]: #method.mock
-/// [`Methods`]: ./methods/trait.Methods.html
+/// Besides, a `Bot` is used to construct an [`EventLoop`] — a struct
+/// responsible for configuring handlers and listening to updates.
+///
+/// [`EventLoop`]: ./event_loop/struct.EventLoop.html
 #[derive(Debug, Clone)]
 pub struct Bot {
     pub(crate) token: Token,
