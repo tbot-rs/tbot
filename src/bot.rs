@@ -111,7 +111,7 @@ type VoiceHandler = Handler<contexts::Voice>;
 /// [`Bot::mock`]: #method.mock
 /// [`Methods`]: ./methods/trait.Methods.html
 pub struct Bot {
-    token: Arc<String>,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     command_handlers: HashMap<&'static str, Handlers<TextHandler>>,
@@ -157,9 +157,9 @@ pub struct Bot {
 
 impl Bot {
     /// Constructs a new `Bot`.
-    pub fn new(token: String) -> Self {
+    pub fn new(token: Token) -> Self {
         Self {
-            token: Arc::new(token),
+            token,
             #[cfg(feature = "proxy")]
             proxy: None,
             command_handlers: HashMap::new(),
@@ -273,9 +273,11 @@ impl Bot {
     /// bot.text(|_| ());
     /// ```
     pub fn from_env(env_var: &'static str) -> Self {
-        Self::new(std::env::var(env_var).unwrap_or_else(|_| {
+        let token = std::env::var(env_var).unwrap_or_else(|_| {
             panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
-        }))
+        });
+
+        Self::new(Token::new(token))
     }
 
     /// Starts polling configuration.
@@ -301,7 +303,7 @@ impl Bot {
     /// Creates a new `MockBot` inheriting the token from this bot.
     pub fn mock(&self) -> MockBot {
         MockBot::new(
-            Arc::clone(&self.token),
+            self.token.clone(),
             #[cfg(feature = "proxy")]
             self.proxy.clone(),
         )
@@ -1358,7 +1360,7 @@ impl crate::Sealed for Bot {}
 
 impl Methods<'_> for Bot {
     fn token(&self) -> &str {
-        &self.token
+        self.token.as_str()
     }
 
     #[cfg(feature = "proxy")]
@@ -1386,7 +1388,7 @@ impl Methods<'_> for Bot {
 macro_rules! bot {
     ($var:literal) => {{
         let token = env!($var).to_string();
-        $crate::Bot::new(token)
+        $crate::Bot::new($crate::Token::new(token))
     }};
     ($var:literal,) => {
         $crate::bot!($var)

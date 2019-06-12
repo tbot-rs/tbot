@@ -70,7 +70,7 @@ impl<'a> Webhook<'a> {
         let outer_error = Arc::clone(&error);
 
         let set_webhook = methods::SetWebhook::new(
-            &self.bot.token,
+            self.bot.token.as_str(),
             self.url,
             self.certificate,
             self.max_connections,

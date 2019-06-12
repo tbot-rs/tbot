@@ -12,6 +12,10 @@ impl Token {
     pub fn new(token: String) -> Self {
         Self(Arc::new(token))
     }
+
+    pub(crate) fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
 }
 
 impl std::fmt::Debug for Token {
