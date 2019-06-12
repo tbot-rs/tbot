@@ -4,7 +4,7 @@ const URL: &str = "https://example.com";
 const PORT: u16 = 2000;
 
 fn main() {
-    let mut bot = tbot::bot!("BOT_TOKEN");
+    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
     bot.text(|context| {
         let message = match meval::eval_str(&context.text.value) {
