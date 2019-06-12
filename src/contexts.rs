@@ -7,7 +7,7 @@
 //! ```no_run
 //! use tbot::prelude::*;
 //!
-//! let mut bot = tbot::bot!("BOT_TOKEN");
+//! let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 //!
 //! bot.text(|context| {
 //!     let reversed: String = context.text.value.chars().rev().collect();
@@ -31,12 +31,12 @@
 //! token and IDs of the chat and the message.
 //!
 //! All contexts have one common field named `bot`. Through this field, you can
-//! call any API method you can call using [`Bot`] (though it's really
-//! a [`MockBot`]). For example:
+//! call any API method you can call using a [`Bot`]:
 //!
 //! ```no_run
 //! # use tbot::prelude::*;
-//! # let mut bot = tbot::Bot::new(tbot::Token::new(String::new()));
+//! # let mut bot = tbot::Bot::new(tbot::Token::new(String::new()))
+//! #     .event_loop();
 //! const ADMIN_CHAT: i64 = 0;
 //!
 //! bot.text(|context| {
@@ -60,7 +60,6 @@
 //! [text-context]: ./struct.Text.html
 //! [`send_message_in_reply`]: ./traits/trait.ChatMethods.html#method.send_message_in_reply
 //! [`Bot`]: ../struct.Bot.html
-//! [`MockBot`]: ../struct.MockBot.html
 //! [`ChatMethods`]: ./traits/trait.ChatMethods.html
 //! [`Pinnable`]: ./traits/trait.Pinnable.html
 

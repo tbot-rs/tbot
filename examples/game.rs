@@ -13,7 +13,7 @@ const BAD_MULTIPLIER: i32 = 100;
 const SCORE_NOT_MODIFIED: &str = "Bad Request: BOT_SCORE_NOT_MODIFIED";
 
 fn main() {
-    let mut bot = tbot::bot!("BOT_TOKEN");
+    let bot = tbot::bot!("BOT_TOKEN");
 
     let message_id = Arc::new(Mutex::new(None));
     let on_ok = Arc::clone(&message_id);
@@ -32,6 +32,8 @@ fn main() {
 
     let message_id =
         Arc::try_unwrap(message_id).unwrap().into_inner().unwrap().unwrap();
+
+    let mut bot = bot.event_loop();
 
     bot.text(move |context| {
         if let Some(user) = &context.from {

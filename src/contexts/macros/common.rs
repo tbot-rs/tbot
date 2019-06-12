@@ -12,7 +12,7 @@ macro_rules! common {
         #[derive(Clone)]
         pub struct $name {
             /// A mock bot for calling API without information inference.
-            pub bot: Arc<MockBot>,
+            pub bot: Arc<Bot>,
             $(#[doc = $field_doc] pub $field: $type,)+
         }
 

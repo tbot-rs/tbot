@@ -12,13 +12,13 @@ use std::sync::Arc;
 // todo: #[non_exhaustive]
 pub struct Update {
     /// A mock bot with all API methods.
-    pub bot: Arc<MockBot>,
+    pub bot: Arc<Bot>,
     /// The ID of the update.
     pub update_id: u32,
 }
 
 impl Update {
-    pub(crate) const fn new(bot: Arc<MockBot>, update_id: u32) -> Self {
+    pub(crate) const fn new(bot: Arc<Bot>, update_id: u32) -> Self {
         Self {
             bot,
             update_id,

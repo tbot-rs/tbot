@@ -3,7 +3,7 @@
 //! ```no_run
 //! use tbot::prelude::*;
 //!
-//! let mut bot = tbot::bot!("BOT_TOKEN");
+//! let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 //!
 //! bot.text(|context| {
 //!     let reply = context
@@ -46,13 +46,15 @@
 mod bot;
 mod internal;
 mod multipart;
+mod token;
 
 pub mod contexts;
+pub mod event_loop;
 pub mod methods;
 pub mod types;
 
-pub use bot::*;
 use serde::{Deserialize, Serialize};
+pub use {bot::*, token::*};
 use {internal::*, multipart::*, prelude::*};
 
 #[cfg(feature = "proxy")]
@@ -88,7 +90,7 @@ where
 
 pub mod prelude {
     //! Traits needed when working with `tbot`.
-    pub use super::{contexts::traits::*, methods::Methods};
+    pub use super::contexts::traits::*;
     pub use futures::Future;
     pub use futures::IntoFuture;
 }

@@ -1,10 +1,9 @@
-use super::MockBot;
-use crate::{methods::*, types, types::input_file::*};
+use crate::{methods::*, types, types::input_file::*, Bot};
 
 /// Provides methods appliable to all messages.
 pub trait ChatMethods<'a>: crate::Sealed {
     #[doc(hidden)]
-    fn bot(&self) -> &MockBot;
+    fn bot(&self) -> &Bot;
     #[doc(hidden)]
     fn chat_id(&self) -> i64;
     #[doc(hidden)]
