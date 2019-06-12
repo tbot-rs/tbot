@@ -14,10 +14,10 @@ mod handlers_macros;
 
 mod mock_bot;
 mod polling;
-mod webhook;
 mod token;
+mod webhook;
 
-pub use {mock_bot::*, polling::*, webhook::*, token::*};
+pub use {mock_bot::*, polling::*, token::*, webhook::*};
 
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
@@ -1359,8 +1359,8 @@ impl Bot {
 impl crate::Sealed for Bot {}
 
 impl Methods<'_> for Bot {
-    fn token(&self) -> &str {
-        self.token.as_str()
+    fn token(&self) -> Token {
+        self.token.clone()
     }
 
     #[cfg(feature = "proxy")]

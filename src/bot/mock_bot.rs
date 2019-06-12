@@ -22,10 +22,7 @@ pub struct MockBot {
 
 impl MockBot {
     #[cfg(feature = "proxy")]
-    pub(crate) const fn new(
-        token: Token,
-        proxy: Option<proxy::Proxy>,
-    ) -> Self {
+    pub(crate) const fn new(token: Token, proxy: Option<proxy::Proxy>) -> Self {
         Self {
             token,
             proxy,
