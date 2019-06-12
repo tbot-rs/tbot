@@ -15,8 +15,9 @@ mod handlers_macros;
 mod mock_bot;
 mod polling;
 mod webhook;
+mod token;
 
-pub use {mock_bot::*, polling::*, webhook::*};
+pub use {mock_bot::*, polling::*, webhook::*, token::*};
 
 type Handlers<T> = Vec<Mutex<Box<T>>>;
 
