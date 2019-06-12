@@ -1,12 +1,12 @@
 use crate::{
     methods::{AnswerCallbackQuery, CallbackAnswerAction, Methods},
-    MockBot,
+    Bot,
 };
 
 /// Provides methods appliable to callback queries.
 pub trait Callback<'a>: crate::internal::Sealed {
     #[doc(hidden)]
-    fn bot(&self) -> &MockBot;
+    fn bot(&self) -> &Bot;
     #[doc(hidden)]
     fn id(&self) -> &str;
 

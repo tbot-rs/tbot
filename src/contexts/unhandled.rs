@@ -9,10 +9,7 @@ common! {
 }
 
 impl Unhandled {
-    pub(crate) const fn new(
-        bot: Arc<MockBot>,
-        update: types::UpdateKind,
-    ) -> Self {
+    pub(crate) const fn new(bot: Arc<Bot>, update: types::UpdateKind) -> Self {
         Self {
             bot,
             update,

@@ -36,7 +36,7 @@ macro_rules! message_base {
             // https://github.com/rust-lang/rust-clippy/issues/4041
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: Arc<MockBot>,
+                bot: Arc<Bot>,
                 data: types::MessageData,
                 $($param: $param_type,)*
             ) -> Self {
@@ -53,7 +53,7 @@ macro_rules! message_base {
         }
 
         impl<'a> traits::ChatMethods<'a> for $name {
-            fn bot(&self) -> &MockBot {
+            fn bot(&self) -> &Bot {
                 &self.bot
             }
 

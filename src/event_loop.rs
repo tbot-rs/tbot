@@ -6,7 +6,7 @@ use crate::{
     types::{
         self, CallbackKind, CallbackQuery, Message, MessageKind, UpdateKind,
     },
-    Bot, MockBot,
+    Bot,
 };
 use std::{
     collections::HashMap,
@@ -597,11 +597,7 @@ impl EventLoop {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn run_unhandled_handlers(
-        &self,
-        mock_bot: Arc<MockBot>,
-        update: UpdateKind,
-    ) {
+    fn run_unhandled_handlers(&self, mock_bot: Arc<Bot>, update: UpdateKind) {
         let context = contexts::Unhandled::new(mock_bot, update);
 
         for handler in &self.unhandled_handlers {
@@ -655,7 +651,7 @@ impl EventLoop {
     }
 
     fn handle_update(&self, update: types::Update) {
-        let mock_bot = Arc::new(self.bot.mock());
+        let mock_bot = Arc::new(self.bot.clone());
         let update_context =
             contexts::Update::new(Arc::clone(&mock_bot), update.id);
 
@@ -740,7 +736,7 @@ impl EventLoop {
     #[allow(clippy::cognitive_complexity)]
     fn handle_message_update(
         &self,
-        mock_bot: Arc<MockBot>,
+        mock_bot: Arc<Bot>,
         message: types::Message,
     ) {
         let (data, kind) = message.split();
@@ -1101,7 +1097,7 @@ impl EventLoop {
 
     fn handle_message_edit_update(
         &self,
-        mock_bot: Arc<MockBot>,
+        mock_bot: Arc<Bot>,
         message: types::Message,
     ) {
         let (data, kind) = message.split();

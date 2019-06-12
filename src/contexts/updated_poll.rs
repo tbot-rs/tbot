@@ -9,7 +9,7 @@ common! {
 }
 
 impl UpdatedPoll {
-    pub(crate) const fn new(bot: Arc<MockBot>, poll: types::Poll) -> Self {
+    pub(crate) const fn new(bot: Arc<Bot>, poll: types::Poll) -> Self {
         Self {
             bot,
             poll,

@@ -29,7 +29,7 @@ macro_rules! callback {
             // https://github.com/rust-lang/rust-clippy/issues/4041
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: Arc<MockBot>,
+                bot: Arc<Bot>,
                 id: String,
                 from: User,
                 origin: CallbackOrigin,
@@ -48,7 +48,7 @@ macro_rules! callback {
         }
 
         impl<'a> traits::Callback<'a> for $name {
-            fn bot(&self) -> &MockBot {
+            fn bot(&self) -> &Bot {
                 &self.bot
             }
 

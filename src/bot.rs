@@ -2,10 +2,9 @@ use super::*;
 use crate::event_loop::EventLoop;
 use std::sync::Arc;
 
-mod mock_bot;
 mod token;
 
-pub use {mock_bot::*, token::*};
+pub use token::*;
 
 /// Provides methods to call API methods.
 ///
@@ -36,6 +35,7 @@ pub use {mock_bot::*, token::*};
 /// [`MockBot`]: ./struct.MockBot.html
 /// [`Bot::mock`]: #method.mock
 /// [`Methods`]: ./methods/trait.Methods.html
+#[derive(Debug, Clone)]
 pub struct Bot {
     pub(crate) token: Token,
     #[cfg(feature = "proxy")]
@@ -90,15 +90,6 @@ impl Bot {
     #[cfg(feature = "proxy")]
     pub fn proxy(&mut self, proxy: proxy::Proxy) {
         self.proxy = Some(proxy);
-    }
-
-    /// Creates a new `MockBot` inheriting the token from this bot.
-    pub fn mock(&self) -> MockBot {
-        MockBot::new(
-            self.token.clone(),
-            #[cfg(feature = "proxy")]
-            self.proxy.clone(),
-        )
     }
 
     /// Constructs an `EventLoop`.
