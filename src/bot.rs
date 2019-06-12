@@ -40,7 +40,7 @@ pub struct Bot {
 
 impl Bot {
     /// Constructs a new `Bot`.
-    pub fn new(token: Token) -> Self {
+    pub const fn new(token: Token) -> Self {
         Self {
             token,
             #[cfg(feature = "proxy")]
@@ -103,7 +103,7 @@ impl Bot {
     }
 
     #[cfg(not(feature = "proxy"))]
-    fn prepare_method<T>(&self, method: T) -> T {
+    const fn prepare_method<T>(&self, method: T) -> T {
         method
     }
 
@@ -440,7 +440,7 @@ impl Bot {
     }
 
     /// Constructs a new `GetMe` inferring your bot's token.
-    pub fn get_me<'a>(&'a self) -> methods::GetMe {
+    pub fn get_me(&self) -> methods::GetMe {
         self.prepare_method(methods::GetMe::new(self.token.clone()))
     }
 
@@ -450,8 +450,8 @@ impl Bot {
     }
 
     /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
-    pub fn get_user_profile_photos<'a>(
-        &'a self,
+    pub fn get_user_profile_photos(
+        &self,
         user_id: i64,
     ) -> methods::GetUserProfilePhotos {
         self.prepare_method(methods::GetUserProfilePhotos::new(
@@ -461,7 +461,7 @@ impl Bot {
     }
 
     /// Constructs a new `GetWebhookInfo` inferring your bot's token.
-    pub fn get_webhook_info<'a>(&'a self) -> methods::GetWebhookInfo {
+    pub fn get_webhook_info(&self) -> methods::GetWebhookInfo {
         self.prepare_method(methods::GetWebhookInfo::new(self.token.clone()))
     }
 
