@@ -162,9 +162,6 @@ pub use {
 
 pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
 
-mod methods_trait;
-pub use methods_trait::*;
-
 mod call_method;
 use call_method::*;
 

@@ -1,5 +1,5 @@
 use crate::{
-    methods::{AnswerCallbackQuery, CallbackAnswerAction, Methods},
+    methods::{AnswerCallbackQuery, CallbackAnswerAction},
     Bot,
 };
 
