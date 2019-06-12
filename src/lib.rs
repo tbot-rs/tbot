@@ -48,6 +48,7 @@ mod internal;
 mod multipart;
 
 pub mod contexts;
+pub mod event_loop;
 pub mod methods;
 pub mod types;
 

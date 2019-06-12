@@ -1,9 +1,14 @@
-use super::*;
+// use super::*;
+use super::EventLoop;
+use crate::{methods, prelude::*, types};
 use futures::Stream;
 use hyper::{
     service::service_fn, Body, Error, Method, Request, Response, Server,
 };
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use std::{
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+    sync::{Arc, Mutex},
+};
 
 /// Configures webhook and starts a server.
 ///
@@ -12,7 +17,7 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 /// [`Bot::webhook`]: ./struct.Bot.html#method.webhook
 #[must_use = "webhook does not start unless `start` is called"]
 pub struct Webhook<'a> {
-    bot: Bot,
+    event_loop: EventLoop,
     ip: IpAddr,
     port: u16,
 
@@ -23,9 +28,9 @@ pub struct Webhook<'a> {
 }
 
 impl<'a> Webhook<'a> {
-    pub(crate) fn new(bot: Bot, url: &'a str, port: u16) -> Self {
+    pub(crate) fn new(event_loop: EventLoop, url: &'a str, port: u16) -> Self {
         Self {
-            bot,
+            event_loop,
             ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
             port,
             url,
@@ -70,13 +75,13 @@ impl<'a> Webhook<'a> {
         let outer_error = Arc::clone(&error);
 
         let set_webhook = methods::SetWebhook::new(
-            self.bot.token.clone(),
+            self.event_loop.bot.token.clone(),
             self.url,
             self.certificate,
             self.max_connections,
             self.allowed_updates,
             #[cfg(feature = "proxy")]
-            self.bot.proxy.clone(),
+            self.event_loop.bot.proxy.clone(),
         )
         .into_future()
         .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
@@ -93,7 +98,7 @@ impl<'a> Webhook<'a> {
     fn start_event_loop(self) -> ! {
         let error = Arc::new(Mutex::new(None));
         let outer_error = Arc::clone(&error);
-        let server = init_server(self.bot, self.ip, self.port)
+        let server = init_server(self.event_loop, self.ip, self.port)
             .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
 
         crate::run(server);
@@ -120,7 +125,7 @@ fn is_request_correct(request: &Request<Body>) -> bool {
 }
 
 fn handle(
-    bot: Arc<Bot>,
+    event_loop: Arc<EventLoop>,
     request: Request<Body>,
 ) -> Box<dyn Future<Item = Response<Body>, Error = Error> + Send> {
     if is_request_correct(&request) {
@@ -131,7 +136,7 @@ fn handle(
                     panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
                 });
 
-            bot.handle_update(update);
+            event_loop.handle_update(update);
 
             Response::new(Body::empty())
         });
@@ -145,12 +150,16 @@ fn handle(
     }
 }
 
-fn init_server(bot: Bot, ip: IpAddr, port: u16) -> impl Future<Error = Error> {
-    let bot = Arc::new(bot);
+fn init_server(
+    event_loop: EventLoop,
+    ip: IpAddr,
+    port: u16,
+) -> impl Future<Error = Error> {
+    let event_loop = Arc::new(event_loop);
     let addr = SocketAddr::new(ip, port);
 
     Server::bind(&addr).serve(move || {
-        let bot = Arc::clone(&bot);
-        service_fn(move |request| handle(Arc::clone(&bot), request))
+        let event_loop = Arc::clone(&event_loop);
+        service_fn(move |request| handle(Arc::clone(&event_loop), request))
     })
 }
