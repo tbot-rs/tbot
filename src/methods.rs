@@ -11,11 +11,9 @@
 //! - Methods are constructed using their `new` method. This methods accepts
 //!   required parameters for this method;
 //! - Methods provide the builder pattern for optional parameters;
-//! - Methods have the `into_future` method you need to call before actually
-//!   calling the method.
+//! - Methods implement the `IntoFuture` trait, so you need to turn a method
+//!   into a future before actually calling the method.
 //!
-//! Note that `tbot` does not call the method, it only provides you with
-//! a handy way to construct futures. Instead, you need to run by yourself.
 //! For example, here's how to call [`SendMessage`]:
 //!
 //! ```no_run
