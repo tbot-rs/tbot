@@ -53,8 +53,8 @@ pub enum UpdateKind {
 
 /// Represents an update from Telegram.
 #[derive(Debug)]
+// todo: #[non_exhaustive]
 pub struct Update {
-    private: (),
     /// The ID of the update.
     pub id: u32,
     /// The kind of the update.
@@ -129,7 +129,6 @@ impl<'de> serde::Deserialize<'de> for Update {
                 }
 
                 Ok(Update {
-                    private: (),
                     id: id.ok_or_else(|| {
                         serde::de::Error::missing_field(UPDATE_ID)
                     })?,

@@ -9,8 +9,8 @@ use std::sync::Arc;
 /// [`before_update`]: ../struct.Bot.html#method.before_update
 /// [`after_update`]: ../struct.Bot.html#method.after_update
 #[derive(Clone)]
+// todo: #[non_exhaustive]
 pub struct Update {
-    private: (),
     /// A mock bot with all API methods.
     pub bot: Arc<MockBot>,
     /// The ID of the update.
@@ -22,7 +22,6 @@ impl Update {
         Self {
             bot,
             update_id,
-            private: (),
         }
     }
 }
