@@ -9,7 +9,7 @@ type HighScores = Vec<types::GameHighScore>;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetInlineGameHighScores<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -20,7 +20,7 @@ pub struct GetInlineGameHighScores<'a> {
 impl<'a> GetInlineGameHighScores<'a> {
     /// Constructs a new `GetInlineGameHighScores`.
     pub const fn new(
-        token: &'a str,
+        token: Token,
         inline_message_id: &'a str,
         user_id: i64,
     ) -> Self {
@@ -42,7 +42,7 @@ impl IntoFuture for GetInlineGameHighScores<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            self.token,
+            &self.token,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),

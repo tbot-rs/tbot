@@ -3,7 +3,7 @@ use super::*;
 /// This method isn't meant to be used by users directly.
 #[must_use]
 pub(crate) struct SetWebhook<'a> {
-    token: &'a str,
+    token: Token,
     url: &'a str,
     certificate: Option<&'a str>,
     max_connections: Option<u8>,
@@ -15,7 +15,7 @@ pub(crate) struct SetWebhook<'a> {
 impl<'a> SetWebhook<'a> {
     #[cfg(feature = "proxy")]
     pub const fn new(
-        token: &'a str,
+        token: Token,
         url: &'a str,
         certificate: Option<&'a str>,
         max_connections: Option<u8>,
@@ -34,7 +34,7 @@ impl<'a> SetWebhook<'a> {
 
     #[cfg(not(feature = "proxy"))]
     pub const fn new(
-        token: &'a str,
+        token: Token,
         url: &'a str,
         certificate: Option<&'a str>,
         max_connections: Option<u8>,
@@ -70,7 +70,7 @@ impl IntoFuture for SetWebhook<'_> {
 
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "setWebhook",
                 Some(boundary),
                 body,

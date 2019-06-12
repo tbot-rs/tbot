@@ -6,7 +6,7 @@ use types::input_file::{InputFile, Sticker};
 /// [docs]: https://core.telegram.org/bots/api#sendsticker
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendSticker<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -19,7 +19,7 @@ pub struct SendSticker<'a> {
 impl<'a> SendSticker<'a> {
     /// Constructs a new `SendSticker`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         sticker: &'a Sticker<'a>,
     ) -> Self {
@@ -95,7 +95,7 @@ impl IntoFuture for SendSticker<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendSticker",
             Some(boundary),
             body,

@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetStickerPositionInSet<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     sticker: &'a str,
     position: u32,
     #[cfg(feature = "proxy")]
@@ -17,7 +17,7 @@ pub struct SetStickerPositionInSet<'a> {
 
 impl<'a> SetStickerPositionInSet<'a> {
     /// Constructs a new `SetStickerPositionInSet`.
-    pub const fn new(token: &'a str, sticker: &'a str, position: u32) -> Self {
+    pub const fn new(token: Token, sticker: &'a str, position: u32) -> Self {
         Self {
             token,
             sticker,
@@ -37,7 +37,7 @@ impl IntoFuture for SetStickerPositionInSet<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "setStickerPositionInSet",
                 None,
                 serde_json::to_vec(&self).unwrap(),

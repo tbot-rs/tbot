@@ -9,9 +9,9 @@ type Photos = Vec<Vec<types::UserProfilePhotos>>;
 /// [docs]: https://core.telegram.org/bots/api#getuserprofilephotos
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetUserProfilePhotos<'a> {
+pub struct GetUserProfilePhotos {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -22,9 +22,9 @@ pub struct GetUserProfilePhotos<'a> {
     limit: Option<u8>,
 }
 
-impl<'a> GetUserProfilePhotos<'a> {
+impl GetUserProfilePhotos {
     /// Constructs a new `GetUserProfilePhotos`.
-    pub const fn new(token: &'a str, user_id: i64) -> Self {
+    pub const fn new(token: Token, user_id: i64) -> Self {
         Self {
             token,
             user_id,
@@ -48,7 +48,7 @@ impl<'a> GetUserProfilePhotos<'a> {
     }
 }
 
-impl IntoFuture for GetUserProfilePhotos<'_> {
+impl IntoFuture for GetUserProfilePhotos {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = Photos;
@@ -56,7 +56,7 @@ impl IntoFuture for GetUserProfilePhotos<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            self.token,
+            &self.token,
             "getUserProfilePhotos",
             None,
             serde_json::to_vec(&self).unwrap(),
@@ -67,7 +67,7 @@ impl IntoFuture for GetUserProfilePhotos<'_> {
 }
 
 #[cfg(feature = "proxy")]
-impl ProxyMethod for GetUserProfilePhotos<'_> {
+impl ProxyMethod for GetUserProfilePhotos {
     fn proxy(mut self, proxy: proxy::Proxy) -> Self {
         self.proxy = Some(proxy);
         self

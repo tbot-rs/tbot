@@ -6,7 +6,7 @@ use types::input_file::*;
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineMedia<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     inline_message_id: &'a str,
@@ -17,7 +17,7 @@ pub struct EditInlineMedia<'a> {
 impl<'a> EditInlineMedia<'a> {
     /// Constructs a new `EditInlineMedia`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         inline_message_id: &'a str,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
@@ -89,7 +89,7 @@ impl IntoFuture for EditInlineMedia<'_> {
 
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "editMessageMedia",
                 Some(boundary),
                 body,

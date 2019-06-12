@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineReplyMarkup<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -18,7 +18,7 @@ pub struct EditInlineReplyMarkup<'a> {
 impl<'a> EditInlineReplyMarkup<'a> {
     /// Constructs a new `EditInlineReplyMarkup`.
     pub const fn new(
-        token: &'a str,
+        token: Token,
         inline_message_id: &'a str,
         reply_markup: types::InlineKeyboard<'a>,
     ) -> Self {
@@ -41,7 +41,7 @@ impl IntoFuture for EditInlineReplyMarkup<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "editMessageReplyMarkup",
                 None,
                 serde_json::to_vec(&self).unwrap(),

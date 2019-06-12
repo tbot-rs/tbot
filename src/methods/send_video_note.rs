@@ -6,7 +6,7 @@ use types::input_file::{InputFile, VideoNote};
 /// [docs]: https://core.telegram.org/bots/api#sendvideonote
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -19,7 +19,7 @@ pub struct SendVideoNote<'a> {
 impl<'a> SendVideoNote<'a> {
     /// Constructs a new `SendVideoNote`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         video_note: &'a VideoNote<'a>,
     ) -> Self {
@@ -107,7 +107,7 @@ impl IntoFuture for SendVideoNote<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendVideoNote",
             Some(boundary),
             body,

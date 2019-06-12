@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct RestrictChatMember<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -28,7 +28,7 @@ pub struct RestrictChatMember<'a> {
 impl<'a> RestrictChatMember<'a> {
     /// Constructs a new `RestrictChatMember`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         user_id: i64,
     ) -> Self {
@@ -86,7 +86,7 @@ impl IntoFuture for RestrictChatMember<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "restrictChatMember",
                 None,
                 serde_json::to_vec(&self).unwrap(),

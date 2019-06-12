@@ -6,7 +6,7 @@ use types::input_file::{InputFile, Photo};
 /// [docs]: https://core.telegram.org/bots/api#sendphoto
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendPhoto<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -19,7 +19,7 @@ pub struct SendPhoto<'a> {
 impl<'a> SendPhoto<'a> {
     /// Constructs a new `SendPhoto`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: &'a Photo<'a>,
     ) -> Self {
@@ -98,7 +98,7 @@ impl IntoFuture for SendPhoto<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendPhoto",
             Some(boundary),
             body,

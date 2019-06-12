@@ -7,7 +7,7 @@ use super::*;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetInlineGameScore<'a> {
     #[serde(skip)]
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     #[serde(skip)]
     proxy: Option<proxy::Proxy>,
@@ -23,7 +23,7 @@ pub struct SetInlineGameScore<'a> {
 impl<'a> SetInlineGameScore<'a> {
     /// Constructs a new `SetInlineGameScore`.
     pub const fn new(
-        token: &'a str,
+        token: Token,
         inline_message_id: &'a str,
         user_id: i64,
         score: u32,
@@ -62,7 +62,7 @@ impl IntoFuture for SetInlineGameScore<'_> {
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "setGameScore",
                 None,
                 serde_json::to_vec(&self).unwrap(),

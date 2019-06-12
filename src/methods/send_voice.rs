@@ -6,7 +6,7 @@ use types::input_file::{InputFile, Voice};
 /// [docs]: https://core.telegram.org/bots/api#sendvoice
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVoice<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -19,7 +19,7 @@ pub struct SendVoice<'a> {
 impl<'a> SendVoice<'a> {
     /// Constructs a new `SendVoice`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         voice: &'a Voice<'a>,
     ) -> Self {
@@ -99,7 +99,7 @@ impl IntoFuture for SendVoice<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendVoice",
             Some(boundary),
             body,

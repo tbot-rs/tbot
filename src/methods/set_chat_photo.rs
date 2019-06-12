@@ -6,7 +6,7 @@ use types::input_file::{ChatPhoto, InputFile};
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatPhoto<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -16,7 +16,7 @@ pub struct SetChatPhoto<'a> {
 impl<'a> SetChatPhoto<'a> {
     /// Constructs a new `SetChatPhoto`.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: &'a ChatPhoto<'a>,
     ) -> Self {
@@ -57,7 +57,7 @@ impl IntoFuture for SetChatPhoto<'_> {
 
         Box::new(
             send_method::<bool>(
-                self.token,
+                &self.token,
                 "setChatPhoto",
                 Some(boundary),
                 body,

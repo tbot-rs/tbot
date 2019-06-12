@@ -4,7 +4,7 @@ use types::input_file::*;
 /// Provides methods for calling API that infer your bot's token.
 pub trait Methods<'a>: crate::Sealed {
     #[doc(hidden)]
-    fn token(&self) -> &str;
+    fn token(&self) -> Token;
 
     #[cfg(feature = "proxy")]
     #[doc(hidden)]
@@ -359,7 +359,7 @@ pub trait Methods<'a>: crate::Sealed {
     }
 
     /// Constructs a new `GetMe` inferring your bot's token.
-    fn get_me(&'a self) -> methods::GetMe<'a> {
+    fn get_me(&'a self) -> methods::GetMe {
         self.prepare_method(methods::GetMe::new(self.token()))
     }
 
@@ -372,7 +372,7 @@ pub trait Methods<'a>: crate::Sealed {
     fn get_user_profile_photos(
         &'a self,
         user_id: i64,
-    ) -> methods::GetUserProfilePhotos<'a> {
+    ) -> methods::GetUserProfilePhotos {
         self.prepare_method(methods::GetUserProfilePhotos::new(
             self.token(),
             user_id,
@@ -380,7 +380,7 @@ pub trait Methods<'a>: crate::Sealed {
     }
 
     /// Constructs a new `GetWebhookInfo` inferring your bot's token.
-    fn get_webhook_info(&'a self) -> methods::GetWebhookInfo<'a> {
+    fn get_webhook_info(&'a self) -> methods::GetWebhookInfo {
         self.prepare_method(methods::GetWebhookInfo::new(self.token()))
     }
 

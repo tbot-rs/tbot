@@ -43,8 +43,8 @@ impl MockBot {
 impl crate::Sealed for MockBot {}
 
 impl Methods<'_> for MockBot {
-    fn token(&self) -> &str {
-        self.token.as_str()
+    fn token(&self) -> Token {
+        self.token.clone()
     }
 
     #[cfg(feature = "proxy")]

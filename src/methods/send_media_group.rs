@@ -6,7 +6,7 @@ use types::input_file::*;
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a> {
-    token: &'a str,
+    token: Token,
     #[cfg(feature = "proxy")]
     proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
@@ -22,7 +22,7 @@ impl<'a> SendMediaGroup<'a> {
     /// because it modifies the media's metadata, and thus further reuse of the
     /// media would lead to errors.
     pub fn new(
-        token: &'a str,
+        token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         media: Vec<GroupMedia<'a>>,
     ) -> Self {
@@ -137,7 +137,7 @@ impl IntoFuture for SendMediaGroup<'_> {
         let (boundary, body) = multipart.str("media", &media).finish();
 
         Box::new(send_method(
-            self.token,
+            &self.token,
             "sendMediaGroup",
             Some(boundary),
             body,
