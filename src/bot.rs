@@ -928,7 +928,7 @@ impl Bot {
 ///
 /// # Example
 ///
-/// ```
+/// ```no_run
 /// use tbot::prelude::*;
 ///
 /// let mut bot = tbot::bot!("BOT_TOKEN");
