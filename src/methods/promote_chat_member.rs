@@ -102,19 +102,26 @@ impl<'a> PromoteChatMember<'a> {
         self.can_promote_members = Some(can_promote);
         self
     }
+}
 
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
-        send_method::<bool>(
-            self.token,
-            "promoteChatMember",
-            None,
-            serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
+impl IntoFuture for PromoteChatMember<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = ();
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
+        Box::new(
+            send_method::<bool>(
+                self.token,
+                "promoteChatMember",
+                None,
+                serde_json::to_vec(&self).unwrap(),
+                #[cfg(feature = "proxy")]
+                self.proxy,
+            )
+            .map(|_| ()), // Only `true` is returned on success
         )
-        .map(|_| ()) // Only `true` is returned on success
     }
 }
 

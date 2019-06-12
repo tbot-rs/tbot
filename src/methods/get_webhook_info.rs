@@ -19,20 +19,23 @@ impl<'a> GetWebhookInfo<'a> {
             proxy: None,
         }
     }
+}
 
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(
-        self,
-    ) -> impl Future<Item = types::WebhookInfo, Error = DeliveryError> {
-        send_method(
+impl IntoFuture for GetWebhookInfo<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = types::WebhookInfo;
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
+        Box::new(send_method(
             self.token,
             "getWebhookInfo",
             None,
             Vec::new(),
             #[cfg(feature = "proxy")]
             self.proxy,
-        )
+        ))
     }
 }
 

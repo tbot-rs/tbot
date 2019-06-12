@@ -43,10 +43,15 @@ impl<'a> AddStickerToSet<'a> {
         self.mask_position = Some(mask_position);
         self
     }
+}
 
-    /// Prepares the request and returns a `Future`.
-    #[must_use = "futures do nothing unless polled"]
-    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
+impl IntoFuture for AddStickerToSet<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = ();
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
         let user_id = self.user_id.to_string();
         let mask_position =
             self.mask_position.and_then(|x| serde_json::to_string(&x).ok());
@@ -70,15 +75,17 @@ impl<'a> AddStickerToSet<'a> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method::<bool>(
-            self.token,
-            "addStickerToSet",
-            Some(boundary),
-            body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
+        Box::new(
+            send_method::<bool>(
+                self.token,
+                "addStickerToSet",
+                Some(boundary),
+                body,
+                #[cfg(feature = "proxy")]
+                self.proxy,
+            )
+            .map(|_| ()),
         )
-        .map(|_| ())
     }
 }
 

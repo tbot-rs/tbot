@@ -22,17 +22,25 @@ impl<'a> DeleteWebhook<'a> {
             proxy,
         }
     }
+}
 
-    #[must_use]
-    pub fn into_future(self) -> impl Future<Item = (), Error = DeliveryError> {
-        send_method::<bool>(
-            self.token,
-            "deleteWebhook",
-            None,
-            Vec::new(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
+impl IntoFuture for DeleteWebhook<'_> {
+    type Future =
+        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Item = ();
+    type Error = DeliveryError;
+
+    fn into_future(self) -> Self::Future {
+        Box::new(
+            send_method::<bool>(
+                self.token,
+                "deleteWebhook",
+                None,
+                Vec::new(),
+                #[cfg(feature = "proxy")]
+                self.proxy,
+            )
+            .map(|_| ()),
         )
-        .map(|_| ())
     }
 }
