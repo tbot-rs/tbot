@@ -651,8 +651,7 @@ impl EventLoop {
     }
 
     fn handle_update(&self, bot: Arc<Bot>, update: types::Update) {
-        let update_context =
-            contexts::Update::new(Arc::clone(&bot), update.id);
+        let update_context = contexts::Update::new(Arc::clone(&bot), update.id);
 
         self.run_before_update_handlers(&update_context);
 
@@ -733,11 +732,7 @@ impl EventLoop {
     }
 
     #[allow(clippy::cognitive_complexity)]
-    fn handle_message_update(
-        &self,
-        bot: Arc<Bot>,
-        message: types::Message,
-    ) {
+    fn handle_message_update(&self, bot: Arc<Bot>, message: types::Message) {
         let (data, kind) = message.split();
 
         match kind {
@@ -825,8 +820,7 @@ impl EventLoop {
             }
             MessageKind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
-                    let context =
-                        contexts::Sticker::new(bot, data, sticker);
+                    let context = contexts::Sticker::new(bot, data, sticker);
 
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -914,9 +908,8 @@ impl EventLoop {
             }
             MessageKind::Animation(animation, caption) => {
                 if self.will_handle_animation() {
-                    let context = contexts::Animation::new(
-                        bot, data, animation, caption,
-                    );
+                    let context =
+                        contexts::Animation::new(bot, data, animation, caption);
 
                     self.run_animation_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -929,8 +922,7 @@ impl EventLoop {
             }
             kind @ MessageKind::ChatPhotoDeleted => {
                 if self.will_handle_deleted_chat_photo() {
-                    let context =
-                        contexts::DeletedChatPhoto::new(bot, data);
+                    let context = contexts::DeletedChatPhoto::new(bot, data);
 
                     self.run_deleted_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -942,9 +934,8 @@ impl EventLoop {
             }
             MessageKind::Document(document, caption) => {
                 if self.will_handle_document() {
-                    let context = contexts::Document::new(
-                        bot, data, document, caption,
-                    );
+                    let context =
+                        contexts::Document::new(bot, data, document, caption);
 
                     self.run_document_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -970,8 +961,7 @@ impl EventLoop {
             }
             MessageKind::LeftChatMember(member) => {
                 if self.will_handle_left_member() {
-                    let context =
-                        contexts::LeftMember::new(bot, data, member);
+                    let context = contexts::LeftMember::new(bot, data, member);
 
                     self.run_left_member_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -984,8 +974,7 @@ impl EventLoop {
             }
             MessageKind::Location(location) => {
                 if self.will_handle_location() {
-                    let context =
-                        contexts::Location::new(bot, data, location);
+                    let context = contexts::Location::new(bot, data, location);
 
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -999,8 +988,7 @@ impl EventLoop {
             MessageKind::MigrateTo(..) => (), // ignored on purpose
             MessageKind::MigrateFrom(old_id) => {
                 if self.will_handle_migration() {
-                    let context =
-                        contexts::Migration::new(bot, data, old_id);
+                    let context = contexts::Migration::new(bot, data, old_id);
 
                     self.run_migration_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1013,8 +1001,7 @@ impl EventLoop {
             }
             MessageKind::NewChatPhoto(photo) => {
                 if self.will_handle_new_chat_photo() {
-                    let context =
-                        contexts::NewChatPhoto::new(bot, data, photo);
+                    let context = contexts::NewChatPhoto::new(bot, data, photo);
 
                     self.run_new_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1027,8 +1014,7 @@ impl EventLoop {
             }
             MessageKind::NewChatTitle(title) => {
                 if self.will_handle_new_chat_title() {
-                    let context =
-                        contexts::NewChatTitle::new(bot, data, title);
+                    let context = contexts::NewChatTitle::new(bot, data, title);
 
                     self.run_new_chat_title_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1041,8 +1027,7 @@ impl EventLoop {
             }
             MessageKind::NewChatMembers(members) => {
                 if self.will_handle_new_members() {
-                    let context =
-                        contexts::NewMembers::new(bot, data, members);
+                    let context = contexts::NewMembers::new(bot, data, members);
 
                     self.run_new_members_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1055,8 +1040,7 @@ impl EventLoop {
             }
             MessageKind::Contact(contact) => {
                 if self.will_handle_contact() {
-                    let context =
-                        contexts::Contact::new(bot, data, contact);
+                    let context = contexts::Contact::new(bot, data, contact);
 
                     self.run_contact_handlers(&context);
                 } else if self.will_handle_unhandled() {
@@ -1212,9 +1196,8 @@ impl EventLoop {
                         self.run_unhandled_handlers(bot, update);
                     }
                 } else if self.will_handle_edited_text() {
-                    let context = contexts::EditedText::new(
-                        bot, data, edit_date, text,
-                    );
+                    let context =
+                        contexts::EditedText::new(bot, data, edit_date, text);
 
                     self.run_edited_text_handlers(&context);
                 } else if self.will_handle_unhandled() {

@@ -53,8 +53,8 @@ pub mod event_loop;
 pub mod methods;
 pub mod types;
 
-pub use {bot::*, token::*};
 use serde::{Deserialize, Serialize};
+pub use {bot::*, token::*};
 use {internal::*, multipart::*, prelude::*};
 
 #[cfg(feature = "proxy")]

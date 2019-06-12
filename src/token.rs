@@ -1,4 +1,7 @@
-use std::{sync::Arc, fmt::{self, Debug, Formatter}};
+use std::{
+    fmt::{self, Debug, Formatter},
+    sync::Arc,
+};
 
 /// Represents a token.
 ///

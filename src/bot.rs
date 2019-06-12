@@ -1,9 +1,5 @@
 use super::*;
-use crate::{
-    event_loop::EventLoop,
-    types::input_file::*,
-    methods::*,
-};
+use crate::{event_loop::EventLoop, methods::*, types::input_file::*};
 
 /// Provides methods to call the Bots API.
 ///
@@ -445,8 +441,14 @@ impl Bot {
     }
 
     /// Constructs a new `GetStickerSet` inferring your bot's token.
-    pub fn get_sticker_set<'a>(&'a self, name: &'a str) -> methods::GetStickerSet<'a> {
-        self.prepare_method(methods::GetStickerSet::new(self.token.clone(), name))
+    pub fn get_sticker_set<'a>(
+        &'a self,
+        name: &'a str,
+    ) -> methods::GetStickerSet<'a> {
+        self.prepare_method(methods::GetStickerSet::new(
+            self.token.clone(),
+            name,
+        ))
     }
 
     /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
@@ -483,7 +485,10 @@ impl Bot {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::LeaveChat<'a> {
-        self.prepare_method(methods::LeaveChat::new(self.token.clone(), chat_id))
+        self.prepare_method(methods::LeaveChat::new(
+            self.token.clone(),
+            chat_id,
+        ))
     }
 
     /// Constructs a new `PinChatMessage` inferring your bot's token.

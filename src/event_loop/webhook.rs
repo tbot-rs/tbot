@@ -1,6 +1,6 @@
 // use super::*;
 use super::EventLoop;
-use crate::{Bot, methods, prelude::*, types};
+use crate::{methods, prelude::*, types, Bot};
 use futures::Stream;
 use hyper::{
     service::service_fn, Body, Error, Method, Request, Response, Server,
@@ -163,6 +163,8 @@ fn init_server(
     Server::bind(&addr).serve(move || {
         let bot = Arc::clone(&bot);
         let event_loop = Arc::clone(&event_loop);
-        service_fn(move |request| handle(Arc::clone(&bot), Arc::clone(&event_loop), request))
+        service_fn(move |request| {
+            handle(Arc::clone(&bot), Arc::clone(&event_loop), request)
+        })
     })
 }
