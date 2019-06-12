@@ -54,7 +54,7 @@ impl Bot {
     /// # Example
     ///
     /// ```no_run
-    /// use tbot::Bot;
+    /// use tbot::{Bot, prelude::*};
     ///
     /// let mut bot = Bot::from_env("BOT_TOKEN");
     ///
@@ -929,6 +929,8 @@ impl Bot {
 /// # Example
 ///
 /// ```
+/// use tbot::prelude::*;
+///
 /// let mut bot = tbot::bot!("BOT_TOKEN");
 ///
 /// let me = bot
