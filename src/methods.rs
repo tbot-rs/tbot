@@ -23,12 +23,12 @@
 //!     Token,
 //! };
 //!
-//! const TOKEN: &str = env!("BOT_TOKEN");
 //! const CHAT: i64 = 0;
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
+//! 
+//! let bot = tbot::bot!("BOT_TOKEN");
 //!
-//! let token = Token::new(TOKEN.to_string());
-//! let request = tbot::methods::SendMessage::new(token, CHAT, MESSAGE)
+//! let request = bot.send_message(CHAT, MESSAGE)
 //!     .parse_mode(Markdown)
 //!     .into_future()
 //!     .map_err(|error| {
