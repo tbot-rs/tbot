@@ -1,31 +1,31 @@
 use crate::{methods::*, types, types::input_file::*, Bot};
 
 /// Provides methods appliable to all messages.
-pub trait ChatMethods<'a>: crate::Sealed {
+pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     #[doc(hidden)]
-    fn bot(&self) -> &Bot;
+    fn bot(&'a self) -> &'a Bot<C>;
     #[doc(hidden)]
     fn chat_id(&self) -> i64;
     #[doc(hidden)]
     fn message_id(&self) -> u32;
 
     /// Deletes the photo of this chat.
-    fn delete_chat_photo(&'a self) -> DeleteChatPhoto<'a> {
+    fn delete_chat_photo(&'a self) -> DeleteChatPhoto<'a, C> {
         self.bot().delete_chat_photo(self.chat_id())
     }
 
     /// Deletes the sticker set of this chat.
-    fn delete_chat_sticker_set(&'a self) -> DeleteChatStickerSet<'a> {
+    fn delete_chat_sticker_set(&'a self) -> DeleteChatStickerSet<'a, C> {
         self.bot().delete_chat_sticker_set(self.chat_id())
     }
 
     /// Deletes a message in this chat.
-    fn delete_message(&'a self, message_id: u32) -> DeleteMessage<'a> {
+    fn delete_message(&'a self, message_id: u32) -> DeleteMessage<'a, C> {
         self.bot().delete_message(self.chat_id(), message_id)
     }
 
     /// Deletes the incoming message.
-    fn delete_this_message(&'a self) -> DeleteMessage<'a> {
+    fn delete_this_message(&'a self) -> DeleteMessage<'a, C> {
         self.delete_message(self.message_id())
     }
 
@@ -34,7 +34,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         message_id: u32,
         caption: &'a str,
-    ) -> EditMessageCaption<'a> {
+    ) -> EditMessageCaption<'a, C> {
         self.bot().edit_message_caption(self.chat_id(), message_id, caption)
     }
 
@@ -43,7 +43,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         message_id: u32,
         location: (f64, f64),
-    ) -> EditMessageLocation<'a> {
+    ) -> EditMessageLocation<'a, C> {
         self.bot().edit_message_location(self.chat_id(), message_id, location)
     }
 
@@ -52,7 +52,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         message_id: u32,
         media: impl Into<EditableMedia<'a>>,
-    ) -> EditMessageMedia<'a> {
+    ) -> EditMessageMedia<'a, C> {
         self.bot().edit_message_media(self.chat_id(), message_id, media)
     }
 
@@ -61,7 +61,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         message_id: u32,
         reply_markup: types::InlineKeyboard<'a>,
-    ) -> EditMessageReplyMarkup<'a> {
+    ) -> EditMessageReplyMarkup<'a, C> {
         self.bot().edit_message_reply_markup(
             self.chat_id(),
             message_id,
@@ -74,12 +74,12 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         message_id: u32,
         text: &'a str,
-    ) -> EditMessageText<'a> {
+    ) -> EditMessageText<'a, C> {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
     }
 
     /// Exports the invite link of this chat.
-    fn export_chat_invite_link(&'a self) -> ExportChatInviteLink<'a> {
+    fn export_chat_invite_link(&'a self) -> ExportChatInviteLink<'a, C> {
         self.bot().export_chat_invite_link(self.chat_id())
     }
 
@@ -88,27 +88,27 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         from_chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
-    ) -> ForwardMessage<'a> {
+    ) -> ForwardMessage<'a, C> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
     }
 
     /// Gets information about this chat.
-    fn get_chat(&'a self) -> GetChat<'a> {
+    fn get_chat(&'a self) -> GetChat<'a, C> {
         self.bot().get_chat(self.chat_id())
     }
 
     /// Gets a list of admins of this chat.
-    fn get_chat_administrators(&'a self) -> GetChatAdministrators<'a> {
+    fn get_chat_administrators(&'a self) -> GetChatAdministrators<'a, C> {
         self.bot().get_chat_administrators(self.chat_id())
     }
 
     /// Gets information about a member of this chat.
-    fn get_chat_member(&'a self, user_id: i64) -> GetChatMember<'a> {
+    fn get_chat_member(&'a self, user_id: i64) -> GetChatMember<'a, C> {
         self.bot().get_chat_member(self.chat_id(), user_id)
     }
 
     /// Gets the number of members in this chat.
-    fn get_chat_members_count(&'a self) -> GetChatMembersCount<'a> {
+    fn get_chat_members_count(&'a self) -> GetChatMembersCount<'a, C> {
         self.bot().get_chat_members_count(self.chat_id())
     }
 
@@ -117,7 +117,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         message_id: u32,
         user_id: i64,
-    ) -> GetMessageGameHighScores<'a> {
+    ) -> GetMessageGameHighScores<'a, C> {
         self.bot().get_message_game_high_scores(
             self.chat_id(),
             message_id,
@@ -126,22 +126,25 @@ pub trait ChatMethods<'a>: crate::Sealed {
     }
 
     /// Kicks a member of this chat.
-    fn kick_chat_member(&'a self, user_id: i64) -> KickChatMember<'a> {
+    fn kick_chat_member(&'a self, user_id: i64) -> KickChatMember<'a, C> {
         self.bot().kick_chat_member(self.chat_id(), user_id)
     }
 
     /// Leaves this chat.
-    fn leave_chat(&'a self) -> LeaveChat<'a> {
+    fn leave_chat(&'a self) -> LeaveChat<'a, C> {
         self.bot().leave_chat(self.chat_id())
     }
 
     /// Promotes a member of this chat.
-    fn promote_chat_member(&'a self, user_id: i64) -> PromoteChatMember<'a> {
+    fn promote_chat_member(&'a self, user_id: i64) -> PromoteChatMember<'a, C> {
         self.bot().promote_chat_member(self.chat_id(), user_id)
     }
 
     /// Restricts a member of this chat.
-    fn restrict_chat_member(&'a self, user_id: i64) -> RestrictChatMember<'a> {
+    fn restrict_chat_member(
+        &'a self,
+        user_id: i64,
+    ) -> RestrictChatMember<'a, C> {
         self.bot().restrict_chat_member(self.chat_id(), user_id)
     }
 
@@ -149,7 +152,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_animation(
         &'a self,
         animation: &'a Animation<'a>,
-    ) -> SendAnimation<'a> {
+    ) -> SendAnimation<'a, C> {
         self.bot().send_animation(self.chat_id(), animation)
     }
 
@@ -157,22 +160,25 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_animation_in_reply(
         &'a self,
         animation: &'a Animation<'a>,
-    ) -> SendAnimation<'a> {
+    ) -> SendAnimation<'a, C> {
         self.send_animation(animation).reply_to_message_id(self.message_id())
     }
 
     /// Sends an audio to this chat.
-    fn send_audio(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a> {
+    fn send_audio(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a, C> {
         self.bot().send_audio(self.chat_id(), audio)
     }
 
     /// Sends an audio in reply to this message.
-    fn send_audio_in_reply(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a> {
+    fn send_audio_in_reply(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a, C> {
         self.send_audio(audio).reply_to_message_id(self.message_id())
     }
 
     /// Sends an action to this group.
-    fn send_chat_action(&self, action: types::ChatAction) -> SendChatAction {
+    fn send_chat_action(
+        &'a self,
+        action: types::ChatAction,
+    ) -> SendChatAction<C> {
         self.bot().send_chat_action(self.chat_id(), action)
     }
 
@@ -181,7 +187,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         phone_number: &'a str,
         first_name: &'a str,
-    ) -> SendContact<'a> {
+    ) -> SendContact<'a, C> {
         self.bot().send_contact(self.chat_id(), phone_number, first_name)
     }
 
@@ -190,23 +196,29 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         phone_number: &'a str,
         first_name: &'a str,
-    ) -> SendContact<'a> {
+    ) -> SendContact<'a, C> {
         self.send_contact(phone_number, first_name)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a game to this chat.
-    fn send_game(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+    fn send_game(&'a self, game_short_name: &'a str) -> SendGame<'a, C> {
         self.bot().send_game(self.chat_id(), game_short_name)
     }
 
     /// Sends a game in reply to this message.
-    fn send_game_in_reply(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+    fn send_game_in_reply(
+        &'a self,
+        game_short_name: &'a str,
+    ) -> SendGame<'a, C> {
         self.send_game(game_short_name).reply_to_message_id(self.message_id())
     }
 
     /// Sends a document to this chat.
-    fn send_document(&'a self, document: &'a Document<'a>) -> SendDocument<'a> {
+    fn send_document(
+        &'a self,
+        document: &'a Document<'a>,
+    ) -> SendDocument<'a, C> {
         self.bot().send_document(self.chat_id(), document)
     }
 
@@ -214,17 +226,20 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_document_in_reply(
         &'a self,
         document: &'a Document<'a>,
-    ) -> SendDocument<'a> {
+    ) -> SendDocument<'a, C> {
         self.send_document(document).reply_to_message_id(self.message_id())
     }
 
     /// Sends a location to this chat.
-    fn send_location(&self, location: (f64, f64)) -> SendLocation<'_> {
+    fn send_location(&'a self, location: (f64, f64)) -> SendLocation<C> {
         self.bot().send_location(self.chat_id(), location)
     }
 
     /// Sends a location in reply to this message.
-    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation<'_> {
+    fn send_location_in_reply(
+        &'a self,
+        location: (f64, f64),
+    ) -> SendLocation<C> {
         self.send_location(location).reply_to_message_id(self.message_id())
     }
 
@@ -232,7 +247,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_media_group(
         &'a self,
         media: Vec<GroupMedia<'a>>,
-    ) -> SendMediaGroup<'a> {
+    ) -> SendMediaGroup<'a, C> {
         self.bot().send_media_group(self.chat_id(), media)
     }
 
@@ -240,27 +255,27 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_media_group_in_reply(
         &'a self,
         media: Vec<GroupMedia<'a>>,
-    ) -> SendMediaGroup<'a> {
+    ) -> SendMediaGroup<'a, C> {
         self.send_media_group(media).reply_to_message_id(self.message_id())
     }
 
     /// Sends a message to this chat.
-    fn send_message(&'a self, text: &'a str) -> SendMessage<'a> {
+    fn send_message(&'a self, text: &'a str) -> SendMessage<'a, C> {
         self.bot().send_message(self.chat_id(), text)
     }
 
     /// Sends a message in reply to this message.
-    fn send_message_in_reply(&'a self, text: &'a str) -> SendMessage<'a> {
+    fn send_message_in_reply(&'a self, text: &'a str) -> SendMessage<'a, C> {
         self.send_message(text).reply_to_message_id(self.message_id())
     }
 
     /// Sends a photo to this chat.
-    fn send_photo(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a, C> {
         self.bot().send_photo(self.chat_id(), photo)
     }
 
     /// Sends a photo in reply to this message.
-    fn send_photo_in_reply(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo_in_reply(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a, C> {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
@@ -269,7 +284,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         question: &'a str,
         options: &'a [&'a str],
-    ) -> SendPoll<'a> {
+    ) -> SendPoll<'a, C> {
         self.bot().send_poll(self.chat_id(), question, options)
     }
 
@@ -278,12 +293,12 @@ pub trait ChatMethods<'a>: crate::Sealed {
         &'a self,
         question: &'a str,
         options: &'a [&'a str],
-    ) -> SendPoll<'a> {
+    ) -> SendPoll<'a, C> {
         self.send_poll(question, options).reply_to_message_id(self.message_id())
     }
 
     /// Sends a sticker to this chat.
-    fn send_sticker(&'a self, sticker: &'a Sticker<'a>) -> SendSticker<'a> {
+    fn send_sticker(&'a self, sticker: &'a Sticker<'a>) -> SendSticker<'a, C> {
         self.bot().send_sticker(self.chat_id(), sticker)
     }
 
@@ -291,7 +306,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_sticker_in_reply(
         &'a self,
         sticker: &'a Sticker<'a>,
-    ) -> SendSticker<'a> {
+    ) -> SendSticker<'a, C> {
         self.send_sticker(sticker).reply_to_message_id(self.message_id())
     }
 
@@ -301,7 +316,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         location: (f64, f64),
         title: &'a str,
         address: &'a str,
-    ) -> SendVenue<'a> {
+    ) -> SendVenue<'a, C> {
         self.bot().send_venue(self.chat_id(), location, title, address)
     }
 
@@ -311,18 +326,18 @@ pub trait ChatMethods<'a>: crate::Sealed {
         location: (f64, f64),
         title: &'a str,
         address: &'a str,
-    ) -> SendVenue<'a> {
+    ) -> SendVenue<'a, C> {
         self.send_venue(location, title, address)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a video to this chat.
-    fn send_video(&'a self, video: &'a Video<'a>) -> SendVideo<'a> {
+    fn send_video(&'a self, video: &'a Video<'a>) -> SendVideo<'a, C> {
         self.bot().send_video(self.chat_id(), video)
     }
 
     /// Sends a video in reply to this message.
-    fn send_video_in_reply(&'a self, video: &'a Video<'a>) -> SendVideo<'a> {
+    fn send_video_in_reply(&'a self, video: &'a Video<'a>) -> SendVideo<'a, C> {
         self.send_video(video).reply_to_message_id(self.message_id())
     }
 
@@ -330,7 +345,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_video_note(
         &'a self,
         video_note: &'a VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+    ) -> SendVideoNote<'a, C> {
         self.bot().send_video_note(self.chat_id(), video_note)
     }
 
@@ -338,17 +353,17 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn send_video_note_in_reply(
         &'a self,
         video_note: &'a VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+    ) -> SendVideoNote<'a, C> {
         self.send_video_note(video_note).reply_to_message_id(self.message_id())
     }
 
     /// Sends a voice to this chat.
-    fn send_voice(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a> {
+    fn send_voice(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a, C> {
         self.bot().send_voice(self.chat_id(), voice)
     }
 
     /// Sends a voice in reply to this message.
-    fn send_voice_in_reply(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a> {
+    fn send_voice_in_reply(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a, C> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
@@ -356,12 +371,15 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn set_chat_description(
         &'a self,
         description: &'a str,
-    ) -> SetChatDescription<'a> {
+    ) -> SetChatDescription<'a, C> {
         self.bot().set_chat_description(self.chat_id(), description)
     }
 
     /// Sets a new photo of this chat.
-    fn set_chat_photo(&'a self, photo: &'a ChatPhoto<'a>) -> SetChatPhoto<'a> {
+    fn set_chat_photo(
+        &'a self,
+        photo: &'a ChatPhoto<'a>,
+    ) -> SetChatPhoto<'a, C> {
         self.bot().set_chat_photo(self.chat_id(), photo)
     }
 
@@ -369,12 +387,12 @@ pub trait ChatMethods<'a>: crate::Sealed {
     fn set_chat_sticker_set(
         &'a self,
         sticker_set_name: &'a str,
-    ) -> SetChatStickerSet<'a> {
+    ) -> SetChatStickerSet<'a, C> {
         self.bot().set_chat_sticker_set(self.chat_id(), sticker_set_name)
     }
 
     /// Sets a new chat title of this chat.
-    fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a> {
+    fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a, C> {
         self.bot().set_chat_title(self.chat_id(), title)
     }
 
@@ -384,7 +402,7 @@ pub trait ChatMethods<'a>: crate::Sealed {
         message_id: u32,
         user_id: i64,
         score: u32,
-    ) -> SetMessageGameScore<'a> {
+    ) -> SetMessageGameScore<'a, C> {
         self.bot().set_message_game_score(
             self.chat_id(),
             message_id,
@@ -394,12 +412,12 @@ pub trait ChatMethods<'a>: crate::Sealed {
     }
 
     /// Unbans a member of this chat.
-    fn unban_chat_member(&'a self, user_id: i64) -> UnbanChatMember<'a> {
+    fn unban_chat_member(&'a self, user_id: i64) -> UnbanChatMember<'a, C> {
         self.bot().unban_chat_member(self.chat_id(), user_id)
     }
 
     /// Unpins the pinned message in this chat.
-    fn unpin_chat_message(&'a self) -> UnpinChatMessage<'a> {
+    fn unpin_chat_message(&'a self) -> UnpinChatMessage<'a, C> {
         self.bot().unpin_chat_message(self.chat_id())
     }
 }

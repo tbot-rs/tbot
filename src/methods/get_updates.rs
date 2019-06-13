@@ -1,13 +1,14 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 #[derive(Serialize)]
 #[must_use]
-pub(crate) struct GetUpdates<'a> {
+pub(crate) struct GetUpdates<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,28 +19,9 @@ pub(crate) struct GetUpdates<'a> {
     allowed_updates: Option<&'a [types::Updates]>,
 }
 
-impl<'a> GetUpdates<'a> {
-    #[cfg(feature = "proxy")]
+impl<'a, C> GetUpdates<'a, C> {
     pub const fn new(
-        token: Token,
-        offset: Option<u32>,
-        limit: Option<u8>,
-        timeout: Option<u32>,
-        allowed_updates: Option<&'a [types::Updates]>,
-        proxy: Option<proxy::Proxy>,
-    ) -> Self {
-        Self {
-            token,
-            offset,
-            limit,
-            timeout,
-            allowed_updates,
-            proxy,
-        }
-    }
-
-    #[cfg(not(feature = "proxy"))]
-    pub const fn new(
+        client: Arc<Client<C>>,
         token: Token,
         offset: Option<u32>,
         limit: Option<u8>,
@@ -47,6 +29,7 @@ impl<'a> GetUpdates<'a> {
         allowed_updates: Option<&'a [types::Updates]>,
     ) -> Self {
         Self {
+            client,
             token,
             offset,
             limit,
@@ -56,7 +39,12 @@ impl<'a> GetUpdates<'a> {
     }
 }
 
-impl IntoFuture for GetUpdates<'_> {
+impl<C> IntoFuture for GetUpdates<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = Vec<types::Update>;
@@ -64,12 +52,11 @@ impl IntoFuture for GetUpdates<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "getUpdates",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
     }
 }

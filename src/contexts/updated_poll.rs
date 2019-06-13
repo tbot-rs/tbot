@@ -8,8 +8,8 @@ common! {
     }
 }
 
-impl UpdatedPoll {
-    pub(crate) const fn new(bot: Arc<Bot>, poll: types::Poll) -> Self {
+impl<C> UpdatedPoll<C> {
+    pub(crate) const fn new(bot: Arc<Bot<C>>, poll: types::Poll) -> Self {
         Self {
             bot,
             poll,

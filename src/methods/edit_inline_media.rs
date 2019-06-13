@@ -1,33 +1,34 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::*;
 
 /// Represents the [`editMessageMedia`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct EditInlineMedia<'a> {
+pub struct EditInlineMedia<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     inline_message_id: &'a str,
     media: EditableMedia<'a>,
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
-impl<'a> EditInlineMedia<'a> {
+impl<'a, C> EditInlineMedia<'a, C> {
     /// Constructs a new `EditInlineMedia`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
+            client,
             token,
             inline_message_id,
             media: media.into(),
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -38,7 +39,12 @@ impl<'a> EditInlineMedia<'a> {
     }
 }
 
-impl IntoFuture for EditInlineMedia<'_> {
+impl<C> IntoFuture for EditInlineMedia<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -88,23 +94,14 @@ impl IntoFuture for EditInlineMedia<'_> {
         let (boundary, body) = multipart.str("media", &media).finish();
 
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "editMessageMedia",
                 Some(boundary),
                 body,
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()),
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for EditInlineMedia<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

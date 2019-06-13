@@ -1,27 +1,32 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`getWebhookInfo`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getwebhookinfo
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetWebhookInfo {
+pub struct GetWebhookInfo<C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
 }
 
-impl GetWebhookInfo {
+impl<C> GetWebhookInfo<C> {
     /// Constructs a new `GetWebhookInfo`.
-    pub const fn new(token: Token) -> Self {
+    pub const fn new(client: Arc<Client<C>>, token: Token) -> Self {
         Self {
+            client,
             token,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 }
 
-impl IntoFuture for GetWebhookInfo {
+impl<C> IntoFuture for GetWebhookInfo<C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::WebhookInfo;
@@ -29,20 +34,11 @@ impl IntoFuture for GetWebhookInfo {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "getWebhookInfo",
             None,
             Vec::new(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for GetWebhookInfo {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

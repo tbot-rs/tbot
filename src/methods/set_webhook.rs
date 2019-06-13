@@ -1,39 +1,21 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// This method isn't meant to be used by users directly.
 #[must_use]
-pub(crate) struct SetWebhook<'a> {
+pub(crate) struct SetWebhook<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
     url: &'a str,
     certificate: Option<&'a str>,
     max_connections: Option<u8>,
     allowed_updates: Option<&'a [types::Updates]>,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
 }
 
-impl<'a> SetWebhook<'a> {
-    #[cfg(feature = "proxy")]
+impl<'a, C> SetWebhook<'a, C> {
     pub const fn new(
-        token: Token,
-        url: &'a str,
-        certificate: Option<&'a str>,
-        max_connections: Option<u8>,
-        allowed_updates: Option<&'a [types::Updates]>,
-        proxy: Option<proxy::Proxy>,
-    ) -> Self {
-        Self {
-            token,
-            url,
-            certificate,
-            max_connections,
-            allowed_updates,
-            proxy,
-        }
-    }
-
-    #[cfg(not(feature = "proxy"))]
-    pub const fn new(
+        client: Arc<Client<C>>,
         token: Token,
         url: &'a str,
         certificate: Option<&'a str>,
@@ -41,6 +23,7 @@ impl<'a> SetWebhook<'a> {
         allowed_updates: Option<&'a [types::Updates]>,
     ) -> Self {
         Self {
+            client,
             token,
             url,
             certificate,
@@ -50,7 +33,12 @@ impl<'a> SetWebhook<'a> {
     }
 }
 
-impl IntoFuture for SetWebhook<'_> {
+impl<C> IntoFuture for SetWebhook<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -69,13 +57,12 @@ impl IntoFuture for SetWebhook<'_> {
             .finish();
 
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "setWebhook",
                 Some(boundary),
                 body,
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()),
         )

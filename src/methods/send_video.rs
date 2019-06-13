@@ -1,14 +1,15 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::{InputFile, Video};
 
 /// Represents the [`sendVideo`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendvideo
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendVideo<'a> {
+pub struct SendVideo<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     video: &'a Video<'a>,
     disable_notification: Option<bool>,
@@ -16,22 +17,22 @@ pub struct SendVideo<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendVideo<'a> {
+impl<'a, C> SendVideo<'a, C> {
     /// Constructs a new `SendVideo`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         video: &'a Video<'a>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             video,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -57,7 +58,12 @@ impl<'a> SendVideo<'a> {
     }
 }
 
-impl IntoFuture for SendVideo<'_> {
+impl<C> IntoFuture for SendVideo<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -115,20 +121,11 @@ impl IntoFuture for SendVideo<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendVideo",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendVideo<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

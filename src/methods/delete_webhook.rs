@@ -1,30 +1,28 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 #[must_use]
-pub struct DeleteWebhook {
+pub struct DeleteWebhook<C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
 }
 
-impl DeleteWebhook {
-    #[cfg(not(feature = "proxy"))]
-    pub const fn new(token: Token) -> Self {
+impl<C> DeleteWebhook<C> {
+    pub const fn new(client: Arc<Client<C>>, token: Token) -> Self {
         Self {
+            client,
             token,
-        }
-    }
-
-    #[cfg(feature = "proxy")]
-    pub const fn new(token: Token, proxy: Option<proxy::Proxy>) -> Self {
-        Self {
-            token,
-            proxy,
         }
     }
 }
 
-impl IntoFuture for DeleteWebhook {
+impl<C> IntoFuture for DeleteWebhook<C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -32,13 +30,12 @@ impl IntoFuture for DeleteWebhook {
 
     fn into_future(self) -> Self::Future {
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "deleteWebhook",
                 None,
                 Vec::new(),
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()),
         )

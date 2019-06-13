@@ -1,14 +1,15 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::{Audio, InputFile};
 
 /// Represents the [`sendAudio`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendaudio
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendAudio<'a> {
+pub struct SendAudio<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     audio: &'a Audio<'a>,
     disable_notification: Option<bool>,
@@ -16,22 +17,22 @@ pub struct SendAudio<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendAudio<'a> {
+impl<'a, C> SendAudio<'a, C> {
     /// Constructs a new `SendAudio`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         audio: &'a Audio<'a>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             audio,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
     /// Configures `disable_notification`.
@@ -56,7 +57,12 @@ impl<'a> SendAudio<'a> {
     }
 }
 
-impl IntoFuture for SendAudio<'_> {
+impl<C> IntoFuture for SendAudio<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -110,20 +116,11 @@ impl IntoFuture for SendAudio<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendAudio",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendAudio<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

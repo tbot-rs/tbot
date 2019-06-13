@@ -23,12 +23,12 @@
 //!     Token,
 //! };
 //!
-//! const TOKEN: &str = env!("BOT_TOKEN");
 //! const CHAT: i64 = 0;
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
 //!
-//! let token = Token::new(TOKEN.to_string());
-//! let request = tbot::methods::SendMessage::new(token, CHAT, MESSAGE)
+//! let bot = tbot::bot!("BOT_TOKEN");
+//!
+//! let request = bot.send_message(CHAT, MESSAGE)
 //!     .parse_mode(Markdown)
 //!     .into_future()
 //!     .map_err(|error| {
@@ -189,11 +189,4 @@ pub enum DeliveryError {
         /// after the following amount of seconds.
         retry_after: Option<u64>,
     },
-}
-
-#[cfg(feature = "proxy")]
-/// Provides the proxy method.
-pub trait ProxyMethod {
-    /// Configures the proxy the method will be sent via.
-    fn proxy(self, proxy: proxy::Proxy) -> Self;
 }

@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`editMessageCaption`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct EditInlineCaption<'a> {
+pub struct EditInlineCaption<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     inline_message_id: &'a str,
     caption: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19,21 +20,21 @@ pub struct EditInlineCaption<'a> {
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
-impl<'a> EditInlineCaption<'a> {
+impl<'a, C> EditInlineCaption<'a, C> {
     /// Constructs a new `EditInlineCaption`.
     pub const fn new(
+        client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,
         caption: &'a str,
     ) -> Self {
         Self {
+            client,
             token,
             inline_message_id,
             caption,
             parse_mode: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -50,7 +51,12 @@ impl<'a> EditInlineCaption<'a> {
     }
 }
 
-impl IntoFuture for EditInlineCaption<'_> {
+impl<C> IntoFuture for EditInlineCaption<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -58,23 +64,14 @@ impl IntoFuture for EditInlineCaption<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "editMessageCaption",
                 None,
                 serde_json::to_vec(&self).unwrap(),
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()),
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for EditInlineCaption<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

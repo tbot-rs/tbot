@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`sendLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendlocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendLocation<'a> {
+pub struct SendLocation<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     latitude: f64,
     longitude: f64,
@@ -24,14 +25,16 @@ pub struct SendLocation<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendLocation<'a> {
+impl<'a, C> SendLocation<'a, C> {
     /// Constructs a new `SendLocation`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             latitude,
@@ -40,8 +43,6 @@ impl<'a> SendLocation<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -73,7 +74,12 @@ impl<'a> SendLocation<'a> {
     }
 }
 
-impl IntoFuture for SendLocation<'_> {
+impl<C> IntoFuture for SendLocation<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -81,20 +87,11 @@ impl IntoFuture for SendLocation<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendLocation<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

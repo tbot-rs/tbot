@@ -1,14 +1,15 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::{Animation, InputFile};
 
 /// Represents the [`sendAnimation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendanimation
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendAnimation<'a> {
+pub struct SendAnimation<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     animation: &'a Animation<'a>,
     disable_notification: Option<bool>,
@@ -16,22 +17,22 @@ pub struct SendAnimation<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendAnimation<'a> {
+impl<'a, C> SendAnimation<'a, C> {
     /// Constructs a new `SendAnimation`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         animation: &'a Animation<'a>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             animation,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -57,7 +58,12 @@ impl<'a> SendAnimation<'a> {
     }
 }
 
-impl IntoFuture for SendAnimation<'_> {
+impl<C> IntoFuture for SendAnimation<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -112,20 +118,11 @@ impl IntoFuture for SendAnimation<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendAnimation",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendAnimation<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

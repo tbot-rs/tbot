@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`setGameScore`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SetInlineGameScore<'a> {
+pub struct SetInlineGameScore<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     user_id: i64,
     score: u32,
     inline_message_id: &'a str,
@@ -20,23 +21,23 @@ pub struct SetInlineGameScore<'a> {
     disable_edit_message: Option<bool>,
 }
 
-impl<'a> SetInlineGameScore<'a> {
+impl<'a, C> SetInlineGameScore<'a, C> {
     /// Constructs a new `SetInlineGameScore`.
     pub const fn new(
+        client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,
         user_id: i64,
         score: u32,
     ) -> Self {
         Self {
+            client,
             token,
             user_id,
             score,
             inline_message_id,
             force: None,
             disable_edit_message: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -53,7 +54,12 @@ impl<'a> SetInlineGameScore<'a> {
     }
 }
 
-impl IntoFuture for SetInlineGameScore<'_> {
+impl<C> IntoFuture for SetInlineGameScore<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -61,23 +67,14 @@ impl IntoFuture for SetInlineGameScore<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "setGameScore",
                 None,
                 serde_json::to_vec(&self).unwrap(),
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()), // Only `true` is returned on success
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SetInlineGameScore<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

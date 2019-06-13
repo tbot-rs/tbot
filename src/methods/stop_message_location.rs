@@ -1,33 +1,34 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct StopMessageLocation<'a> {
+pub struct StopMessageLocation<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
-impl<'a> StopMessageLocation<'a> {
+impl<'a, C> StopMessageLocation<'a, C> {
     /// Constructs a new `StopMessageLocation`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
     ) -> Self {
         Self {
+            client,
             token,
-            #[cfg(feature = "proxy")]
-            proxy: None,
             chat_id: chat_id.into(),
             message_id,
             reply_markup: None,
@@ -41,7 +42,12 @@ impl<'a> StopMessageLocation<'a> {
     }
 }
 
-impl IntoFuture for StopMessageLocation<'_> {
+impl<C> IntoFuture for StopMessageLocation<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -49,20 +55,11 @@ impl IntoFuture for StopMessageLocation<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for StopMessageLocation<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

@@ -1,39 +1,40 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::*;
 
 /// Represents the [`sendMediaGroup`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendMediaGroup<'a> {
+pub struct SendMediaGroup<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     media: Vec<GroupMedia<'a>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
 }
 
-impl<'a> SendMediaGroup<'a> {
+impl<'a, C> SendMediaGroup<'a, C> {
     /// Contructs a new `SendMediaGroup`.
     ///
     /// **Note:** unlike other methods, this one takes ownership of the media
     /// because it modifies the media's metadata, and thus further reuse of the
     /// media would lead to errors.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         media: Vec<GroupMedia<'a>>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             media,
             disable_notification: None,
             reply_to_message_id: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -50,7 +51,12 @@ impl<'a> SendMediaGroup<'a> {
     }
 }
 
-impl IntoFuture for SendMediaGroup<'_> {
+impl<C> IntoFuture for SendMediaGroup<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = Vec<types::Message>;
@@ -137,20 +143,11 @@ impl IntoFuture for SendMediaGroup<'_> {
         let (boundary, body) = multipart.str("media", &media).finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendMediaGroup",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendMediaGroup<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

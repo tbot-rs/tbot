@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`sendContact`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendcontact
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendContact<'a> {
+pub struct SendContact<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[serde(skip)]
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     phone_number: &'a str,
     first_name: &'a str,
@@ -26,15 +27,17 @@ pub struct SendContact<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendContact<'a> {
+impl<'a, C> SendContact<'a, C> {
     /// Constructs a new `SendContact`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         phone_number: &'a str,
         first_name: &'a str,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             phone_number,
@@ -44,8 +47,6 @@ impl<'a> SendContact<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -83,7 +84,12 @@ impl<'a> SendContact<'a> {
     }
 }
 
-impl IntoFuture for SendContact<'_> {
+impl<C> IntoFuture for SendContact<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -91,20 +97,11 @@ impl IntoFuture for SendContact<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendContact",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendContact<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

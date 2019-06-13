@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`sendGame`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendgame
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendGame<'a> {
+pub struct SendGame<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[serde(skip)]
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     game_short_name: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -21,22 +22,22 @@ pub struct SendGame<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendGame<'a> {
+impl<'a, C> SendGame<'a, C> {
     /// Constructs a new `SendGame`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         game_short_name: &'a str,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             game_short_name,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -62,7 +63,12 @@ impl<'a> SendGame<'a> {
     }
 }
 
-impl IntoFuture for SendGame<'_> {
+impl<C> IntoFuture for SendGame<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -70,20 +76,11 @@ impl IntoFuture for SendGame<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendGame",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendGame<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

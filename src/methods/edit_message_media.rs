@@ -1,36 +1,37 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::*;
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct EditMessageMedia<'a> {
+pub struct EditMessageMedia<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     message_id: u32,
     media: EditableMedia<'a>,
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
-impl<'a> EditMessageMedia<'a> {
+impl<'a, C> EditMessageMedia<'a, C> {
     /// Constructs a new `EditMessageMedia`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             message_id,
             media: media.into(),
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -41,7 +42,12 @@ impl<'a> EditMessageMedia<'a> {
     }
 }
 
-impl IntoFuture for EditMessageMedia<'_> {
+impl<C> IntoFuture for EditMessageMedia<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -97,20 +103,11 @@ impl IntoFuture for EditMessageMedia<'_> {
         let (boundary, body) = multipart.str("media", &media).finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "editMessageMedia",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for EditMessageMedia<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

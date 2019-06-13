@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`editMessageCaption`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct EditMessageCaption<'a> {
+pub struct EditMessageCaption<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     message_id: u32,
     caption: &'a str,
@@ -20,23 +21,23 @@ pub struct EditMessageCaption<'a> {
     reply_markup: Option<types::InlineKeyboard<'a>>,
 }
 
-impl<'a> EditMessageCaption<'a> {
+impl<'a, C> EditMessageCaption<'a, C> {
     /// Constructs a new `EditMessageCaption`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
         caption: &'a str,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             message_id,
             caption,
             parse_mode: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -53,7 +54,12 @@ impl<'a> EditMessageCaption<'a> {
     }
 }
 
-impl IntoFuture for EditMessageCaption<'_> {
+impl<C> IntoFuture for EditMessageCaption<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -61,20 +67,11 @@ impl IntoFuture for EditMessageCaption<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "editMessageCaption",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for EditMessageCaption<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }
