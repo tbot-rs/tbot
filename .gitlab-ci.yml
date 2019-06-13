@@ -3,11 +3,6 @@ image: "rust:latest"
 variables:
   CARGO_HOME: $CI_PROJECT_DIR/cargo
 
-cache:
-  paths:
-    - target
-    - cargo
-
 test:
   before_script:
     - rustup component add rustfmt
