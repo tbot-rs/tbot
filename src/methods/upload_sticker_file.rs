@@ -46,7 +46,7 @@ where
             .finish();
 
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "uploadStickerFile",
             Some(boundary),

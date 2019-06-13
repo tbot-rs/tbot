@@ -58,7 +58,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "editMessageLiveLocation",
             None,

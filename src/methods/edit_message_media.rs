@@ -101,7 +101,7 @@ where
         let (boundary, body) = multipart.str("media", &media).finish();
 
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "editMessageMedia",
             Some(boundary),

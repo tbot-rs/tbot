@@ -57,7 +57,7 @@ where
 
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "setWebhook",
                 Some(boundary),
