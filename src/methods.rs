@@ -25,7 +25,7 @@
 //!
 //! const CHAT: i64 = 0;
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
-//! 
+//!
 //! let bot = tbot::bot!("BOT_TOKEN");
 //!
 //! let request = bot.send_message(CHAT, MESSAGE)
