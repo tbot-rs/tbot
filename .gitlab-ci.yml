@@ -1,9 +1,9 @@
 test:
   script:
     - cargo fmt -- --check
-    - cargo clippy -- -D warnings
-    - cargo clippy --all-features -- -D warnings
-    - cargo test --all-features
+    - cargo clippy --target-dir=../target -- -D warnings
+    - cargo clippy --target-dir=../target --all-features -- -D warnings
+    - cargo test --target-dir=../target --all-features
   only:
     - branches
 
