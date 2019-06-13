@@ -32,7 +32,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    Client::builder().build::<C, Body>(connector)
+    Client::builder().keep_alive(false).build::<C, Body>(connector)
 }
 
 pub(crate) fn default() -> internal::Client<Https> {
