@@ -1,14 +1,15 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::{InputFile, Sticker};
 
 /// Represents the [`sendSticker`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendsticker
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendSticker<'a> {
+pub struct SendSticker<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     sticker: &'a Sticker<'a>,
     disable_notification: Option<bool>,
@@ -16,22 +17,22 @@ pub struct SendSticker<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendSticker<'a> {
+impl<'a, C> SendSticker<'a, C> {
     /// Constructs a new `SendSticker`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         sticker: &'a Sticker<'a>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             sticker,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -57,7 +58,12 @@ impl<'a> SendSticker<'a> {
     }
 }
 
-impl IntoFuture for SendSticker<'_> {
+impl<C> IntoFuture for SendSticker<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -95,20 +101,11 @@ impl IntoFuture for SendSticker<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendSticker",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendSticker<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

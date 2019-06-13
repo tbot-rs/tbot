@@ -1,35 +1,40 @@
 use super::*;
+use std::sync::Arc;
 
 /// Represents the [`uploadStickerFile`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#uploadstickerfile
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct UploadStickerFile<'a> {
+pub struct UploadStickerFile<'a, C> {
+    client: Arc<hyper::Client<C, hyper::Body>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     user_id: i64,
     png_sticker: &'a [u8],
 }
 
-impl<'a> UploadStickerFile<'a> {
+impl<'a, C> UploadStickerFile<'a, C> {
     /// Constructs a new `UploadStickerFile`.
     pub const fn new(
+        client: Arc<hyper::Client<C, hyper::Body>>,
         token: Token,
         user_id: i64,
         png_sticker: &'a [u8],
     ) -> Self {
         Self {
+            client,
             token,
             user_id,
             png_sticker,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 }
 
-impl IntoFuture for UploadStickerFile<'_> {
+impl<C> IntoFuture for UploadStickerFile<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::File;
@@ -42,20 +47,11 @@ impl IntoFuture for UploadStickerFile<'_> {
             .finish();
 
         Box::new(send_method(
+            &self.client,
             &self.token,
             "uploadStickerFile",
             Some(boundary),
             body,
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for UploadStickerFile<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

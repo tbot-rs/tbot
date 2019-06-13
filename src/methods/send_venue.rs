@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`sendVenue`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendvenue
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendVenue<'a> {
+pub struct SendVenue<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[serde(skip)]
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     latitude: f64,
     longitude: f64,
@@ -28,9 +29,10 @@ pub struct SendVenue<'a> {
     reply_markup: Option<types::AnyKeyboard<'a>>,
 }
 
-impl<'a> SendVenue<'a> {
+impl<'a, C> SendVenue<'a, C> {
     /// Constructs a new `SendVenue`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         (latitude, longitude): (f64, f64),
@@ -38,6 +40,7 @@ impl<'a> SendVenue<'a> {
         address: &'a str,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             latitude,
@@ -49,8 +52,6 @@ impl<'a> SendVenue<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -88,7 +89,12 @@ impl<'a> SendVenue<'a> {
     }
 }
 
-impl IntoFuture for SendVenue<'_> {
+impl<C> IntoFuture for SendVenue<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = types::Message;
@@ -96,20 +102,11 @@ impl IntoFuture for SendVenue<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
+            &self.client,
             &self.token,
             "sendVenue",
             None,
             serde_json::to_vec(&self).unwrap(),
-            #[cfg(feature = "proxy")]
-            self.proxy,
         ))
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SendVenue<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

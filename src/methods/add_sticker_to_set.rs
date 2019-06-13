@@ -1,4 +1,6 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::{InputFile, PngSticker};
 use types::MaskPosition;
 
@@ -6,10 +8,9 @@ use types::MaskPosition;
 ///
 /// [docs]: https://core.telegram.org/bots/api#addstickertoset
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct AddStickerToSet<'a> {
+pub struct AddStickerToSet<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     user_id: i64,
     name: &'a str,
     png_sticker: &'a PngSticker<'a>,
@@ -17,9 +18,10 @@ pub struct AddStickerToSet<'a> {
     mask_position: Option<MaskPosition>,
 }
 
-impl<'a> AddStickerToSet<'a> {
+impl<'a, C> AddStickerToSet<'a, C> {
     /// Constructs a new `AddStickerToSet`.
     pub const fn new(
+        client: Arc<Client<C>>,
         token: Token,
         user_id: i64,
         name: &'a str,
@@ -27,14 +29,13 @@ impl<'a> AddStickerToSet<'a> {
         emojis: &'a str,
     ) -> Self {
         Self {
+            client,
             token,
             user_id,
             name,
             png_sticker,
             emojis,
             mask_position: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -45,7 +46,12 @@ impl<'a> AddStickerToSet<'a> {
     }
 }
 
-impl IntoFuture for AddStickerToSet<'_> {
+impl<C> IntoFuture for AddStickerToSet<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -76,23 +82,14 @@ impl IntoFuture for AddStickerToSet<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "addStickerToSet",
                 Some(boundary),
                 body,
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
-            .map(|_| ()),
+            .map(|_| ()), // Only `true` is returned on success
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for AddStickerToSet<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

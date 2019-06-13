@@ -190,10 +190,3 @@ pub enum DeliveryError {
         retry_after: Option<u64>,
     },
 }
-
-#[cfg(feature = "proxy")]
-/// Provides the proxy method.
-pub trait ProxyMethod {
-    /// Configures the proxy the method will be sent via.
-    fn proxy(self, proxy: proxy::Proxy) -> Self;
-}

@@ -1,36 +1,42 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 use types::input_file::{ChatPhoto, InputFile};
 
 /// Represents the [`setChatPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SetChatPhoto<'a> {
+pub struct SetChatPhoto<'a, C> {
+    client: Arc<Client<C>>,
     token: Token,
-    #[cfg(feature = "proxy")]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     photo: &'a ChatPhoto<'a>,
 }
 
-impl<'a> SetChatPhoto<'a> {
+impl<'a, C> SetChatPhoto<'a, C> {
     /// Constructs a new `SetChatPhoto`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: &'a ChatPhoto<'a>,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             photo,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 }
 
-impl IntoFuture for SetChatPhoto<'_> {
+impl<C> IntoFuture for SetChatPhoto<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -56,23 +62,14 @@ impl IntoFuture for SetChatPhoto<'_> {
         let (boundary, body) = multipart.finish();
 
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "setChatPhoto",
                 Some(boundary),
                 body,
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()), // Only `true` is returned on success
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for SetChatPhoto<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

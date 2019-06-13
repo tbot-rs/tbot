@@ -1,4 +1,6 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
@@ -68,7 +70,9 @@ impl<'a> CallbackAnswerAction<'a> {
 /// [docs]: https://core.telegram.org/bots/api#answercallbackquery
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct AnswerCallbackQuery<'a> {
+pub struct AnswerCallbackQuery<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
     callback_query_id: &'a str,
@@ -80,27 +84,24 @@ pub struct AnswerCallbackQuery<'a> {
     url: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u32>,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
 }
 
-impl<'a> AnswerCallbackQuery<'a> {
+impl<'a, C> AnswerCallbackQuery<'a, C> {
     /// Constructs a new `AnswerCallbackQuery`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         callback_query_id: &'a str,
         action: CallbackAnswerAction<'a>,
     ) -> Self {
         Self {
+            client,
             token,
             callback_query_id,
             text: action.to_text(),
             show_alert: action.to_show_alert(),
             url: action.to_url(),
             cache_time: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -111,7 +112,12 @@ impl<'a> AnswerCallbackQuery<'a> {
     }
 }
 
-impl IntoFuture for AnswerCallbackQuery<'_> {
+impl<C> IntoFuture for AnswerCallbackQuery<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -119,23 +125,14 @@ impl IntoFuture for AnswerCallbackQuery<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "answerCallbackQuery",
                 None,
                 serde_json::to_vec(&self).unwrap(),
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()), // Only `true` is returned on success
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for AnswerCallbackQuery<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

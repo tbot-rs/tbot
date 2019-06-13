@@ -42,7 +42,7 @@ macro_rules! edited_message {
             }
         }
 
-        impl<'a> Forwardable<'a> for $name {}
-        impl<'a> Pinnable<'a> for $name {}
+        impl<'a, C: 'static> Forwardable<'a, C> for $name<C> {}
+        impl<'a, C: 'static> Pinnable<'a, C> for $name<C> {}
     };
 }

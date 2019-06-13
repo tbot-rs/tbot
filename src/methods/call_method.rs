@@ -1,4 +1,5 @@
 use super::*;
+use crate::internal::Client;
 use futures::Stream;
 
 #[derive(Deserialize)]
@@ -56,9 +57,12 @@ fn create_request(
 }
 
 #[must_use]
-fn process_response<T: serde::de::DeserializeOwned + std::fmt::Debug>(
+fn process_response<T>(
     request: hyper::client::ResponseFuture,
-) -> impl Future<Item = T, Error = DeliveryError> {
+) -> impl Future<Item = T, Error = DeliveryError>
+where
+    T: serde::de::DeserializeOwned,
+{
     request
         .and_then(|response| response.into_body().concat2())
         .map_err(DeliveryError::NetworkError)
@@ -98,44 +102,21 @@ fn process_response<T: serde::de::DeserializeOwned + std::fmt::Debug>(
         })
 }
 
-#[cfg(not(feature = "proxy"))]
 #[must_use]
-pub fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
+pub fn send_method<T, C>(
+    client: &Client<C>,
     token: &Token,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
-) -> impl Future<Item = T, Error = DeliveryError> {
-    let https = hyper_tls::HttpsConnector::new(1).unwrap();
+) -> impl Future<Item = T, Error = DeliveryError>
+where
+    T: serde::de::DeserializeOwned,
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     let request = create_request(token, method, boundary, body);
 
-    process_response(
-        hyper::Client::builder()
-            .build::<_, hyper::Body>(https)
-            .request(request),
-    )
-}
-
-#[cfg(feature = "proxy")]
-#[must_use]
-pub fn send_method<T: serde::de::DeserializeOwned + std::fmt::Debug>(
-    token: &Token,
-    method: &'static str,
-    boundary: Option<String>,
-    body: Vec<u8>,
-    proxy: Option<proxy::Proxy>,
-) -> impl Future<Item = T, Error = DeliveryError> {
-    let request = create_request(token, method, boundary, body);
-    let https = hyper_tls::HttpsConnector::new(1).unwrap();
-    let builder = hyper::Client::builder();
-
-    let request = if let Some(proxy) = proxy {
-        let connector =
-            proxy::ProxyConnector::from_proxy(https, proxy).unwrap();
-        builder.build::<_, hyper::Body>(connector).request(request)
-    } else {
-        builder.build::<_, hyper::Body>(https).request(request)
-    };
-
-    process_response(request)
+    process_response(client.request(request))
 }

@@ -8,8 +8,11 @@ common! {
     }
 }
 
-impl Unhandled {
-    pub(crate) const fn new(bot: Arc<Bot>, update: types::UpdateKind) -> Self {
+impl<C> Unhandled<C> {
+    pub(crate) const fn new(
+        bot: Arc<Bot<C>>,
+        update: types::UpdateKind,
+    ) -> Self {
         Self {
             bot,
             update,

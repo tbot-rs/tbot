@@ -10,15 +10,15 @@ use std::sync::Arc;
 /// [`after_update`]: ../struct.Bot.html#method.after_update
 #[derive(Clone)]
 // todo: #[non_exhaustive]
-pub struct Update {
+pub struct Update<C> {
     /// A mock bot with all API methods.
-    pub bot: Arc<Bot>,
+    pub bot: Arc<Bot<C>>,
     /// The ID of the update.
     pub update_id: u32,
 }
 
-impl Update {
-    pub(crate) const fn new(bot: Arc<Bot>, update_id: u32) -> Self {
+impl<C> Update<C> {
+    pub(crate) const fn new(bot: Arc<Bot<C>>, update_id: u32) -> Self {
         Self {
             bot,
             update_id,

@@ -1,16 +1,17 @@
 use super::*;
+use crate::internal::Client;
+use std::sync::Arc;
 
 /// Represents the [`restrictChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#restrictchatmember
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct RestrictChatMember<'a> {
+pub struct RestrictChatMember<'a, C> {
+    #[serde(skip)]
+    client: Arc<Client<C>>,
     #[serde(skip)]
     token: Token,
-    #[cfg(feature = "proxy")]
-    #[serde(skip)]
-    proxy: Option<proxy::Proxy>,
     chat_id: types::ChatId<'a>,
     user_id: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,14 +26,16 @@ pub struct RestrictChatMember<'a> {
     can_add_web_page_previews: Option<bool>,
 }
 
-impl<'a> RestrictChatMember<'a> {
+impl<'a, C> RestrictChatMember<'a, C> {
     /// Constructs a new `RestrictChatMember`.
     pub fn new(
+        client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         user_id: i64,
     ) -> Self {
         Self {
+            client,
             token,
             chat_id: chat_id.into(),
             user_id,
@@ -41,8 +44,6 @@ impl<'a> RestrictChatMember<'a> {
             can_send_media_messages: None,
             can_send_other_messages: None,
             can_add_web_page_previews: None,
-            #[cfg(feature = "proxy")]
-            proxy: None,
         }
     }
 
@@ -77,7 +78,12 @@ impl<'a> RestrictChatMember<'a> {
     }
 }
 
-impl IntoFuture for RestrictChatMember<'_> {
+impl<C> IntoFuture for RestrictChatMember<'_, C>
+where
+    C: hyper::client::connect::Connect + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
     type Item = ();
@@ -85,23 +91,14 @@ impl IntoFuture for RestrictChatMember<'_> {
 
     fn into_future(self) -> Self::Future {
         Box::new(
-            send_method::<bool>(
+            send_method::<bool, C>(
+                &self.client,
                 &self.token,
                 "restrictChatMember",
                 None,
                 serde_json::to_vec(&self).unwrap(),
-                #[cfg(feature = "proxy")]
-                self.proxy,
             )
             .map(|_| ()), // Only `true` is returned on success
         )
-    }
-}
-
-#[cfg(feature = "proxy")]
-impl ProxyMethod for RestrictChatMember<'_> {
-    fn proxy(mut self, proxy: proxy::Proxy) -> Self {
-        self.proxy = Some(proxy);
-        self
     }
 }

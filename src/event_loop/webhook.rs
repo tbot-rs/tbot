@@ -16,8 +16,8 @@ use std::{
 ///
 /// [`Bot::webhook`]: ./struct.Bot.html#method.webhook
 #[must_use = "webhook does not start unless `start` is called"]
-pub struct Webhook<'a> {
-    event_loop: EventLoop,
+pub struct Webhook<'a, C> {
+    event_loop: EventLoop<C>,
     ip: IpAddr,
     port: u16,
 
@@ -27,8 +27,12 @@ pub struct Webhook<'a> {
     allowed_updates: Option<&'a [types::Updates]>,
 }
 
-impl<'a> Webhook<'a> {
-    pub(crate) fn new(event_loop: EventLoop, url: &'a str, port: u16) -> Self {
+impl<'a, C> Webhook<'a, C> {
+    pub(crate) fn new(
+        event_loop: EventLoop<C>,
+        url: &'a str,
+        port: u16,
+    ) -> Self {
         Self {
             event_loop,
             ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
@@ -63,7 +67,14 @@ impl<'a> Webhook<'a> {
         self.allowed_updates = Some(updates);
         self
     }
+}
 
+impl<'a, C> Webhook<'a, C>
+where
+    C: hyper::client::connect::Connect + Clone + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     /// Starts the server.
     pub fn start(self) -> ! {
         self.set_webhook();
@@ -75,13 +86,12 @@ impl<'a> Webhook<'a> {
         let outer_error = Arc::clone(&error);
 
         let set_webhook = methods::SetWebhook::new(
+            Arc::clone(&self.event_loop.bot.client),
             self.event_loop.bot.token.clone(),
             self.url,
             self.certificate,
             self.max_connections,
             self.allowed_updates,
-            #[cfg(feature = "proxy")]
-            self.event_loop.bot.proxy.clone(),
         )
         .into_future()
         .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
@@ -124,11 +134,14 @@ fn is_request_correct(request: &Request<Body>) -> bool {
         && content_type.map(|x| x == "application/json") == Some(true)
 }
 
-fn handle(
-    bot: Arc<Bot>,
-    event_loop: Arc<EventLoop>,
+fn handle<C>(
+    bot: Arc<Bot<C>>,
+    event_loop: Arc<EventLoop<C>>,
     request: Request<Body>,
-) -> Box<dyn Future<Item = Response<Body>, Error = Error> + Send> {
+) -> Box<dyn Future<Item = Response<Body>, Error = Error> + Send>
+where
+    C: Send + Sync + 'static,
+{
     if is_request_correct(&request) {
         let body = request.into_body().concat2();
         let handler = body.map(move |body| {
@@ -151,11 +164,14 @@ fn handle(
     }
 }
 
-fn init_server(
-    event_loop: EventLoop,
+fn init_server<C>(
+    event_loop: EventLoop<C>,
     ip: IpAddr,
     port: u16,
-) -> impl Future<Error = Error> {
+) -> impl Future<Error = Error>
+where
+    C: Clone + Send + Sync + 'static,
+{
     let bot = Arc::new(event_loop.bot.clone());
     let event_loop = Arc::new(event_loop);
     let addr = SocketAddr::new(ip, port);

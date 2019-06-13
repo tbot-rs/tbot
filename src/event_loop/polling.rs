@@ -16,16 +16,16 @@ use std::{
 ///
 /// [`Bot::polling`]: ./struct.Bot.html#method.polling
 #[must_use = "polling does nothing unless `start` is called"]
-pub struct Polling<'a> {
-    event_loop: EventLoop,
+pub struct Polling<'a, C> {
+    event_loop: EventLoop<C>,
     limit: Option<u8>,
     timeout: Option<u32>,
     allowed_updates: Option<&'a [types::Updates]>,
     poll_interval: u64,
 }
 
-impl<'a> Polling<'a> {
-    pub(crate) const fn new(event_loop: EventLoop) -> Self {
+impl<'a, C> Polling<'a, C> {
+    pub(crate) const fn new(event_loop: EventLoop<C>) -> Self {
         Self {
             event_loop,
             limit: None,
@@ -61,7 +61,14 @@ impl<'a> Polling<'a> {
         self.poll_interval = poll_interval;
         self
     }
+}
 
+impl<'a, C> Polling<'a, C>
+where
+    C: hyper::client::connect::Connect + Clone + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
     /// Starts the event loop.
     pub fn start(self) -> ! {
         self.delete_webhook();
@@ -73,9 +80,8 @@ impl<'a> Polling<'a> {
         let outer_error = Arc::clone(&error);
 
         let delete_webhook = DeleteWebhook::new(
+            Arc::clone(&self.event_loop.bot.client),
             self.event_loop.bot.token.clone(),
-            #[cfg(feature = "proxy")]
-            self.event_loop.bot.proxy.clone(),
         )
         .into_future()
         .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
@@ -108,13 +114,12 @@ impl<'a> Polling<'a> {
             last_send_timestamp = Instant::now();
 
             let updates = GetUpdates::new(
+                Arc::clone(&event_loop.bot.client),
                 event_loop.bot.token.clone(),
                 *last_offset.lock().unwrap(),
                 self.limit,
                 self.timeout,
                 self.allowed_updates,
-                #[cfg(feature = "proxy")]
-                event_loop.bot.proxy.clone(),
             )
             .into_future();
 
