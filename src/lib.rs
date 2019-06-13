@@ -48,6 +48,7 @@ mod internal;
 mod multipart;
 mod token;
 
+pub mod connectors;
 pub mod contexts;
 pub mod event_loop;
 pub mod methods;
@@ -56,9 +57,6 @@ pub mod types;
 use serde::{Deserialize, Serialize};
 pub use {bot::*, token::*};
 use {internal::*, multipart::*, prelude::*};
-
-#[cfg(feature = "proxy")]
-pub use hyper_proxy as proxy;
 
 /// A wrapper around `tokio::run` without `F::Item: ()`.
 ///
