@@ -80,7 +80,7 @@ where
         let outer_error = Arc::clone(&error);
 
         let delete_webhook = DeleteWebhook::new(
-            Arc::clone(&self.event_loop.bot.client),
+            &self.event_loop.bot.client,
             self.event_loop.bot.token.clone(),
         )
         .into_future()
@@ -114,7 +114,7 @@ where
             last_send_timestamp = Instant::now();
 
             let updates = GetUpdates::new(
-                Arc::clone(&event_loop.bot.client),
+                &event_loop.bot.client,
                 event_loop.bot.token.clone(),
                 *last_offset.lock().unwrap(),
                 self.limit,

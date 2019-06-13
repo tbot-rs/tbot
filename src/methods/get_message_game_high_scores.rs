@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 type HighScores = Vec<types::GameHighScore>;
 
@@ -11,7 +10,7 @@ type HighScores = Vec<types::GameHighScore>;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMessageGameHighScores<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     user_id: i64,
@@ -21,7 +20,7 @@ pub struct GetMessageGameHighScores<'a, C> {
 
 impl<'a, C> GetMessageGameHighScores<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,

@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`setStickerPositionInSet`][docs] method.
 ///
@@ -9,7 +8,7 @@ use std::sync::Arc;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetStickerPositionInSet<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     sticker: &'a str,
@@ -18,7 +17,7 @@ pub struct SetStickerPositionInSet<'a, C> {
 
 impl<'a, C> SetStickerPositionInSet<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         sticker: &'a str,
         position: u32,

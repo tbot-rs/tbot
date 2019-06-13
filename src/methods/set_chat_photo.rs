@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{ChatPhoto, InputFile};
 
 /// Represents the [`setChatPhoto`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::{ChatPhoto, InputFile};
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatPhoto<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     photo: &'a ChatPhoto<'a>,
@@ -16,7 +15,7 @@ pub struct SetChatPhoto<'a, C> {
 
 impl<'a, C> SetChatPhoto<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: &'a ChatPhoto<'a>,

@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`setGameScore`][docs] method for inline messages.
 ///
@@ -9,7 +8,7 @@ use std::sync::Arc;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetInlineGameScore<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     user_id: i64,
@@ -23,7 +22,7 @@ pub struct SetInlineGameScore<'a, C> {
 
 impl<'a, C> SetInlineGameScore<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         user_id: i64,

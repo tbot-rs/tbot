@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`editMessageLiveLocation`][docs] method for inline messages.
 ///
@@ -9,7 +8,7 @@ use std::sync::Arc;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineLocation<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     inline_message_id: &'a str,
@@ -21,7 +20,7 @@ pub struct EditInlineLocation<'a, C> {
 
 impl<'a, C> EditInlineLocation<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         (latitude, longitude): (f64, f64),

@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`editMessageReplyMarkup`][docs] method for chat messsages.
 ///
@@ -9,7 +8,7 @@ use std::sync::Arc;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageReplyMarkup<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
@@ -19,7 +18,7 @@ pub struct EditMessageReplyMarkup<'a, C> {
 
 impl<'a, C> EditMessageReplyMarkup<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,

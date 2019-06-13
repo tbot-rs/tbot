@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::*;
 
 /// Represents the [`sendMediaGroup`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::*;
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     media: Vec<GroupMedia<'a>>,
@@ -23,7 +22,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
     /// because it modifies the media's metadata, and thus further reuse of the
     /// media would lead to errors.
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         media: Vec<GroupMedia<'a>>,

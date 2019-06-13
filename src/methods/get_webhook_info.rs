@@ -1,18 +1,17 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`getWebhookInfo`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getwebhookinfo
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetWebhookInfo<C> {
-    client: Arc<Client<C>>,
+pub struct GetWebhookInfo<'a, C> {
+    client: &'a Client<C>,
     token: Token,
 }
 
-impl<C> GetWebhookInfo<C> {
-    pub(crate) const fn new(client: Arc<Client<C>>, token: Token) -> Self {
+impl<'a, C> GetWebhookInfo<'a, C> {
+    pub(crate) const fn new(client: &'a Client<C>, token: Token) -> Self {
         Self {
             client,
             token,
@@ -20,7 +19,7 @@ impl<C> GetWebhookInfo<C> {
     }
 }
 
-impl<C> IntoFuture for GetWebhookInfo<C>
+impl<C> IntoFuture for GetWebhookInfo<'_, C>
 where
     C: hyper::client::connect::Connect + Sync + 'static,
     C::Transport: 'static,

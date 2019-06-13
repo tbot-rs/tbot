@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`forwardMessage`][docs] method.
 ///
@@ -9,7 +8,7 @@ use std::sync::Arc;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct ForwardMessage<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
@@ -21,7 +20,7 @@ pub struct ForwardMessage<'a, C> {
 
 impl<'a, C> ForwardMessage<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         from_chat_id: impl Into<types::ChatId<'a>>,

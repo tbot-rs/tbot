@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{Document, InputFile};
 
 /// Represents the [`sendDocument`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::{Document, InputFile};
 /// [docs]: https://core.telegram.org/bots/api#senddocument
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendDocument<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     document: &'a Document<'a>,
@@ -19,7 +18,7 @@ pub struct SendDocument<'a, C> {
 
 impl<'a, C> SendDocument<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         document: &'a Document<'a>,

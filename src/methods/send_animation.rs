@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{Animation, InputFile};
 
 /// Represents the [`sendAnimation`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::{Animation, InputFile};
 /// [docs]: https://core.telegram.org/bots/api#sendanimation
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     animation: &'a Animation<'a>,
@@ -19,7 +18,7 @@ pub struct SendAnimation<'a, C> {
 
 impl<'a, C> SendAnimation<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         animation: &'a Animation<'a>,

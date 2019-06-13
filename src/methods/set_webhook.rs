@@ -1,11 +1,10 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// This method isn't meant to be used by users directly.
 #[must_use]
 pub(crate) struct SetWebhook<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     url: &'a str,
     certificate: Option<&'a str>,
@@ -15,7 +14,7 @@ pub(crate) struct SetWebhook<'a, C> {
 
 impl<'a, C> SetWebhook<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         url: &'a str,
         certificate: Option<&'a str>,

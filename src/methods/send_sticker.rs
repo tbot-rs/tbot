@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{InputFile, Sticker};
 
 /// Represents the [`sendSticker`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::{InputFile, Sticker};
 /// [docs]: https://core.telegram.org/bots/api#sendsticker
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendSticker<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     sticker: &'a Sticker<'a>,
@@ -19,7 +18,7 @@ pub struct SendSticker<'a, C> {
 
 impl<'a, C> SendSticker<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         sticker: &'a Sticker<'a>,

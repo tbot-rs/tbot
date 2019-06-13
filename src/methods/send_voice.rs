@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{InputFile, Voice};
 
 /// Represents the [`sendVoice`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::{InputFile, Voice};
 /// [docs]: https://core.telegram.org/bots/api#sendvoice
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVoice<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     voice: &'a Voice<'a>,
@@ -19,7 +18,7 @@ pub struct SendVoice<'a, C> {
 
 impl<'a, C> SendVoice<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         voice: &'a Voice<'a>,

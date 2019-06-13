@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 // This is a false positive as it's used in `into_future`'s signature
 #[allow(dead_code)]
@@ -11,9 +10,9 @@ type Photos = Vec<Vec<types::UserProfilePhotos>>;
 /// [docs]: https://core.telegram.org/bots/api#getuserprofilephotos
 #[derive(Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetUserProfilePhotos<C> {
+pub struct GetUserProfilePhotos<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     user_id: i64,
@@ -23,9 +22,9 @@ pub struct GetUserProfilePhotos<C> {
     limit: Option<u8>,
 }
 
-impl<C> GetUserProfilePhotos<C> {
+impl<'a, C> GetUserProfilePhotos<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         user_id: i64,
     ) -> Self {
@@ -51,7 +50,7 @@ impl<C> GetUserProfilePhotos<C> {
     }
 }
 
-impl<C> IntoFuture for GetUserProfilePhotos<C>
+impl<C> IntoFuture for GetUserProfilePhotos<'_, C>
 where
     C: hyper::client::connect::Connect + Sync + 'static,
     C::Transport: 'static,

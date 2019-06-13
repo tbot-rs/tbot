@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{InputFile, VideoNote};
 
 /// Represents the [`sendVideoNote`][docs] method.
@@ -8,7 +7,7 @@ use types::input_file::{InputFile, VideoNote};
 /// [docs]: https://core.telegram.org/bots/api#sendvideonote
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     video_note: &'a VideoNote<'a>,
@@ -19,7 +18,7 @@ pub struct SendVideoNote<'a, C> {
 
 impl<'a, C> SendVideoNote<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         video_note: &'a VideoNote<'a>,

@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{InputFile, PngSticker};
 use types::MaskPosition;
 
@@ -9,7 +8,7 @@ use types::MaskPosition;
 /// [docs]: https://core.telegram.org/bots/api#createnewstickerset
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct CreateNewStickerSet<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     user_id: i64,
     name: &'a str,
@@ -22,7 +21,7 @@ pub struct CreateNewStickerSet<'a, C> {
 
 impl<'a, C> CreateNewStickerSet<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         user_id: i64,
         name: &'a str,

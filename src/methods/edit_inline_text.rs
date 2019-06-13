@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`editMessageText`][docs] method for inline messages.
 ///
@@ -9,7 +8,7 @@ use std::sync::Arc;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineText<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     inline_message_id: &'a str,
@@ -24,7 +23,7 @@ pub struct EditInlineText<'a, C> {
 
 impl<'a, C> EditInlineText<'a, C> {
     pub(crate) const fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         text: &'a str,

@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
@@ -72,7 +71,7 @@ impl<'a> CallbackAnswerAction<'a> {
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerCallbackQuery<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     callback_query_id: &'a str,
@@ -88,7 +87,7 @@ pub struct AnswerCallbackQuery<'a, C> {
 
 impl<'a, C> AnswerCallbackQuery<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         callback_query_id: &'a str,
         action: CallbackAnswerAction<'a>,

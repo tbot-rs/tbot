@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::*;
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
@@ -8,7 +7,7 @@ use types::input_file::*;
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageMedia<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     message_id: u32,
@@ -18,7 +17,7 @@ pub struct EditMessageMedia<'a, C> {
 
 impl<'a, C> EditMessageMedia<'a, C> {
     pub(crate) fn new(
-        client: Arc<Client<C>>,
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
