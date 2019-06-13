@@ -16,8 +16,7 @@ pub struct GetChatAdministrators<'a, C> {
 }
 
 impl<'a, C> GetChatAdministrators<'a, C> {
-    /// Constructs a new `GetChatAdministrators`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

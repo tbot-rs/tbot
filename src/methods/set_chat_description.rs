@@ -17,8 +17,7 @@ pub struct SetChatDescription<'a, C> {
 }
 
 impl<'a, C> SetChatDescription<'a, C> {
-    /// Constructs a new `SetChatDescription`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

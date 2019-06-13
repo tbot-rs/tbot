@@ -14,7 +14,7 @@ pub(crate) struct SetWebhook<'a, C> {
 }
 
 impl<'a, C> SetWebhook<'a, C> {
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         url: &'a str,

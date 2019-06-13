@@ -16,8 +16,7 @@ pub struct GetStickerSet<'a, C> {
 }
 
 impl<'a, C> GetStickerSet<'a, C> {
-    /// Constructs a new `GetStickerSet`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         name: &'a str,

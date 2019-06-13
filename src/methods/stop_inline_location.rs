@@ -18,8 +18,7 @@ pub struct StopInlineLocation<'a, C> {
 }
 
 impl<'a, C> StopInlineLocation<'a, C> {
-    /// Constructs a new `StopInlineLocation`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,

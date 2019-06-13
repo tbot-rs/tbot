@@ -27,8 +27,7 @@ pub struct RestrictChatMember<'a, C> {
 }
 
 impl<'a, C> RestrictChatMember<'a, C> {
-    /// Constructs a new `RestrictChatMember`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

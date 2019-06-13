@@ -87,8 +87,7 @@ pub struct AnswerCallbackQuery<'a, C> {
 }
 
 impl<'a, C> AnswerCallbackQuery<'a, C> {
-    /// Constructs a new `AnswerCallbackQuery`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         callback_query_id: &'a str,

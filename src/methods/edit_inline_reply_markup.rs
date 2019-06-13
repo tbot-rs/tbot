@@ -17,8 +17,7 @@ pub struct EditInlineReplyMarkup<'a, C> {
 }
 
 impl<'a, C> EditInlineReplyMarkup<'a, C> {
-    /// Constructs a new `EditInlineReplyMarkup`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,

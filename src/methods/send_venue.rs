@@ -30,8 +30,7 @@ pub struct SendVenue<'a, C> {
 }
 
 impl<'a, C> SendVenue<'a, C> {
-    /// Constructs a new `SendVenue`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

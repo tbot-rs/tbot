@@ -22,7 +22,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
     /// **Note:** unlike other methods, this one takes ownership of the media
     /// because it modifies the media's metadata, and thus further reuse of the
     /// media would lead to errors.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

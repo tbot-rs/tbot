@@ -24,8 +24,7 @@ pub struct EditMessageText<'a, C> {
 }
 
 impl<'a, C> EditMessageText<'a, C> {
-    /// Constructs a new `EditMessageText`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

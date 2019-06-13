@@ -16,8 +16,7 @@ pub struct LeaveChat<'a, C> {
 }
 
 impl<'a, C> LeaveChat<'a, C> {
-    /// Constructs a new `LeaveChat`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

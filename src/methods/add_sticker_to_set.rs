@@ -19,8 +19,7 @@ pub struct AddStickerToSet<'a, C> {
 }
 
 impl<'a, C> AddStickerToSet<'a, C> {
-    /// Constructs a new `AddStickerToSet`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         user_id: i64,

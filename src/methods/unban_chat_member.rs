@@ -17,8 +17,7 @@ pub struct UnbanChatMember<'a, C> {
 }
 
 impl<'a, C> UnbanChatMember<'a, C> {
-    /// Constructs a new `UnbanChatMember`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

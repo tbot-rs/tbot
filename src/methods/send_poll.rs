@@ -24,8 +24,7 @@ pub struct SendPoll<'a, C> {
 }
 
 impl<'a, C> SendPoll<'a, C> {
-    /// Constructs a new `SendPoll`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

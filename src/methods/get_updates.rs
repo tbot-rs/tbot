@@ -20,7 +20,7 @@ pub(crate) struct GetUpdates<'a, C> {
 }
 
 impl<'a, C> GetUpdates<'a, C> {
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         offset: Option<u32>,

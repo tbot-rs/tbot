@@ -21,8 +21,7 @@ pub struct EditInlineCaption<'a, C> {
 }
 
 impl<'a, C> EditInlineCaption<'a, C> {
-    /// Constructs a new `EditInlineCaption`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,

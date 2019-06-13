@@ -12,8 +12,7 @@ pub struct GetMe<C> {
 }
 
 impl<C> GetMe<C> {
-    /// Constructs a new `GetMe`.
-    pub const fn new(client: Arc<Client<C>>, token: Token) -> Self {
+    pub(crate) const fn new(client: Arc<Client<C>>, token: Token) -> Self {
         Self {
             client,
             token,

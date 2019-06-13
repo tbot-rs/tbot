@@ -19,8 +19,7 @@ pub struct KickChatMember<'a, C> {
 }
 
 impl<'a, C> KickChatMember<'a, C> {
-    /// Constructs a new `KickChatMember`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

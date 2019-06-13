@@ -18,8 +18,7 @@ pub struct SendPhoto<'a, C> {
 }
 
 impl<'a, C> SendPhoto<'a, C> {
-    /// Constructs a new `SendPhoto`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

@@ -18,8 +18,7 @@ pub struct SendSticker<'a, C> {
 }
 
 impl<'a, C> SendSticker<'a, C> {
-    /// Constructs a new `SendSticker`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

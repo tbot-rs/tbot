@@ -20,8 +20,7 @@ pub struct ForwardMessage<'a, C> {
 }
 
 impl<'a, C> ForwardMessage<'a, C> {
-    /// Constructs a new `ForwardMessage`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

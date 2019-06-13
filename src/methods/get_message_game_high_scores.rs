@@ -20,8 +20,7 @@ pub struct GetMessageGameHighScores<'a, C> {
 }
 
 impl<'a, C> GetMessageGameHighScores<'a, C> {
-    /// Constructs a new `GetMessageGameHighScores`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

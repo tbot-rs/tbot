@@ -13,8 +13,7 @@ pub struct UploadStickerFile<'a, C> {
 }
 
 impl<'a, C> UploadStickerFile<'a, C> {
-    /// Constructs a new `UploadStickerFile`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<hyper::Client<C, hyper::Body>>,
         token: Token,
         user_id: i64,

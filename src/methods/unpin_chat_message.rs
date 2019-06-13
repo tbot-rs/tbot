@@ -16,8 +16,7 @@ pub struct UnpinChatMessage<'a, C> {
 }
 
 impl<'a, C> UnpinChatMessage<'a, C> {
-    /// Constructs a new `UnpinChatMessage`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

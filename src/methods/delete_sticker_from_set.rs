@@ -16,8 +16,7 @@ pub struct DeleteStickerFromSet<'a, C> {
 }
 
 impl<'a, C> DeleteStickerFromSet<'a, C> {
-    /// Constructs a new `DeleteStickerFromSet`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         sticker: &'a str,

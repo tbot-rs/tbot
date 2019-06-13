@@ -16,8 +16,7 @@ pub struct EditInlineMedia<'a, C> {
 }
 
 impl<'a, C> EditInlineMedia<'a, C> {
-    /// Constructs a new `EditInlineMedia`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,

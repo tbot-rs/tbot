@@ -9,7 +9,7 @@ pub struct DeleteWebhook<C> {
 }
 
 impl<C> DeleteWebhook<C> {
-    pub const fn new(client: Arc<Client<C>>, token: Token) -> Self {
+    pub(crate) const fn new(client: Arc<Client<C>>, token: Token) -> Self {
         Self {
             client,
             token,

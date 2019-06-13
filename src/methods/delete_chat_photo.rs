@@ -16,8 +16,7 @@ pub struct DeleteChatPhoto<'a, C> {
 }
 
 impl<'a, C> DeleteChatPhoto<'a, C> {
-    /// Constructs a new `DeleteChatPhoto`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

@@ -18,8 +18,7 @@ pub struct SendVideoNote<'a, C> {
 }
 
 impl<'a, C> SendVideoNote<'a, C> {
-    /// Constructs a new `SendVideoNote`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

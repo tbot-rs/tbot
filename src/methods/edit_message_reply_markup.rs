@@ -18,8 +18,7 @@ pub struct EditMessageReplyMarkup<'a, C> {
 }
 
 impl<'a, C> EditMessageReplyMarkup<'a, C> {
-    /// Constructs a new `EditMessageReplyMarkup`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

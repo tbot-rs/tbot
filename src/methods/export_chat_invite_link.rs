@@ -16,8 +16,7 @@ pub struct ExportChatInviteLink<'a, C> {
 }
 
 impl<'a, C> ExportChatInviteLink<'a, C> {
-    /// Constructs a new `ExportChatInviteLink`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

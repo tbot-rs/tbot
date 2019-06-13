@@ -16,8 +16,7 @@ pub struct GetChatMembersCount<'a, C> {
 }
 
 impl<'a, C> GetChatMembersCount<'a, C> {
-    /// Constructs a new `GetChatMembersCount`.
-    pub fn new(
+    pub(crate) fn new(
         client: Arc<Client<C>>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,

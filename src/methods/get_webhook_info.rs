@@ -12,8 +12,7 @@ pub struct GetWebhookInfo<C> {
 }
 
 impl<C> GetWebhookInfo<C> {
-    /// Constructs a new `GetWebhookInfo`.
-    pub const fn new(client: Arc<Client<C>>, token: Token) -> Self {
+    pub(crate) const fn new(client: Arc<Client<C>>, token: Token) -> Self {
         Self {
             client,
             token,

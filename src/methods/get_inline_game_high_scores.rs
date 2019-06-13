@@ -19,8 +19,7 @@ pub struct GetInlineGameHighScores<'a, C> {
 }
 
 impl<'a, C> GetInlineGameHighScores<'a, C> {
-    /// Constructs a new `GetInlineGameHighScores`.
-    pub const fn new(
+    pub(crate) const fn new(
         client: Arc<Client<C>>,
         token: Token,
         inline_message_id: &'a str,
