@@ -1,5 +1,6 @@
 use super::*;
 use crate::internal::Client;
+use parameters::NotificationState;
 use types::input_file::{InputFile, Photo};
 
 /// Represents the [`sendPhoto`][docs] method.
@@ -35,8 +36,8 @@ impl<'a, C> SendPhoto<'a, C> {
     }
 
     /// Configures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 

@@ -165,6 +165,8 @@ pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
 mod call_method;
 use call_method::*;
 
+pub mod parameters;
+
 /// Represents different errors that may happen during a request.
 #[derive(Debug)]
 pub enum DeliveryError {

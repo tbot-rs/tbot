@@ -1,5 +1,6 @@
 use super::*;
 use crate::internal::Client;
+use parameters::NotificationState;
 
 /// Represents the [`sendLocation`][docs] method.
 ///
@@ -51,8 +52,8 @@ impl<'a, C> SendLocation<'a, C> {
     }
 
     /// Confgiures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
