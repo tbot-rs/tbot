@@ -1,15 +1,14 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`setGameScore`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetInlineGameScore<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     user_id: i64,
@@ -22,9 +21,8 @@ pub struct SetInlineGameScore<'a, C> {
 }
 
 impl<'a, C> SetInlineGameScore<'a, C> {
-    /// Constructs a new `SetInlineGameScore`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         user_id: i64,
@@ -68,7 +66,7 @@ where
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "setGameScore",
                 None,

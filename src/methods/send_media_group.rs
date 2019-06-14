@@ -1,14 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
+use parameters::NotificationState;
 use types::input_file::*;
 
 /// Represents the [`sendMediaGroup`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     media: Vec<GroupMedia<'a>>,
@@ -22,8 +23,8 @@ impl<'a, C> SendMediaGroup<'a, C> {
     /// **Note:** unlike other methods, this one takes ownership of the media
     /// because it modifies the media's metadata, and thus further reuse of the
     /// media would lead to errors.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         media: Vec<GroupMedia<'a>>,
@@ -39,8 +40,8 @@ impl<'a, C> SendMediaGroup<'a, C> {
     }
 
     /// Configures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
@@ -143,7 +144,7 @@ where
         let (boundary, body) = multipart.str("media", &media).finish();
 
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "sendMediaGroup",
             Some(boundary),

@@ -1,15 +1,14 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct StopMessageLocation<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
@@ -19,9 +18,8 @@ pub struct StopMessageLocation<'a, C> {
 }
 
 impl<'a, C> StopMessageLocation<'a, C> {
-    /// Constructs a new `StopMessageLocation`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
@@ -55,7 +53,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "stopMessageLiveLocation",
             None,

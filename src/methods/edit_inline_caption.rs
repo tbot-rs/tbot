@@ -1,15 +1,14 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`editMessageCaption`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineCaption<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     inline_message_id: &'a str,
@@ -21,9 +20,8 @@ pub struct EditInlineCaption<'a, C> {
 }
 
 impl<'a, C> EditInlineCaption<'a, C> {
-    /// Constructs a new `EditInlineCaption`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         caption: &'a str,
@@ -65,7 +63,7 @@ where
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "editMessageCaption",
                 None,

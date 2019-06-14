@@ -1,14 +1,14 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::*;
 
 /// Represents the [`editMessageMedia`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineMedia<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     inline_message_id: &'a str,
     media: EditableMedia<'a>,
@@ -16,9 +16,8 @@ pub struct EditInlineMedia<'a, C> {
 }
 
 impl<'a, C> EditInlineMedia<'a, C> {
-    /// Constructs a new `EditInlineMedia`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         media: impl Into<EditableMedia<'a>>,
@@ -95,7 +94,7 @@ where
 
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "editMessageMedia",
                 Some(boundary),

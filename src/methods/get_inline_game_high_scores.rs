@@ -1,17 +1,16 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 type HighScores = Vec<types::GameHighScore>;
 
 /// Represents the [`getGameHighScores`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getgamehighscores
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetInlineGameHighScores<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     user_id: i64,
@@ -19,9 +18,8 @@ pub struct GetInlineGameHighScores<'a, C> {
 }
 
 impl<'a, C> GetInlineGameHighScores<'a, C> {
-    /// Constructs a new `GetInlineGameHighScores`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         user_id: i64,
@@ -48,7 +46,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "getGameHighScores",
             None,

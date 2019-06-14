@@ -1,14 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
+use parameters::NotificationState;
 use types::input_file::{InputFile, Photo};
 
 /// Represents the [`sendPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendphoto
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendPhoto<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     photo: &'a Photo<'a>,
@@ -18,9 +19,8 @@ pub struct SendPhoto<'a, C> {
 }
 
 impl<'a, C> SendPhoto<'a, C> {
-    /// Constructs a new `SendPhoto`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: &'a Photo<'a>,
@@ -37,8 +37,8 @@ impl<'a, C> SendPhoto<'a, C> {
     }
 
     /// Configures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
@@ -104,7 +104,7 @@ where
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "sendPhoto",
             Some(boundary),

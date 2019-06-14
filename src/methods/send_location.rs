@@ -1,15 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
+use parameters::NotificationState;
 
 /// Represents the [`sendLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendlocation
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendLocation<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
@@ -26,9 +26,8 @@ pub struct SendLocation<'a, C> {
 }
 
 impl<'a, C> SendLocation<'a, C> {
-    /// Constructs a new `SendLocation`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         (latitude, longitude): (f64, f64),
@@ -53,8 +52,8 @@ impl<'a, C> SendLocation<'a, C> {
     }
 
     /// Confgiures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
@@ -87,7 +86,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "sendLocation",
             None,

@@ -1,14 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
+use parameters::NotificationState;
 use types::input_file::{InputFile, VideoNote};
 
 /// Represents the [`sendVideoNote`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendvideonote
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     video_note: &'a VideoNote<'a>,
@@ -18,9 +19,8 @@ pub struct SendVideoNote<'a, C> {
 }
 
 impl<'a, C> SendVideoNote<'a, C> {
-    /// Constructs a new `SendVideoNote`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         video_note: &'a VideoNote<'a>,
@@ -37,8 +37,8 @@ impl<'a, C> SendVideoNote<'a, C> {
     }
 
     /// Configures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
@@ -113,7 +113,7 @@ where
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "sendVideoNote",
             Some(boundary),

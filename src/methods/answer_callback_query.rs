@@ -1,6 +1,5 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
@@ -68,11 +67,11 @@ impl<'a> CallbackAnswerAction<'a> {
 /// Represents the [`answerCallbackQuery`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#answercallbackquery
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerCallbackQuery<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     callback_query_id: &'a str,
@@ -83,13 +82,12 @@ pub struct AnswerCallbackQuery<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    cache_time: Option<u32>,
+    cache_time: Option<u64>,
 }
 
 impl<'a, C> AnswerCallbackQuery<'a, C> {
-    /// Constructs a new `AnswerCallbackQuery`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         callback_query_id: &'a str,
         action: CallbackAnswerAction<'a>,
@@ -106,7 +104,7 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
     }
 
     /// Configures `cache_time`.
-    pub fn cache_time(mut self, time: u32) -> Self {
+    pub fn cache_time(mut self, time: u64) -> Self {
         self.cache_time = Some(time);
         self
     }
@@ -126,7 +124,7 @@ where
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "answerCallbackQuery",
                 None,

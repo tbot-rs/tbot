@@ -86,7 +86,7 @@ where
         let outer_error = Arc::clone(&error);
 
         let set_webhook = methods::SetWebhook::new(
-            Arc::clone(&self.event_loop.bot.client),
+            &self.event_loop.bot.client,
             self.event_loop.bot.token.clone(),
             self.url,
             self.certificate,

@@ -1,15 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
+use parameters::{NotificationState, WebPagePreviewState};
 
 /// Represents the [`sendMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendmessage
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMessage<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
@@ -27,9 +27,8 @@ pub struct SendMessage<'a, C> {
 }
 
 impl<'a, C> SendMessage<'a, C> {
-    /// Constructs a new `SendMessage`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         text: &'a str,
@@ -54,14 +53,14 @@ impl<'a, C> SendMessage<'a, C> {
     }
 
     /// Configures `disable_web_page_preview`.
-    pub fn disable_web_page_preview(mut self, is_disabled: bool) -> Self {
-        self.disable_web_page_preview = Some(is_disabled);
+    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
+        self.disable_web_page_preview = Some(state.is_disabled());
         self
     }
 
     /// Configures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
@@ -94,7 +93,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "sendMessage",
             None,

@@ -1,15 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{InputFile, PngSticker};
 use types::MaskPosition;
 
 /// Represents the [`createNewStickerSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#createnewstickerset
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct CreateNewStickerSet<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     user_id: i64,
     name: &'a str,
@@ -21,9 +21,8 @@ pub struct CreateNewStickerSet<'a, C> {
 }
 
 impl<'a, C> CreateNewStickerSet<'a, C> {
-    /// Constructs a new `CreateNewStickerSet`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         user_id: i64,
         name: &'a str,
@@ -97,7 +96,7 @@ where
 
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "createNewStickerSet",
                 Some(boundary),

@@ -1,15 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{InputFile, PngSticker};
 use types::MaskPosition;
 
 /// Represents the [`addStickerToSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#addstickertoset
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AddStickerToSet<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     user_id: i64,
     name: &'a str,
@@ -19,9 +19,8 @@ pub struct AddStickerToSet<'a, C> {
 }
 
 impl<'a, C> AddStickerToSet<'a, C> {
-    /// Constructs a new `AddStickerToSet`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         user_id: i64,
         name: &'a str,
@@ -83,7 +82,7 @@ where
 
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "addStickerToSet",
                 Some(boundary),

@@ -1,24 +1,22 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`getStickerSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getstickerset
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetStickerSet<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     name: &'a str,
 }
 
 impl<'a, C> GetStickerSet<'a, C> {
-    /// Constructs a new `GetStickerSet`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         name: &'a str,
     ) -> Self {
@@ -43,7 +41,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "getStickerSet",
             None,

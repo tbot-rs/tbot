@@ -1,15 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
+#[derive(Debug, Clone)]
 #[must_use]
-pub struct DeleteWebhook<C> {
-    client: Arc<Client<C>>,
+pub struct DeleteWebhook<'a, C> {
+    client: &'a Client<C>,
     token: Token,
 }
 
-impl<C> DeleteWebhook<C> {
-    pub const fn new(client: Arc<Client<C>>, token: Token) -> Self {
+impl<'a, C> DeleteWebhook<'a, C> {
+    pub(crate) const fn new(client: &'a Client<C>, token: Token) -> Self {
         Self {
             client,
             token,
@@ -17,7 +17,7 @@ impl<C> DeleteWebhook<C> {
     }
 }
 
-impl<C> IntoFuture for DeleteWebhook<C>
+impl<C> IntoFuture for DeleteWebhook<'_, C>
 where
     C: hyper::client::connect::Connect + Sync + 'static,
     C::Transport: 'static,
@@ -31,7 +31,7 @@ where
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "deleteWebhook",
                 None,

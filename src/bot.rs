@@ -89,7 +89,7 @@ impl<C> Bot<C> {
         emojis: &'a str,
     ) -> methods::AddStickerToSet<'a, C> {
         methods::AddStickerToSet::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             user_id,
             name,
@@ -105,7 +105,7 @@ impl<C> Bot<C> {
         action: CallbackAnswerAction<'a>,
     ) -> methods::AnswerCallbackQuery<'a, C> {
         methods::AnswerCallbackQuery::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             callback_query_id,
             action,
@@ -122,7 +122,7 @@ impl<C> Bot<C> {
         emojis: &'a str,
     ) -> methods::CreateNewStickerSet<'a, C> {
         methods::CreateNewStickerSet::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             user_id,
             name,
@@ -137,11 +137,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::DeleteChatPhoto<'a, C> {
-        methods::DeleteChatPhoto::new(
-            Arc::clone(&self.client),
-            self.token.clone(),
-            chat_id,
-        )
+        methods::DeleteChatPhoto::new(&self.client, self.token.clone(), chat_id)
     }
 
     /// Constructs a new `DeleteChatStickerSet` inferring your bot's token.
@@ -150,7 +146,7 @@ impl<C> Bot<C> {
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::DeleteChatStickerSet<'a, C> {
         methods::DeleteChatStickerSet::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
         )
@@ -163,7 +159,7 @@ impl<C> Bot<C> {
         message_id: u32,
     ) -> methods::DeleteMessage<'a, C> {
         methods::DeleteMessage::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -176,7 +172,7 @@ impl<C> Bot<C> {
         sticker: &'a str,
     ) -> methods::DeleteStickerFromSet<'a, C> {
         methods::DeleteStickerFromSet::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             sticker,
         )
@@ -189,7 +185,7 @@ impl<C> Bot<C> {
         caption: &'a str,
     ) -> methods::EditInlineCaption<'a, C> {
         methods::EditInlineCaption::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             caption,
@@ -203,7 +199,7 @@ impl<C> Bot<C> {
         position: (f64, f64),
     ) -> methods::EditInlineLocation<'a, C> {
         methods::EditInlineLocation::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             position,
@@ -217,7 +213,7 @@ impl<C> Bot<C> {
         media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditInlineMedia<'a, C> {
         methods::EditInlineMedia::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             media,
@@ -231,7 +227,7 @@ impl<C> Bot<C> {
         reply_markup: types::InlineKeyboard<'a>,
     ) -> methods::EditInlineReplyMarkup<'a, C> {
         methods::EditInlineReplyMarkup::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             reply_markup,
@@ -245,7 +241,7 @@ impl<C> Bot<C> {
         text: &'a str,
     ) -> methods::EditInlineText<'a, C> {
         methods::EditInlineText::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             text,
@@ -260,7 +256,7 @@ impl<C> Bot<C> {
         caption: &'a str,
     ) -> methods::EditMessageCaption<'a, C> {
         methods::EditMessageCaption::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -276,7 +272,7 @@ impl<C> Bot<C> {
         position: (f64, f64),
     ) -> methods::EditMessageLocation<'a, C> {
         methods::EditMessageLocation::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -292,7 +288,7 @@ impl<C> Bot<C> {
         media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditMessageMedia<'a, C> {
         methods::EditMessageMedia::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -308,7 +304,7 @@ impl<C> Bot<C> {
         reply_markup: types::InlineKeyboard<'a>,
     ) -> methods::EditMessageReplyMarkup<'a, C> {
         methods::EditMessageReplyMarkup::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -324,7 +320,7 @@ impl<C> Bot<C> {
         text: &'a str,
     ) -> methods::EditMessageText<'a, C> {
         methods::EditMessageText::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -338,7 +334,7 @@ impl<C> Bot<C> {
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::ExportChatInviteLink<'a, C> {
         methods::ExportChatInviteLink::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
         )
@@ -352,7 +348,7 @@ impl<C> Bot<C> {
         message_id: u32,
     ) -> methods::ForwardMessage<'a, C> {
         methods::ForwardMessage::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             from_chat_id,
@@ -365,11 +361,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::GetChat<'a, C> {
-        methods::GetChat::new(
-            Arc::clone(&self.client),
-            self.token.clone(),
-            chat_id,
-        )
+        methods::GetChat::new(&self.client, self.token.clone(), chat_id)
     }
 
     /// Constructs a new `GetInlineGameHighScores` inferring your bot's token.
@@ -379,7 +371,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::GetInlineGameHighScores<'a, C> {
         methods::GetInlineGameHighScores::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             user_id,
@@ -392,7 +384,7 @@ impl<C> Bot<C> {
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::GetChatAdministrators<'a, C> {
         methods::GetChatAdministrators::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
         )
@@ -405,7 +397,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::GetChatMember<'a, C> {
         methods::GetChatMember::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             user_id,
@@ -418,7 +410,7 @@ impl<C> Bot<C> {
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::GetChatMembersCount<'a, C> {
         methods::GetChatMembersCount::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
         )
@@ -432,7 +424,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::GetMessageGameHighScores<'a, C> {
         methods::GetMessageGameHighScores::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -441,8 +433,8 @@ impl<C> Bot<C> {
     }
 
     /// Constructs a new `GetMe` inferring your bot's token.
-    pub fn get_me(&self) -> methods::GetMe<C> {
-        methods::GetMe::new(Arc::clone(&self.client), self.token.clone())
+    pub fn get_me(&self) -> methods::GetMe<'_, C> {
+        methods::GetMe::new(&self.client, self.token.clone())
     }
 
     /// Constructs a new `GetStickerSet` inferring your bot's token.
@@ -450,31 +442,24 @@ impl<C> Bot<C> {
         &'a self,
         name: &'a str,
     ) -> methods::GetStickerSet<'a, C> {
-        methods::GetStickerSet::new(
-            Arc::clone(&self.client),
-            self.token.clone(),
-            name,
-        )
+        methods::GetStickerSet::new(&self.client, self.token.clone(), name)
     }
 
     /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
     pub fn get_user_profile_photos(
         &self,
         user_id: i64,
-    ) -> methods::GetUserProfilePhotos<C> {
+    ) -> methods::GetUserProfilePhotos<'_, C> {
         methods::GetUserProfilePhotos::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             user_id,
         )
     }
 
     /// Constructs a new `GetWebhookInfo` inferring your bot's token.
-    pub fn get_webhook_info(&self) -> methods::GetWebhookInfo<C> {
-        methods::GetWebhookInfo::new(
-            Arc::clone(&self.client),
-            self.token.clone(),
-        )
+    pub fn get_webhook_info(&self) -> methods::GetWebhookInfo<'_, C> {
+        methods::GetWebhookInfo::new(&self.client, self.token.clone())
     }
 
     /// Constructs a new `KickChatMember` inferring your bot's token.
@@ -484,7 +469,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::KickChatMember<'a, C> {
         methods::KickChatMember::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             user_id,
@@ -496,11 +481,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::LeaveChat<'a, C> {
-        methods::LeaveChat::new(
-            Arc::clone(&self.client),
-            self.token.clone(),
-            chat_id,
-        )
+        methods::LeaveChat::new(&self.client, self.token.clone(), chat_id)
     }
 
     /// Constructs a new `PinChatMessage` inferring your bot's token.
@@ -510,7 +491,7 @@ impl<C> Bot<C> {
         message_id: u32,
     ) -> methods::PinChatMessage<'a, C> {
         methods::PinChatMessage::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -524,7 +505,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::PromoteChatMember<'a, C> {
         methods::PromoteChatMember::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             user_id,
@@ -538,7 +519,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::RestrictChatMember<'a, C> {
         methods::RestrictChatMember::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             user_id,
@@ -552,7 +533,7 @@ impl<C> Bot<C> {
         animation: &'a Animation<'a>,
     ) -> methods::SendAnimation<'a, C> {
         methods::SendAnimation::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             animation,
@@ -566,7 +547,7 @@ impl<C> Bot<C> {
         audio: &'a Audio<'a>,
     ) -> methods::SendAudio<'a, C> {
         methods::SendAudio::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             audio,
@@ -580,7 +561,7 @@ impl<C> Bot<C> {
         action: types::ChatAction,
     ) -> methods::SendChatAction<'a, C> {
         methods::SendChatAction::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             action,
@@ -595,7 +576,7 @@ impl<C> Bot<C> {
         first_name: &'a str,
     ) -> methods::SendContact<'a, C> {
         methods::SendContact::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             phone_number,
@@ -610,7 +591,7 @@ impl<C> Bot<C> {
         game_short_name: &'a str,
     ) -> methods::SendGame<'a, C> {
         methods::SendGame::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             game_short_name,
@@ -624,7 +605,7 @@ impl<C> Bot<C> {
         document: &'a Document<'a>,
     ) -> methods::SendDocument<'a, C> {
         methods::SendDocument::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             document,
@@ -638,7 +619,7 @@ impl<C> Bot<C> {
         position: (f64, f64),
     ) -> methods::SendLocation<'a, C> {
         methods::SendLocation::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             position,
@@ -652,7 +633,7 @@ impl<C> Bot<C> {
         media: Vec<GroupMedia<'a>>,
     ) -> methods::SendMediaGroup<'a, C> {
         methods::SendMediaGroup::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             media,
@@ -666,7 +647,7 @@ impl<C> Bot<C> {
         text: &'a str,
     ) -> methods::SendMessage<'a, C> {
         methods::SendMessage::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             text,
@@ -680,7 +661,7 @@ impl<C> Bot<C> {
         photo: &'a Photo<'a>,
     ) -> methods::SendPhoto<'a, C> {
         methods::SendPhoto::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             photo,
@@ -695,7 +676,7 @@ impl<C> Bot<C> {
         options: &'a [&'a str],
     ) -> methods::SendPoll<'a, C> {
         methods::SendPoll::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             question,
@@ -710,7 +691,7 @@ impl<C> Bot<C> {
         sticker: &'a Sticker<'a>,
     ) -> methods::SendSticker<'a, C> {
         methods::SendSticker::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             sticker,
@@ -726,7 +707,7 @@ impl<C> Bot<C> {
         address: &'a str,
     ) -> methods::SendVenue<'a, C> {
         methods::SendVenue::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             position,
@@ -742,7 +723,7 @@ impl<C> Bot<C> {
         video_note: &'a VideoNote<'a>,
     ) -> methods::SendVideoNote<'a, C> {
         methods::SendVideoNote::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             video_note,
@@ -756,7 +737,7 @@ impl<C> Bot<C> {
         video: &'a Video<'a>,
     ) -> methods::SendVideo<'a, C> {
         methods::SendVideo::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             video,
@@ -770,7 +751,7 @@ impl<C> Bot<C> {
         voice: &'a Voice<'a>,
     ) -> methods::SendVoice<'a, C> {
         methods::SendVoice::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             voice,
@@ -784,7 +765,7 @@ impl<C> Bot<C> {
         description: &'a str,
     ) -> methods::SetChatDescription<'a, C> {
         methods::SetChatDescription::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             description,
@@ -798,7 +779,7 @@ impl<C> Bot<C> {
         photo: &'a ChatPhoto<'a>,
     ) -> methods::SetChatPhoto<'a, C> {
         methods::SetChatPhoto::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             photo,
@@ -812,7 +793,7 @@ impl<C> Bot<C> {
         sticker_set_name: &'a str,
     ) -> methods::SetChatStickerSet<'a, C> {
         methods::SetChatStickerSet::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             sticker_set_name,
@@ -826,7 +807,7 @@ impl<C> Bot<C> {
         title: &'a str,
     ) -> methods::SetChatTitle<'a, C> {
         methods::SetChatTitle::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             title,
@@ -841,7 +822,7 @@ impl<C> Bot<C> {
         score: u32,
     ) -> methods::SetInlineGameScore<'a, C> {
         methods::SetInlineGameScore::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
             user_id,
@@ -858,7 +839,7 @@ impl<C> Bot<C> {
         score: u32,
     ) -> methods::SetMessageGameScore<'a, C> {
         methods::SetMessageGameScore::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -874,7 +855,7 @@ impl<C> Bot<C> {
         position: u32,
     ) -> methods::SetStickerPositionInSet<'a, C> {
         methods::SetStickerPositionInSet::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             sticker,
             position,
@@ -887,7 +868,7 @@ impl<C> Bot<C> {
         inline_message_id: &'a str,
     ) -> methods::StopInlineLocation<'a, C> {
         methods::StopInlineLocation::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             inline_message_id,
         )
@@ -900,7 +881,7 @@ impl<C> Bot<C> {
         message_id: u32,
     ) -> methods::StopMessageLocation<'a, C> {
         methods::StopMessageLocation::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -914,7 +895,7 @@ impl<C> Bot<C> {
         message_id: u32,
     ) -> methods::StopPoll<'a, C> {
         methods::StopPoll::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             message_id,
@@ -928,7 +909,7 @@ impl<C> Bot<C> {
         user_id: i64,
     ) -> methods::UnbanChatMember<'a, C> {
         methods::UnbanChatMember::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
             user_id,
@@ -941,7 +922,7 @@ impl<C> Bot<C> {
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> methods::UnpinChatMessage<'a, C> {
         methods::UnpinChatMessage::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             chat_id,
         )
@@ -954,7 +935,7 @@ impl<C> Bot<C> {
         png_sticker: &'a [u8],
     ) -> methods::UploadStickerFile<'a, C> {
         methods::UploadStickerFile::new(
-            Arc::clone(&self.client),
+            &self.client,
             self.token.clone(),
             user_id,
             png_sticker,

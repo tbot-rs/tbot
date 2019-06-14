@@ -1,23 +1,22 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 use types::input_file::{ChatPhoto, InputFile};
 
 /// Represents the [`setChatPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatPhoto<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     photo: &'a ChatPhoto<'a>,
 }
 
 impl<'a, C> SetChatPhoto<'a, C> {
-    /// Constructs a new `SetChatPhoto`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         photo: &'a ChatPhoto<'a>,
@@ -63,7 +62,7 @@ where
 
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "setChatPhoto",
                 Some(boundary),

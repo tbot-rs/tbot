@@ -1,14 +1,15 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
+use parameters::NotificationState;
 use types::input_file::{Audio, InputFile};
 
 /// Represents the [`sendAudio`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendaudio
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAudio<'a, C> {
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     token: Token,
     chat_id: types::ChatId<'a>,
     audio: &'a Audio<'a>,
@@ -18,9 +19,8 @@ pub struct SendAudio<'a, C> {
 }
 
 impl<'a, C> SendAudio<'a, C> {
-    /// Constructs a new `SendAudio`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
         audio: &'a Audio<'a>,
@@ -36,8 +36,8 @@ impl<'a, C> SendAudio<'a, C> {
         }
     }
     /// Configures `disable_notification`.
-    pub fn disable_notification(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
     }
 
@@ -116,7 +116,7 @@ where
         let (boundary, body) = multipart.finish();
 
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "sendAudio",
             Some(boundary),

@@ -1,24 +1,22 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`getChatAdministrators`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getchatadministrators
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetChatAdministrators<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
 }
 
 impl<'a, C> GetChatAdministrators<'a, C> {
-    /// Constructs a new `GetChatAdministrators`.
-    pub fn new(
-        client: Arc<Client<C>>,
+    pub(crate) fn new(
+        client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
     ) -> Self {
@@ -43,7 +41,7 @@ where
 
     fn into_future(self) -> Self::Future {
         Box::new(send_method(
-            &self.client,
+            self.client,
             &self.token,
             "getChatAdministrators",
             None,

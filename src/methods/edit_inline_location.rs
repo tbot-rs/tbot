@@ -1,15 +1,14 @@
 use super::*;
 use crate::internal::Client;
-use std::sync::Arc;
 
 /// Represents the [`editMessageLiveLocation`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagelivelocation
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineLocation<'a, C> {
     #[serde(skip)]
-    client: Arc<Client<C>>,
+    client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     inline_message_id: &'a str,
@@ -20,9 +19,8 @@ pub struct EditInlineLocation<'a, C> {
 }
 
 impl<'a, C> EditInlineLocation<'a, C> {
-    /// Constructs a new `EditInlineLocation`.
-    pub const fn new(
-        client: Arc<Client<C>>,
+    pub(crate) const fn new(
+        client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
         (latitude, longitude): (f64, f64),
@@ -58,7 +56,7 @@ where
     fn into_future(self) -> Self::Future {
         Box::new(
             send_method::<bool, C>(
-                &self.client,
+                self.client,
                 &self.token,
                 "editMessageLiveLocation",
                 None,
