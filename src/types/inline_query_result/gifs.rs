@@ -80,7 +80,7 @@ macro_rules! gif_base {
 
         impl<'a> Fresh<'a> {
             /// Constructs a `Fresh` GIF.
-            pub fn new(thumb_url: &'a str, url: &'a str) -> Self {
+            pub const fn new(thumb_url: &'a str, url: &'a str) -> Self {
                 Self {
                     thumb_url,
                     url,
@@ -110,7 +110,7 @@ macro_rules! gif_base {
         }
 
         impl<'a> $struct<'a> {
-            fn new(kind: Kind<'a>) -> Self {
+            const fn new(kind: Kind<'a>) -> Self {
                 Self {
                     kind,
                     title: None,

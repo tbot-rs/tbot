@@ -15,7 +15,7 @@ pub struct Text<'a> {
 
 impl<'a> Text<'a> {
     /// Constructs a new `Text`.
-    pub fn new(message_text: &'a str) -> Self {
+    pub const fn new(message_text: &'a str) -> Self {
         Self {
             message_text,
             parse_mode: None,

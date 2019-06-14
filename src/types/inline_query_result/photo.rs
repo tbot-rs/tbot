@@ -47,7 +47,7 @@ pub struct Photo<'a> {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` photo.
-    pub fn new(thumb_url: &'a str, url: &'a str) -> Self {
+    pub const fn new(thumb_url: &'a str, url: &'a str) -> Self {
         Self {
             thumb_url,
             url,
@@ -70,7 +70,7 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Photo<'a> {
-    fn new(kind: Kind<'a>) -> Self {
+    const fn new(kind: Kind<'a>) -> Self {
         Self {
             kind,
             title: None,

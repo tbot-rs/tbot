@@ -71,7 +71,7 @@ impl MimeType {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` document.
-    pub fn new(url: &'a str, mime_type: MimeType) -> Self {
+    pub const fn new(url: &'a str, mime_type: MimeType) -> Self {
         Self {
             url,
             mime_type,
@@ -87,7 +87,7 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Document<'a> {
-    fn new(title: &'a str, kind: Kind<'a>) -> Self {
+    const fn new(title: &'a str, kind: Kind<'a>) -> Self {
         Self {
             kind,
             title,

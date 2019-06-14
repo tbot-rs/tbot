@@ -46,7 +46,7 @@ pub struct Voice<'a> {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` voice.
-    pub fn new(url: &'a str) -> Self {
+    pub const fn new(url: &'a str) -> Self {
         Self {
             url,
             duration: None,
@@ -61,7 +61,7 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Voice<'a> {
-    fn new(title: &'a str, kind: Kind<'a>) -> Self {
+    const fn new(title: &'a str, kind: Kind<'a>) -> Self {
         Self {
             kind,
             title,

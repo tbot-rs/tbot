@@ -15,7 +15,7 @@ pub struct Contact<'a> {
 
 impl<'a> Contact<'a> {
     /// Constructs a `Contact`.
-    pub fn new(phone_number: &'a str, first_name: &'a str) -> Self {
+    pub const fn new(phone_number: &'a str, first_name: &'a str) -> Self {
         Self {
             phone_number,
             first_name,

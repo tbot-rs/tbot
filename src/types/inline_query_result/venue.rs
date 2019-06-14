@@ -23,7 +23,7 @@ pub struct Venue<'a> {
 
 impl<'a> Venue<'a> {
     /// Constructs a `Venue`.
-    pub fn new(
+    pub const fn new(
         title: &'a str,
         (latitude, longitude): (f64, f64),
         address: &'a str,

@@ -14,7 +14,7 @@ pub struct Sticker<'a> {
 
 impl<'a> Sticker<'a> {
     /// Constructs a `Sticker`.
-    pub fn new(id: &'a str) -> Self {
+    pub const fn new(id: &'a str) -> Self {
         Self {
             id,
             input_message_content: None,

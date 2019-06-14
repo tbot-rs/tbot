@@ -13,7 +13,7 @@ pub struct Thumb<'a> {
 
 impl<'a> Thumb<'a> {
     /// Constructs a `Thumb`.
-    pub fn new(url: &'a str) -> Self {
+    pub const fn new(url: &'a str) -> Self {
         Self {
             url,
             width: None,

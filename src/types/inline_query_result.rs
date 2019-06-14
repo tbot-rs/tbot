@@ -43,6 +43,7 @@ pub use {
 /// Represents different kinds of [`InlineQueryResult`].
 ///
 /// [`InlineQueryResult`]: ./struct.InlineQueryResult.html
+#[allow(clippy::large_enum_variant)]
 #[derive(Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 // todo: #[non_exhaustive]

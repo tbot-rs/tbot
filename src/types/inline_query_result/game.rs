@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-/// Represents an [`InlineQueryResultGame][docs].
+/// Represents an [`InlineQueryResultGame`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultgame
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
@@ -10,7 +10,7 @@ pub struct Game<'a> {
 
 impl<'a> Game<'a> {
     /// Constructs a `Game`.
-    pub fn new(game_short_name: &'a str) -> Self {
+    pub const fn new(game_short_name: &'a str) -> Self {
         Self {
             game_short_name,
         }

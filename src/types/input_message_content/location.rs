@@ -13,7 +13,7 @@ pub struct Location {
 
 impl Location {
     /// Constructs a `Location`.
-    pub fn new((latitude, longitude): (f64, f64)) -> Self {
+    pub const fn new((latitude, longitude): (f64, f64)) -> Self {
         Self {
             latitude,
             longitude,

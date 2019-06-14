@@ -48,7 +48,7 @@ pub struct Audio<'a> {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` audio.
-    pub fn new(url: &'a str, title: &'a str) -> Self {
+    pub const fn new(url: &'a str, title: &'a str) -> Self {
         Self {
             url,
             title,
@@ -71,7 +71,7 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Audio<'a> {
-    fn new(kind: Kind<'a>) -> Self {
+    const fn new(kind: Kind<'a>) -> Self {
         Self {
             kind,
             caption: None,

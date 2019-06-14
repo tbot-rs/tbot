@@ -20,7 +20,7 @@ pub struct Location<'a> {
 
 impl<'a> Location<'a> {
     /// Constructs a `Location`.
-    pub fn new(title: &'a str, (latitude, longitude): (f64, f64)) -> Self {
+    pub const fn new(title: &'a str, (latitude, longitude): (f64, f64)) -> Self {
         Self {
             latitude,
             longitude,
