@@ -44,7 +44,7 @@ pub use {
 ///
 /// [`InlineQueryResult`]: ./struct.InlineQueryResult.html
 #[allow(clippy::large_enum_variant)]
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[serde(tag = "type", rename_all = "snake_case")]
 // todo: #[non_exhaustive]
 pub enum Kind<'a> {
@@ -79,7 +79,7 @@ pub enum Kind<'a> {
 /// Represents an [`InlineQueryResult`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 pub struct InlineQueryResult<'a> {
     id: &'a str,
     #[serde(flatten)]

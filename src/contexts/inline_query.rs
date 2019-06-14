@@ -33,3 +33,13 @@ impl<C> InlineQuery<C> {
         }
     }
 }
+
+impl<'a, C: 'static> traits::Inline<'a, C> for InlineQuery<C> {
+    fn bot(&self) -> &Bot<C> {
+        &self.bot
+    }
+
+    fn id(&self) -> &types::InlineQueryId {
+        &self.id
+    }
+}

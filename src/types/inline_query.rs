@@ -1,7 +1,7 @@
 use super::*;
 
 /// Represents an inline query ID.
-#[derive(Deserialize, Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Deserialize, Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(transparent)]
 pub struct InlineQueryId(String);
 
