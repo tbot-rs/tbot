@@ -6,6 +6,7 @@
 use super::*;
 
 pub mod input_file;
+pub mod input_message_content;
 pub mod raw;
 
 mod animation;
@@ -23,6 +24,7 @@ mod document;
 mod file;
 mod game;
 mod game_high_score;
+mod inline_query;
 mod invoice;
 mod keyboards;
 mod location;
@@ -47,7 +49,8 @@ mod webhook_info;
 pub use {
     animation::*, audio::*, callback_game::*, callback_query::*, chat::*,
     chat_action::*, chat_id::*, chat_member::*, chat_photo::*, chat_types::*,
-    contact::*, document::*, file::*, game::*, game_high_score::*, invoice::*,
+    contact::*, document::*, file::*, game::*, game_high_score::*,
+    inline_query::*, input_message_content::InputMessageContent, invoice::*,
     keyboards::*, location::*, login_url::*, mask_position::*, message::*,
     message_entity::*, parse_mode::*, photo_size::*, poll::*, sticker::*,
     sticker_set::*, updates::*, user::*, user_profile_photos::*, venue::*,
