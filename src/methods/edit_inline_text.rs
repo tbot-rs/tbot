@@ -1,5 +1,6 @@
 use super::*;
 use crate::internal::Client;
+use parameters::WebPagePreviewState;
 
 /// Represents the [`editMessageText`][docs] method for inline messages.
 ///
@@ -46,8 +47,8 @@ impl<'a, C> EditInlineText<'a, C> {
     }
 
     /// Configures `disable_web_page_preview`.
-    pub fn disable_web_page_preview(mut self, is_disabled: bool) -> Self {
-        self.disable_web_page_preview = Some(is_disabled);
+    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
+        self.disable_web_page_preview = Some(state.is_disabled());
         self
     }
 

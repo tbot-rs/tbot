@@ -1,6 +1,6 @@
 use super::*;
 use crate::internal::Client;
-use parameters::NotificationState;
+use parameters::{NotificationState, WebPagePreviewState};
 
 /// Represents the [`sendMessage`][docs] method.
 ///
@@ -53,8 +53,8 @@ impl<'a, C> SendMessage<'a, C> {
     }
 
     /// Configures `disable_web_page_preview`.
-    pub fn disable_web_page_preview(mut self, is_disabled: bool) -> Self {
-        self.disable_web_page_preview = Some(is_disabled);
+    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
+        self.disable_web_page_preview = Some(state.is_disabled());
         self
     }
 
