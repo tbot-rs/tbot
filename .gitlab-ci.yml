@@ -1,22 +1,9 @@
-image: "rust:latest"
-
-variables:
-  CARGO_HOME: $CI_PROJECT_DIR/cargo
-
-cache:
-  paths:
-    - target
-    - cargo
-
 test:
-  before_script:
-    - rustup component add rustfmt
-    - rustup component add clippy
   script:
     - cargo fmt -- --check
-    - cargo clippy -- -D warnings
-    - cargo clippy --all-features -- -D warnings
-    - cargo test --all-features
+    - cargo clippy --target-dir=../target -- -D warnings
+    - cargo clippy --target-dir=../target --all-features -- -D warnings
+    - cargo test --target-dir=../target --all-features
   only:
     - branches
 
