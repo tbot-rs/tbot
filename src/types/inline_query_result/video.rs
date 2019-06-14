@@ -76,7 +76,11 @@ impl MimeType {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` video.
-    pub const fn new(url: &'a str, mime_type: MimeType, thumb_url: &'a str) -> Self {
+    pub const fn new(
+        url: &'a str,
+        mime_type: MimeType,
+        thumb_url: &'a str,
+    ) -> Self {
         Self {
             url,
             mime_type,
