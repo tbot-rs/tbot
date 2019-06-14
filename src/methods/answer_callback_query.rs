@@ -82,7 +82,7 @@ pub struct AnswerCallbackQuery<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    cache_time: Option<u32>,
+    cache_time: Option<u64>,
 }
 
 impl<'a, C> AnswerCallbackQuery<'a, C> {
@@ -104,7 +104,7 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
     }
 
     /// Configures `cache_time`.
-    pub fn cache_time(mut self, time: u32) -> Self {
+    pub fn cache_time(mut self, time: u64) -> Self {
         self.cache_time = Some(time);
         self
     }

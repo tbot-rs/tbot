@@ -19,7 +19,7 @@ use std::{
 pub struct Polling<'a, C> {
     event_loop: EventLoop<C>,
     limit: Option<u8>,
-    timeout: Option<u32>,
+    timeout: Option<u64>,
     allowed_updates: Option<&'a [types::Updates]>,
     poll_interval: u64,
 }
@@ -42,7 +42,7 @@ impl<'a, C> Polling<'a, C> {
     }
 
     /// Configures the timeout for long polling.
-    pub fn timeout(mut self, timeout: u32) -> Self {
+    pub fn timeout(mut self, timeout: u64) -> Self {
         self.timeout = Some(timeout);
         self
     }
