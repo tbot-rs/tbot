@@ -5,6 +5,7 @@
 
 use super::*;
 
+pub mod inline_query_result;
 pub mod input_file;
 pub mod input_message_content;
 pub mod raw;
@@ -50,9 +51,10 @@ pub use {
     animation::*, audio::*, callback_game::*, callback_query::*, chat::*,
     chat_action::*, chat_id::*, chat_member::*, chat_photo::*, chat_types::*,
     contact::*, document::*, file::*, game::*, game_high_score::*,
-    inline_query::*, input_message_content::InputMessageContent, invoice::*,
-    keyboards::*, location::*, login_url::*, mask_position::*, message::*,
-    message_entity::*, parse_mode::*, photo_size::*, poll::*, sticker::*,
-    sticker_set::*, updates::*, user::*, user_profile_photos::*, venue::*,
-    video::*, video_note::*, voice::*, webhook_info::*,
+    inline_query::*, inline_query_result::InlineQueryResult,
+    input_message_content::InputMessageContent, invoice::*, keyboards::*,
+    location::*, login_url::*, mask_position::*, message::*, message_entity::*,
+    parse_mode::*, photo_size::*, poll::*, sticker::*, sticker_set::*,
+    updates::*, user::*, user_profile_photos::*, venue::*, video::*,
+    video_note::*, voice::*, webhook_info::*,
 };
