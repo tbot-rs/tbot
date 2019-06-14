@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`editMessageLiveLocation`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagelivelocation
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageLocation<'a, C> {
     #[serde(skip)]

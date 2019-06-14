@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`setStickerPositionInSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setstickerpositioninset
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetStickerPositionInSet<'a, C> {
     #[serde(skip)]

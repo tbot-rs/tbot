@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`getChatMembersCount`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getchatmemberscount
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetChatMembersCount<'a, C> {
     #[serde(skip)]

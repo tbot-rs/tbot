@@ -5,7 +5,7 @@ use parameters::NotificationState;
 /// Represents the [`pinChatMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#pinchatmessage
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct PinChatMessage<'a, C> {
     #[serde(skip)]

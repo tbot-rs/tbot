@@ -6,6 +6,7 @@ use types::input_file::{Document, InputFile};
 /// Represents the [`sendDocument`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#senddocument
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendDocument<'a, C> {
     client: &'a Client<C>,

@@ -6,6 +6,7 @@ use types::input_file::*;
 /// Represents the [`sendMediaGroup`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a, C> {
     client: &'a Client<C>,

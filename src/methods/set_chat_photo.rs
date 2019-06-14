@@ -5,6 +5,7 @@ use types::input_file::{ChatPhoto, InputFile};
 /// Represents the [`setChatPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatPhoto<'a, C> {
     client: &'a Client<C>,

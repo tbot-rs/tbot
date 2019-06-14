@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`setGameScore`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetInlineGameScore<'a, C> {
     #[serde(skip)]

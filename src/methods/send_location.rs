@@ -5,7 +5,7 @@ use parameters::NotificationState;
 /// Represents the [`sendLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendlocation
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendLocation<'a, C> {
     #[serde(skip)]

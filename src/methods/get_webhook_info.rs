@@ -4,6 +4,7 @@ use crate::internal::Client;
 /// Represents the [`getWebhookInfo`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getwebhookinfo
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetWebhookInfo<'a, C> {
     client: &'a Client<C>,

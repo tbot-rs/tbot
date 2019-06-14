@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`editMessageReplyMarkup`][docs] method for chat messsages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagereplymarkup
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageReplyMarkup<'a, C> {
     #[serde(skip)]

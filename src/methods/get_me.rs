@@ -4,6 +4,7 @@ use crate::internal::Client;
 /// Represents the [`getMe`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getme
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMe<'a, C> {
     client: &'a Client<C>,

@@ -6,7 +6,7 @@ type HighScores = Vec<types::GameHighScore>;
 /// Represents the [`getGameHighScores`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getgamehighscores
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMessageGameHighScores<'a, C> {
     #[serde(skip)]

@@ -6,6 +6,7 @@ use types::input_file::{InputFile, VideoNote};
 /// Represents the [`sendVideoNote`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendvideonote
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a, C> {
     client: &'a Client<C>,

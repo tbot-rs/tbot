@@ -5,6 +5,7 @@ use types::input_file::*;
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageMedia<'a, C> {
     client: &'a Client<C>,

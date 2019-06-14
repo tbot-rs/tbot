@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`getChat`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getchat
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetChat<'a, C> {
     #[serde(skip)]

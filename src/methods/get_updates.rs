@@ -1,7 +1,7 @@
 use super::*;
 use crate::internal::Client;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use]
 pub(crate) struct GetUpdates<'a, C> {
     #[serde(skip)]

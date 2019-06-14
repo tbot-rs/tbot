@@ -6,6 +6,7 @@ use types::MaskPosition;
 /// Represents the [`addStickerToSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#addstickertoset
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AddStickerToSet<'a, C> {
     client: &'a Client<C>,

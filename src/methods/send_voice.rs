@@ -6,6 +6,7 @@ use types::input_file::{InputFile, Voice};
 /// Represents the [`sendVoice`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendvoice
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVoice<'a, C> {
     client: &'a Client<C>,

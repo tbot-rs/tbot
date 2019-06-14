@@ -2,7 +2,7 @@ use super::*;
 use serde::Serialize;
 
 /// An enum of possible keyboards.
-#[derive(Serialize)]
+#[derive(Serialize, Debug, PartialEq, Eq, Clone, Hash)]
 #[serde(untagged)]
 pub enum AnyKeyboard<'a> {
     /// An inline keyboard.

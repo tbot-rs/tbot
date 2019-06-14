@@ -6,6 +6,7 @@ use types::input_file::{Animation, InputFile};
 /// Represents the [`sendAnimation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendanimation
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a, C> {
     client: &'a Client<C>,

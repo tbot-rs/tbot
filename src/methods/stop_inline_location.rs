@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`stopMessageLiveLocation`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct StopInlineLocation<'a, C> {
     #[serde(skip)]

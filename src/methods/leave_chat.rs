@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`leaveChat`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#leavechat
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct LeaveChat<'a, C> {
     #[serde(skip)]

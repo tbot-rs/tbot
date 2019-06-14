@@ -5,7 +5,7 @@ use parameters::NotificationState;
 /// Represents the [`sendGame`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendgame
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendGame<'a, C> {
     #[serde(skip)]

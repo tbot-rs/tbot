@@ -4,6 +4,7 @@ use crate::internal::Client;
 /// Represents the [`uploadStickerFile`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#uploadstickerfile
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct UploadStickerFile<'a, C> {
     client: &'a Client<C>,

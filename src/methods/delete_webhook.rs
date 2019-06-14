@@ -1,6 +1,7 @@
 use super::*;
 use crate::internal::Client;
 
+#[derive(Debug, Clone)]
 #[must_use]
 pub struct DeleteWebhook<'a, C> {
     client: &'a Client<C>,

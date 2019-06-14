@@ -6,6 +6,7 @@ use types::input_file::{InputFile, Photo};
 /// Represents the [`sendPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendphoto
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendPhoto<'a, C> {
     client: &'a Client<C>,

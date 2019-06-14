@@ -4,7 +4,7 @@ use crate::internal::Client;
 /// Represents the [`unbanChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#unbanchatmember
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct UnbanChatMember<'a, C> {
     #[serde(skip)]

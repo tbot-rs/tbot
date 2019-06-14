@@ -2,6 +2,7 @@ use super::*;
 use crate::internal::Client;
 
 /// This method isn't meant to be used by users directly.
+#[derive(Debug, Clone)]
 #[must_use]
 pub(crate) struct SetWebhook<'a, C> {
     client: &'a Client<C>,

@@ -8,7 +8,7 @@ type Photos = Vec<Vec<types::UserProfilePhotos>>;
 /// Represents the [`getUserProfilePhotos`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getuserprofilephotos
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetUserProfilePhotos<'a, C> {
     #[serde(skip)]

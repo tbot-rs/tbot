@@ -6,6 +6,7 @@ use types::input_file::{InputFile, Sticker};
 /// Represents the [`sendSticker`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendsticker
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendSticker<'a, C> {
     client: &'a Client<C>,

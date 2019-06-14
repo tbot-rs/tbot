@@ -6,6 +6,7 @@ use types::MaskPosition;
 /// Represents the [`createNewStickerSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#createnewstickerset
+#[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct CreateNewStickerSet<'a, C> {
     client: &'a Client<C>,
