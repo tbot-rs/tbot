@@ -1,5 +1,9 @@
 use super::*;
-use crate::{event_loop::EventLoop, methods::*, types::input_file::*};
+use crate::{
+    event_loop::EventLoop, methods::*,
+    types::inline_query_result::InlineQueryResult, types::input_file::*,
+    types::InlineQueryId,
+};
 use std::sync::Arc;
 
 /// Provides methods to call the Bots API.
@@ -109,6 +113,20 @@ impl<C> Bot<C> {
             self.token.clone(),
             callback_query_id,
             action,
+        )
+    }
+
+    /// Constructs a new `AnswerInlineQuery` inferring your bot's token.
+    pub(crate) fn answer_inline_query<'a>(
+        &'a self,
+        inline_query_id: &'a InlineQueryId,
+        results: &'a [InlineQueryResult<'a>],
+    ) -> methods::AnswerInlineQuery<'a, C> {
+        methods::AnswerInlineQuery::new(
+            &self.client,
+            self.token.clone(),
+            inline_query_id,
+            results,
         )
     }
 

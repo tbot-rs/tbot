@@ -1,4 +1,11 @@
-use tbot::{prelude::*, types::ParseMode::Markdown};
+use tbot::{
+    prelude::*,
+    types::{
+        inline_query_result::{Article, InlineQueryResult},
+        input_message_content::Text,
+        ParseMode::Markdown,
+    },
+};
 
 fn main() {
     let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
@@ -18,6 +25,33 @@ fn main() {
             });
 
         tbot::spawn(reply);
+    });
+
+    let mut id: u32 = 0;
+
+    bot.inline(move |context| {
+        let (title, message) = match meval::eval_str(&context.query) {
+            Ok(result) => (
+                result.to_string(),
+                format!("`{} = {}`", context.query, result),
+            ),
+            Err(_) => (
+                "Whops...".into(),
+                "I couldn't evaluate your expression :(".into(),
+            ),
+        };
+
+        id += 1;
+
+        let id = id.to_string();
+        let content = Text::new(&message).parse_mode(Markdown);
+        let article = Article::new(&title, content).description(&message);
+        let result = InlineQueryResult::new(&id, article);
+        let answer = context.answer(&[result]).into_future().map_err(|err| {
+            dbg!(err);
+        });
+
+        tbot::spawn(answer);
     });
 
     bot.polling().start();

@@ -29,6 +29,7 @@ type Handler<T> = dyn FnMut(&T) + Send + Sync;
 
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
+type ChosenInlineHandler<C> = Handler<contexts::ChosenInline<C>>;
 type ContactHandler<C> = Handler<contexts::Contact<C>>;
 type CreatedGroupHandler<C> = Handler<contexts::CreatedGroup<C>>;
 type DataCallbackHandler<C> = Handler<contexts::DataCallback<C>>;
@@ -43,6 +44,7 @@ type EditedTextHandler<C> = Handler<contexts::EditedText<C>>;
 type EditedVideoHandler<C> = Handler<contexts::EditedVideo<C>>;
 type GameCallbackHandler<C> = Handler<contexts::GameCallback<C>>;
 type GameHandler<C> = Handler<contexts::Game<C>>;
+type InlineHandler<C> = Handler<contexts::Inline<C>>;
 type LeftMemberHandler<C> = Handler<contexts::LeftMember<C>>;
 type LocationHandler<C> = Handler<contexts::Location<C>>;
 type MigrationHandler<C> = Handler<contexts::Migration<C>>;
@@ -92,6 +94,7 @@ pub struct EventLoop<C> {
     animation_handlers: Handlers<AnimationHandler<C>>,
     audio_handlers: Handlers<AudioHandler<C>>,
     before_update_handlers: Handlers<UpdateHandler<C>>,
+    chosen_inline_handlers: Handlers<ChosenInlineHandler<C>>,
     contact_handlers: Handlers<ContactHandler<C>>,
     created_group_handlers: Handlers<CreatedGroupHandler<C>>,
     data_callback_handlers: Handlers<DataCallbackHandler<C>>,
@@ -106,6 +109,7 @@ pub struct EventLoop<C> {
     edited_video_handlers: Handlers<EditedVideoHandler<C>>,
     game_callback_handlers: Handlers<GameCallbackHandler<C>>,
     game_handlers: Handlers<GameHandler<C>>,
+    inline_handlers: Handlers<InlineHandler<C>>,
     left_member_handlers: Handlers<LeftMemberHandler<C>>,
     location_handlers: Handlers<LocationHandler<C>>,
     migration_handlers: Handlers<MigrationHandler<C>>,
@@ -137,6 +141,7 @@ impl<C> EventLoop<C> {
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
+            chosen_inline_handlers: Vec::new(),
             contact_handlers: Vec::new(),
             created_group_handlers: Vec::new(),
             data_callback_handlers: Vec::new(),
@@ -151,6 +156,7 @@ impl<C> EventLoop<C> {
             edited_video_handlers: Vec::new(),
             game_callback_handlers: Vec::new(),
             game_handlers: Vec::new(),
+            inline_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
             migration_handlers: Vec::new(),
@@ -309,6 +315,15 @@ impl<C> EventLoop<C> {
     }
 
     handler! {
+        /// Adds a new handler for chosen inline results.
+        chosen_inline_handlers,
+        chosen_inline,
+        contexts::ChosenInline<C>,
+        run_chosen_inline_handlers,
+        will_handle_chosen_inline,
+    }
+
+    handler! {
         /// Adds a new handler for contacts.
         contact_handlers,
         contact,
@@ -432,6 +447,15 @@ impl<C> EventLoop<C> {
         contexts::Game<C>,
         run_game_handlers,
         will_handle_game,
+    }
+
+    handler! {
+        /// Adds a new handler for inline queries.
+        inline_handlers,
+        inline,
+        contexts::Inline<C>,
+        run_inline_handlers,
+        will_handle_inline,
     }
 
     handler! {
@@ -627,6 +651,28 @@ impl<C> EventLoop<C> {
                     self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let update = UpdateKind::Poll(poll);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            UpdateKind::InlineQuery(query) => {
+                if self.will_handle_inline() {
+                    let context = contexts::Inline::new(bot, query);
+
+                    self.run_inline_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let update = UpdateKind::InlineQuery(query);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            UpdateKind::ChosenInlineResult(result) => {
+                if self.will_handle_chosen_inline() {
+                    let context = contexts::ChosenInline::new(bot, result);
+
+                    self.run_chosen_inline_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let update = UpdateKind::ChosenInlineResult(result);
 
                     self.run_unhandled_handlers(bot, update);
                 }
