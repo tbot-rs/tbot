@@ -38,7 +38,7 @@ impl<C> Inline<C> {
     /// Answers the query.
     pub fn answer<'a>(
         &'a self,
-        results: Vec<InlineQueryResult<'a>>,
+        results: &'a [InlineQueryResult<'a>],
     ) -> AnswerInlineQuery<'a, C> {
         self.bot.answer_inline_query(&self.id, results)
     }

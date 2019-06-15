@@ -120,7 +120,7 @@ impl<C> Bot<C> {
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
         inline_query_id: &'a InlineQueryId,
-        results: Vec<InlineQueryResult<'a>>,
+        results: &'a [InlineQueryResult<'a>],
     ) -> methods::AnswerInlineQuery<'a, C> {
         methods::AnswerInlineQuery::new(
             &self.client,

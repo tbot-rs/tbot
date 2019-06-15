@@ -1,19 +1,25 @@
-use super::*;
-use crate::internal::Client;
-use types::inline_query_result::InlineQueryResult;
+// use super::*;
+use super::{send_method, DeliveryError};
+use crate::{
+    internal::Client,
+    prelude::*,
+    types::{InlineQueryId, InlineQueryResult},
+    Token,
+};
+use serde::Serialize;
 
 /// Represents the [`answerInlineQuery`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#answerinlinequery
-#[derive(Serialize, Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerInlineQuery<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_query_id: &'a types::InlineQueryId,
-    results: Vec<InlineQueryResult<'a>>,
+    inline_query_id: &'a InlineQueryId,
+    results: &'a [InlineQueryResult<'a>],
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -30,8 +36,8 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_query_id: &'a types::InlineQueryId,
-        results: Vec<InlineQueryResult<'a>>,
+        inline_query_id: &'a InlineQueryId,
+        results: &'a [InlineQueryResult<'a>],
     ) -> Self {
         Self {
             client,
