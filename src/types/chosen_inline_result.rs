@@ -1,4 +1,4 @@
-use super::{User, Location};
+use super::{Location, User};
 use serde::Deserialize;
 
 /// Represents a [`ChosenInlineResult`][docs].

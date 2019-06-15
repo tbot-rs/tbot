@@ -20,6 +20,7 @@ mod chat_id;
 mod chat_member;
 mod chat_photo;
 mod chat_types;
+mod chosen_inline_result;
 mod contact;
 mod document;
 mod file;
@@ -46,16 +47,16 @@ mod video;
 mod video_note;
 mod voice;
 mod webhook_info;
-mod chosen_inline_result;
 
 pub use {
     animation::*, audio::*, callback_game::*, callback_query::*, chat::*,
     chat_action::*, chat_id::*, chat_member::*, chat_photo::*, chat_types::*,
-    contact::*, document::*, file::*, game::*, game_high_score::*,
-    inline_query::*, inline_query_result::InlineQueryResult,
+    chosen_inline_result::*, contact::*, document::*, file::*, game::*,
+    game_high_score::*, inline_query::*,
+    inline_query_result::InlineQueryResult,
     input_message_content::InputMessageContent, invoice::*, keyboards::*,
     location::*, login_url::*, mask_position::*, message::*, message_entity::*,
     parse_mode::*, photo_size::*, poll::*, sticker::*, sticker_set::*,
     updates::*, user::*, user_profile_photos::*, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::*, chosen_inline_result::*,
+    video_note::*, voice::*, webhook_info::*,
 };

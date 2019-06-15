@@ -129,7 +129,9 @@ impl<'de> serde::Deserialize<'de> for Update {
                             ))
                         }
                         CHOSEN_INLINE_RESULT => {
-                            kind = Some(UpdateKind::ChosenInlineResult(map.next_value()?))
+                            kind = Some(UpdateKind::ChosenInlineResult(
+                                map.next_value()?,
+                            ))
                         }
                         POLL => {
                             kind = Some(UpdateKind::Poll(map.next_value()?))

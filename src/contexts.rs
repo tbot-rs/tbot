@@ -74,6 +74,7 @@ mod macros;
 
 mod animation;
 mod audio;
+mod chosen_inline;
 mod contact;
 mod created_group;
 mod data_callback;
@@ -107,17 +108,16 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
-mod chosen_inline;
 
 pub mod traits;
 
 pub use {
-    animation::*, audio::*, contact::*, created_group::*, data_callback::*,
-    deleted_chat_photo::*, document::*, edited_animation::*, edited_audio::*,
-    edited_document::*, edited_location::*, edited_photo::*, edited_text::*,
-    edited_video::*, game::*, game_callback::*, inline::*, left_member::*,
-    location::*, migration::*, new_chat_photo::*, new_chat_title::*,
-    new_members::*, photo::*, pinned_message::*, poll::*, sticker::*, text::*,
-    unhandled::*, update::*, updated_poll::*, venue::*, video::*,
-    video_note::*, voice::*, chosen_inline::*,
+    animation::*, audio::*, chosen_inline::*, contact::*, created_group::*,
+    data_callback::*, deleted_chat_photo::*, document::*, edited_animation::*,
+    edited_audio::*, edited_document::*, edited_location::*, edited_photo::*,
+    edited_text::*, edited_video::*, game::*, game_callback::*, inline::*,
+    left_member::*, location::*, migration::*, new_chat_photo::*,
+    new_chat_title::*, new_members::*, photo::*, pinned_message::*, poll::*,
+    sticker::*, text::*, unhandled::*, update::*, updated_poll::*, venue::*,
+    video::*, video_note::*, voice::*,
 };
