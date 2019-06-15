@@ -63,7 +63,7 @@ macro_rules! gif_base {
                 "https://core.telegram.org/bots/api#inlinequeryresultcached",
                 $doc_link_part,
             ),
-            #[derive(Debug, PartialEq, Clone, Serialize)]
+            #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
             pub struct $struct<'a> {
                 #[serde(flatten)]
                 kind: Kind<'a>,

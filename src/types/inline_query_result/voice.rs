@@ -31,7 +31,7 @@ enum Kind<'a> {
 ///
 /// [`InlineQueryResultVoice`]: https://core.telegram.org/bots/api#inlinequeryresultvoice
 /// [`InlineQueryResultCachedVoice`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
-#[derive(Debug, PartialEq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 pub struct Voice<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,

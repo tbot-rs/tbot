@@ -34,7 +34,7 @@ enum Kind<'a> {
 ///
 /// [`InlineQueryResultAudio`]: https://core.telegram.org/bots/api#inlinequeryresultaudio
 /// [`InlineQueryResultCachedAudio`]: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
-#[derive(Debug, PartialEq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 pub struct Audio<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
