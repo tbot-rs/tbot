@@ -54,7 +54,7 @@ macro_rules! gif_base {
         doc! {
             concat!(
                 "Represents an [`InlineQueryResult", stringify!($struct), "`]/",
-                "[`InlineQueryResultCached", stringify!($struct), "`]\n\n",
+                "[`InlineQueryResultCached", stringify!($struct), "`].\n\n",
 
                 "[`InlineQueryResult", stringify!($struct), "`]:",
                 "https://core.telegram.org/bots/api#inlinequeryresult",

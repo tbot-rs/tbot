@@ -1,4 +1,4 @@
-//! Types for representing an [`InputMessageContent`][docs]
+//! Types for representing an [`InputMessageContent`][docs].
 //!
 //! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 
