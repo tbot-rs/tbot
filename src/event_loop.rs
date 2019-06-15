@@ -43,7 +43,7 @@ type EditedTextHandler<C> = Handler<contexts::EditedText<C>>;
 type EditedVideoHandler<C> = Handler<contexts::EditedVideo<C>>;
 type GameCallbackHandler<C> = Handler<contexts::GameCallback<C>>;
 type GameHandler<C> = Handler<contexts::Game<C>>;
-type InlineQueryHandler<C> = Handler<contexts::InlineQuery<C>>;
+type InlineHandler<C> = Handler<contexts::Inline<C>>;
 type LeftMemberHandler<C> = Handler<contexts::LeftMember<C>>;
 type LocationHandler<C> = Handler<contexts::Location<C>>;
 type MigrationHandler<C> = Handler<contexts::Migration<C>>;
@@ -107,7 +107,7 @@ pub struct EventLoop<C> {
     edited_video_handlers: Handlers<EditedVideoHandler<C>>,
     game_callback_handlers: Handlers<GameCallbackHandler<C>>,
     game_handlers: Handlers<GameHandler<C>>,
-    inline_query_handlers: Handlers<InlineQueryHandler<C>>,
+    inline_handlers: Handlers<InlineHandler<C>>,
     left_member_handlers: Handlers<LeftMemberHandler<C>>,
     location_handlers: Handlers<LocationHandler<C>>,
     migration_handlers: Handlers<MigrationHandler<C>>,
@@ -153,7 +153,7 @@ impl<C> EventLoop<C> {
             edited_video_handlers: Vec::new(),
             game_callback_handlers: Vec::new(),
             game_handlers: Vec::new(),
-            inline_query_handlers: Vec::new(),
+            inline_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
             migration_handlers: Vec::new(),
@@ -438,12 +438,12 @@ impl<C> EventLoop<C> {
     }
 
     handler! {
-        /// Adds a new handler for incoming inline queries.
-        inline_query_handlers,
-        inline_query,
-        contexts::InlineQuery<C>,
-        run_inline_query_handlers,
-        will_handle_inline_query,
+        /// Adds a new handler for inline queries.
+        inline_handlers,
+        inline,
+        contexts::Inline<C>,
+        run_inline_handlers,
+        will_handle_inline,
     }
 
     handler! {
@@ -644,10 +644,10 @@ impl<C> EventLoop<C> {
                 }
             }
             UpdateKind::InlineQuery(query) => {
-                if self.will_handle_inline_query() {
-                    let context = contexts::InlineQuery::new(bot, query);
+                if self.will_handle_inline() {
+                    let context = contexts::Inline::new(bot, query);
 
-                    self.run_inline_query_handlers(&context);
+                    self.run_inline_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let update = UpdateKind::InlineQuery(query);
 

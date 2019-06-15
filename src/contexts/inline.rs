@@ -1,8 +1,10 @@
+use crate::{methods::AnswerInlineQuery, types::InlineQueryResult};
+
 common! {
-    /// The context for [`inline_query`][handler] handlers.
+    /// The context for [`inline`][handler] handlers.
     ///
-    /// [handler]: ../struct.Bot.html#method.inline_query
-    struct InlineQuery {
+    /// [handler]: ../event_loop/struct.EventLoop.html#method.inline
+    struct Inline {
         /// The ID of the query.
         id: types::InlineQueryId,
         /// The user who sent the query.
@@ -16,7 +18,7 @@ common! {
     }
 }
 
-impl<C> InlineQuery<C> {
+impl<C> Inline<C> {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
@@ -32,14 +34,12 @@ impl<C> InlineQuery<C> {
             offset: inline_query.offset,
         }
     }
-}
 
-impl<'a, C: 'static> traits::Inline<'a, C> for InlineQuery<C> {
-    fn bot(&self) -> &Bot<C> {
-        &self.bot
-    }
-
-    fn id(&self) -> &types::InlineQueryId {
-        &self.id
+    /// Answers the query.
+    pub fn answer<'a>(
+        &'a self,
+        results: Vec<InlineQueryResult<'a>>,
+    ) -> AnswerInlineQuery<'a, C> {
+        self.bot.answer_inline_query(&self.id, results)
     }
 }
