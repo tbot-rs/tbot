@@ -29,6 +29,7 @@ type Handler<T> = dyn FnMut(&T) + Send + Sync;
 
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
+type ChosenInlineHandler<C> = Handler<contexts::ChosenInline<C>>;
 type ContactHandler<C> = Handler<contexts::Contact<C>>;
 type CreatedGroupHandler<C> = Handler<contexts::CreatedGroup<C>>;
 type DataCallbackHandler<C> = Handler<contexts::DataCallback<C>>;
@@ -93,6 +94,7 @@ pub struct EventLoop<C> {
     animation_handlers: Handlers<AnimationHandler<C>>,
     audio_handlers: Handlers<AudioHandler<C>>,
     before_update_handlers: Handlers<UpdateHandler<C>>,
+    chosen_inline_handlers: Handlers<ChosenInlineHandler<C>>,
     contact_handlers: Handlers<ContactHandler<C>>,
     created_group_handlers: Handlers<CreatedGroupHandler<C>>,
     data_callback_handlers: Handlers<DataCallbackHandler<C>>,
@@ -139,6 +141,7 @@ impl<C> EventLoop<C> {
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
             before_update_handlers: Vec::new(),
+            chosen_inline_handlers: Vec::new(),
             contact_handlers: Vec::new(),
             created_group_handlers: Vec::new(),
             data_callback_handlers: Vec::new(),
@@ -309,6 +312,15 @@ impl<C> EventLoop<C> {
         before_update,
         contexts::Update<C>,
         run_before_update_handlers,
+    }
+
+    handler! {
+        /// Adds a new handler for chosen inline results.
+        chosen_inline_handlers,
+        chosen_inline,
+        contexts::ChosenInline<C>,
+        run_chosen_inline_handlers,
+        will_handle_chosen_inline,
     }
 
     handler! {
@@ -650,6 +662,17 @@ impl<C> EventLoop<C> {
                     self.run_inline_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let update = UpdateKind::InlineQuery(query);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            UpdateKind::ChosenInlineResult(result) => {
+                if self.will_handle_chosen_inline() {
+                    let context = contexts::ChosenInline::new(bot, result);
+
+                    self.run_chosen_inline_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let update = UpdateKind::ChosenInlineResult(result);
 
                     self.run_unhandled_handlers(bot, update);
                 }

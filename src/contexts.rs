@@ -107,6 +107,7 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
+mod chosen_inline;
 
 pub mod traits;
 
@@ -118,5 +119,5 @@ pub use {
     location::*, migration::*, new_chat_photo::*, new_chat_title::*,
     new_members::*, photo::*, pinned_message::*, poll::*, sticker::*, text::*,
     unhandled::*, update::*, updated_poll::*, venue::*, video::*,
-    video_note::*, voice::*,
+    video_note::*, voice::*, chosen_inline::*,
 };

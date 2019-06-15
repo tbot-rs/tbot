@@ -49,6 +49,8 @@ pub enum UpdateKind {
     CallbackQuery(CallbackQuery),
     /// A new state of a poll.
     Poll(Poll),
+    /// A chosen inline result.
+    ChosenInlineResult(ChosenInlineResult),
     /// Unknown update kind.
     Unknown,
 }
@@ -70,6 +72,7 @@ const CHANNEL_POST: &str = "channel_post";
 const EDITED_CHANNEL_POST: &str = "edited_channel_post";
 const INLINE_QUERY: &str = "inline_query";
 const CALLBACK_QUERY: &str = "callback_query";
+const CHOSEN_INLINE_RESULT: &str = "chosen_inline_result";
 const POLL: &str = "poll";
 
 impl<'de> serde::Deserialize<'de> for Update {
@@ -125,6 +128,9 @@ impl<'de> serde::Deserialize<'de> for Update {
                                 map.next_value()?,
                             ))
                         }
+                        CHOSEN_INLINE_RESULT => {
+                            kind = Some(UpdateKind::ChosenInlineResult(map.next_value()?))
+                        }
                         POLL => {
                             kind = Some(UpdateKind::Poll(map.next_value()?))
                         }
@@ -153,6 +159,7 @@ impl<'de> serde::Deserialize<'de> for Update {
                 CHANNEL_POST,
                 EDITED_CHANNEL_POST,
                 INLINE_QUERY,
+                CHOSEN_INLINE_RESULT,
             ],
             UpdateVisitor,
         )

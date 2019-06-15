@@ -46,6 +46,7 @@ mod video;
 mod video_note;
 mod voice;
 mod webhook_info;
+mod chosen_inline_result;
 
 pub use {
     animation::*, audio::*, callback_game::*, callback_query::*, chat::*,
@@ -56,5 +57,5 @@ pub use {
     location::*, login_url::*, mask_position::*, message::*, message_entity::*,
     parse_mode::*, photo_size::*, poll::*, sticker::*, sticker_set::*,
     updates::*, user::*, user_profile_photos::*, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::*,
+    video_note::*, voice::*, webhook_info::*, chosen_inline_result::*,
 };
