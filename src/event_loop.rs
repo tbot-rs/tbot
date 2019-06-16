@@ -4,13 +4,13 @@ use crate::{
     contexts, methods,
     prelude::*,
     types::{
-        self,
+        self, callback,
         message::{
             self,
             text::{Entity, EntityKind, Text},
             Message,
         },
-        CallbackKind, CallbackQuery, UpdateKind,
+        UpdateKind,
     },
     Bot,
 };
@@ -684,7 +684,7 @@ impl<C> EventLoop<C> {
                 }
             }
             UpdateKind::CallbackQuery(query) => match query.kind {
-                CallbackKind::Data(data) => {
+                callback::Kind::Data(data) => {
                     if self.will_handle_data_callback() {
                         let context = contexts::DataCallback::new(
                             bot,
@@ -697,8 +697,8 @@ impl<C> EventLoop<C> {
 
                         self.run_data_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
-                        let kind = CallbackKind::Data(data);
-                        let query = CallbackQuery {
+                        let kind = callback::Kind::Data(data);
+                        let query = callback::Query {
                             kind,
                             ..query
                         };
@@ -707,7 +707,7 @@ impl<C> EventLoop<C> {
                         self.run_unhandled_handlers(bot, update);
                     }
                 }
-                CallbackKind::Game(game) => {
+                callback::Kind::Game(game) => {
                     if self.will_handle_game_callback() {
                         let context = contexts::GameCallback::new(
                             bot,
@@ -720,8 +720,8 @@ impl<C> EventLoop<C> {
 
                         self.run_game_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
-                        let kind = CallbackKind::Game(game);
-                        let query = CallbackQuery {
+                        let kind = callback::Kind::Game(game);
+                        let query = callback::Query {
                             kind,
                             ..query
                         };

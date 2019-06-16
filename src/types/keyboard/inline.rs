@@ -1,6 +1,6 @@
 //! Types representing inline keyboards.
 
-use crate::types::{CallbackGame, LoginUrl};
+use crate::types::{callback::Game, LoginUrl};
 use serde::{ser::SerializeMap, Serialize};
 
 /// A shorthand for inline markup.
@@ -24,7 +24,7 @@ pub enum ButtonKind<'a> {
     /// Represents query inserted when switched to inline in the curent chat.
     SwitchInlineQueryCurrentChat(&'a str),
     /// Represent a description of the game to be laucnhed.
-    CallbackGame(CallbackGame),
+    CallbackGame(Game),
     /// If `true`, a pay button is sent.
     Pay(bool),
 }

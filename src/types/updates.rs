@@ -1,4 +1,5 @@
-use super::*;
+use super::{callback, ChosenInlineResult, InlineQuery, Message, Poll};
+use serde::{Deserialize, Serialize};
 
 /// Represents update types to subscribe with [`Webhook`] or [`Polling`].
 ///
@@ -46,7 +47,7 @@ pub enum UpdateKind {
     /// An inline query.
     InlineQuery(InlineQuery),
     /// An incoming callback query.
-    CallbackQuery(CallbackQuery),
+    CallbackQuery(callback::Query),
     /// A new state of a poll.
     Poll(Poll),
     /// A chosen inline result.
