@@ -79,7 +79,7 @@ pub enum Kind<'a> {
 /// Represents an [`InlineQueryResult`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
-#[derive(Debug, PartialEq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 pub struct InlineQueryResult<'a> {
     id: &'a str,
     #[serde(flatten)]

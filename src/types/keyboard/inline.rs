@@ -1,7 +1,7 @@
 //! Types representing inline keyboards.
 
-use super::*;
-use serde::ser::SerializeMap;
+use crate::types::{LoginUrl, CallbackGame};
+use serde::{Serialize, ser::SerializeMap};
 
 /// Represents different types an inline button can be.
 ///
@@ -13,7 +13,7 @@ pub enum ButtonKind<'a> {
     /// Represents a URL button.
     Url(&'a str),
     /// Represents a login button.
-    LoginUrl(&'a types::LoginUrl<'a>),
+    LoginUrl(LoginUrl<'a>),
     /// Represents callback data.
     CallbackData(&'a str),
     /// Represents query inserted when switched to inline.
@@ -46,7 +46,7 @@ impl<'a> Button<'a> {
     }
 }
 
-impl serde::Serialize for Button<'_> {
+impl Serialize for Button<'_> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(Some(2))?;
 
@@ -54,7 +54,7 @@ impl serde::Serialize for Button<'_> {
 
         match self.kind {
             ButtonKind::Url(url) => map.serialize_entry("url", url),
-            ButtonKind::LoginUrl(login_url) => map.serialize_entry("login_url", login_url),
+            ButtonKind::LoginUrl(login_url) => map.serialize_entry("login_url", &login_url),
             ButtonKind::CallbackData(callback_data) => {
                 map.serialize_entry("callback_data", callback_data)
             }
@@ -77,14 +77,14 @@ impl serde::Serialize for Button<'_> {
 /// Represents an [`InlineKeyboardMarkup`].
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Keyboard<'a> {
-    inline_keyboard: Vec<Vec<Button<'a>>>,
+    inline_keyboard: &'a [&'a [Button<'a>]],
 }
 
 impl<'a> Keyboard<'a> {
     /// Constructs an inline `Keyboard`.
-    pub const fn new(buttons: Vec<Vec<Button<'a>>>) -> Self {
+    pub const fn new(buttons: &'a [&'a [Button<'a>]]) -> Self {
         Self {
             inline_keyboard: buttons,
         }

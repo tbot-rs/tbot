@@ -2,7 +2,7 @@ use super::{inline, reply, ForceReply};
 use serde::Serialize;
 
 /// An enum of possible keyboards.
-#[derive(Serialize, Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[serde(untagged)]
 pub enum Any<'a> {
     /// An inline keyboard.

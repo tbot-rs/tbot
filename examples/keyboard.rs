@@ -11,8 +11,8 @@ fn main() {
 
     let message = bot
         .send_message(CHAT, "This is a keyboard done with tbot!")
-        .reply_markup(Keyboard::new(vec![
-            vec![
+        .reply_markup(Keyboard::new(&[
+            &[
                 Button::new(
                     "Cool!",
                     ButtonKind::CallbackData("cool"),
@@ -22,7 +22,7 @@ fn main() {
                     ButtonKind::CallbackData("amazing"),
                 ),
             ],
-            vec![Button::new(
+            &[Button::new(
                 "I wanna get started with it!",
                 ButtonKind::Url(TUTORIAL),
             )],

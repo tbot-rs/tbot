@@ -42,9 +42,9 @@ impl<'a> Button<'a> {
 /// Represents a [`ReplyKeyboardMarkup`].
 ///
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Keyboard<'a> {
-    keyboard: Vec<Vec<Button<'a>>>,
+    keyboard: &'a [&'a [Button<'a>]],
     #[serde(skip_serializing_if = "Option::is_none")]
     resize_keyboard: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,9 +55,9 @@ pub struct Keyboard<'a> {
 
 impl<'a> Keyboard<'a> {
     /// Constructs a reply `Keyboard`.
-    pub const fn new(buttons: Vec<Vec<Button<'a>>>) -> Self {
+    pub const fn new(keyboard: &'a [&'a [Button<'a>]]) -> Self {
         Self {
-            keyboard: buttons,
+            keyboard,
             resize_keyboard: None,
             one_time_keyboard: None,
             selective: None,
