@@ -3,7 +3,7 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        chat, inline_query, inline_query_result::InlineQueryResult,
+        chat, inline_query,
         input_file::*, keyboard::inline, parameters::ChatId,
     },
 };
@@ -123,7 +123,7 @@ impl<C> Bot<C> {
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
         inline_query_id: inline_query::IdRef<'a>,
-        results: &'a [InlineQueryResult<'a>],
+        results: &'a [inline_query::Result<'a>],
     ) -> methods::AnswerInlineQuery<'a, C> {
         methods::AnswerInlineQuery::new(
             &self.client,

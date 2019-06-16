@@ -3,7 +3,7 @@ use super::{send_method, DeliveryError};
 use crate::{
     internal::Client,
     prelude::*,
-    types::{inline_query, InlineQueryResult},
+    types::inline_query,
     Token,
 };
 use serde::Serialize;
@@ -19,7 +19,7 @@ pub struct AnswerInlineQuery<'a, C> {
     #[serde(skip)]
     token: Token,
     inline_query_id: inline_query::IdRef<'a>,
-    results: &'a [InlineQueryResult<'a>],
+    results: &'a [inline_query::Result<'a>],
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,7 +37,7 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
         client: &'a Client<C>,
         token: Token,
         inline_query_id: inline_query::IdRef<'a>,
-        results: &'a [InlineQueryResult<'a>],
+        results: &'a [inline_query::Result<'a>],
     ) -> Self {
         Self {
             client,

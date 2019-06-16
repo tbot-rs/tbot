@@ -1,6 +1,6 @@
 use crate::{
     methods::AnswerInlineQuery,
-    types::{inline_query, InlineQueryResult},
+    types::inline_query,
 };
 
 common! {
@@ -41,7 +41,7 @@ impl<C> Inline<C> {
     /// Answers the query.
     pub fn answer<'a>(
         &'a self,
-        results: &'a [InlineQueryResult<'a>],
+        results: &'a [inline_query::Result<'a>],
     ) -> AnswerInlineQuery<'a, C> {
         self.bot.answer_inline_query(self.id.as_ref(), results)
     }

@@ -4,8 +4,9 @@ use crate::types::{Location, User};
 use serde::Deserialize;
 
 mod id;
+pub mod result;
 
-pub use id::*;
+pub use {id::*, result::Result};
 
 /// Represents an [`InlineQuery`].
 ///

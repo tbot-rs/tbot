@@ -2,7 +2,7 @@
 //!
 //! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 
-use super::keyboard::inline;
+use crate::types::keyboard::inline;
 use serde::Serialize;
 
 pub mod article;
@@ -80,7 +80,7 @@ pub enum Kind<'a> {
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
-pub struct InlineQueryResult<'a> {
+pub struct Result<'a> {
     id: &'a str,
     #[serde(flatten)]
     kind: Kind<'a>,
@@ -88,8 +88,8 @@ pub struct InlineQueryResult<'a> {
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
-impl<'a> InlineQueryResult<'a> {
-    /// Constructs an `InlineQueryResult`.
+impl<'a> Result<'a> {
+    /// Constructs an inline query `Result`.
     pub fn new(id: &'a str, kind: impl Into<Kind<'a>>) -> Self {
         Self {
             id,
