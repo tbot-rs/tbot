@@ -4,6 +4,7 @@ use serde::Serialize;
 /// An enum of possible keyboards.
 #[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[serde(untagged)]
+// todo: #[non_exhaustive]
 pub enum Any<'a> {
     /// An inline keyboard.
     Inline(inline::Keyboard<'a>),

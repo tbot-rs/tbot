@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`Invoice`]: https://core.telegram.org/bots/api#invoice
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Invoice {
     /// The title of the invoice.
     pub title: String,

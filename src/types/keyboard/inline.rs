@@ -12,6 +12,7 @@ pub type Markup<'a> = &'a [&'a [Button<'a>]];
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+// todo: #[non_exhaustive]
 pub enum ButtonKind<'a> {
     /// Represents a URL button.
     Url(&'a str),

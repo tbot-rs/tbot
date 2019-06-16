@@ -6,6 +6,7 @@ use serde::Deserialize;
 ///
 /// [`PollOption`]: https://core.telegram.org/bots/api#polloption
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Option {
     /// The text of the option.
     pub text: String,
@@ -17,6 +18,7 @@ pub struct Option {
 ///
 /// [`Poll`]: https://core.telegram.org/bots/api#poll
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Poll {
     /// The ID of the poll.
     pub id: String,

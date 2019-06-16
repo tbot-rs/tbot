@@ -3,6 +3,7 @@ use serde::Serialize;
 /// Represents possible ways to specify the destination chat.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
+// todo: #[non_exhaustive]
 pub enum ChatId<'a> {
     /// The ID of a chat.
     Id(i64),

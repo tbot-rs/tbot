@@ -8,6 +8,7 @@ use serde::Serialize;
 
 /// Represent URL visibility state.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+// todo: #[non_exhaustive]
 pub enum UrlVisibility {
     /// The URL is visible.
     Shown,

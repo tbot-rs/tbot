@@ -6,6 +6,7 @@ use crate::types::*;
 // It warns on SuccessfulPayment — we'll need to consider to box it when we
 // unraw payment types.
 #[allow(clippy::large_enum_variant)]
+// todo: #[non_exhaustive]
 pub enum Kind {
     /// A text message.
     Text(Text),

@@ -12,6 +12,7 @@ pub use {mask_position::MaskPosition, set::*};
 ///
 /// [`Sticker`]: https://core.telegram.org/bots/api#sticker
 #[derive(Debug, PartialEq, Clone, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Sticker {
     /// The file ID of the sticker.
     pub file_id: String,

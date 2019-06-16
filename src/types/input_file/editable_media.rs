@@ -4,6 +4,7 @@ use serde::Serialize;
 /// Represents media that can be used to edit a message.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
+// todo: #[non_exhaustive]
 pub enum EditableMedia<'a> {
     /// An animation that will replace the old media.
     Animation(&'a Animation<'a>),

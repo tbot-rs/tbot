@@ -10,6 +10,7 @@ pub use {forward::Forward, kind::Kind, text::Text};
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
+// todo: #[non_exhaustive]
 pub struct Message {
     /// The ID of the message.
     pub id: u32,

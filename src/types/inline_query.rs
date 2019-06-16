@@ -12,6 +12,7 @@ pub use {id::Id, result::Result};
 ///
 /// [`InlineQuery`]: https://core.telegram.org/bots/api#inlinequery
 #[derive(Debug, PartialEq, Clone, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct InlineQuery {
     /// The ID of the query.
     pub id: Id,
