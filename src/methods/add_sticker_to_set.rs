@@ -1,7 +1,11 @@
 use super::*;
-use crate::internal::Client;
-use types::input_file::{InputFile, PngSticker};
-use types::MaskPosition;
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{InputFile, PngSticker},
+        sticker::MaskPosition,
+    },
+};
 
 /// Represents the [`addStickerToSet`][docs] method.
 ///

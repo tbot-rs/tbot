@@ -31,13 +31,11 @@ mod inline_query;
 mod invoice;
 mod location;
 mod login_url;
-mod mask_position;
 pub mod message;
 mod parse_mode;
 mod photo_size;
 mod poll;
-mod sticker;
-mod sticker_set;
+pub mod sticker;
 mod updates;
 mod user;
 mod user_profile_photos;
@@ -54,8 +52,7 @@ pub use {
     game_high_score::*, inline_query::*,
     inline_query_result::InlineQueryResult,
     input_message_content::InputMessageContent, invoice::*, location::*,
-    login_url::*, mask_position::*, message::Message, parse_mode::*,
-    photo_size::*, poll::*, sticker::*, sticker_set::*, updates::*, user::*,
-    user_profile_photos::*, venue::*, video::*, video_note::*, voice::*,
-    webhook_info::*,
+    login_url::*, message::Message, parse_mode::*, photo_size::*, poll::*,
+    sticker::Sticker, updates::*, user::*, user_profile_photos::*, venue::*,
+    video::*, video_note::*, voice::*, webhook_info::*,
 };

@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::sticker};
 
 /// Represents the [`getStickerSet`][docs] method.
 ///
@@ -36,7 +36,7 @@ where
 {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
-    type Item = types::StickerSet;
+    type Item = sticker::Set;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {

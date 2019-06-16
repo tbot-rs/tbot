@@ -1,4 +1,12 @@
-use super::*;
+//! Types representing a sticker.
+
+use super::PhotoSize;
+use serde::Deserialize;
+
+pub mod mask_position;
+mod set;
+
+pub use {mask_position::MaskPosition, set::*};
 
 /// Represents a [`Sticker`].
 ///

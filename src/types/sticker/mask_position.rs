@@ -1,9 +1,12 @@
-use super::*;
+//! Types representing a mask position.
+
+use serde::{Deserialize, Serialize};
 
 /// Represents where the mask is placed.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum MaskPositionPoint {
+// todo: #[non_exhaustive]
+pub enum Point {
     /// Placed on forehead.
     Forehead,
     /// Placed on eyes.
@@ -18,9 +21,10 @@ pub enum MaskPositionPoint {
 ///
 /// [`MaskPosition`]: https://core.telegram.org/bots/api#maskposition
 #[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct MaskPosition {
     /// The position point of the mask.
-    pub point: MaskPositionPoint,
+    pub point: Point,
     /// The shift of the mask by X.
     pub x_shift: f64,
     /// The shift of the mask by Y.
