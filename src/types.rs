@@ -35,7 +35,7 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
-mod webhook_info;
+pub mod webhook_info;
 
 pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
@@ -43,5 +43,5 @@ pub use {
     inline_query::InlineQuery, input_message_content::InputMessageContent,
     invoice::*, location::*, login_url::*, message::Message, photo_size::*,
     poll::*, sticker::Sticker, update::Update, user::User, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::*,
+    video_note::*, voice::*, webhook_info::WebhookInfo,
 };

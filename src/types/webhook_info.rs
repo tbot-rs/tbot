@@ -1,3 +1,5 @@
+//! Types related to webhook information.
+
 use crate::types::parameters::Updates;
 use serde::de::{Deserialize, Deserializer, Error, MapAccess, Visitor};
 
