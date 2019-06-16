@@ -36,6 +36,14 @@ pub struct Button<'a> {
     kind: ButtonKind<'a>,
 }
 
+/// Represents an [`InlineKeyboardMarkup`].
+///
+/// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+pub struct Keyboard<'a> {
+    inline_keyboard: &'a [&'a [Button<'a>]],
+}
+
 impl<'a> Button<'a> {
     /// Constructs an inline `Button`.
     pub const fn new(text: &'a str, kind: ButtonKind<'a>) -> Self {
@@ -72,14 +80,6 @@ impl Serialize for Button<'_> {
 
         map.end()
     }
-}
-
-/// Represents an [`InlineKeyboardMarkup`].
-///
-/// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-pub struct Keyboard<'a> {
-    inline_keyboard: &'a [&'a [Button<'a>]],
 }
 
 impl<'a> Keyboard<'a> {

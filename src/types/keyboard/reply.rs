@@ -16,6 +16,30 @@ pub struct Button<'a> {
     request_localization: Option<bool>,
 }
 
+/// Represents a [`ReplyKeyboardMarkup`].
+///
+/// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+pub struct Keyboard<'a> {
+    keyboard: &'a [&'a [Button<'a>]],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    resize_keyboard: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    one_time_keyboard: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    selective: Option<bool>,
+}
+
+/// Represents a [`ReplyKeyboardRemove`].
+///
+/// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Default)]
+#[must_use]
+pub struct Remove {
+    // remove_keyboard is added when serializing
+    selective: Option<bool>,
+}
+
 impl<'a> Button<'a> {
     /// Constructs a reply `Button`.
     pub const fn new(text: &'a str) -> Self {
@@ -37,20 +61,6 @@ impl<'a> Button<'a> {
         self.request_localization = Some(is_requested);
         self
     }
-}
-
-/// Represents a [`ReplyKeyboardMarkup`].
-///
-/// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-pub struct Keyboard<'a> {
-    keyboard: &'a [&'a [Button<'a>]],
-    #[serde(skip_serializing_if = "Option::is_none")]
-    resize_keyboard: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    one_time_keyboard: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    selective: Option<bool>,
 }
 
 impl<'a> Keyboard<'a> {
@@ -81,15 +91,6 @@ impl<'a> Keyboard<'a> {
         self.selective = Some(is_selective);
         self
     }
-}
-/// Represents a [`ReplyKeyboardRemove`].
-///
-/// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Default)]
-#[must_use]
-pub struct Remove {
-    // remove_keyboard is added when serializing
-    selective: Option<bool>,
 }
 
 impl Remove {
@@ -126,4 +127,3 @@ impl serde::Serialize for Remove {
         map.end()
     }
 }
-
