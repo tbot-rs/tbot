@@ -3,10 +3,10 @@
 use crate::types::{Location, User};
 use serde::Deserialize;
 
-mod id;
+pub mod id;
 pub mod result;
 
-pub use {id::*, result::Result};
+pub use {id::Id, result::Result};
 
 /// Represents an [`InlineQuery`].
 ///

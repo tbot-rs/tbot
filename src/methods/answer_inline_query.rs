@@ -13,7 +13,7 @@ pub struct AnswerInlineQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_query_id: inline_query::IdRef<'a>,
+    inline_query_id: inline_query::id::Ref<'a>,
     results: &'a [inline_query::Result<'a>],
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
@@ -31,7 +31,7 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_query_id: inline_query::IdRef<'a>,
+        inline_query_id: inline_query::id::Ref<'a>,
         results: &'a [inline_query::Result<'a>],
     ) -> Self {
         Self {

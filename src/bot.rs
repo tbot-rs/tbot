@@ -121,7 +121,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerInlineQuery` inferring your bot's token.
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: inline_query::IdRef<'a>,
+        inline_query_id: inline_query::id::Ref<'a>,
         results: &'a [inline_query::Result<'a>],
     ) -> methods::AnswerInlineQuery<'a, C> {
         methods::AnswerInlineQuery::new(

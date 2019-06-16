@@ -1,3 +1,5 @@
+//! Types representing an inline query ID.
+
 use serde::{Deserialize, Serialize};
 
 /// Represents an inline query ID.
@@ -8,7 +10,7 @@ pub struct Id(String);
 /// Contains a reference to an inline query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(transparent)]
-pub struct IdRef<'a>(&'a str);
+pub struct Ref<'a>(&'a str);
 
 impl Id {
     /// Constructs an inline query ID.
@@ -23,15 +25,15 @@ impl Id {
         self.0
     }
 
-    /// Constructs an inline query [`IdRef`] based on `self`.
+    /// Constructs an inline query ID [`Ref`] based on `self`.
     ///
-    /// [`IdRef`]: ./struct.IdRef.html
-    pub fn as_ref(&self) -> IdRef<'_> {
-        IdRef(&self.0)
+    /// [`IdRef`]: ./struct.Ref.html
+    pub fn as_ref(&self) -> Ref<'_> {
+        Ref(&self.0)
     }
 }
 
-impl<'a> IdRef<'a> {
+impl<'a> Ref<'a> {
     /// Constructs a reference to an inline query ID.
     pub const fn new(id: &'a str) -> Self {
         Self(id)
@@ -56,19 +58,19 @@ impl From<String> for Id {
     }
 }
 
-impl<'a> From<&'a str> for IdRef<'a> {
+impl<'a> From<&'a str> for Ref<'a> {
     fn from(id: &'a str) -> Self {
         Self(id)
     }
 }
 
-impl<'a> PartialEq<IdRef<'a>> for Id {
-    fn eq(&self, other: &IdRef<'a>) -> bool {
+impl<'a> PartialEq<Ref<'a>> for Id {
+    fn eq(&self, other: &Ref<'a>) -> bool {
         self.0 == other.0
     }
 }
 
-impl<'a> PartialEq<Id> for IdRef<'a> {
+impl<'a> PartialEq<Id> for Ref<'a> {
     fn eq(&self, other: &Id) -> bool {
         self.0 == other.0
     }
