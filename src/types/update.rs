@@ -1,3 +1,5 @@
+//! Types related to updates.
+
 use super::{callback, ChosenInlineResult, InlineQuery, Message, Poll};
 use serde::de::{
     Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
@@ -9,7 +11,7 @@ use std::fmt::{self, Formatter};
 // In fact, the large-sized variants are more common than the small-sized ones,
 // so I think it's better not to box them.
 #[allow(clippy::large_enum_variant)]
-pub enum UpdateKind {
+pub enum Kind {
     /// A new chat message.
     Message(Message),
     /// An edited message.
@@ -37,7 +39,7 @@ pub struct Update {
     /// The ID of the update.
     pub id: u32,
     /// The kind of the update.
-    pub kind: UpdateKind,
+    pub kind: Kind,
 }
 
 const UPDATE_ID: &str = "update_id";
@@ -75,39 +77,30 @@ impl<'de> Deserialize<'de> for Update {
                     match key {
                         UPDATE_ID => id = Some(map.next_value()?),
                         MESSAGE => {
-                            kind = Some(UpdateKind::Message(map.next_value()?))
+                            kind = Some(Kind::Message(map.next_value()?))
                         }
                         EDITED_MESSAGE => {
-                            kind = Some(UpdateKind::EditedMessage(
-                                map.next_value()?,
-                            ))
+                            kind = Some(Kind::EditedMessage(map.next_value()?))
                         }
                         CHANNEL_POST => {
-                            kind =
-                                Some(UpdateKind::ChannelPost(map.next_value()?))
+                            kind = Some(Kind::ChannelPost(map.next_value()?))
                         }
                         EDITED_CHANNEL_POST => {
-                            kind = Some(UpdateKind::EditedChannelPost(
-                                map.next_value()?,
-                            ))
+                            kind =
+                                Some(Kind::EditedChannelPost(map.next_value()?))
                         }
                         INLINE_QUERY => {
-                            kind =
-                                Some(UpdateKind::InlineQuery(map.next_value()?))
+                            kind = Some(Kind::InlineQuery(map.next_value()?))
                         }
                         CALLBACK_QUERY => {
-                            kind = Some(UpdateKind::CallbackQuery(
-                                map.next_value()?,
-                            ))
+                            kind = Some(Kind::CallbackQuery(map.next_value()?))
                         }
                         CHOSEN_INLINE_RESULT => {
-                            kind = Some(UpdateKind::ChosenInlineResult(
+                            kind = Some(Kind::ChosenInlineResult(
                                 map.next_value()?,
                             ))
                         }
-                        POLL => {
-                            kind = Some(UpdateKind::Poll(map.next_value()?))
-                        }
+                        POLL => kind = Some(Kind::Poll(map.next_value()?)),
                         _ => {
                             let _ = map.next_value::<IgnoredAny>()?;
                         }
@@ -116,7 +109,7 @@ impl<'de> Deserialize<'de> for Update {
 
                 Ok(Update {
                     id: id.ok_or_else(|| Error::missing_field(UPDATE_ID))?,
-                    kind: kind.unwrap_or(UpdateKind::Unknown),
+                    kind: kind.unwrap_or(Kind::Unknown),
                 })
             }
         }

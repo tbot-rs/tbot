@@ -29,7 +29,7 @@ pub mod parameters;
 mod photo_size;
 mod poll;
 pub mod sticker;
-mod updates;
+pub mod update;
 pub mod user;
 mod venue;
 mod video;
@@ -42,6 +42,6 @@ pub use {
     document::*, file::*, game::*, game_high_score::*,
     inline_query::InlineQuery, input_message_content::InputMessageContent,
     invoice::*, location::*, login_url::*, message::Message, photo_size::*,
-    poll::*, sticker::Sticker, updates::*, user::User, venue::*, video::*,
+    poll::*, sticker::Sticker, update::Update, user::User, venue::*, video::*,
     video_note::*, voice::*, webhook_info::*,
 };

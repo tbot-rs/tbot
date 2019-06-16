@@ -10,7 +10,7 @@ use crate::{
             text::{Entity, EntityKind, Text},
             Message,
         },
-        UpdateKind,
+        update,
     },
     Bot,
 };
@@ -583,7 +583,7 @@ impl<C> EventLoop<C> {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn run_unhandled_handlers(&self, bot: Arc<Bot<C>>, update: UpdateKind) {
+    fn run_unhandled_handlers(&self, bot: Arc<Bot<C>>, update: update::Kind) {
         let context = contexts::Unhandled::new(bot, update);
 
         for handler in &self.unhandled_handlers {
@@ -642,48 +642,49 @@ impl<C> EventLoop<C> {
         self.run_before_update_handlers(&update_context);
 
         match update.kind {
-            UpdateKind::Message(message) | UpdateKind::ChannelPost(message) => {
+            update::Kind::Message(message)
+            | update::Kind::ChannelPost(message) => {
                 self.handle_message_update(bot, message);
             }
-            UpdateKind::EditedMessage(message)
-            | UpdateKind::EditedChannelPost(message) => {
+            update::Kind::EditedMessage(message)
+            | update::Kind::EditedChannelPost(message) => {
                 self.handle_message_edit_update(bot, message);
             }
-            UpdateKind::Poll(poll) => {
+            update::Kind::Poll(poll) => {
                 if self.will_handle_updated_poll() {
                     let context =
                         contexts::UpdatedPoll::new(Arc::clone(&bot), poll);
 
                     self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let update = UpdateKind::Poll(poll);
+                    let update = update::Kind::Poll(poll);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            UpdateKind::InlineQuery(query) => {
+            update::Kind::InlineQuery(query) => {
                 if self.will_handle_inline() {
                     let context = contexts::Inline::new(bot, query);
 
                     self.run_inline_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let update = UpdateKind::InlineQuery(query);
+                    let update = update::Kind::InlineQuery(query);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            UpdateKind::ChosenInlineResult(result) => {
+            update::Kind::ChosenInlineResult(result) => {
                 if self.will_handle_chosen_inline() {
                     let context = contexts::ChosenInline::new(bot, result);
 
                     self.run_chosen_inline_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let update = UpdateKind::ChosenInlineResult(result);
+                    let update = update::Kind::ChosenInlineResult(result);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            UpdateKind::CallbackQuery(query) => match query.kind {
+            update::Kind::CallbackQuery(query) => match query.kind {
                 callback::Kind::Data(data) => {
                     if self.will_handle_data_callback() {
                         let context = contexts::DataCallback::new(
@@ -702,7 +703,7 @@ impl<C> EventLoop<C> {
                             kind,
                             ..query
                         };
-                        let update = UpdateKind::CallbackQuery(query);
+                        let update = update::Kind::CallbackQuery(query);
 
                         self.run_unhandled_handlers(bot, update);
                     }
@@ -725,13 +726,13 @@ impl<C> EventLoop<C> {
                             kind,
                             ..query
                         };
-                        let update = UpdateKind::CallbackQuery(query);
+                        let update = update::Kind::CallbackQuery(query);
 
                         self.run_unhandled_handlers(bot, update);
                     }
                 }
             },
-            update @ UpdateKind::Unknown => {
+            update @ update::Kind::Unknown => {
                 self.run_unhandled_handlers(bot, update);
             }
         }
@@ -763,7 +764,7 @@ impl<C> EventLoop<C> {
                     } else if self.will_handle_unhandled() {
                         let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
-                        let update = UpdateKind::Message(message);
+                        let update = update::Kind::Message(message);
 
                         self.run_unhandled_handlers(bot, update);
                     }
@@ -774,7 +775,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -787,7 +788,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Poll(poll);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -807,7 +808,7 @@ impl<C> EventLoop<C> {
                     let kind =
                         message::Kind::Photo(photo, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -821,7 +822,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Pinned(message);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -834,7 +835,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Sticker(sticker);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -847,7 +848,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Venue(venue);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -867,7 +868,7 @@ impl<C> EventLoop<C> {
                     let kind =
                         message::Kind::Video(video, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -881,7 +882,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::VideoNote(video_note);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -895,7 +896,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Voice(voice, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -909,7 +910,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Audio(audio, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -923,7 +924,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Animation(animation, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -935,7 +936,7 @@ impl<C> EventLoop<C> {
                     self.run_deleted_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -949,7 +950,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Document(document, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -962,7 +963,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Game(game);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -975,7 +976,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::LeftChatMember(member);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -988,7 +989,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Location(location);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1002,7 +1003,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::MigrateFrom(old_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1015,7 +1016,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatPhoto(photo);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1028,7 +1029,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatTitle(title);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1041,7 +1042,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatMembers(members);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1054,7 +1055,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Contact(contact);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1066,7 +1067,7 @@ impl<C> EventLoop<C> {
                     self.run_created_group_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1078,7 +1079,7 @@ impl<C> EventLoop<C> {
             ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
-                let update = UpdateKind::Message(message);
+                let update = update::Kind::Message(message);
                 self.run_unhandled_handlers(bot, update);
             }
             _ => (),
@@ -1106,7 +1107,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Animation(animation, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1121,7 +1122,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Audio(audio, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1136,7 +1137,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Document(document, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1151,7 +1152,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Location(location);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1172,7 +1173,7 @@ impl<C> EventLoop<C> {
                     let kind =
                         message::Kind::Photo(photo, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1198,7 +1199,7 @@ impl<C> EventLoop<C> {
                     } else if self.will_handle_unhandled() {
                         let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
-                        let update = UpdateKind::EditedMessage(message);
+                        let update = update::Kind::EditedMessage(message);
 
                         self.run_unhandled_handlers(bot, update);
                     }
@@ -1210,7 +1211,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::EditedMessage(message);
+                    let update = update::Kind::EditedMessage(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1231,7 +1232,7 @@ impl<C> EventLoop<C> {
                     let kind =
                         message::Kind::Video(video, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
@@ -1254,7 +1255,7 @@ impl<C> EventLoop<C> {
             ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
-                let update = UpdateKind::EditedMessage(message);
+                let update = update::Kind::EditedMessage(message);
                 self.run_unhandled_handlers(bot, update)
             }
             _ => (),
