@@ -3,8 +3,8 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        chat, inline_query_result::InlineQueryResult, input_file::*,
-        keyboard::inline, parameters::ChatId, InlineQueryId,
+        chat, inline_query, inline_query_result::InlineQueryResult,
+        input_file::*, keyboard::inline, parameters::ChatId,
     },
 };
 use std::sync::Arc;
@@ -122,7 +122,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerInlineQuery` inferring your bot's token.
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: &'a InlineQueryId,
+        inline_query_id: inline_query::IdRef<'a>,
         results: &'a [InlineQueryResult<'a>],
     ) -> methods::AnswerInlineQuery<'a, C> {
         methods::AnswerInlineQuery::new(

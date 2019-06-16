@@ -21,7 +21,7 @@ mod document;
 mod file;
 mod game;
 mod game_high_score;
-mod inline_query;
+pub mod inline_query;
 mod invoice;
 mod location;
 mod login_url;
@@ -40,8 +40,8 @@ mod webhook_info;
 
 pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
-    document::*, file::*, game::*, game_high_score::*, inline_query::*,
-    inline_query_result::InlineQueryResult,
+    document::*, file::*, game::*, game_high_score::*,
+    inline_query::InlineQuery, inline_query_result::InlineQueryResult,
     input_message_content::InputMessageContent, invoice::*, location::*,
     login_url::*, message::Message, photo_size::*, poll::*, sticker::Sticker,
     updates::*, user::User, venue::*, video::*, video_note::*, voice::*,
