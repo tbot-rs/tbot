@@ -1,10 +1,12 @@
-use super::*;
+//! Types related to polls.
+
+use serde::Deserialize;
 
 /// Represents a [`PollOption`].
 ///
 /// [`PollOption`]: https://core.telegram.org/bots/api#polloption
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct PollOption {
+pub struct Option {
     /// The text of the option.
     pub text: String,
     /// How many people chose this option.
@@ -21,7 +23,7 @@ pub struct Poll {
     /// The question of the poll.
     pub question: String,
     /// The options of the poll.
-    pub options: Vec<PollOption>,
+    pub options: Vec<Option>,
     /// `true` if the poll is closed.
     pub is_closed: bool,
 }

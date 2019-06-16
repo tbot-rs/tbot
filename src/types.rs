@@ -26,7 +26,7 @@ mod login_url;
 pub mod message;
 pub mod parameters;
 mod photo_size;
-mod poll;
+pub mod poll;
 pub mod sticker;
 pub mod update;
 pub mod user;
@@ -40,7 +40,7 @@ pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
     document::*, file::*, game::Game, inline_query::InlineQuery,
     input_message_content::InputMessageContent, invoice::*, location::*,
-    login_url::*, message::Message, photo_size::*, poll::*, sticker::Sticker,
+    login_url::*, message::Message, photo_size::*, poll::Poll, sticker::Sticker,
     update::Update, user::User, venue::*, video::*, video_note::*, voice::*,
     webhook_info::WebhookInfo,
 };
