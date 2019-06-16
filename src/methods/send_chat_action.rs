@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::chat};
 
 /// Represents the [`sendChatAction`][docs] method.
 ///
@@ -12,7 +12,7 @@ pub struct SendChatAction<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: types::ChatId<'a>,
-    action: types::ChatAction,
+    action: chat::Action,
 }
 
 impl<'a, C> SendChatAction<'a, C> {
@@ -20,7 +20,7 @@ impl<'a, C> SendChatAction<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<types::ChatId<'a>>,
-        action: types::ChatAction,
+        action: chat::Action,
     ) -> Self {
         Self {
             client,

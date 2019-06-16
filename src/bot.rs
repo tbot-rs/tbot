@@ -3,7 +3,7 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        inline_query_result::InlineQueryResult, input_file::*,
+        chat, inline_query_result::InlineQueryResult, input_file::*,
         keyboard::inline, InlineQueryId,
     },
 };
@@ -579,7 +579,7 @@ impl<C> Bot<C> {
     pub fn send_chat_action<'a>(
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
-        action: types::ChatAction,
+        action: chat::Action,
     ) -> methods::SendChatAction<'a, C> {
         methods::SendChatAction::new(
             &self.client,

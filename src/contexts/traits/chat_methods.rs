@@ -1,6 +1,6 @@
 use crate::{
     methods::*,
-    types::{self, input_file::*, keyboard::inline},
+    types::{self, chat, input_file::*, keyboard::inline},
     Bot,
 };
 
@@ -179,10 +179,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     }
 
     /// Sends an action to this group.
-    fn send_chat_action(
-        &'a self,
-        action: types::ChatAction,
-    ) -> SendChatAction<C> {
+    fn send_chat_action(&'a self, action: chat::Action) -> SendChatAction<C> {
         self.bot().send_chat_action(self.chat_id(), action)
     }
 

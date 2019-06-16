@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::chat};
 
 /// Represents the [`getChatAdministrators`][docs] method.
 ///
@@ -36,7 +36,7 @@ where
 {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
-    type Item = Vec<types::ChatMember>;
+    type Item = Vec<chat::Member>;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {

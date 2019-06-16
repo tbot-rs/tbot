@@ -1,9 +1,10 @@
-use super::*;
+use serde::Serialize;
 
 /// Represents possible chat actions.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]
-pub enum ChatAction {
+// todo: #[non_exhaustive]
+pub enum Action {
     /// About to send a text message.
     Typing,
     /// About to send a photo.

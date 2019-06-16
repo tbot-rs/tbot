@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::chat};
 
 /// Represents the [`getChatMember`][docs] method.
 ///
@@ -39,7 +39,7 @@ where
 {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
-    type Item = types::ChatMember;
+    type Item = chat::Member;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {

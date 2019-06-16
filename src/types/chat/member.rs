@@ -1,11 +1,18 @@
-use super::*;
+//! Types representing a chat member.
+
+use crate::types::User;
+use serde::de::{
+    Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
+};
 
 /// Represents the status of a member.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-pub enum MemberStatus {
+// todo: #[non_exhaustive]
+pub enum Status {
     /// The user is the creator of the chat.
     Creator,
     /// The user is an administrator of the chat.
+    // todo: #[non_exhaustive]
     Administator {
         /// `true` if the bot can edit this admin's rights.
         can_be_edited: bool,
@@ -29,6 +36,7 @@ pub enum MemberStatus {
     /// The user is a member of the chat.
     Member,
     /// The user is restricted in the chat.
+    // todo: #[non_exhaustive]
     Restricted {
         /// Time when the restriction will be lifted.
         until_date: Option<i64>,
@@ -46,6 +54,7 @@ pub enum MemberStatus {
     /// The user left the chat.
     Left,
     /// The user was kicked out of the chat.
+    // todo: #[non_exhaustive]
     Kicked {
         /// Time when the restriction will be lifted.
         until_date: Option<i64>,
@@ -56,11 +65,12 @@ pub enum MemberStatus {
 ///
 /// [`ChatMember`]: https://core.telegram.org/bots/api#chatmember
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct ChatMember {
+// todo: #[non_exhaustive]
+pub struct Member {
     /// Information about the member.
     pub user: User,
     /// Status of the member.
-    pub status: MemberStatus,
+    pub status: Status,
 }
 
 const USER: &str = "user";
@@ -88,18 +98,18 @@ const RESTRICTED: &str = "restricted";
 const LEFT: &str = "left";
 const KICKED: &str = "kicked";
 
-struct ChatMemberVisitor;
+struct MemberVisitor;
 
-impl<'v> serde::de::Visitor<'v> for ChatMemberVisitor {
-    type Value = ChatMember;
+impl<'v> Visitor<'v> for MemberVisitor {
+    type Value = Member;
 
     fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(fmt, "struct ChatMember")
+        write!(fmt, "struct Member")
     }
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
-        V: serde::de::MapAccess<'v>,
+        V: MapAccess<'v>,
     {
         let mut user = None;
         let mut status = None;
@@ -157,87 +167,77 @@ impl<'v> serde::de::Visitor<'v> for ChatMemberVisitor {
                     can_add_web_page_previews = Some(map.next_value()?)
                 }
                 _ => {
-                    let _ = map.next_value::<serde::de::IgnoredAny>()?;
+                    let _ = map.next_value::<IgnoredAny>()?;
                 }
             }
         }
 
         let status = match &status {
-            Some(CREATOR) => MemberStatus::Creator,
-            Some(ADMINISTRATOR) => MemberStatus::Administator {
-                can_be_edited: can_be_edited.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_BE_EDITED)
-                })?,
-                can_change_info: can_change_info.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_CHANGE_INFO)
-                })?,
+            Some(CREATOR) => Status::Creator,
+            Some(ADMINISTRATOR) => Status::Administator {
+                can_be_edited: can_be_edited
+                    .ok_or_else(|| Error::missing_field(CAN_BE_EDITED))?,
+                can_change_info: can_change_info
+                    .ok_or_else(|| Error::missing_field(CAN_CHANGE_INFO))?,
                 can_post_messages,
                 can_edit_messages,
-                can_delete_messages: can_delete_messages.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_DELETE_MESSAGES)
-                })?,
-                can_invite_users: can_invite_users.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_INVITE_USERS)
-                })?,
+                can_delete_messages: can_delete_messages
+                    .ok_or_else(|| Error::missing_field(CAN_DELETE_MESSAGES))?,
+                can_invite_users: can_invite_users
+                    .ok_or_else(|| Error::missing_field(CAN_INVITE_USERS))?,
                 can_restrict_members: can_restrict_members.ok_or_else(
-                    || serde::de::Error::missing_field(CAN_RESTRICT_MEMBERS),
+                    || Error::missing_field(CAN_RESTRICT_MEMBERS),
                 )?,
-                can_pin_messages: can_pin_messages.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_PIN_MESSAGES)
-                })?,
-                can_promote_members: can_promote_members.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_PROMOTE_MEMBERS)
-                })?,
+                can_pin_messages: can_pin_messages
+                    .ok_or_else(|| Error::missing_field(CAN_PIN_MESSAGES))?,
+                can_promote_members: can_promote_members
+                    .ok_or_else(|| Error::missing_field(CAN_PROMOTE_MEMBERS))?,
             },
-            Some(MEMBER) => MemberStatus::Member,
-            Some(RESTRICTED) => MemberStatus::Restricted {
+            Some(MEMBER) => Status::Member,
+            Some(RESTRICTED) => Status::Restricted {
                 until_date,
-                is_member: is_member.ok_or_else(|| {
-                    serde::de::Error::missing_field(IS_MEMBER)
-                })?,
-                can_send_mesages: can_send_messages.ok_or_else(|| {
-                    serde::de::Error::missing_field(CAN_SEND_MESSAGES)
-                })?,
+                is_member: is_member
+                    .ok_or_else(|| Error::missing_field(IS_MEMBER))?,
+                can_send_mesages: can_send_messages
+                    .ok_or_else(|| Error::missing_field(CAN_SEND_MESSAGES))?,
                 can_send_media_messages: can_send_media_messages.ok_or_else(
-                    || serde::de::Error::missing_field(CAN_SEND_MEDIA_MESSAGES),
+                    || Error::missing_field(CAN_SEND_MEDIA_MESSAGES),
                 )?,
                 can_send_other_messages: can_send_other_messages.ok_or_else(
-                    || serde::de::Error::missing_field(CAN_SEND_OTHER_MESSAGES),
+                    || Error::missing_field(CAN_SEND_OTHER_MESSAGES),
                 )?,
                 can_add_web_page_previews: can_add_web_page_previews
                     .ok_or_else(|| {
-                        serde::de::Error::missing_field(
-                            CAN_ADD_WEB_PAGE_PREVIEWS,
-                        )
+                        Error::missing_field(CAN_ADD_WEB_PAGE_PREVIEWS)
                     })?,
             },
-            Some(LEFT) => MemberStatus::Left,
-            Some(KICKED) => MemberStatus::Kicked {
+            Some(LEFT) => Status::Left,
+            Some(KICKED) => Status::Kicked {
                 until_date,
             },
             Some(unknown_status) => {
-                return Err(serde::de::Error::unknown_variant(
+                return Err(Error::unknown_variant(
                     unknown_status,
                     &[CREATOR, ADMINISTRATOR, MEMBER, RESTRICTED, LEFT, KICKED],
                 ))
             }
-            None => return Err(serde::de::Error::missing_field(STATUS)),
+            None => return Err(Error::missing_field(STATUS)),
         };
 
-        Ok(ChatMember {
-            user: user.ok_or_else(|| serde::de::Error::missing_field(USER))?,
+        Ok(Member {
+            user: user.ok_or_else(|| Error::missing_field(USER))?,
             status,
         })
     }
 }
 
-impl<'de> Deserialize<'de> for ChatMember {
+impl<'de> Deserialize<'de> for Member {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::de::Deserializer<'de>,
+        D: Deserializer<'de>,
     {
         deserializer.deserialize_struct(
-            "ChatMember",
+            "Member",
             &[
                 USER,
                 STATUS,
@@ -257,7 +257,7 @@ impl<'de> Deserialize<'de> for ChatMember {
                 CAN_SEND_OTHER_MESSAGES,
                 CAN_ADD_WEB_PAGE_PREVIEWS,
             ],
-            ChatMemberVisitor,
+            MemberVisitor,
         )
     }
 }
