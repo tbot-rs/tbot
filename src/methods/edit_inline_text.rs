@@ -1,6 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::keyboard::inline};
-use parameters::WebPagePreviewState;
+use crate::{
+    internal::Client,
+    types::{
+        keyboard::inline,
+        parameters::{ParseMode, WebPagePreviewState},
+    },
+};
 
 /// Represents the [`editMessageText`][docs] method for inline messages.
 ///
@@ -15,7 +20,7 @@ pub struct EditInlineText<'a, C> {
     inline_message_id: &'a str,
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<types::ParseMode>,
+    parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,7 +46,7 @@ impl<'a, C> EditInlineText<'a, C> {
     }
 
     /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
+    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
         self.parse_mode = Some(mode);
         self
     }

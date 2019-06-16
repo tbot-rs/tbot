@@ -4,9 +4,9 @@ use crate::{
     types::{
         input_file::{InputFile, Voice},
         keyboard,
+        parameters::{ChatId, NotificationState},
     },
 };
-use parameters::NotificationState;
 
 /// Represents the [`sendVoice`][docs] method.
 ///
@@ -16,7 +16,7 @@ use parameters::NotificationState;
 pub struct SendVoice<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     voice: &'a Voice<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
@@ -27,7 +27,7 @@ impl<'a, C> SendVoice<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         voice: &'a Voice<'a>,
     ) -> Self {
         Self {
@@ -76,8 +76,8 @@ where
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
 
         let duration = self.voice.duration.map(|x| x.to_string());

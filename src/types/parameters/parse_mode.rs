@@ -1,7 +1,9 @@
-use super::*;
+use serde::Serialize;
+use std::fmt::{self, Display, Formatter};
 
 /// Represents the markup language of a message.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+// todo: #[non_exhaustive]
 pub enum ParseMode {
     /// The message will be parsed as Markdown.
     Markdown,
@@ -10,9 +12,9 @@ pub enum ParseMode {
     Html,
 }
 
-impl std::fmt::Display for ParseMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(match self {
+impl Display for ParseMode {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        formatter.write_str(match self {
             ParseMode::Markdown => "Markdown",
             ParseMode::Html => "HTML",
         })

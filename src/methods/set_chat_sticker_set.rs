@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::parameters::ChatId};
 
 /// Represents the [`setChatStickerSet`][docs] method.
 ///
@@ -11,7 +11,7 @@ pub struct SetChatStickerSet<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     sticker_set_name: &'a str,
 }
 
@@ -19,7 +19,7 @@ impl<'a, C> SetChatStickerSet<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         sticker_set_name: &'a str,
     ) -> Self {
         Self {

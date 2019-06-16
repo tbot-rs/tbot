@@ -1,34 +1,8 @@
 use super::{callback, ChosenInlineResult, InlineQuery, Message, Poll};
-use serde::{Deserialize, Serialize};
-
-/// Represents update types to subscribe with [`Webhook`] or [`Polling`].
-///
-/// [`Webhook`]: ../struct.Webhook.html
-/// [`Polling`]: ../struct.Polling.html
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum Updates {
-    /// Handles chat messages of any kind.
-    Message,
-    /// Handles chat message edits.
-    EditedMessage,
-    /// Handles channel posts of any kind.
-    ChannelPost,
-    /// Handles channel post edits.
-    EditedChannelPost,
-    /// Handles inline queries.
-    InlineQuery,
-    /// Handles chosen inline results.
-    ChosenInlineResult,
-    /// Handles inline button clicks.
-    CallbackQuery,
-    /// Handles shpping query.
-    ShippingQuery,
-    /// Handles pre-checkout query.
-    PreCheckoutQuery,
-    /// Handles poll state updates.
-    Poll,
-}
+use serde::de::{
+    Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
+};
+use std::fmt::{self, Formatter};
 
 /// Represents different types of updates from Telegram.
 #[derive(Debug, PartialEq, Clone)]
@@ -76,26 +50,23 @@ const CALLBACK_QUERY: &str = "callback_query";
 const CHOSEN_INLINE_RESULT: &str = "chosen_inline_result";
 const POLL: &str = "poll";
 
-impl<'de> serde::Deserialize<'de> for Update {
+impl<'de> Deserialize<'de> for Update {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::de::Deserializer<'de>,
+        D: Deserializer<'de>,
     {
         struct UpdateVisitor;
 
-        impl<'v> serde::de::Visitor<'v> for UpdateVisitor {
+        impl<'v> Visitor<'v> for UpdateVisitor {
             type Value = Update;
 
-            fn expecting(
-                &self,
-                fmt: &mut std::fmt::Formatter,
-            ) -> std::fmt::Result {
+            fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
                 write!(fmt, "struct Update")
             }
 
             fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
             where
-                V: serde::de::MapAccess<'v>,
+                V: MapAccess<'v>,
             {
                 let mut id = None;
                 let mut kind = None;
@@ -138,16 +109,13 @@ impl<'de> serde::Deserialize<'de> for Update {
                             kind = Some(UpdateKind::Poll(map.next_value()?))
                         }
                         _ => {
-                            let _ =
-                                map.next_value::<serde::de::IgnoredAny>()?;
+                            let _ = map.next_value::<IgnoredAny>()?;
                         }
                     }
                 }
 
                 Ok(Update {
-                    id: id.ok_or_else(|| {
-                        serde::de::Error::missing_field(UPDATE_ID)
-                    })?,
+                    id: id.ok_or_else(|| Error::missing_field(UPDATE_ID))?,
                     kind: kind.unwrap_or(UpdateKind::Unknown),
                 })
             }

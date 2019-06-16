@@ -1,5 +1,8 @@
 use super::*;
-use crate::{internal::Client, types::chat};
+use crate::{
+    internal::Client,
+    types::{chat, parameters::ChatId},
+};
 
 /// Represents the [`getChatMember`][docs] method.
 ///
@@ -11,7 +14,7 @@ pub struct GetChatMember<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     user_id: i64,
 }
 
@@ -19,7 +22,7 @@ impl<'a, C> GetChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         user_id: i64,
     ) -> Self {
         Self {

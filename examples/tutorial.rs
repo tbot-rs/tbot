@@ -3,7 +3,7 @@ use tbot::{
     types::{
         inline_query_result::{Article, InlineQueryResult},
         input_message_content::Text,
-        ParseMode::Markdown,
+        parameters::ParseMode::Markdown,
     },
 };
 

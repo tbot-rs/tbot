@@ -4,9 +4,9 @@ use crate::{
     types::{
         input_file::{Document, InputFile},
         keyboard,
+        parameters::{ChatId, NotificationState},
     },
 };
-use parameters::NotificationState;
 
 /// Represents the [`sendDocument`][docs] method.
 ///
@@ -16,7 +16,7 @@ use parameters::NotificationState;
 pub struct SendDocument<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     document: &'a Document<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
@@ -27,7 +27,7 @@ impl<'a, C> SendDocument<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         document: &'a Document<'a>,
     ) -> Self {
         Self {
@@ -76,8 +76,8 @@ where
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
 
         let parse_mode = self.document.parse_mode.map(|x| x.to_string());

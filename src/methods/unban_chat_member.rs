@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::parameters::ChatId};
 
 /// Represents the [`unbanChatMember`][docs] method.
 ///
@@ -11,7 +11,7 @@ pub struct UnbanChatMember<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     user_id: i64,
 }
 
@@ -19,7 +19,7 @@ impl<'a, C> UnbanChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         user_id: i64,
     ) -> Self {
         Self {

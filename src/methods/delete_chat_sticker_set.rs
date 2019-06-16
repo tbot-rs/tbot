@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::parameters::ChatId};
 
 /// Represents the [`deleteChatStickerSet`][docs] method.
 ///
@@ -11,14 +11,14 @@ pub struct DeleteChatStickerSet<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
 }
 
 impl<'a, C> DeleteChatStickerSet<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
     ) -> Self {
         Self {
             client,

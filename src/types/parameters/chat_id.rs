@@ -1,22 +1,13 @@
+use serde::Serialize;
+
 /// Represents possible ways to specify the destination chat.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[serde(untagged)]
 pub enum ChatId<'a> {
     /// The ID of a chat.
     Id(i64),
     /// The `@username` of a chat.
     Username(&'a str),
-}
-
-impl<'a> serde::Serialize for ChatId<'a> {
-    fn serialize<S: serde::Serializer>(
-        &self,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error> {
-        match self {
-            ChatId::Id(id) => serializer.serialize_i64(*id),
-            ChatId::Username(username) => serializer.serialize_str(username),
-        }
-    }
 }
 
 impl<'a> From<i64> for ChatId<'a> {

@@ -1,6 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::keyboard};
-use parameters::NotificationState;
+use crate::{
+    internal::Client,
+    types::{
+        keyboard,
+        parameters::{ChatId, NotificationState},
+    },
+};
 
 /// Represents the [`sendGame`][docs] method.
 ///
@@ -12,7 +17,7 @@ pub struct SendGame<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     game_short_name: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
@@ -26,7 +31,7 @@ impl<'a, C> SendGame<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         game_short_name: &'a str,
     ) -> Self {
         Self {

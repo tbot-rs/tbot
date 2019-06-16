@@ -1,5 +1,8 @@
 use super::*;
-use crate::{internal::Client, types::keyboard::inline};
+use crate::{
+    internal::Client,
+    types::{keyboard::inline, parameters::ChatId},
+};
 
 /// Represents the [`editMessageLiveLocation`][docs] method for chat messages.
 ///
@@ -11,7 +14,7 @@ pub struct EditMessageLocation<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
     latitude: f64,
     longitude: f64,
@@ -23,7 +26,7 @@ impl<'a, C> EditMessageLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
         (latitude, longitude): (f64, f64),
     ) -> Self {

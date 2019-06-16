@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::parameters::ParseMode;
 use serde::ser::SerializeMap;
 
 /// Represents a document to be sent.
@@ -70,7 +71,7 @@ impl<'a> Document<'a> {
     }
 
     /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
+    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
         self.parse_mode = Some(mode);
         self
     }

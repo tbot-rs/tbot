@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::parameters::ChatId};
 
 /// Represents the [`setChatTitle`][docs] method.
 ///
@@ -11,7 +11,7 @@ pub struct SetChatTitle<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     title: &'a str,
 }
 
@@ -19,7 +19,7 @@ impl<'a, C> SetChatTitle<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         title: &'a str,
     ) -> Self {
         Self {

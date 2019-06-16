@@ -15,7 +15,7 @@ macro_rules! gif_base {
       struct: $struct:ident,
       doc_link_part: $doc_link_part:literal,
     ) => {
-        use crate::types::{InputMessageContent, ParseMode};
+        use crate::types::{InputMessageContent, parameters::ParseMode};
         use serde::Serialize;
 
         /// Represents a non-cached GIF.

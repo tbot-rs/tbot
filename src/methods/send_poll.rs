@@ -1,6 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::keyboard};
-use parameters::NotificationState;
+use crate::{
+    internal::Client,
+    types::{
+        keyboard,
+        parameters::{ChatId, NotificationState},
+    },
+};
 
 /// Represents the [`sendPoll`][docs] method.
 ///
@@ -12,7 +17,7 @@ pub struct SendPoll<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     question: &'a str,
     options: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27,7 +32,7 @@ impl<'a, C> SendPoll<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         question: &'a str,
         options: &'a [&'a str],
     ) -> Self {

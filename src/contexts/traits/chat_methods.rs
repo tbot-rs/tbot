@@ -1,6 +1,6 @@
 use crate::{
     methods::*,
-    types::{self, chat, input_file::*, keyboard::inline},
+    types::{chat, input_file::*, keyboard::inline, parameters::ChatId},
     Bot,
 };
 
@@ -90,7 +90,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     /// Forwards a message to this chat.
     fn forward_here(
         &'a self,
-        from_chat_id: impl Into<types::ChatId<'a>>,
+        from_chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
     ) -> ForwardMessage<'a, C> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)

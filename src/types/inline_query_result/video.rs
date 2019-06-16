@@ -2,7 +2,7 @@
 //!
 //! [docs]: ../enum.InlineQueryResult.html#variant.Video
 
-use crate::types::{InputMessageContent, ParseMode};
+use crate::types::{parameters::ParseMode, InputMessageContent};
 use serde::Serialize;
 
 /// Represents possible MIME types.

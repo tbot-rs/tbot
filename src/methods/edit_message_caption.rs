@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::keyboard::inline};
+use crate::{
+    internal::Client,
+    types::{
+        keyboard::inline,
+        parameters::{ChatId, ParseMode},
+    },
+};
 
 /// Represents the [`editMessageCaption`][docs] method for chat messages.
 ///
@@ -11,11 +17,11 @@ pub struct EditMessageCaption<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
     caption: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<types::ParseMode>,
+    parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -24,7 +30,7 @@ impl<'a, C> EditMessageCaption<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
         caption: &'a str,
     ) -> Self {
@@ -40,7 +46,7 @@ impl<'a, C> EditMessageCaption<'a, C> {
     }
 
     /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
+    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
         self.parse_mode = Some(mode);
         self
     }

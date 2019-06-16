@@ -1,5 +1,8 @@
 use super::*;
-use crate::{internal::Client, types::keyboard::inline};
+use crate::{
+    internal::Client,
+    types::{keyboard::inline, parameters::ParseMode},
+};
 /// Represents the [`editMessageCaption`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
@@ -13,7 +16,7 @@ pub struct EditInlineCaption<'a, C> {
     inline_message_id: &'a str,
     caption: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<types::ParseMode>,
+    parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -36,7 +39,7 @@ impl<'a, C> EditInlineCaption<'a, C> {
     }
 
     /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
+    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
         self.parse_mode = Some(mode);
         self
     }

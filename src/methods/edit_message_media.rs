@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::Client,
-    types::{input_file::*, keyboard::inline},
+    types::{input_file::*, keyboard::inline, parameters::ChatId},
 };
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
@@ -12,7 +12,7 @@ use crate::{
 pub struct EditMessageMedia<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
@@ -22,7 +22,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
@@ -56,8 +56,8 @@ where
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
         let message_id = self.message_id.to_string();
         let reply_markup =

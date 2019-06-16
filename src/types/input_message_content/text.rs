@@ -1,4 +1,4 @@
-use crate::{methods::parameters::WebPagePreviewState, types::ParseMode};
+use crate::types::parameters::{ParseMode, WebPagePreviewState};
 use serde::Serialize;
 
 /// Represents an [`InputTextMessageContent`][docs].

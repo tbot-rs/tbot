@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::parameters::ParseMode;
 use serde::ser::SerializeMap;
 
 /// Represents a photo to be sent.

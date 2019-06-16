@@ -4,9 +4,9 @@ use crate::{
     types::{
         input_file::{Animation, InputFile},
         keyboard,
+        parameters::{ChatId, NotificationState},
     },
 };
-use parameters::NotificationState;
 
 /// Represents the [`sendAnimation`][docs] method.
 ///
@@ -16,7 +16,7 @@ use parameters::NotificationState;
 pub struct SendAnimation<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     animation: &'a Animation<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
@@ -27,7 +27,7 @@ impl<'a, C> SendAnimation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         animation: &'a Animation<'a>,
     ) -> Self {
         Self {
@@ -76,8 +76,8 @@ where
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
 
         let duration = self.animation.duration.map(|x| x.to_string());

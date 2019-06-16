@@ -1,6 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::keyboard};
-use parameters::NotificationState;
+use crate::{
+    internal::Client,
+    types::{
+        keyboard,
+        parameters::{ChatId, NotificationState},
+    },
+};
 
 /// Represents the [`sendLocation`][docs] method.
 ///
@@ -12,7 +17,7 @@ pub struct SendLocation<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,7 +34,7 @@ impl<'a, C> SendLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {

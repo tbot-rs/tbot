@@ -3,7 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Document
 
 use super::Thumb;
-use crate::types::{InputMessageContent, ParseMode};
+use crate::types::{parameters::ParseMode, InputMessageContent};
 use serde::Serialize;
 
 /// Represents possible MIME types for a fresh document.

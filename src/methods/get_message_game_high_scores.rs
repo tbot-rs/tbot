@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::parameters::ChatId};
 
 type HighScores = Vec<types::GameHighScore>;
 
@@ -14,7 +14,7 @@ pub struct GetMessageGameHighScores<'a, C> {
     #[serde(skip)]
     token: Token,
     user_id: i64,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
 }
 
@@ -22,7 +22,7 @@ impl<'a, C> GetMessageGameHighScores<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
         user_id: i64,
     ) -> Self {

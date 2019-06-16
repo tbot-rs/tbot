@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::parameters::ChatId};
 
 /// Represents the [`setGameScore`][docs] method for chat messages.
 ///
@@ -13,7 +13,7 @@ pub struct SetMessageGameScore<'a, C> {
     token: Token,
     user_id: i64,
     score: u32,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
@@ -25,7 +25,7 @@ impl<'a, C> SetMessageGameScore<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
         user_id: i64,
         score: u32,

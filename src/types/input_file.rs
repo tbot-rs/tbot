@@ -1,7 +1,5 @@
 //! Contains types that are represent uploadable media.
 
-use super::{types, ParseMode, Serialize};
-
 mod animation;
 mod audio;
 mod chat_photo;

@@ -15,7 +15,6 @@ mod animation;
 mod audio;
 pub mod callback;
 pub mod chat;
-mod chat_id;
 mod chosen_inline_result;
 mod contact;
 mod document;
@@ -27,7 +26,7 @@ mod invoice;
 mod location;
 mod login_url;
 pub mod message;
-mod parse_mode;
+pub mod parameters;
 mod photo_size;
 mod poll;
 pub mod sticker;
@@ -40,11 +39,11 @@ mod voice;
 mod webhook_info;
 
 pub use {
-    animation::*, audio::*, chat::Chat, chat_id::*, chosen_inline_result::*,
-    contact::*, document::*, file::*, game::*, game_high_score::*,
-    inline_query::*, inline_query_result::InlineQueryResult,
+    animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
+    document::*, file::*, game::*, game_high_score::*, inline_query::*,
+    inline_query_result::InlineQueryResult,
     input_message_content::InputMessageContent, invoice::*, location::*,
-    login_url::*, message::Message, parse_mode::*, photo_size::*, poll::*,
-    sticker::Sticker, updates::*, user::User, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::*,
+    login_url::*, message::Message, photo_size::*, poll::*, sticker::Sticker,
+    updates::*, user::User, venue::*, video::*, video_note::*, voice::*,
+    webhook_info::*,
 };

@@ -1,5 +1,5 @@
-use super::*;
-use serde::de::Error;
+use crate::types::parameters::Updates;
+use serde::de::{Deserialize, Deserializer, Error, MapAccess, Visitor};
 
 /// Represents information about the last error.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -39,7 +39,7 @@ const ALLOWED_UPDATES: &str = "allowed_updates";
 
 struct WebhookInfoVisitor;
 
-impl<'v> serde::de::Visitor<'v> for WebhookInfoVisitor {
+impl<'v> Visitor<'v> for WebhookInfoVisitor {
     type Value = WebhookInfo;
 
     fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -48,7 +48,7 @@ impl<'v> serde::de::Visitor<'v> for WebhookInfoVisitor {
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
-        V: serde::de::MapAccess<'v>,
+        V: MapAccess<'v>,
     {
         let mut url = None;
         let mut has_custom_certificate = None;
@@ -103,7 +103,7 @@ impl<'v> serde::de::Visitor<'v> for WebhookInfoVisitor {
 impl<'de> Deserialize<'de> for WebhookInfo {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::de::Deserializer<'de>,
+        D: Deserializer<'de>,
     {
         deserializer.deserialize_struct(
             "WebhookInfo",

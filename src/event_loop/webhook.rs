@@ -1,6 +1,6 @@
 // use super::*;
 use super::EventLoop;
-use crate::{methods, prelude::*, types, Bot};
+use crate::{methods, prelude::*, types::parameters::Updates, Bot};
 use futures::Stream;
 use hyper::{
     service::service_fn, Body, Error, Method, Request, Response, Server,
@@ -24,7 +24,7 @@ pub struct Webhook<'a, C> {
     url: &'a str,
     certificate: Option<&'a str>,
     max_connections: Option<u8>,
-    allowed_updates: Option<&'a [types::Updates]>,
+    allowed_updates: Option<&'a [Updates]>,
 }
 
 impl<'a, C> Webhook<'a, C> {
@@ -63,7 +63,7 @@ impl<'a, C> Webhook<'a, C> {
     }
 
     /// Configures `allowed_updates`.
-    pub fn allowed_updates(mut self, updates: &'a [types::Updates]) -> Self {
+    pub fn allowed_updates(mut self, updates: &'a [Updates]) -> Self {
         self.allowed_updates = Some(updates);
         self
     }
