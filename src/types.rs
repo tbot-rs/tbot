@@ -1,4 +1,4 @@
-//! Types used when interacting with the API.
+//! Types for interacting with the API.
 
 use super::*;
 
