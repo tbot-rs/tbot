@@ -1,14 +1,6 @@
 //! Types used when interacting with the API.
 
-// we re-export everything under one namespace
-#![allow(clippy::module_name_repetitions)]
-
 use super::*;
-
-pub mod input_file;
-pub mod input_message_content;
-pub mod keyboard;
-pub mod raw;
 
 mod animation;
 mod audio;
@@ -20,13 +12,17 @@ mod document;
 mod file;
 pub mod game;
 pub mod inline_query;
+pub mod input_file;
+pub mod input_message_content;
 mod invoice;
+pub mod keyboard;
 mod location;
 mod login_url;
 pub mod message;
 pub mod parameters;
 mod photo_size;
 pub mod poll;
+pub mod raw;
 pub mod sticker;
 pub mod update;
 pub mod user;
@@ -40,7 +36,7 @@ pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
     document::*, file::*, game::Game, inline_query::InlineQuery,
     input_message_content::InputMessageContent, invoice::*, location::*,
-    login_url::*, message::Message, photo_size::*, poll::Poll, sticker::Sticker,
-    update::Update, user::User, venue::*, video::*, video_note::*, voice::*,
-    webhook_info::WebhookInfo,
+    login_url::*, message::Message, photo_size::*, poll::Poll,
+    sticker::Sticker, update::Update, user::User, venue::*, video::*,
+    video_note::*, voice::*, webhook_info::WebhookInfo,
 };
