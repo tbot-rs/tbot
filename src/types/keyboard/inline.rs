@@ -1,9 +1,7 @@
+//! Types representing inline keyboards.
+
 use super::*;
 use serde::ser::SerializeMap;
-use InlineButtonType::{
-    CallbackData, LoginUrl, Pay, SwitchInlineQuery,
-    SwitchInlineQueryCurrentChat, Url,
-};
 
 /// Represents different types an inline button can be.
 ///
@@ -11,7 +9,7 @@ use InlineButtonType::{
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-pub enum InlineButtonType<'a> {
+pub enum ButtonKind<'a> {
     /// Represents a URL button.
     Url(&'a str),
     /// Represents a login button.
@@ -33,43 +31,43 @@ pub enum InlineButtonType<'a> {
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use]
-pub struct InlineButton<'a> {
+pub struct Button<'a> {
     text: &'a str,
-    button_type: InlineButtonType<'a>,
+    kind: ButtonKind<'a>,
 }
 
-impl<'a> InlineButton<'a> {
-    /// Constructs a new `InlineButton`.
-    pub const fn new(text: &'a str, button_type: InlineButtonType<'a>) -> Self {
+impl<'a> Button<'a> {
+    /// Constructs an inline `Button`.
+    pub const fn new(text: &'a str, kind: ButtonKind<'a>) -> Self {
         Self {
             text,
-            button_type,
+            kind,
         }
     }
 }
 
-impl serde::Serialize for InlineButton<'_> {
+impl serde::Serialize for Button<'_> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(Some(2))?;
 
         map.serialize_entry("text", self.text)?;
 
-        match self.button_type {
-            Url(url) => map.serialize_entry("url", url),
-            LoginUrl(login_url) => map.serialize_entry("login_url", login_url),
-            CallbackData(callback_data) => {
+        match self.kind {
+            ButtonKind::Url(url) => map.serialize_entry("url", url),
+            ButtonKind::LoginUrl(login_url) => map.serialize_entry("login_url", login_url),
+            ButtonKind::CallbackData(callback_data) => {
                 map.serialize_entry("callback_data", callback_data)
             }
-            SwitchInlineQuery(query) => {
+            ButtonKind::SwitchInlineQuery(query) => {
                 map.serialize_entry("switch_inline_query", query)
             }
-            SwitchInlineQueryCurrentChat(query) => {
+            ButtonKind::SwitchInlineQueryCurrentChat(query) => {
                 map.serialize_entry("switch_inline_query_current_chat", query)
             }
-            InlineButtonType::CallbackGame(game) => {
+            ButtonKind::CallbackGame(game) => {
                 map.serialize_entry("callback_game", &game)
             }
-            Pay(pay) => map.serialize_entry("pay", &pay),
+            ButtonKind::Pay(pay) => map.serialize_entry("pay", &pay),
         }?;
 
         map.end()
@@ -80,13 +78,13 @@ impl serde::Serialize for InlineButton<'_> {
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
-pub struct InlineKeyboard<'a> {
-    inline_keyboard: Vec<Vec<InlineButton<'a>>>,
+pub struct Keyboard<'a> {
+    inline_keyboard: Vec<Vec<Button<'a>>>,
 }
 
-impl<'a> InlineKeyboard<'a> {
-    /// Constructs a new `InlineKeyboard`.
-    pub const fn new(buttons: Vec<Vec<InlineButton<'a>>>) -> Self {
+impl<'a> Keyboard<'a> {
+    /// Constructs an inline `Keyboard`.
+    pub const fn new(buttons: Vec<Vec<Button<'a>>>) -> Self {
         Self {
             inline_keyboard: buttons,
         }

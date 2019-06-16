@@ -1,4 +1,4 @@
-use crate::{methods::*, types, types::input_file::*, Bot};
+use crate::{methods::*, types::{self, input_file::*, keyboard::inline}, Bot};
 
 /// Provides methods appliable to all messages.
 pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
@@ -60,7 +60,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     fn edit_message_reply_markup(
         &'a self,
         message_id: u32,
-        reply_markup: types::InlineKeyboard<'a>,
+        reply_markup: inline::Keyboard<'a>,
     ) -> EditMessageReplyMarkup<'a, C> {
         self.bot().edit_message_reply_markup(
             self.chat_id(),

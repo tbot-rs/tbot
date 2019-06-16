@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard::inline};
 
 /// Represents the [`editMessageReplyMarkup`][docs] method for inline messages.
 ///
@@ -12,7 +12,7 @@ pub struct EditInlineReplyMarkup<'a, C> {
     #[serde(skip)]
     token: Token,
     inline_message_id: &'a str,
-    reply_markup: types::InlineKeyboard<'a>,
+    reply_markup: inline::Keyboard<'a>,
 }
 
 impl<'a, C> EditInlineReplyMarkup<'a, C> {
@@ -20,7 +20,7 @@ impl<'a, C> EditInlineReplyMarkup<'a, C> {
         client: &'a Client<C>,
         token: Token,
         inline_message_id: &'a str,
-        reply_markup: types::InlineKeyboard<'a>,
+        reply_markup: inline::Keyboard<'a>,
     ) -> Self {
         Self {
             client,

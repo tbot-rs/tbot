@@ -1,7 +1,6 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::{keyboard, input_file::{InputFile, Photo}}};
 use parameters::NotificationState;
-use types::input_file::{InputFile, Photo};
 
 /// Represents the [`sendPhoto`][docs] method.
 ///
@@ -15,7 +14,7 @@ pub struct SendPhoto<'a, C> {
     photo: &'a Photo<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
-    reply_markup: Option<types::AnyKeyboard<'a>>,
+    reply_markup: Option<keyboard::Any<'a>>,
 }
 
 impl<'a, C> SendPhoto<'a, C> {
@@ -51,7 +50,7 @@ impl<'a, C> SendPhoto<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::AnyKeyboard<'a>>,
+        markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

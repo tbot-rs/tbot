@@ -1,6 +1,5 @@
 use super::*;
-use crate::internal::Client;
-use types::input_file::*;
+use crate::{internal::Client, types::{input_file::*, keyboard::inline}};
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
 ///
@@ -13,7 +12,7 @@ pub struct EditMessageMedia<'a, C> {
     chat_id: types::ChatId<'a>,
     message_id: u32,
     media: EditableMedia<'a>,
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditMessageMedia<'a, C> {
@@ -35,7 +34,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard};
 use parameters::NotificationState;
 
 /// Represents the [`sendLocation`][docs] method.
@@ -22,7 +22,7 @@ pub struct SendLocation<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::AnyKeyboard<'a>>,
+    reply_markup: Option<keyboard::Any<'a>>,
 }
 
 impl<'a, C> SendLocation<'a, C> {
@@ -66,7 +66,7 @@ impl<'a, C> SendLocation<'a, C> {
     /// Confgiures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::AnyKeyboard<'a>>,
+        markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

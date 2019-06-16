@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard::inline};
 
 /// Represents the [`editMessageCaption`][docs] method for chat messages.
 ///
@@ -17,7 +17,7 @@ pub struct EditMessageCaption<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<types::ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditMessageCaption<'a, C> {
@@ -46,7 +46,7 @@ impl<'a, C> EditMessageCaption<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

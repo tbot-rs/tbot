@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard};
 
 /// Represents the [`stopPoll`][docs] method.
 ///
@@ -14,7 +14,7 @@ pub struct StopPoll<'a, C> {
     chat_id: types::ChatId<'a>,
     message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::AnyKeyboard<'a>>,
+    reply_markup: Option<keyboard::Any<'a>>,
 }
 
 impl<'a, C> StopPoll<'a, C> {
@@ -36,7 +36,7 @@ impl<'a, C> StopPoll<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::AnyKeyboard<'a>>,
+        markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

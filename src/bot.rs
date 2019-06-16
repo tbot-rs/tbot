@@ -1,8 +1,7 @@
 use super::*;
 use crate::{
     event_loop::EventLoop, methods::*,
-    types::inline_query_result::InlineQueryResult, types::input_file::*,
-    types::InlineQueryId,
+    types::{inline_query_result::InlineQueryResult, input_file::*, InlineQueryId, keyboard::inline},
 };
 use std::sync::Arc;
 
@@ -242,7 +241,7 @@ impl<C> Bot<C> {
     pub fn edit_inline_reply_markup<'a>(
         &'a self,
         inline_message_id: &'a str,
-        reply_markup: types::InlineKeyboard<'a>,
+        reply_markup: inline::Keyboard<'a>,
     ) -> methods::EditInlineReplyMarkup<'a, C> {
         methods::EditInlineReplyMarkup::new(
             &self.client,
@@ -319,7 +318,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl Into<types::ChatId<'a>>,
         message_id: u32,
-        reply_markup: types::InlineKeyboard<'a>,
+        reply_markup: inline::Keyboard<'a>,
     ) -> methods::EditMessageReplyMarkup<'a, C> {
         methods::EditMessageReplyMarkup::new(
             &self.client,

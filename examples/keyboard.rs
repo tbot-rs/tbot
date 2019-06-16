@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::{InlineButton, InlineButtonType, InlineKeyboard},
+    types::keyboard::inline::{Button, ButtonKind, Keyboard},
 };
 
 const CHAT: i64 = 0;
@@ -11,20 +11,20 @@ fn main() {
 
     let message = bot
         .send_message(CHAT, "This is a keyboard done with tbot!")
-        .reply_markup(InlineKeyboard::new(vec![
+        .reply_markup(Keyboard::new(vec![
             vec![
-                InlineButton::new(
+                Button::new(
                     "Cool!",
-                    InlineButtonType::CallbackData("cool"),
+                    ButtonKind::CallbackData("cool"),
                 ),
-                InlineButton::new(
+                Button::new(
                     "Amazing!",
-                    InlineButtonType::CallbackData("amazing"),
+                    ButtonKind::CallbackData("amazing"),
                 ),
             ],
-            vec![InlineButton::new(
+            vec![Button::new(
                 "I wanna get started with it!",
-                InlineButtonType::Url(TUTORIAL),
+                ButtonKind::Url(TUTORIAL),
             )],
         ]))
         .into_future()

@@ -9,6 +9,7 @@ pub mod inline_query_result;
 pub mod input_file;
 pub mod input_message_content;
 pub mod raw;
+pub mod keyboard;
 
 mod animation;
 mod audio;
@@ -28,7 +29,6 @@ mod game;
 mod game_high_score;
 mod inline_query;
 mod invoice;
-mod keyboards;
 mod location;
 mod login_url;
 mod mask_position;
@@ -54,7 +54,7 @@ pub use {
     chosen_inline_result::*, contact::*, document::*, file::*, game::*,
     game_high_score::*, inline_query::*,
     inline_query_result::InlineQueryResult,
-    input_message_content::InputMessageContent, invoice::*, keyboards::*,
+    input_message_content::InputMessageContent, invoice::*,
     location::*, login_url::*, mask_position::*, message::*, message_entity::*,
     parse_mode::*, photo_size::*, poll::*, sticker::*, sticker_set::*,
     updates::*, user::*, user_profile_photos::*, venue::*, video::*,

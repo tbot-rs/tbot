@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard::inline};
 
 /// Represents the [`editMessageLiveLocation`][docs] method for chat messages.
 ///
@@ -16,7 +16,7 @@ pub struct EditMessageLocation<'a, C> {
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditMessageLocation<'a, C> {
@@ -39,7 +39,7 @@ impl<'a, C> EditMessageLocation<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard::inline};
 
 /// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
 ///
@@ -14,7 +14,7 @@ pub struct StopMessageLocation<'a, C> {
     chat_id: types::ChatId<'a>,
     message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> StopMessageLocation<'a, C> {
@@ -34,7 +34,7 @@ impl<'a, C> StopMessageLocation<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

@@ -2,7 +2,7 @@
 //!
 //! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 
-use crate::types::InlineKeyboard;
+use super::keyboard::inline;
 use serde::Serialize;
 
 pub mod article;
@@ -85,7 +85,7 @@ pub struct InlineQueryResult<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a> InlineQueryResult<'a> {
@@ -99,7 +99,7 @@ impl<'a> InlineQueryResult<'a> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

@@ -1,6 +1,5 @@
 use super::*;
-use crate::internal::Client;
-
+use crate::{internal::Client, types::keyboard::inline};
 /// Represents the [`editMessageCaption`][docs] method for inline messages.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
@@ -16,7 +15,7 @@ pub struct EditInlineCaption<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<types::ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditInlineCaption<'a, C> {
@@ -43,7 +42,7 @@ impl<'a, C> EditInlineCaption<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

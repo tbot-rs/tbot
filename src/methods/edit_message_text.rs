@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{internal::Client, types::keyboard::inline};
 use parameters::WebPagePreviewState;
 
 /// Represents the [`editMessageText`][docs] method for chat messages.
@@ -20,7 +20,7 @@ pub struct EditMessageText<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditMessageText<'a, C> {
@@ -56,7 +56,7 @@ impl<'a, C> EditMessageText<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

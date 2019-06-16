@@ -1,11 +1,14 @@
+//! Types representing reply keyboards.
+
 use super::*;
+use serde::ser::SerializeMap;
 
 /// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[must_use]
-pub struct ReplyButton<'a> {
+pub struct Button<'a> {
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     request_contact: Option<bool>,
@@ -13,8 +16,8 @@ pub struct ReplyButton<'a> {
     request_localization: Option<bool>,
 }
 
-impl<'a> ReplyButton<'a> {
-    /// Constructs a new `ReplyButton`.
+impl<'a> Button<'a> {
+    /// Constructs a reply `Button`.
     pub const fn new(text: &'a str) -> Self {
         Self {
             text,
@@ -40,8 +43,8 @@ impl<'a> ReplyButton<'a> {
 ///
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
-pub struct ReplyKeyboard<'a> {
-    keyboard: Vec<Vec<ReplyButton<'a>>>,
+pub struct Keyboard<'a> {
+    keyboard: Vec<Vec<Button<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     resize_keyboard: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -50,9 +53,9 @@ pub struct ReplyKeyboard<'a> {
     selective: Option<bool>,
 }
 
-impl<'a> ReplyKeyboard<'a> {
-    /// Constructs a new `ReplyKeyboard`.
-    pub const fn new(buttons: Vec<Vec<ReplyButton<'a>>>) -> Self {
+impl<'a> Keyboard<'a> {
+    /// Constructs a reply `Keyboard`.
+    pub const fn new(buttons: Vec<Vec<Button<'a>>>) -> Self {
         Self {
             keyboard: buttons,
             resize_keyboard: None,
@@ -79,3 +82,48 @@ impl<'a> ReplyKeyboard<'a> {
         self
     }
 }
+/// Represents a [`ReplyKeyboardRemove`].
+///
+/// [`ReplyKeyboardRemove`]: https://core.telegram.org/bots/api#replykeyboardremove
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Default)]
+#[must_use]
+pub struct Remove {
+    // remove_keyboard is added when serializing
+    selective: Option<bool>,
+}
+
+impl Remove {
+    /// Constructs a `reply::Remove`.
+    pub const fn new() -> Self {
+        Self {
+            selective: None,
+        }
+    }
+
+    /// Configures `selective`.
+    pub fn selective(mut self, is_selective: bool) -> Self {
+        self.selective = Some(is_selective);
+        self
+    }
+}
+
+impl serde::Serialize for Remove {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let len = if self.selective.is_some() {
+            2
+        } else {
+            1
+        };
+
+        let mut map = s.serialize_map(Some(len))?;
+
+        map.serialize_entry("remove_keyboard", &true)?;
+
+        if let Some(selective) = self.selective {
+            map.serialize_entry("selective", &selective)?;
+        }
+
+        map.end()
+    }
+}
+
