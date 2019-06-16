@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::{input_file::{Audio, InputFile}, keyboard}};
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{Audio, InputFile},
+        keyboard,
+    },
+};
 use parameters::NotificationState;
 
 /// Represents the [`sendAudio`][docs] method.

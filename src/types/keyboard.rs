@@ -7,6 +7,4 @@ mod force_reply;
 pub mod inline;
 pub mod reply;
 
-pub use {
-    any::*, force_reply::*,
-};
+pub use {any::*, force_reply::*};

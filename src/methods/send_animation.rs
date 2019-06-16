@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::{input_file::{Animation, InputFile}, keyboard}};
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{Animation, InputFile},
+        keyboard,
+    },
+};
 use parameters::NotificationState;
 
 /// Represents the [`sendAnimation`][docs] method.

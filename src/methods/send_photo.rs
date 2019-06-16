@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::{keyboard, input_file::{InputFile, Photo}}};
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{InputFile, Photo},
+        keyboard,
+    },
+};
 use parameters::NotificationState;
 
 /// Represents the [`sendPhoto`][docs] method.

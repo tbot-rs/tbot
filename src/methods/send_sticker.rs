@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::{input_file::{InputFile, Sticker}, keyboard}};
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{InputFile, Sticker},
+        keyboard,
+    },
+};
 use parameters::NotificationState;
 
 /// Represents the [`sendSticker`][docs] method.

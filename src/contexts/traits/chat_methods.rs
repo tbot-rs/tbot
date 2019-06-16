@@ -1,4 +1,8 @@
-use crate::{methods::*, types::{self, input_file::*, keyboard::inline}, Bot};
+use crate::{
+    methods::*,
+    types::{self, input_file::*, keyboard::inline},
+    Bot,
+};
 
 /// Provides methods appliable to all messages.
 pub trait ChatMethods<'a, C: 'static>: crate::Sealed {

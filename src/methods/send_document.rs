@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::{input_file::{Document, InputFile}, keyboard}};
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{Document, InputFile},
+        keyboard,
+    },
+};
 use parameters::NotificationState;
 
 /// Represents the [`sendDocument`][docs] method.

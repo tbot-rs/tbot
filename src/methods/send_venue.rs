@@ -79,7 +79,10 @@ impl<'a, C> SendVenue<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any<'a>>) -> Self {
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<keyboard::Any<'a>>,
+    ) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

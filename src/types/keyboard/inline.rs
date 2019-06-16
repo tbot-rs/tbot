@@ -1,7 +1,7 @@
 //! Types representing inline keyboards.
 
-use crate::types::{LoginUrl, CallbackGame};
-use serde::{Serialize, ser::SerializeMap};
+use crate::types::{CallbackGame, LoginUrl};
+use serde::{ser::SerializeMap, Serialize};
 
 /// A shorthand for inline markup.
 pub type Markup<'a> = &'a [&'a [Button<'a>]];
@@ -65,7 +65,9 @@ impl Serialize for Button<'_> {
 
         match self.kind {
             ButtonKind::Url(url) => map.serialize_entry("url", url),
-            ButtonKind::LoginUrl(login_url) => map.serialize_entry("login_url", &login_url),
+            ButtonKind::LoginUrl(login_url) => {
+                map.serialize_entry("login_url", &login_url)
+            }
             ButtonKind::CallbackData(callback_data) => {
                 map.serialize_entry("callback_data", callback_data)
             }

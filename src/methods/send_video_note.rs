@@ -1,5 +1,11 @@
 use super::*;
-use crate::{internal::Client, types::{keyboard, input_file::{InputFile, VideoNote}}};
+use crate::{
+    internal::Client,
+    types::{
+        input_file::{InputFile, VideoNote},
+        keyboard,
+    },
+};
 use parameters::NotificationState;
 
 /// Represents the [`sendVideoNote`][docs] method.

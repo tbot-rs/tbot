@@ -1,7 +1,11 @@
 use super::*;
 use crate::{
-    event_loop::EventLoop, methods::*,
-    types::{inline_query_result::InlineQueryResult, input_file::*, InlineQueryId, keyboard::inline},
+    event_loop::EventLoop,
+    methods::*,
+    types::{
+        inline_query_result::InlineQueryResult, input_file::*,
+        keyboard::inline, InlineQueryId,
+    },
 };
 use std::sync::Arc;
 

@@ -1,5 +1,8 @@
 use super::*;
-use crate::{internal::Client, types::{input_file::*, keyboard::inline}};
+use crate::{
+    internal::Client,
+    types::{input_file::*, keyboard::inline},
+};
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
 ///
