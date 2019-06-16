@@ -19,7 +19,7 @@
 //! ```no_run
 //! use tbot::{
 //!     prelude::*,
-//!     types::ParseMode::Markdown,
+//!     types::parameters::ParseMode::Markdown,
 //!     Token,
 //! };
 //!
