@@ -18,8 +18,7 @@ mod chosen_inline_result;
 mod contact;
 mod document;
 mod file;
-mod game;
-mod game_high_score;
+pub mod game;
 pub mod inline_query;
 mod invoice;
 mod location;
@@ -39,9 +38,9 @@ pub mod webhook_info;
 
 pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
-    document::*, file::*, game::*, game_high_score::*,
-    inline_query::InlineQuery, input_message_content::InputMessageContent,
-    invoice::*, location::*, login_url::*, message::Message, photo_size::*,
-    poll::*, sticker::Sticker, update::Update, user::User, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::WebhookInfo,
+    document::*, file::*, game::Game, inline_query::InlineQuery,
+    input_message_content::InputMessageContent, invoice::*, location::*,
+    login_url::*, message::Message, photo_size::*, poll::*, sticker::Sticker,
+    update::Update, user::User, venue::*, video::*, video_note::*, voice::*,
+    webhook_info::WebhookInfo,
 };

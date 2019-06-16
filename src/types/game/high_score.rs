@@ -1,10 +1,12 @@
-use super::*;
+use crate::types::User;
+use serde::Deserialize;
 
 /// Represents a [`GameHighScore`].
 ///
 /// [`GameHighScore`]: https://core.telegram.org/bots/api#gamehighscore
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct GameHighScore {
+// todo: #[non_exhaustive]
+pub struct HighScore {
     /// Position of the user in the high score table.
     pub position: u32,
     /// Information about the user.

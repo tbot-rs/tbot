@@ -1,7 +1,5 @@
 use super::*;
-use crate::internal::Client;
-
-type HighScores = Vec<types::GameHighScore>;
+use crate::{internal::Client, types::game::HighScore};
 
 /// Represents the [`getGameHighScores`][docs] method for inline messages.
 ///
@@ -41,7 +39,7 @@ where
 {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
-    type Item = HighScores;
+    type Item = Vec<HighScore>;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {

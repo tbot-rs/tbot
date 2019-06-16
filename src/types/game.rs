@@ -1,10 +1,17 @@
+//! Types related to games.
+
 use super::{message::text::Entity, Animation, PhotoSize};
 use serde::Deserialize;
+
+mod high_score;
+
+pub use high_score::*;
 
 /// Represents a [`Game`].
 ///
 /// [`Game`]: https://core.telegram.org/bots/api#game
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Game {
     /// The title of the game.
     pub title: String,
