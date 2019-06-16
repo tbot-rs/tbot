@@ -32,8 +32,7 @@ mod photo_size;
 mod poll;
 pub mod sticker;
 mod updates;
-mod user;
-mod user_profile_photos;
+pub mod user;
 mod venue;
 mod video;
 mod video_note;
@@ -46,6 +45,6 @@ pub use {
     inline_query::*, inline_query_result::InlineQueryResult,
     input_message_content::InputMessageContent, invoice::*, location::*,
     login_url::*, message::Message, parse_mode::*, photo_size::*, poll::*,
-    sticker::Sticker, updates::*, user::*, user_profile_photos::*, venue::*,
-    video::*, video_note::*, voice::*, webhook_info::*,
+    sticker::Sticker, updates::*, user::User, venue::*, video::*,
+    video_note::*, voice::*, webhook_info::*,
 };

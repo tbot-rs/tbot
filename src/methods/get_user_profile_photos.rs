@@ -1,9 +1,5 @@
 use super::*;
-use crate::internal::Client;
-
-// This is a false positive as it's used in `into_future`'s signature
-#[allow(dead_code)]
-type Photos = Vec<Vec<types::UserProfilePhotos>>;
+use crate::{internal::Client, types::user};
 
 /// Represents the [`getUserProfilePhotos`][docs] method.
 ///
@@ -58,7 +54,7 @@ where
 {
     type Future =
         Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
-    type Item = Photos;
+    type Item = user::ProfilePhotos;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {
