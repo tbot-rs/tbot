@@ -1,6 +1,7 @@
-// use super::*;
 use super::EventLoop;
-use crate::{methods, prelude::*, types::parameters::Updates, Bot};
+use crate::{
+    internal::BoxFuture, methods, prelude::*, types::parameters::Updates, Bot,
+};
 use futures::Stream;
 use hyper::{
     service::service_fn, Body, Error, Method, Request, Response, Server,
@@ -138,7 +139,7 @@ fn handle<C>(
     bot: Arc<Bot<C>>,
     event_loop: Arc<EventLoop<C>>,
     request: Request<Body>,
-) -> Box<dyn Future<Item = Response<Body>, Error = Error> + Send>
+) -> BoxFuture<Response<Body>, Error>
 where
     C: Send + Sync + 'static,
 {

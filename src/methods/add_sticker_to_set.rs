@@ -1,6 +1,6 @@
 use super::*;
 use crate::{
-    internal::Client,
+    internal::{BoxFuture, Client},
     types::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
@@ -55,8 +55,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

@@ -16,6 +16,6 @@ macro_rules! common {
             $(#[doc = $field_doc] pub $field: $type,)+
         }
 
-        impl<C> crate::Sealed for $name<C> { }
+        impl<C> crate::internal::Sealed for $name<C> { }
     }
 }

@@ -5,7 +5,7 @@ use crate::{
 };
 
 /// Provides methods appliable to all messages.
-pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
+pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     #[doc(hidden)]
     fn bot(&'a self) -> &'a Bot<C>;
     #[doc(hidden)]

@@ -1,6 +1,11 @@
 // use super::*;
 use super::{send_method, DeliveryError};
-use crate::{internal::Client, prelude::*, types::inline_query, Token};
+use crate::{
+    internal::{BoxFuture, Client},
+    prelude::*,
+    types::inline_query,
+    Token,
+};
 use serde::Serialize;
 
 /// Represents the [`answerInlineQuery`][docs] method.
@@ -79,8 +84,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

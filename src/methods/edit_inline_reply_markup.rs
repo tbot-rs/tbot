@@ -1,5 +1,8 @@
 use super::*;
-use crate::{internal::Client, types::keyboard::inline};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::keyboard::inline,
+};
 
 /// Represents the [`editMessageReplyMarkup`][docs] method for inline messages.
 ///
@@ -37,8 +40,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 
