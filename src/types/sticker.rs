@@ -1,4 +1,4 @@
-//! Types representing a sticker.
+//! Types related to stickers.
 
 use super::PhotoSize;
 use serde::Deserialize;

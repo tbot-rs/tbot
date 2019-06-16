@@ -1,4 +1,4 @@
-//! Types representing a message.
+//! Types related to messages.
 
 use super::*;
 

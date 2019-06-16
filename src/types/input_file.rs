@@ -1,4 +1,4 @@
-//! Contains types that are represent uploadable media.
+//! Types representing uploadable media.
 
 mod animation;
 mod audio;

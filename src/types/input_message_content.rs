@@ -1,6 +1,4 @@
-//! Types for representing an [`InputMessageContent`][docs].
-//!
-//! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
+//! Types related to input message contents.
 
 use serde::Serialize;
 

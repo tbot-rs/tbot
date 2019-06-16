@@ -1,4 +1,4 @@
-//! Types used as parameters.
+//! Types used as parameters, mainly for methods.
 
 mod chat_id;
 mod notification_state;

@@ -1,4 +1,4 @@
-//! Types regarding users.
+//! Types related to users.
 
 use super::*;
 
