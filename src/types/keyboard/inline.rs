@@ -3,6 +3,9 @@
 use crate::types::{LoginUrl, CallbackGame};
 use serde::{Serialize, ser::SerializeMap};
 
+/// A shorthand for inline markup.
+pub type Markup<'a> = &'a [&'a [Button<'a>]];
+
 /// Represents different types an inline button can be.
 ///
 /// Complete descriptions can be found in [Bots API docs][docs].
@@ -41,7 +44,7 @@ pub struct Button<'a> {
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Keyboard<'a> {
-    inline_keyboard: &'a [&'a [Button<'a>]],
+    inline_keyboard: Markup<'a>,
 }
 
 impl<'a> Button<'a> {
@@ -84,9 +87,15 @@ impl Serialize for Button<'_> {
 
 impl<'a> Keyboard<'a> {
     /// Constructs an inline `Keyboard`.
-    pub const fn new(buttons: &'a [&'a [Button<'a>]]) -> Self {
+    pub const fn new(buttons: Markup<'a>) -> Self {
         Self {
             inline_keyboard: buttons,
         }
+    }
+}
+
+impl<'a> From<Markup<'a>> for Keyboard<'a> {
+    fn from(markup: Markup<'a>) -> Self {
+        Self::new(markup)
     }
 }

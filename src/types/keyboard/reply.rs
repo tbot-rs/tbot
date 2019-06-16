@@ -3,6 +3,9 @@
 use super::*;
 use serde::ser::SerializeMap;
 
+/// A shorthand for reply markup.
+pub type Markup<'a> = &'a [&'a [Button<'a>]];
+
 /// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
@@ -21,7 +24,7 @@ pub struct Button<'a> {
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Keyboard<'a> {
-    keyboard: &'a [&'a [Button<'a>]],
+    keyboard: Markup<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     resize_keyboard: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -65,7 +68,7 @@ impl<'a> Button<'a> {
 
 impl<'a> Keyboard<'a> {
     /// Constructs a reply `Keyboard`.
-    pub const fn new(keyboard: &'a [&'a [Button<'a>]]) -> Self {
+    pub const fn new(keyboard: Markup<'a>) -> Self {
         Self {
             keyboard,
             resize_keyboard: None,
@@ -90,6 +93,12 @@ impl<'a> Keyboard<'a> {
     pub fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
+    }
+}
+
+impl<'a> From<Markup<'a>> for Keyboard<'a> {
+    fn from(markup: Markup<'a>) -> Self {
+        Self::new(markup)
     }
 }
 

@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::keyboard::inline::{Button, ButtonKind, Keyboard},
+    types::keyboard::inline::{Button, ButtonKind},
 };
 
 const CHAT: i64 = 0;
@@ -11,7 +11,7 @@ fn main() {
 
     let message = bot
         .send_message(CHAT, "This is a keyboard done with tbot!")
-        .reply_markup(Keyboard::new(&[
+        .reply_markup(&[
             &[
                 Button::new(
                     "Cool!",
@@ -21,12 +21,12 @@ fn main() {
                     "Amazing!",
                     ButtonKind::CallbackData("amazing"),
                 ),
-            ],
+            ][..],
             &[Button::new(
                 "I wanna get started with it!",
                 ButtonKind::Url(TUTORIAL),
             )],
-        ]))
+        ][..])
         .into_future()
         .map_err(|error| {
             dbg!(error);
