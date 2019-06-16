@@ -1,11 +1,6 @@
 // use super::*;
 use super::{send_method, DeliveryError};
-use crate::{
-    internal::Client,
-    prelude::*,
-    types::inline_query,
-    Token,
-};
+use crate::{internal::Client, prelude::*, types::inline_query, Token};
 use serde::Serialize;
 
 /// Represents the [`answerInlineQuery`][docs] method.

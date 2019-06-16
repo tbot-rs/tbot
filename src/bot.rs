@@ -3,8 +3,7 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        chat, inline_query,
-        input_file::*, keyboard::inline, parameters::ChatId,
+        chat, inline_query, input_file::*, keyboard::inline, parameters::ChatId,
     },
 };
 use std::sync::Arc;

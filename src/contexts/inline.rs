@@ -1,7 +1,4 @@
-use crate::{
-    methods::AnswerInlineQuery,
-    types::inline_query,
-};
+use crate::{methods::AnswerInlineQuery, types::inline_query};
 
 common! {
     /// The context for [`inline`][handler] handlers.
