@@ -1,113 +1,12 @@
+//! Types representing a message.
+
 use super::*;
 
-/// Represents a forward source.
-#[derive(Debug, PartialEq, Clone)]
-// It warns on Channel — we'll need to consider to box it when we unraw chat
-// types.
-#[allow(clippy::large_enum_variant)]
-pub enum ForwardSource {
-    /// The forward is from a user.
-    User(User),
-    /// The forward is from a user who decided to hide their profile.
-    HiddenUser(String),
-    /// The forward is from a channel.
-    Channel {
-        /// Information about the channel.
-        chat: Chat,
-        /// The ID of the original message.
-        message_id: u32,
-        /// The author's signature.
-        signature: Option<String>,
-    },
-}
+pub mod forward;
+mod kind;
+pub mod text;
 
-/// Represents forward information.
-#[derive(Debug, PartialEq, Clone)]
-pub struct Forward {
-    /// The author of the original message.
-    pub from: ForwardSource,
-    /// The timestamp of the original message.
-    pub date: i64,
-}
-
-/// Represents either a text message or a caption.
-#[derive(Debug, PartialEq, Clone)]
-pub struct Text {
-    /// The text/caption. If there's no text, will be empty.
-    pub value: String,
-    /// The entities in the text/caption. If there are none, will be empty.
-    pub entities: Vec<MessageEntity>,
-}
-
-/// Represents kinds of messages.
-#[derive(Debug, PartialEq, Clone)]
-// It warns on SuccessfulPayment — we'll need to consider to box it when we
-// unraw payment types.
-#[allow(clippy::large_enum_variant)]
-pub enum MessageKind {
-    /// A text message.
-    Text(Text),
-    /// An audio. The second item is the caption.
-    Audio(Audio, Text),
-    /// A document. The second item is the caption.
-    Document(Document, Text),
-    /// An invitation to play a game.
-    Game(Game),
-    /// A photo. The second item is the caption, the third one is
-    /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Photo(Vec<PhotoSize>, Text, Option<i32>),
-    /// A sticker.
-    Sticker(Sticker),
-    /// A video. The second item is the caption, the third one is
-    /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Video(Video, Text, Option<i32>),
-    /// A voice message. The second item is the caption.
-    Voice(Voice, Text),
-    /// A video note.
-    VideoNote(VideoNote),
-    /// A contact.
-    Contact(Contact),
-    /// A location.
-    Location(Location),
-    /// A venue.
-    Venue(Venue),
-    /// An animation. The second item is the caption.
-    Animation(Animation, Text),
-    /// A poll.
-    Poll(Poll),
-    /// A service message about new chat members.
-    NewChatMembers(Vec<User>),
-    /// A service message about a member who left.
-    LeftChatMember(User),
-    /// A service message about the new chat title.
-    NewChatTitle(String),
-    /// A service message about the new chat photo.
-    NewChatPhoto(Vec<PhotoSize>),
-    /// A service message that the chat photo was deleted.
-    ChatPhotoDeleted,
-    /// A service message that the group was created.
-    GroupCreated,
-    /// A service message that the supergroup was created.
-    SupergroupCreated,
-    /// A service message that the channel was created.
-    ChannelCreated,
-    /// A service message that the group migrated to a supergroup with this ID.
-    MigrateTo(i64),
-    /// A service message that the supergroup used to be a group with this ID.
-    MigrateFrom(i64),
-    /// A service message that this message was pinned.
-    Pinned(Box<Message>),
-    /// An invoice.
-    Invoice(Invoice),
-    /// A service message about a successful payment.
-    SuccessfulPayment(raw::SuccessfulPayment),
-    /// A connected website.
-    ConnectedWebsite(String),
-    /// Passport data.
-    PassportData(raw::PassportData),
-    /// Some unkonwn message kind. Probably means `tbot` is outdated.
-    Unknown,
-}
+pub use {forward::Forward, kind::Kind, text::Text};
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
@@ -130,10 +29,10 @@ pub struct Message {
     /// The author's signature, if enabled for the channel.
     pub author_signature: Option<String>,
     /// The kind of the message.
-    pub kind: MessageKind,
+    pub kind: Kind,
 }
 
-pub(crate) struct MessageData {
+pub(crate) struct Data {
     pub id: u32,
     pub from: Option<User>,
     pub date: i64,
@@ -147,7 +46,7 @@ pub(crate) struct MessageData {
 impl Message {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(data: MessageData, kind: MessageKind) -> Self {
+    pub(crate) fn new(data: Data, kind: Kind) -> Self {
         Self {
             id: data.id,
             from: data.from,
@@ -163,8 +62,8 @@ impl Message {
 
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn split(self) -> (MessageData, MessageKind) {
-        let data = MessageData {
+    pub(crate) fn split(self) -> (Data, Kind) {
+        let data = Data {
             id: self.id,
             from: self.from,
             date: self.date,
@@ -364,7 +263,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         }
 
         let forward_source = if let Some(chat) = forward_from_chat {
-            Some(ForwardSource::Channel {
+            Some(forward::From::Channel {
                 chat,
                 message_id: forward_from_message_id.ok_or_else(|| {
                     serde::de::Error::missing_field(FORWARD_FROM_MESSAGE_ID)
@@ -372,9 +271,9 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 signature: forward_signature,
             })
         } else if let Some(user) = forward_from {
-            Some(ForwardSource::User(user))
+            Some(forward::From::User(user))
         } else if let Some(hidden_user) = forward_sender_name {
-            Some(ForwardSource::HiddenUser(hidden_user))
+            Some(forward::From::HiddenUser(hidden_user))
         } else {
             None
         };
@@ -401,65 +300,65 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 entities: entities.unwrap_or_else(Vec::new),
             };
 
-            MessageKind::Text(text)
+            Kind::Text(text)
         } else if let Some(audio) = audio {
-            MessageKind::Audio(audio, caption)
+            Kind::Audio(audio, caption)
         } else if let Some(game) = game {
-            MessageKind::Game(game)
+            Kind::Game(game)
         } else if let Some(photo) = photo {
-            MessageKind::Photo(photo, caption, media_group_id)
+            Kind::Photo(photo, caption, media_group_id)
         } else if let Some(sticker) = sticker {
-            MessageKind::Sticker(sticker)
+            Kind::Sticker(sticker)
         } else if let Some(video) = video {
-            MessageKind::Video(video, caption, media_group_id)
+            Kind::Video(video, caption, media_group_id)
         } else if let Some(voice) = voice {
-            MessageKind::Voice(voice, caption)
+            Kind::Voice(voice, caption)
         } else if let Some(video_note) = video_note {
-            MessageKind::VideoNote(video_note)
+            Kind::VideoNote(video_note)
         } else if let Some(contact) = contact {
-            MessageKind::Contact(contact)
+            Kind::Contact(contact)
         } else if let Some(location) = location {
-            MessageKind::Location(location)
+            Kind::Location(location)
         } else if let Some(venue) = venue {
-            MessageKind::Venue(venue)
+            Kind::Venue(venue)
         } else if let Some(poll) = poll {
-            MessageKind::Poll(poll)
+            Kind::Poll(poll)
         } else if let Some(animation) = animation {
-            MessageKind::Animation(animation, caption)
+            Kind::Animation(animation, caption)
         } else if let Some(document) = document {
-            MessageKind::Document(document, caption)
+            Kind::Document(document, caption)
         } else if let Some(new_chat_members) = new_chat_members {
-            MessageKind::NewChatMembers(new_chat_members)
+            Kind::NewChatMembers(new_chat_members)
         } else if let Some(left_chat_member) = left_chat_member {
-            MessageKind::LeftChatMember(left_chat_member)
+            Kind::LeftChatMember(left_chat_member)
         } else if let Some(new_chat_title) = new_chat_title {
-            MessageKind::NewChatTitle(new_chat_title)
+            Kind::NewChatTitle(new_chat_title)
         } else if let Some(new_chat_photo) = new_chat_photo {
-            MessageKind::NewChatPhoto(new_chat_photo)
+            Kind::NewChatPhoto(new_chat_photo)
         } else if delete_chat_photo {
-            MessageKind::ChatPhotoDeleted
+            Kind::ChatPhotoDeleted
         } else if group_chat_created {
-            MessageKind::GroupCreated
+            Kind::GroupCreated
         } else if supergroup_chat_created {
-            MessageKind::SupergroupCreated
+            Kind::SupergroupCreated
         } else if channel_chat_created {
-            MessageKind::ChannelCreated
+            Kind::ChannelCreated
         } else if let Some(migrate_to) = migrate_to_chat_id {
-            MessageKind::MigrateTo(migrate_to)
+            Kind::MigrateTo(migrate_to)
         } else if let Some(migrate_from) = migrate_from_chat_id {
-            MessageKind::MigrateFrom(migrate_from)
+            Kind::MigrateFrom(migrate_from)
         } else if let Some(pinned) = pinned_message {
-            MessageKind::Pinned(pinned)
+            Kind::Pinned(pinned)
         } else if let Some(invoice) = invoice {
-            MessageKind::Invoice(invoice)
+            Kind::Invoice(invoice)
         } else if let Some(successful_payment) = successful_payment {
-            MessageKind::SuccessfulPayment(successful_payment)
+            Kind::SuccessfulPayment(successful_payment)
         } else if let Some(connected_website) = connected_website {
-            MessageKind::ConnectedWebsite(connected_website)
+            Kind::ConnectedWebsite(connected_website)
         } else if let Some(passport_data) = passport_data {
-            MessageKind::PassportData(passport_data)
+            Kind::PassportData(passport_data)
         } else {
-            MessageKind::Unknown
+            Kind::Unknown
         };
 
         Ok(Message {

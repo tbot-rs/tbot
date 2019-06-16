@@ -1,4 +1,5 @@
-use super::*;
+use super::{message::text::Entity, Animation, PhotoSize};
+use serde::Deserialize;
 
 /// Represents a [`Game`].
 ///
@@ -11,10 +12,11 @@ pub struct Game {
     pub description: String,
     /// The photo of the game.
     pub photo: Vec<PhotoSize>,
+    // todo: replace with `Option<message::Text>`
     /// The text of the game.
     pub text: Option<String>,
     /// The text entities of the game.
-    pub text_entities: Option<Vec<MessageEntity>>,
+    pub text_entities: Option<Vec<Entity>>,
     /// The animation of the game.
     pub animation: Option<Animation>,
 }

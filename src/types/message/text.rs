@@ -1,8 +1,23 @@
-use super::*;
+//! Types representing text.
+
+use crate::types::User;
+use serde::de::{Deserialize, Deserializer, Error, Visitor};
+use std::fmt::{self, Formatter};
+
+/// Represents either a text message or a caption.
+#[derive(Debug, PartialEq, Clone)]
+// todo: #[non_exhaustive]
+pub struct Text {
+    /// The text/caption. If there's no text, will be empty.
+    pub value: String,
+    /// The entities in the text/caption. If there are none, will be empty.
+    pub entities: Vec<Entity>,
+}
 
 /// Represents an entity's kind.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum MessageEntityKind {
+// todo: #[non_exhaustive]
+pub enum EntityKind {
     /// A mention.
     Mention,
     /// A hashtag.
@@ -33,9 +48,10 @@ pub enum MessageEntityKind {
 
 /// Represents an entity of a message.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct MessageEntity {
+// todo: #[non_exhaustive]
+pub struct Entity {
     /// The kind of the entity.
-    pub kind: MessageEntityKind,
+    pub kind: EntityKind,
     /// The offset at which the entity starts.
     pub offset: usize,
     /// The length of the entity.
@@ -62,13 +78,13 @@ const PRE: &str = "pre";
 const TEXT_LINK: &str = "text_link";
 const TEXT_MENTION: &str = "text_mention";
 
-struct MessageEntityVisitor;
+struct EntityVisitor;
 
-impl<'v> serde::de::Visitor<'v> for MessageEntityVisitor {
-    type Value = MessageEntity;
+impl<'v> Visitor<'v> for EntityVisitor {
+    type Value = Entity;
 
-    fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(fmt, "struct MessageEntity")
+    fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
+        write!(fmt, "struct Entity")
     }
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
@@ -97,25 +113,25 @@ impl<'v> serde::de::Visitor<'v> for MessageEntityVisitor {
         let kind = kind.ok_or_else(|| serde::de::Error::missing_field(TYPE))?;
 
         let kind = match kind.as_str() {
-            TEXT_MENTION => MessageEntityKind::TextMention(
+            TEXT_MENTION => EntityKind::TextMention(
                 user.ok_or_else(|| serde::de::Error::missing_field(USER))?,
             ),
-            TEXT_LINK => MessageEntityKind::TextLink(
+            TEXT_LINK => EntityKind::TextLink(
                 url.ok_or_else(|| serde::de::Error::missing_field(URL))?,
             ),
-            MENTION => MessageEntityKind::Mention,
-            HASHTAG => MessageEntityKind::Hashtag,
-            CASHTAG => MessageEntityKind::Cashtag,
-            BOT_COMMAND => MessageEntityKind::BotCommand,
-            URL => MessageEntityKind::Url,
-            EMAIL => MessageEntityKind::Email,
-            PHONE_NUMBER => MessageEntityKind::PhoneNumber,
-            BOLD => MessageEntityKind::Bold,
-            ITALIC => MessageEntityKind::Italic,
-            CODE => MessageEntityKind::Code,
-            PRE => MessageEntityKind::Pre,
+            MENTION => EntityKind::Mention,
+            HASHTAG => EntityKind::Hashtag,
+            CASHTAG => EntityKind::Cashtag,
+            BOT_COMMAND => EntityKind::BotCommand,
+            URL => EntityKind::Url,
+            EMAIL => EntityKind::Email,
+            PHONE_NUMBER => EntityKind::PhoneNumber,
+            BOLD => EntityKind::Bold,
+            ITALIC => EntityKind::Italic,
+            CODE => EntityKind::Code,
+            PRE => EntityKind::Pre,
             _ => {
-                return Err(serde::de::Error::unknown_variant(
+                return Err(Error::unknown_variant(
                     &kind,
                     &[
                         MENTION,
@@ -136,25 +152,23 @@ impl<'v> serde::de::Visitor<'v> for MessageEntityVisitor {
             }
         };
 
-        Ok(MessageEntity {
+        Ok(Entity {
             kind,
-            offset: offset
-                .ok_or_else(|| serde::de::Error::missing_field(OFFSET))?,
-            length: length
-                .ok_or_else(|| serde::de::Error::missing_field(LENGTH))?,
+            offset: offset.ok_or_else(|| Error::missing_field(OFFSET))?,
+            length: length.ok_or_else(|| Error::missing_field(LENGTH))?,
         })
     }
 }
 
-impl<'de> serde::Deserialize<'de> for MessageEntity {
+impl<'de> Deserialize<'de> for Entity {
     fn deserialize<D>(d: D) -> Result<Self, D::Error>
     where
-        D: serde::de::Deserializer<'de>,
+        D: Deserializer<'de>,
     {
         d.deserialize_struct(
-            "MessageEntity",
+            "Entity",
             &[TYPE, OFFSET, LENGTH, URL, USER],
-            MessageEntityVisitor,
+            EntityVisitor,
         )
     }
 }

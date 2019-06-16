@@ -3,10 +3,10 @@ media_message! {
         /// The animation.
         animation: types::Animation,
         /// The caption of the animation.
-        caption: types::Text,
+        caption: types::message::Text,
     } -> Bot::animation
 
-    fn new(caption: types::Text,) -> Self {
+    fn new(caption: types::message::Text,) -> Self {
         Self {
             caption: caption,
         }

@@ -3,10 +3,10 @@ media_message! {
         /// The document.
         document: types::Document,
         /// The caption of the document.
-        caption: types::Text,
+        caption: types::message::Text,
     } -> Bot::document
 
-    fn new(caption: types::Text,) -> Self {
+    fn new(caption: types::message::Text,) -> Self {
         Self {
             caption: caption,
         }

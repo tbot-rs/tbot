@@ -37,7 +37,7 @@ macro_rules! message_base {
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
                 bot: Arc<Bot<C>>,
-                data: types::MessageData,
+                data: types::message::Data,
                 $($param: $param_type,)*
             ) -> Self {
                 Self {
