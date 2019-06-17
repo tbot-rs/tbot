@@ -32,3 +32,25 @@ pub struct MaskPosition {
     /// The scale of the mask.
     pub scale: f64,
 }
+
+impl Point {
+    /// Checks if `self` is `Forehead`.
+    pub fn is_forehead(self) -> bool {
+        self == Point::Forehead
+    }
+
+    /// Checks if `self` is `Eyes`.
+    pub fn is_eyes(self) -> bool {
+        self == Point::Eyes
+    }
+
+    /// Checks if `self` is `Mouth`.
+    pub fn is_mouth(self) -> bool {
+        self == Point::Mouth
+    }
+
+    /// Checks if `self` is `Chin`.
+    pub fn is_chin(self) -> bool {
+        self == Point::Chin
+    }
+}

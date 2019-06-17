@@ -16,6 +16,40 @@ pub enum Any<'a> {
     ForceReply(ForceReply),
 }
 
+impl Any<'_> {
+    /// Checks if `self` is `Inline`.
+    pub fn is_inline(&self) -> bool {
+        match self {
+            Any::Inline(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Reply`.
+    pub fn is_reply(&self) -> bool {
+        match self {
+            Any::Reply(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `RemoveReply`.
+    pub fn is_remove_reply(&self) -> bool {
+        match self {
+            Any::RemoveReply(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `ForceReply`.
+    pub fn is_force_reply(&self) -> bool {
+        match self {
+            Any::ForceReply(..) => true,
+            _ => false,
+        }
+    }
+}
+
 impl<'a> From<inline::Keyboard<'a>> for Any<'a> {
     fn from(keyboard: inline::Keyboard<'a>) -> Self {
         Any::Inline(keyboard)

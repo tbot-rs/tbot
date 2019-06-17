@@ -18,6 +18,48 @@ pub enum EditableMedia<'a> {
     Video(&'a Video<'a>),
 }
 
+impl EditableMedia<'_> {
+    /// Checks if `self` is `Animation`.
+    pub fn is_animation(&self) -> bool {
+        match self {
+            EditableMedia::Animation(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Audio`.
+    pub fn is_audio(&self) -> bool {
+        match self {
+            EditableMedia::Audio(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Document`.
+    pub fn is_document(&self) -> bool {
+        match self {
+            EditableMedia::Document(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Photo`.
+    pub fn is_photo(&self) -> bool {
+        match self {
+            EditableMedia::Photo(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Video`.
+    pub fn is_video(&self) -> bool {
+        match self {
+            EditableMedia::Video(..) => true,
+            _ => false,
+        }
+    }
+}
+
 impl<'a> From<&'a Animation<'a>> for EditableMedia<'a> {
     fn from(animation: &'a Animation<'a>) -> Self {
         EditableMedia::Animation(animation)

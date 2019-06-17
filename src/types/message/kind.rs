@@ -71,3 +71,225 @@ pub enum Kind {
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }
+
+impl Kind {
+    /// Checks if `self` is `Text`.
+    pub fn is_text(&self) -> bool {
+        match self {
+            Kind::Text(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Audio`.
+    pub fn is_audio(&self) -> bool {
+        match self {
+            Kind::Audio(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Document`.
+    pub fn is_document(&self) -> bool {
+        match self {
+            Kind::Document(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Game`.
+    pub fn is_game(&self) -> bool {
+        match self {
+            Kind::Game(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Photo`.
+    pub fn is_photo(&self) -> bool {
+        match self {
+            Kind::Photo(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Sticker`.
+    pub fn is_sticker(&self) -> bool {
+        match self {
+            Kind::Sticker(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Video`.
+    pub fn is_video(&self) -> bool {
+        match self {
+            Kind::Video(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Voice`.
+    pub fn is_voice(&self) -> bool {
+        match self {
+            Kind::Voice(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `VideoNote`.
+    pub fn is_video_note(&self) -> bool {
+        match self {
+            Kind::VideoNote(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Contact`.
+    pub fn is_contact(&self) -> bool {
+        match self {
+            Kind::Contact(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Location`.
+    pub fn is_location(&self) -> bool {
+        match self {
+            Kind::Location(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Venue`.
+    pub fn is_venue(&self) -> bool {
+        match self {
+            Kind::Venue(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Animation`.
+    pub fn is_animation(&self) -> bool {
+        match self {
+            Kind::Animation(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Poll`.
+    pub fn is_poll(&self) -> bool {
+        match self {
+            Kind::Poll(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `NewChatMembers`.
+    pub fn is_new_chat_members(&self) -> bool {
+        match self {
+            Kind::NewChatMembers(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `LeftChatMember`.
+    pub fn is_left_chat_member(&self) -> bool {
+        match self {
+            Kind::LeftChatMember(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `NewChatTitle`.
+    pub fn is_new_chat_title(&self) -> bool {
+        match self {
+            Kind::NewChatTitle(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `NewChatPhoto`.
+    pub fn is_new_chat_photo(&self) -> bool {
+        match self {
+            Kind::NewChatPhoto(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `ChatPhotoDeleted`.
+    pub fn is_chat_photo_deleted(&self) -> bool {
+        *self == Kind::ChatPhotoDeleted
+    }
+
+    /// Checks if `self` is `GroupCreated`.
+    pub fn is_group_created(&self) -> bool {
+        *self == Kind::GroupCreated
+    }
+
+    /// Checks if `self` is `SupergroupCreated`.
+    pub fn is_supergroup_created(&self) -> bool {
+        *self == Kind::SupergroupCreated
+    }
+
+    /// Checks if `self` is `ChannelCreated`.
+    pub fn is_channel_created(&self) -> bool {
+        *self == Kind::ChannelCreated
+    }
+
+    /// Checks if `self` is `MigrateTo`.
+    pub fn is_migrate_to(&self) -> bool {
+        match self {
+            Kind::MigrateTo(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `MigrateFrom`.
+    pub fn is_migrate_from(&self) -> bool {
+        match self {
+            Kind::MigrateFrom(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Pinned`.
+    pub fn is_pinned(&self) -> bool {
+        match self {
+            Kind::Pinned(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Invoice`.
+    pub fn is_invoice(&self) -> bool {
+        match self {
+            Kind::Invoice(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `SuccessfulPayment`.
+    pub fn is_successful_payment(&self) -> bool {
+        match self {
+            Kind::SuccessfulPayment(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `ConnectedWebsite`.
+    pub fn is_connected_website(&self) -> bool {
+        match self {
+            Kind::ConnectedWebsite(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `PassportData`.
+    pub fn is_passport_data(&self) -> bool {
+        match self {
+            Kind::PassportData(..) => true,
+            _ => false,
+        }
+    }
+}

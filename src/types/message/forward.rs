@@ -31,3 +31,31 @@ pub struct Forward {
     /// The timestamp of the original message.
     pub date: i64,
 }
+
+impl From {
+    /// Checks if `self` is `User`.
+    pub fn is_user(&self) -> bool {
+        match self {
+            From::User(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Hidden`.
+    pub fn is_hidden_user(&self) -> bool {
+        match self {
+            From::HiddenUser(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Channel`.
+    pub fn is_channel(&self) -> bool {
+        match self {
+            From::Channel {
+                ..
+            } => true,
+            _ => false,
+        }
+    }
+}

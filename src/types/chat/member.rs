@@ -73,6 +73,53 @@ pub struct Member {
     pub status: Status,
 }
 
+impl Status {
+    /// Checks if `self` is `Creator`.
+    pub fn is_creator(&self) -> bool {
+        *self == Status::Creator
+    }
+
+    /// Checks if `self` is `Administrator`.
+    pub fn is_administator(&self) -> bool {
+        match self {
+            Status::Administator {
+                ..
+            } => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Member`.
+    pub fn is_member(&self) -> bool {
+        *self == Status::Member
+    }
+
+    /// Checks if `self` is `Restricted`.
+    pub fn is_restricted(&self) -> bool {
+        match self {
+            Status::Restricted {
+                ..
+            } => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Left`.
+    pub fn is_left(&self) -> bool {
+        *self == Status::Left
+    }
+
+    /// Checks if `self` is `Kicked`.
+    pub fn is_kicked(&self) -> bool {
+        match self {
+            Status::Kicked {
+                ..
+            } => true,
+            _ => false,
+        }
+    }
+}
+
 const USER: &str = "user";
 const STATUS: &str = "status";
 const UNTIL_DATE: &str = "until_date";

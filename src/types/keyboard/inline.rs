@@ -30,6 +30,64 @@ pub enum ButtonKind<'a> {
     Pay(bool),
 }
 
+impl ButtonKind<'_> {
+    /// Checks if `self` is `Url`.
+    pub fn is_url(&self) -> bool {
+        match self {
+            ButtonKind::Url(..) => true,
+            _ => false,
+        }
+    }
+    /// Checks if `self` is `LoginUrl`.
+    pub fn is_login_url(&self) -> bool {
+        match self {
+            ButtonKind::LoginUrl(..) => true,
+            _ => false,
+        }
+    }
+    /// Checks if `self` is `CallbackData`.
+    pub fn is_callback_data(&self) -> bool {
+        match self {
+            ButtonKind::CallbackData(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `SwitchInlineQuery`.
+    pub fn is_switch_inline_query(&self) -> bool {
+        match self {
+            ButtonKind::SwitchInlineQuery(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `SwitchInlineQueryCurrentChat`.
+    pub fn is_switch_inline_query_current_chat(&self) -> bool {
+        // what a name
+
+        match self {
+            ButtonKind::SwitchInlineQueryCurrentChat(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `CallbackGame`.
+    pub fn is_callback_game(&self) -> bool {
+        match self {
+            ButtonKind::CallbackGame(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Pay`.
+    pub fn is_pay(&self) -> bool {
+        match self {
+            ButtonKind::Pay(..) => true,
+            _ => false,
+        }
+    }
+}
+
 /// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton

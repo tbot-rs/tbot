@@ -88,6 +88,112 @@ pub struct Result<'a> {
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
+impl Kind<'_> {
+    /// Checks if `self` is `Article`.
+    pub fn is_article(&self) -> bool {
+        match self {
+            Kind::Article(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Audio`.
+    pub fn is_audio(&self) -> bool {
+        match self {
+            Kind::Audio(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Contact`.
+    pub fn is_contact(&self) -> bool {
+        match self {
+            Kind::Contact(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Document`.
+    pub fn is_document(&self) -> bool {
+        match self {
+            Kind::Document(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Game`.
+    pub fn is_game(&self) -> bool {
+        match self {
+            Kind::Game(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Gif`.
+    pub fn is_gif(&self) -> bool {
+        match self {
+            Kind::Gif(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Location`.
+    pub fn is_location(&self) -> bool {
+        match self {
+            Kind::Location(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is Mpeg4Gif``.
+    pub fn is_mpeg4_gif(&self) -> bool {
+        match self {
+            Kind::Mpeg4Gif(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is ``.
+    pub fn is_photo(&self) -> bool {
+        match self {
+            Kind::Photo(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Sticker`.
+    pub fn is_sticker(&self) -> bool {
+        match self {
+            Kind::Sticker(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Venue`.
+    pub fn is_venue(&self) -> bool {
+        match self {
+            Kind::Venue(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Video`.
+    pub fn is_video(&self) -> bool {
+        match self {
+            Kind::Video(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Voice`.
+    pub fn is_voice(&self) -> bool {
+        match self {
+            Kind::Voice(..) => true,
+            _ => false,
+        }
+    }
+}
+
 impl<'a> Result<'a> {
     /// Constructs an inline query `Result`.
     pub fn new(id: &'a str, kind: impl Into<Kind<'a>>) -> Self {

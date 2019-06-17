@@ -29,3 +29,55 @@ pub enum Updates {
     /// Handles poll state updates.
     Poll,
 }
+
+impl Updates {
+    /// Checks if `self` is `Message`.
+    pub fn is_message(self) -> bool {
+        self == Updates::Message
+    }
+
+    /// Checks if `self` is `EditedMessage`.
+    pub fn is_edited_message(self) -> bool {
+        self == Updates::EditedMessage
+    }
+
+    /// Checks if `self` is ChanelPost``.
+    pub fn is_channel_post(self) -> bool {
+        self == Updates::ChannelPost
+    }
+
+    /// Checks if `self` is `EditedChannelPost`.
+    pub fn is_edited_channel_post(self) -> bool {
+        self == Updates::EditedChannelPost
+    }
+
+    /// Checks if `self` is `InlineQuery`.
+    pub fn is_inline_query(self) -> bool {
+        self == Updates::InlineQuery
+    }
+
+    /// Checks if `self` is `ChosenInlineResult`.
+    pub fn is_chosen_inline_result(self) -> bool {
+        self == Updates::ChosenInlineResult
+    }
+
+    /// Checks if `self` is `CallbackQuery`.
+    pub fn is_callback_query(self) -> bool {
+        self == Updates::CallbackQuery
+    }
+
+    /// Checks if `self` is `ShippingQuery`.
+    pub fn is_shipping_query(self) -> bool {
+        self == Updates::ShippingQuery
+    }
+
+    /// Checks if `self` is `PreCheckoutQuery`.
+    pub fn is_pre_checkout_query(self) -> bool {
+        self == Updates::PreCheckoutQuery
+    }
+
+    /// Checks if `self` is `Poll`.
+    pub fn is_poll(self) -> bool {
+        self == Updates::Poll
+    }
+}

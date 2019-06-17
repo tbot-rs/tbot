@@ -43,6 +43,72 @@ pub struct Update {
     pub kind: Kind,
 }
 
+impl Kind {
+    /// Checks if `self` is `Message`.
+    pub fn is_message(&self) -> bool {
+        match self {
+            Kind::Message(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `EditedMessage`.
+    pub fn is_edited_message(&self) -> bool {
+        match self {
+            Kind::EditedMessage(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `ChannelPost`.
+    pub fn is_channel_post(&self) -> bool {
+        match self {
+            Kind::ChannelPost(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `EditedChannelPost`.
+    pub fn is_edited_channel_post(&self) -> bool {
+        match self {
+            Kind::EditedChannelPost(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `InlineQuery`.
+    pub fn is_inline_query(&self) -> bool {
+        match self {
+            Kind::InlineQuery(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `CallbackQuery`.
+    pub fn is_callback_query(&self) -> bool {
+        match self {
+            Kind::CallbackQuery(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Poll`.
+    pub fn is_poll(&self) -> bool {
+        match self {
+            Kind::Poll(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `ChosenInlineResult`.
+    pub fn is_chosen_inline_result(&self) -> bool {
+        match self {
+            Kind::ChosenInlineResult(..) => true,
+            _ => false,
+        }
+    }
+}
+
 const UPDATE_ID: &str = "update_id";
 const MESSAGE: &str = "message";
 const EDITED_MESSAGE: &str = "edited_message";

@@ -10,6 +10,24 @@ pub enum GroupMedia<'a> {
     Video(Video<'a>),
 }
 
+impl GroupMedia<'_> {
+    /// Checks if `self` is `Photo`.
+    pub fn is_photo(&self) -> bool {
+        match self {
+            GroupMedia::Photo(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Video`.
+    pub fn is_video(&self) -> bool {
+        match self {
+            GroupMedia::Video(..) => true,
+            _ => false,
+        }
+    }
+}
+
 impl<'a> From<Photo<'a>> for GroupMedia<'a> {
     fn from(photo: Photo<'a>) -> Self {
         GroupMedia::Photo(photo)

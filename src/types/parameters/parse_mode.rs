@@ -12,6 +12,18 @@ pub enum ParseMode {
     Html,
 }
 
+impl ParseMode {
+    /// Checks if `self` is `Markdown`.
+    pub fn is_markdown(self) -> bool {
+        self == ParseMode::Markdown
+    }
+
+    /// Checks if `self` is `Html`.
+    pub fn is_html(self) -> bool {
+        self == ParseMode::Html
+    }
+}
+
 impl Display for ParseMode {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         formatter.write_str(match self {
