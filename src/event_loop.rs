@@ -51,6 +51,7 @@ type EditedVideoHandler<C> = Handler<contexts::EditedVideo<C>>;
 type GameCallbackHandler<C> = Handler<contexts::GameCallback<C>>;
 type GameHandler<C> = Handler<contexts::Game<C>>;
 type InlineHandler<C> = Handler<contexts::Inline<C>>;
+type InvoiceHandler<C> = Handler<contexts::Invoice<C>>;
 type LeftMemberHandler<C> = Handler<contexts::LeftMember<C>>;
 type LocationHandler<C> = Handler<contexts::Location<C>>;
 type MigrationHandler<C> = Handler<contexts::Migration<C>>;
@@ -116,6 +117,7 @@ pub struct EventLoop<C> {
     game_callback_handlers: Handlers<GameCallbackHandler<C>>,
     game_handlers: Handlers<GameHandler<C>>,
     inline_handlers: Handlers<InlineHandler<C>>,
+    invoice_handlers: Handlers<InvoiceHandler<C>>,
     left_member_handlers: Handlers<LeftMemberHandler<C>>,
     location_handlers: Handlers<LocationHandler<C>>,
     migration_handlers: Handlers<MigrationHandler<C>>,
@@ -163,6 +165,7 @@ impl<C> EventLoop<C> {
             game_callback_handlers: Vec::new(),
             game_handlers: Vec::new(),
             inline_handlers: Vec::new(),
+            invoice_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
             migration_handlers: Vec::new(),
@@ -462,6 +465,15 @@ impl<C> EventLoop<C> {
         contexts::Inline<C>,
         run_inline_handlers,
         will_handle_inline,
+    }
+
+    handler! {
+        /// Adds a new handler for invoices.
+        invoice_handlers,
+        invoice,
+        contexts::Invoice<C>,
+        run_invoice_handlers,
+        will_handle_invoice,
     }
 
     handler! {
@@ -962,6 +974,19 @@ impl<C> EventLoop<C> {
                     self.run_game_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Game(game);
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            message::Kind::Invoice(invoice) => {
+                if self.will_handle_invoice() {
+                    let context = contexts::Invoice::new(bot, data, invoice);
+
+                    self.run_invoice_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::Invoice(invoice);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
 
