@@ -19,7 +19,7 @@
 //! ```no_run
 //! use tbot::{
 //!     prelude::*,
-//!     types::ParseMode::Markdown,
+//!     types::parameters::ParseMode::Markdown,
 //!     Token,
 //! };
 //!
@@ -166,8 +166,6 @@ pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
 
 mod call_method;
 use call_method::*;
-
-pub mod parameters;
 
 /// Represents different errors that may happen during a request.
 #[derive(Debug)]

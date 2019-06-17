@@ -20,7 +20,7 @@ macro_rules! media_message {
                 /// The author's signature, if enabled for the channel.
                 author_signature: Option<String>,
                 /// The origin of the message if it's a forward.
-                forward: Option<types::Forward>,
+                forward: Option<types::message::Forward>,
                 #[doc = $media_doc]
                 $media: $media_type,
                 $(#[doc = $field_doc] $field: $type,)*

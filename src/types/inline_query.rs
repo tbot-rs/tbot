@@ -1,17 +1,21 @@
-use super::*;
+//! Types related to inline queries.
 
-/// Represents an inline query ID.
-#[derive(Deserialize, Debug, PartialEq, Eq, Clone, Hash, Serialize)]
-#[serde(transparent)]
-pub struct InlineQueryId(String);
+use crate::types::{Location, User};
+use serde::Deserialize;
+
+pub mod id;
+pub mod result;
+
+pub use {id::Id, result::Result};
 
 /// Represents an [`InlineQuery`].
 ///
 /// [`InlineQuery`]: https://core.telegram.org/bots/api#inlinequery
-#[derive(Deserialize, Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct InlineQuery {
     /// The ID of the query.
-    pub id: InlineQueryId,
+    pub id: Id,
     /// The user who sent the query.
     pub from: User,
     /// The location of the user, if enabled and allowed.

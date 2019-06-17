@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::internal::{BoxFuture, Client};
 
 /// Represents the [`getMe`][docs] method.
 ///
@@ -26,8 +26,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::User;
     type Error = DeliveryError;
 

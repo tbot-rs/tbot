@@ -1,7 +1,12 @@
 use super::*;
-use crate::internal::Client;
-use parameters::NotificationState;
-use types::input_file::{InputFile, Sticker};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{
+        input_file::{InputFile, Sticker},
+        keyboard,
+        parameters::{ChatId, NotificationState},
+    },
+};
 
 /// Represents the [`sendSticker`][docs] method.
 ///
@@ -11,18 +16,18 @@ use types::input_file::{InputFile, Sticker};
 pub struct SendSticker<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     sticker: &'a Sticker<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<u32>,
-    reply_markup: Option<types::AnyKeyboard<'a>>,
+    reply_markup: Option<keyboard::Any<'a>>,
 }
 
 impl<'a, C> SendSticker<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         sticker: &'a Sticker<'a>,
     ) -> Self {
         Self {
@@ -51,7 +56,7 @@ impl<'a, C> SendSticker<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::AnyKeyboard<'a>>,
+        markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -64,15 +69,14 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Message;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
 
         let is_disabled = self.disable_notification.map(|x| x.to_string());

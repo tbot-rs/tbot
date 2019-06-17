@@ -1,9 +1,9 @@
 use tbot::{
     prelude::*,
     types::{
-        inline_query_result::{Article, InlineQueryResult},
+        inline_query::{self, result::Article},
         input_message_content::Text,
-        ParseMode::Markdown,
+        parameters::ParseMode::Markdown,
     },
 };
 
@@ -46,7 +46,7 @@ fn main() {
         let id = id.to_string();
         let content = Text::new(&message).parse_mode(Markdown);
         let article = Article::new(&title, content).description(&message);
-        let result = InlineQueryResult::new(&id, article);
+        let result = inline_query::Result::new(&id, article);
         let answer = context.answer(&[result]).into_future().map_err(|err| {
             dbg!(err);
         });

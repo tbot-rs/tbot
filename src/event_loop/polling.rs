@@ -3,7 +3,7 @@ use super::EventLoop;
 use crate::{
     methods::{DeleteWebhook, GetUpdates},
     prelude::*,
-    types,
+    types::parameters::Updates,
 };
 use std::{
     sync::{Arc, Mutex},
@@ -20,7 +20,7 @@ pub struct Polling<'a, C> {
     event_loop: EventLoop<C>,
     limit: Option<u8>,
     timeout: Option<u64>,
-    allowed_updates: Option<&'a [types::Updates]>,
+    allowed_updates: Option<&'a [Updates]>,
     poll_interval: u64,
 }
 
@@ -48,10 +48,7 @@ impl<'a, C> Polling<'a, C> {
     }
 
     /// Configures which updates you'd like to listen to.
-    pub fn allowed_updates(
-        mut self,
-        allowed_updates: &'a [types::Updates],
-    ) -> Self {
+    pub fn allowed_updates(mut self, allowed_updates: &'a [Updates]) -> Self {
         self.allowed_updates = Some(allowed_updates);
         self
     }

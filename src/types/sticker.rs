@@ -1,9 +1,18 @@
-use super::*;
+//! Types related to stickers.
+
+use super::PhotoSize;
+use serde::Deserialize;
+
+pub mod mask_position;
+mod set;
+
+pub use {mask_position::MaskPosition, set::*};
 
 /// Represents a [`Sticker`].
 ///
 /// [`Sticker`]: https://core.telegram.org/bots/api#sticker
 #[derive(Debug, PartialEq, Clone, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Sticker {
     /// The file ID of the sticker.
     pub file_id: String,

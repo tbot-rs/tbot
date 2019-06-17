@@ -56,7 +56,7 @@ pub mod types;
 
 use serde::{Deserialize, Serialize};
 pub use {bot::*, token::*};
-use {internal::*, multipart::*, prelude::*};
+use {multipart::*, prelude::*};
 
 /// A wrapper around `tokio::run` without `F::Item: ()`.
 ///

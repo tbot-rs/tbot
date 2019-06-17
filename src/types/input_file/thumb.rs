@@ -1,4 +1,5 @@
-use super::*;
+use super::InputFile;
+use serde::Serialize;
 
 /// Represents a thumb to be sent.
 ///

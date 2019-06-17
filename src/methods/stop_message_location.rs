@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::Client;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{keyboard::inline, parameters::ChatId},
+};
 
 /// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
 ///
@@ -11,17 +14,17 @@ pub struct StopMessageLocation<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> StopMessageLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
     ) -> Self {
         Self {
@@ -34,7 +37,7 @@ impl<'a, C> StopMessageLocation<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }
@@ -46,8 +49,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Message;
     type Error = DeliveryError;
 

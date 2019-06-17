@@ -1,7 +1,11 @@
-use crate::{methods::*, types, types::input_file::*, Bot};
+use crate::{
+    methods::*,
+    types::{chat, input_file::*, keyboard::inline, parameters::ChatId},
+    Bot,
+};
 
 /// Provides methods appliable to all messages.
-pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
+pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     #[doc(hidden)]
     fn bot(&'a self) -> &'a Bot<C>;
     #[doc(hidden)]
@@ -60,7 +64,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     fn edit_message_reply_markup(
         &'a self,
         message_id: u32,
-        reply_markup: types::InlineKeyboard<'a>,
+        reply_markup: inline::Keyboard<'a>,
     ) -> EditMessageReplyMarkup<'a, C> {
         self.bot().edit_message_reply_markup(
             self.chat_id(),
@@ -86,7 +90,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     /// Forwards a message to this chat.
     fn forward_here(
         &'a self,
-        from_chat_id: impl Into<types::ChatId<'a>>,
+        from_chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
     ) -> ForwardMessage<'a, C> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
@@ -175,10 +179,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::Sealed {
     }
 
     /// Sends an action to this group.
-    fn send_chat_action(
-        &'a self,
-        action: types::ChatAction,
-    ) -> SendChatAction<C> {
+    fn send_chat_action(&'a self, action: chat::Action) -> SendChatAction<C> {
         self.bot().send_chat_action(self.chat_id(), action)
     }
 

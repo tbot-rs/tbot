@@ -1,9 +1,16 @@
+//! Types related to users.
+
 use super::*;
+
+mod profile_photos;
+
+pub use profile_photos::*;
 
 /// Represents a [`User`].
 ///
 /// [`User`]: https://core.telegram.org/bots/api#user
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct User {
     /// The ID of the user.
     pub id: i64,

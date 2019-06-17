@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`Video`]: https://core.telegram.org/bots/api#video
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Video {
     /// The file ID of the video.
     pub file_id: String,

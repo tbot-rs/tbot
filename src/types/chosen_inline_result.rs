@@ -5,6 +5,7 @@ use serde::Deserialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#choseninlineresult
 #[derive(Debug, PartialEq, Clone, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct ChosenInlineResult {
     /// ID of the chosen result.
     pub result_id: String,

@@ -1,4 +1,4 @@
-use tbot::{prelude::*, types::ParseMode::Markdown};
+use tbot::{prelude::*, types::parameters::ParseMode::Markdown};
 
 const URL: &str = "https://example.com";
 const PORT: u16 = 2000;

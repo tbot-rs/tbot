@@ -1,4 +1,5 @@
-use super::*;
+use super::{InputFile, Thumb};
+use serde::Serialize;
 
 /// Represents a video note to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
@@ -72,7 +73,7 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb.0);
         self
     }

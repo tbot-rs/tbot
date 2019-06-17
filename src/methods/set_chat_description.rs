@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::Client;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::parameters::ChatId,
+};
 
 /// Represents the [`setChatDescription`][docs] method.
 ///
@@ -11,7 +14,7 @@ pub struct SetChatDescription<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     description: &'a str,
 }
 
@@ -19,7 +22,7 @@ impl<'a, C> SetChatDescription<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         description: &'a str,
     ) -> Self {
         Self {
@@ -37,8 +40,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

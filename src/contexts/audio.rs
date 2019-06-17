@@ -3,10 +3,10 @@ media_message! {
         /// The audio.
         audio: types::Audio,
         /// The caption of the audio.
-        caption: types::Text,
+        caption: types::message::Text,
     } -> Bot::audio
 
-    fn new(caption: types::Text,) -> Self {
+    fn new(caption: types::message::Text,) -> Self {
         Self {
             caption: caption,
         }

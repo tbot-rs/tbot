@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`Contact`]: https://core.telegram.org/bots/api#contact
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct Contact {
     /// The phone number of the contact.
     pub phone_number: String,

@@ -1,6 +1,11 @@
 use super::*;
-use crate::internal::Client;
-use parameters::NotificationState;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{
+        keyboard,
+        parameters::{ChatId, NotificationState},
+    },
+};
 
 /// Represents the [`sendGame`][docs] method.
 ///
@@ -12,21 +17,21 @@ pub struct SendGame<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     game_short_name: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::AnyKeyboard<'a>>,
+    reply_markup: Option<keyboard::Any<'a>>,
 }
 
 impl<'a, C> SendGame<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         game_short_name: &'a str,
     ) -> Self {
         Self {
@@ -55,7 +60,7 @@ impl<'a, C> SendGame<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::AnyKeyboard<'a>>,
+        markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -68,8 +73,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Message;
     type Error = DeliveryError;
 

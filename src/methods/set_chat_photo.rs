@@ -1,6 +1,11 @@
 use super::*;
-use crate::internal::Client;
-use types::input_file::{ChatPhoto, InputFile};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{
+        input_file::{ChatPhoto, InputFile},
+        parameters::ChatId,
+    },
+};
 
 /// Represents the [`setChatPhoto`][docs] method.
 ///
@@ -10,7 +15,7 @@ use types::input_file::{ChatPhoto, InputFile};
 pub struct SetChatPhoto<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     photo: &'a ChatPhoto<'a>,
 }
 
@@ -18,7 +23,7 @@ impl<'a, C> SetChatPhoto<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         photo: &'a ChatPhoto<'a>,
     ) -> Self {
         Self {
@@ -36,15 +41,14 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
 
         let mut multipart = Multipart::new(2).str("chat_id", &chat_id);

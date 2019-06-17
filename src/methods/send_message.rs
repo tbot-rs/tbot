@@ -1,6 +1,13 @@
 use super::*;
-use crate::internal::Client;
-use parameters::{NotificationState, WebPagePreviewState};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{
+        keyboard,
+        parameters::{
+            ChatId, NotificationState, ParseMode, WebPagePreviewState,
+        },
+    },
+};
 
 /// Represents the [`sendMessage`][docs] method.
 ///
@@ -12,10 +19,10 @@ pub struct SendMessage<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<types::ParseMode>,
+    parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,14 +30,14 @@ pub struct SendMessage<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<types::AnyKeyboard<'a>>,
+    reply_markup: Option<keyboard::Any<'a>>,
 }
 
 impl<'a, C> SendMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         text: &'a str,
     ) -> Self {
         Self {
@@ -47,7 +54,7 @@ impl<'a, C> SendMessage<'a, C> {
     }
 
     /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
+    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
         self.parse_mode = Some(mode);
         self
     }
@@ -73,7 +80,7 @@ impl<'a, C> SendMessage<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<types::AnyKeyboard<'a>>,
+        markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -86,8 +93,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Message;
     type Error = DeliveryError;
 

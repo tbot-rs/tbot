@@ -4,6 +4,7 @@ use super::*;
 ///
 /// [`PhotoSize`]: https://core.telegram.org/bots/api#photosize
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+// todo: #[non_exhaustive]
 pub struct PhotoSize {
     /// The file ID of the photo.
     pub file_id: String,

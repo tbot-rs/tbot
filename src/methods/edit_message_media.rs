@@ -1,6 +1,8 @@
 use super::*;
-use crate::internal::Client;
-use types::input_file::*;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{input_file::*, keyboard::inline, parameters::ChatId},
+};
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
 ///
@@ -10,17 +12,17 @@ use types::input_file::*;
 pub struct EditMessageMedia<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
     message_id: u32,
     media: EditableMedia<'a>,
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditMessageMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
         message_id: u32,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
@@ -35,7 +37,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }
@@ -47,15 +49,14 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Message;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            types::ChatId::Id(id) => id.to_string(),
-            types::ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string(),
+            ChatId::Username(username) => username.into(),
         };
         let message_id = self.message_id.to_string();
         let reply_markup =

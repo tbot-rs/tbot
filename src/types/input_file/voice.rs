@@ -1,4 +1,6 @@
-use super::*;
+use super::InputFile;
+use crate::types::parameters::ParseMode;
+use serde::Serialize;
 
 /// Represents a voice to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
@@ -9,7 +11,7 @@ pub struct Voice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) caption: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) parse_mode: Option<types::ParseMode>,
+    pub(crate) parse_mode: Option<ParseMode>,
 }
 
 impl<'a> Voice<'a> {
@@ -71,7 +73,7 @@ impl<'a> Voice<'a> {
     }
 
     /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: types::ParseMode) -> Self {
+    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
         self.parse_mode = Some(mode);
         self
     }

@@ -1,6 +1,4 @@
-//! Contains types that are represent uploadable media.
-
-use super::{types, ParseMode, Serialize};
+//! Types representing uploadable media.
 
 mod animation;
 mod audio;

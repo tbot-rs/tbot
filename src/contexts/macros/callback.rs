@@ -4,7 +4,7 @@ macro_rules! callback {
             #[doc = $kind_doc:literal] $kind:ident: $kind_type:ty,
         } -> Bot::$handler:ident
     ) => {
-        use types::*;
+        use types::{User, callback};
 
         common! {
             #[doc = concat!(
@@ -17,7 +17,7 @@ macro_rules! callback {
                 /// The user who initiated the callback.
                 from: User,
                 /// The origin of the query.
-                origin: CallbackOrigin,
+                origin: callback::Origin,
                 /// The identifier of the chat.
                 chat_instance: String,
                 #[doc = $kind_doc]
@@ -32,7 +32,7 @@ macro_rules! callback {
                 bot: Arc<Bot<C>>,
                 id: String,
                 from: User,
-                origin: CallbackOrigin,
+                origin: callback::Origin,
                 chat_instance: String,
                 $kind: $kind_type,
             ) -> Self {

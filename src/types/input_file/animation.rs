@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::parameters::ParseMode;
 use serde::ser::SerializeMap;
 
 /// Represents an animation to be sent.

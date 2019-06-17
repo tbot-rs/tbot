@@ -1,4 +1,4 @@
-use crate::{methods::AnswerInlineQuery, types::InlineQueryResult};
+use crate::{methods::AnswerInlineQuery, types::inline_query};
 
 common! {
     /// The context for [`inline`][handler] handlers.
@@ -6,7 +6,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.inline
     struct Inline {
         /// The ID of the query.
-        id: types::InlineQueryId,
+        id: inline_query::Id,
         /// The user who sent the query.
         from: types::User,
         /// The location of the user, if enabled and allowed.
@@ -38,8 +38,8 @@ impl<C> Inline<C> {
     /// Answers the query.
     pub fn answer<'a>(
         &'a self,
-        results: &'a [InlineQueryResult<'a>],
+        results: &'a [inline_query::Result<'a>],
     ) -> AnswerInlineQuery<'a, C> {
-        self.bot.answer_inline_query(&self.id, results)
+        self.bot.answer_inline_query(self.id.as_ref(), results)
     }
 }

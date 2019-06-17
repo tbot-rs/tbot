@@ -1,69 +1,26 @@
+//! Types related to chats.
+
 use super::*;
 
-/// Represents the kind of a chat.
-#[derive(Debug, PartialEq, Clone)]
-pub enum ChatKind {
-    /// The chat is private.
-    Private {
-        /// The username of the user.
-        username: Option<String>,
-        /// The first name of the user.
-        first_name: String,
-        /// The last name of the user.
-        last_name: Option<String>,
-    },
-    /// The chat is a group.
-    Group {
-        /// The title of the group.
-        title: String,
-        /// `true` if all membmers of this group have admin rights.
-        all_members_are_administrators: bool,
-        /// The pinned message of the group.
-        pinned_message: Option<Box<Message>>,
-    },
-    /// The chat is a supergroup.
-    Supergroup {
-        /// The title of the supergroup.
-        title: String,
-        /// The username of the supergroup.
-        username: Option<String>,
-        /// The description of the supergroup.
-        description: Option<String>,
-        /// The invite link of the supergroup.
-        invite_link: Option<String>,
-        /// The pinned message of the supergroup.
-        pinned_message: Option<Box<Message>>,
-        /// The name of the sticker set of the supergroup.
-        sticker_set_name: Option<String>,
-        /// `true` if the bot can set the sticker set of the supergroup.
-        can_set_sticker_set: Option<bool>,
-    },
-    /// The chat is a channel.
-    Channel {
-        /// The title of the channel.
-        title: String,
-        /// The username of the channel.
-        username: Option<String>,
-        /// The description of the channel.
-        description: Option<String>,
-        /// The invite link of the channel.
-        invite_link: Option<String>,
-        /// The pinned message of the channel.
-        pinned_message: Option<Box<Message>>,
-    },
-}
+mod action;
+mod kind;
+pub mod member;
+mod photo;
+
+pub use {action::*, kind::*, member::*, photo::*};
 
 /// Represents a [`Chat`].
 ///
 /// [`Chat`]: https://core.telegram.org/bots/api#chat
 #[derive(Debug, PartialEq, Clone)]
+// todo: #[non_exhaustive]
 pub struct Chat {
     /// The ID of the chat.
     pub id: i64,
     /// The kind of the chat.
-    pub kind: ChatKind,
+    pub kind: Kind,
     /// The photo of the chat.
-    pub photo: Option<ChatPhoto>,
+    pub photo: Option<Photo>,
 }
 
 const ID: &str = "id";
@@ -138,14 +95,14 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
         }
 
         let kind = match &kind {
-            Some(PRIVATE) => ChatKind::Private {
+            Some(PRIVATE) => Kind::Private {
                 username,
                 first_name: first_name.ok_or_else(|| {
                     serde::de::Error::missing_field(FIRST_NAME)
                 })?,
                 last_name,
             },
-            Some(GROUP) => ChatKind::Group {
+            Some(GROUP) => Kind::Group {
                 title: title
                     .ok_or_else(|| serde::de::Error::missing_field(TITLE))?,
                 all_members_are_administrators: all_members_are_administrators
@@ -156,7 +113,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                     })?,
                 pinned_message,
             },
-            Some(SUPERGROUP) => ChatKind::Supergroup {
+            Some(SUPERGROUP) => Kind::Supergroup {
                 title: title
                     .ok_or_else(|| serde::de::Error::missing_field(TITLE))?,
                 username,
@@ -166,7 +123,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 sticker_set_name,
                 can_set_sticker_set,
             },
-            Some(CHANNEL) => ChatKind::Channel {
+            Some(CHANNEL) => Kind::Channel {
                 title: title
                     .ok_or_else(|| serde::de::Error::missing_field(TITLE))?,
                 username,

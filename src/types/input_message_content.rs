@@ -1,6 +1,4 @@
-//! Types for representing an [`InputMessageContent`][docs].
-//!
-//! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
+//! Types related to input message contents.
 
 use serde::Serialize;
 
@@ -26,6 +24,40 @@ pub enum InputMessageContent<'a> {
     Venue(Venue<'a>),
     /// A contact.
     Contact(Contact<'a>),
+}
+
+impl InputMessageContent<'_> {
+    /// Checks if `self` is `Text`.
+    pub fn is_text(self) -> bool {
+        match self {
+            InputMessageContent::Text(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Location`.
+    pub fn is_location(self) -> bool {
+        match self {
+            InputMessageContent::Location(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Venue`.
+    pub fn is_venue(self) -> bool {
+        match self {
+            InputMessageContent::Venue(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Contact.`
+    pub fn is_contact(self) -> bool {
+        match self {
+            InputMessageContent::Contact(..) => true,
+            _ => false,
+        }
+    }
 }
 
 impl<'a> From<Text<'a>> for InputMessageContent<'a> {

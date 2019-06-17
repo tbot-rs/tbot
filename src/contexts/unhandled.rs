@@ -4,14 +4,14 @@ common! {
     /// [`unhandled`]: ../struct.Bot.html#method.unhandled
     struct Unhandled {
         /// The unhandled update.
-        update: types::UpdateKind,
+        update: types::update::Kind,
     }
 }
 
 impl<C> Unhandled<C> {
     pub(crate) const fn new(
         bot: Arc<Bot<C>>,
-        update: types::UpdateKind,
+        update: types::update::Kind,
     ) -> Self {
         Self {
             bot,

@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::Client;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{chat, parameters::ChatId},
+};
 
 /// Represents the [`getChatAdministrators`][docs] method.
 ///
@@ -11,14 +14,14 @@ pub struct GetChatAdministrators<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
+    chat_id: ChatId<'a>,
 }
 
 impl<'a, C> GetChatAdministrators<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
+        chat_id: impl Into<ChatId<'a>>,
     ) -> Self {
         Self {
             client,
@@ -34,9 +37,8 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
-    type Item = Vec<types::ChatMember>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
+    type Item = Vec<chat::Member>;
     type Error = DeliveryError;
 
     fn into_future(self) -> Self::Future {

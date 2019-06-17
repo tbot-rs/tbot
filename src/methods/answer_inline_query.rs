@@ -1,9 +1,9 @@
 // use super::*;
 use super::{send_method, DeliveryError};
 use crate::{
-    internal::Client,
+    internal::{BoxFuture, Client},
     prelude::*,
-    types::{InlineQueryId, InlineQueryResult},
+    types::inline_query,
     Token,
 };
 use serde::Serialize;
@@ -18,8 +18,8 @@ pub struct AnswerInlineQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_query_id: &'a InlineQueryId,
-    results: &'a [InlineQueryResult<'a>],
+    inline_query_id: inline_query::id::Ref<'a>,
+    results: &'a [inline_query::Result<'a>],
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,8 +36,8 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_query_id: &'a InlineQueryId,
-        results: &'a [InlineQueryResult<'a>],
+        inline_query_id: inline_query::id::Ref<'a>,
+        results: &'a [inline_query::Result<'a>],
     ) -> Self {
         Self {
             client,
@@ -84,8 +84,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

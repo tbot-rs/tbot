@@ -4,7 +4,13 @@ use crate::{
     contexts, methods,
     prelude::*,
     types::{
-        self, CallbackKind, CallbackQuery, Message, MessageKind, UpdateKind,
+        self, callback,
+        message::{
+            self,
+            text::{Entity, EntityKind, Text},
+            Message,
+        },
+        update,
     },
     Bot,
 };
@@ -577,7 +583,7 @@ impl<C> EventLoop<C> {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn run_unhandled_handlers(&self, bot: Arc<Bot<C>>, update: UpdateKind) {
+    fn run_unhandled_handlers(&self, bot: Arc<Bot<C>>, update: update::Kind) {
         let context = contexts::Unhandled::new(bot, update);
 
         for handler in &self.unhandled_handlers {
@@ -636,49 +642,50 @@ impl<C> EventLoop<C> {
         self.run_before_update_handlers(&update_context);
 
         match update.kind {
-            UpdateKind::Message(message) | UpdateKind::ChannelPost(message) => {
+            update::Kind::Message(message)
+            | update::Kind::ChannelPost(message) => {
                 self.handle_message_update(bot, message);
             }
-            UpdateKind::EditedMessage(message)
-            | UpdateKind::EditedChannelPost(message) => {
+            update::Kind::EditedMessage(message)
+            | update::Kind::EditedChannelPost(message) => {
                 self.handle_message_edit_update(bot, message);
             }
-            UpdateKind::Poll(poll) => {
+            update::Kind::Poll(poll) => {
                 if self.will_handle_updated_poll() {
                     let context =
                         contexts::UpdatedPoll::new(Arc::clone(&bot), poll);
 
                     self.run_updated_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let update = UpdateKind::Poll(poll);
+                    let update = update::Kind::Poll(poll);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            UpdateKind::InlineQuery(query) => {
+            update::Kind::InlineQuery(query) => {
                 if self.will_handle_inline() {
                     let context = contexts::Inline::new(bot, query);
 
                     self.run_inline_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let update = UpdateKind::InlineQuery(query);
+                    let update = update::Kind::InlineQuery(query);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            UpdateKind::ChosenInlineResult(result) => {
+            update::Kind::ChosenInlineResult(result) => {
                 if self.will_handle_chosen_inline() {
                     let context = contexts::ChosenInline::new(bot, result);
 
                     self.run_chosen_inline_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let update = UpdateKind::ChosenInlineResult(result);
+                    let update = update::Kind::ChosenInlineResult(result);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            UpdateKind::CallbackQuery(query) => match query.kind {
-                CallbackKind::Data(data) => {
+            update::Kind::CallbackQuery(query) => match query.kind {
+                callback::Kind::Data(data) => {
                     if self.will_handle_data_callback() {
                         let context = contexts::DataCallback::new(
                             bot,
@@ -691,17 +698,17 @@ impl<C> EventLoop<C> {
 
                         self.run_data_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
-                        let kind = CallbackKind::Data(data);
-                        let query = CallbackQuery {
+                        let kind = callback::Kind::Data(data);
+                        let query = callback::Query {
                             kind,
                             ..query
                         };
-                        let update = UpdateKind::CallbackQuery(query);
+                        let update = update::Kind::CallbackQuery(query);
 
                         self.run_unhandled_handlers(bot, update);
                     }
                 }
-                CallbackKind::Game(game) => {
+                callback::Kind::Game(game) => {
                     if self.will_handle_game_callback() {
                         let context = contexts::GameCallback::new(
                             bot,
@@ -714,18 +721,18 @@ impl<C> EventLoop<C> {
 
                         self.run_game_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
-                        let kind = CallbackKind::Game(game);
-                        let query = CallbackQuery {
+                        let kind = callback::Kind::Game(game);
+                        let query = callback::Query {
                             kind,
                             ..query
                         };
-                        let update = UpdateKind::CallbackQuery(query);
+                        let update = update::Kind::CallbackQuery(query);
 
                         self.run_unhandled_handlers(bot, update);
                     }
                 }
             },
-            update @ UpdateKind::Unknown => {
+            update @ update::Kind::Unknown => {
                 self.run_unhandled_handlers(bot, update);
             }
         }
@@ -738,7 +745,7 @@ impl<C> EventLoop<C> {
         let (data, kind) = message.split();
 
         match kind {
-            MessageKind::Text(text) => {
+            message::Kind::Text(text) => {
                 if is_command(&text) {
                     let (command, username) = parse_command(&text);
 
@@ -755,9 +762,9 @@ impl<C> EventLoop<C> {
 
                         self.run_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
-                        let kind = MessageKind::Text(text);
+                        let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
-                        let update = UpdateKind::Message(message);
+                        let update = update::Kind::Message(message);
 
                         self.run_unhandled_handlers(bot, update);
                     }
@@ -766,27 +773,27 @@ impl<C> EventLoop<C> {
 
                     self.run_text_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Text(text);
+                    let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Poll(poll) => {
+            message::Kind::Poll(poll) => {
                 if self.will_handle_poll() {
                     let context = contexts::Poll::new(bot, data, poll);
 
                     self.run_poll_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Poll(poll);
+                    let kind = message::Kind::Poll(poll);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Photo(photo, caption, media_group_id) => {
+            message::Kind::Photo(photo, caption, media_group_id) => {
                 if self.will_handle_photo() {
                     let context = contexts::Photo::new(
                         bot,
@@ -799,54 +806,54 @@ impl<C> EventLoop<C> {
                     self.run_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind =
-                        MessageKind::Photo(photo, caption, media_group_id);
+                        message::Kind::Photo(photo, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Pinned(message) => {
+            message::Kind::Pinned(message) => {
                 if self.will_handle_pinned_message() {
                     let context =
                         contexts::PinnedMessage::new(bot, data, *message);
 
                     self.run_pinned_message_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Pinned(message);
+                    let kind = message::Kind::Pinned(message);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Sticker(sticker) => {
+            message::Kind::Sticker(sticker) => {
                 if self.will_handle_sticker() {
                     let context = contexts::Sticker::new(bot, data, sticker);
 
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Sticker(sticker);
+                    let kind = message::Kind::Sticker(sticker);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Venue(venue) => {
+            message::Kind::Venue(venue) => {
                 if self.will_handle_venue() {
                     let context = contexts::Venue::new(bot, data, venue);
 
                     self.run_venue_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Venue(venue);
+                    let kind = message::Kind::Venue(venue);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Video(video, caption, media_group_id) => {
+            message::Kind::Video(video, caption, media_group_id) => {
                 if self.will_handle_video() {
                     let context = contexts::Video::new(
                         bot,
@@ -859,221 +866,220 @@ impl<C> EventLoop<C> {
                     self.run_video_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind =
-                        MessageKind::Video(video, caption, media_group_id);
+                        message::Kind::Video(video, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::VideoNote(video_note) => {
+            message::Kind::VideoNote(video_note) => {
                 if self.will_handle_video_note() {
                     let context =
                         contexts::VideoNote::new(bot, data, video_note);
 
                     self.run_video_note_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::VideoNote(video_note);
+                    let kind = message::Kind::VideoNote(video_note);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Voice(voice, caption) => {
+            message::Kind::Voice(voice, caption) => {
                 if self.will_handle_voice() {
                     let context =
                         contexts::Voice::new(bot, data, voice, caption);
 
                     self.run_voice_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Voice(voice, caption);
+                    let kind = message::Kind::Voice(voice, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Audio(audio, caption) => {
+            message::Kind::Audio(audio, caption) => {
                 if self.will_handle_audio() {
                     let context =
                         contexts::Audio::new(bot, data, audio, caption);
 
                     self.run_audio_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Audio(audio, caption);
+                    let kind = message::Kind::Audio(audio, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Animation(animation, caption) => {
+            message::Kind::Animation(animation, caption) => {
                 if self.will_handle_animation() {
                     let context =
                         contexts::Animation::new(bot, data, animation, caption);
 
                     self.run_animation_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Animation(animation, caption);
+                    let kind = message::Kind::Animation(animation, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            kind @ MessageKind::ChatPhotoDeleted => {
+            kind @ message::Kind::ChatPhotoDeleted => {
                 if self.will_handle_deleted_chat_photo() {
                     let context = contexts::DeletedChatPhoto::new(bot, data);
 
                     self.run_deleted_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Document(document, caption) => {
+            message::Kind::Document(document, caption) => {
                 if self.will_handle_document() {
                     let context =
                         contexts::Document::new(bot, data, document, caption);
 
                     self.run_document_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Document(document, caption);
+                    let kind = message::Kind::Document(document, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Game(game) => {
+            message::Kind::Game(game) => {
                 if self.will_handle_game() {
                     let context = contexts::Game::new(bot, data, game);
 
                     self.run_game_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Game(game);
+                    let kind = message::Kind::Game(game);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::LeftChatMember(member) => {
+            message::Kind::LeftChatMember(member) => {
                 if self.will_handle_left_member() {
                     let context = contexts::LeftMember::new(bot, data, member);
 
                     self.run_left_member_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::LeftChatMember(member);
+                    let kind = message::Kind::LeftChatMember(member);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Location(location) => {
+            message::Kind::Location(location) => {
                 if self.will_handle_location() {
                     let context = contexts::Location::new(bot, data, location);
 
                     self.run_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Location(location);
+                    let kind = message::Kind::Location(location);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::MigrateTo(..) => (), // ignored on purpose
-            MessageKind::MigrateFrom(old_id) => {
+            message::Kind::MigrateTo(..) => (), // ignored on purpose
+            message::Kind::MigrateFrom(old_id) => {
                 if self.will_handle_migration() {
                     let context = contexts::Migration::new(bot, data, old_id);
 
                     self.run_migration_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::MigrateFrom(old_id);
+                    let kind = message::Kind::MigrateFrom(old_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::NewChatPhoto(photo) => {
+            message::Kind::NewChatPhoto(photo) => {
                 if self.will_handle_new_chat_photo() {
                     let context = contexts::NewChatPhoto::new(bot, data, photo);
 
                     self.run_new_chat_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::NewChatPhoto(photo);
+                    let kind = message::Kind::NewChatPhoto(photo);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::NewChatTitle(title) => {
+            message::Kind::NewChatTitle(title) => {
                 if self.will_handle_new_chat_title() {
                     let context = contexts::NewChatTitle::new(bot, data, title);
 
                     self.run_new_chat_title_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::NewChatTitle(title);
+                    let kind = message::Kind::NewChatTitle(title);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::NewChatMembers(members) => {
+            message::Kind::NewChatMembers(members) => {
                 if self.will_handle_new_members() {
                     let context = contexts::NewMembers::new(bot, data, members);
 
                     self.run_new_members_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::NewChatMembers(members);
+                    let kind = message::Kind::NewChatMembers(members);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Contact(contact) => {
+            message::Kind::Contact(contact) => {
                 if self.will_handle_contact() {
                     let context = contexts::Contact::new(bot, data, contact);
 
                     self.run_contact_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Contact(contact);
+                    let kind = message::Kind::Contact(contact);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            kind @ MessageKind::GroupCreated => {
+            kind @ message::Kind::GroupCreated => {
                 if self.will_handle_created_group() {
                     let context = contexts::CreatedGroup::new(bot, data);
 
                     self.run_created_group_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::SupergroupCreated | MessageKind::ChannelCreated => {
-                unreachable!(
+            message::Kind::SupergroupCreated
+            | message::Kind::ChannelCreated => unreachable!(
                 "\n[tbot] Expected a `{supergroup,channel}_created` update to \
-                never exist\n",
-            )
-            }
+                 never exist\n",
+            ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
-                let update = UpdateKind::Message(message);
+                let update = update::Kind::Message(message);
                 self.run_unhandled_handlers(bot, update);
             }
             _ => (),
@@ -1091,7 +1097,7 @@ impl<C> EventLoop<C> {
         );
 
         match kind {
-            MessageKind::Animation(animation, caption) => {
+            message::Kind::Animation(animation, caption) => {
                 if self.will_handle_edited_animation() {
                     let context = contexts::EditedAnimation::new(
                         bot, data, edit_date, animation, caption,
@@ -1099,14 +1105,14 @@ impl<C> EventLoop<C> {
 
                     self.run_edited_animation_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Animation(animation, caption);
+                    let kind = message::Kind::Animation(animation, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Audio(audio, caption) => {
+            message::Kind::Audio(audio, caption) => {
                 if self.will_handle_edited_audio() {
                     let context = contexts::EditedAudio::new(
                         bot, data, edit_date, audio, caption,
@@ -1114,14 +1120,14 @@ impl<C> EventLoop<C> {
 
                     self.run_edited_audio_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Audio(audio, caption);
+                    let kind = message::Kind::Audio(audio, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Document(document, caption) => {
+            message::Kind::Document(document, caption) => {
                 if self.will_handle_edited_document() {
                     let context = contexts::EditedDocument::new(
                         bot, data, edit_date, document, caption,
@@ -1129,14 +1135,14 @@ impl<C> EventLoop<C> {
 
                     self.run_edited_document_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Document(document, caption);
+                    let kind = message::Kind::Document(document, caption);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Location(location) => {
+            message::Kind::Location(location) => {
                 if self.will_handle_edited_location() {
                     let context = contexts::EditedLocation::new(
                         bot, data, edit_date, location,
@@ -1144,14 +1150,14 @@ impl<C> EventLoop<C> {
 
                     self.run_edited_location_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Location(location);
+                    let kind = message::Kind::Location(location);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Photo(photo, caption, media_group_id) => {
+            message::Kind::Photo(photo, caption, media_group_id) => {
                 if self.will_handle_edited_photo() {
                     let context = contexts::EditedPhoto::new(
                         bot,
@@ -1165,14 +1171,14 @@ impl<C> EventLoop<C> {
                     self.run_edited_photo_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind =
-                        MessageKind::Photo(photo, caption, media_group_id);
+                        message::Kind::Photo(photo, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Text(text) => {
+            message::Kind::Text(text) => {
                 if is_command(&text) {
                     let (command, username) = parse_command(&text);
 
@@ -1191,9 +1197,9 @@ impl<C> EventLoop<C> {
 
                         self.run_edited_command_handlers(command, &context);
                     } else if self.will_handle_unhandled() {
-                        let kind = MessageKind::Text(text);
+                        let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
-                        let update = UpdateKind::EditedMessage(message);
+                        let update = update::Kind::EditedMessage(message);
 
                         self.run_unhandled_handlers(bot, update);
                     }
@@ -1203,14 +1209,14 @@ impl<C> EventLoop<C> {
 
                     self.run_edited_text_handlers(&context);
                 } else if self.will_handle_unhandled() {
-                    let kind = MessageKind::Text(text);
+                    let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::EditedMessage(message);
+                    let update = update::Kind::EditedMessage(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Video(video, caption, media_group_id) => {
+            message::Kind::Video(video, caption, media_group_id) => {
                 if self.will_handle_edited_video() {
                     let context = contexts::EditedVideo::new(
                         bot,
@@ -1224,32 +1230,32 @@ impl<C> EventLoop<C> {
                     self.run_edited_video_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind =
-                        MessageKind::Video(video, caption, media_group_id);
+                        message::Kind::Video(video, caption, media_group_id);
                     let message = Message::new(data, kind);
-                    let update = UpdateKind::Message(message);
+                    let update = update::Kind::Message(message);
 
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            MessageKind::Poll(_) => unreachable!(
+            message::Kind::Poll(_) => unreachable!(
                 "\n[tbot] Unexpected poll as an edited message update\n"
             ),
-            MessageKind::NewChatMembers(..)
-            | MessageKind::LeftChatMember(..)
-            | MessageKind::ChatPhotoDeleted
-            | MessageKind::NewChatPhoto(..)
-            | MessageKind::NewChatTitle(..)
-            | MessageKind::GroupCreated
-            | MessageKind::SupergroupCreated
-            | MessageKind::ChannelCreated
-            | MessageKind::Pinned(..)
-            | MessageKind::MigrateTo(..)
-            | MessageKind::MigrateFrom(..) => unreachable!(
+            message::Kind::NewChatMembers(..)
+            | message::Kind::LeftChatMember(..)
+            | message::Kind::ChatPhotoDeleted
+            | message::Kind::NewChatPhoto(..)
+            | message::Kind::NewChatTitle(..)
+            | message::Kind::GroupCreated
+            | message::Kind::SupergroupCreated
+            | message::Kind::ChannelCreated
+            | message::Kind::Pinned(..)
+            | message::Kind::MigrateTo(..)
+            | message::Kind::MigrateFrom(..) => unreachable!(
                 "\n[tbot]\nExpected service messages not to be edited\n"
             ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
-                let update = UpdateKind::EditedMessage(message);
+                let update = update::Kind::EditedMessage(message);
                 self.run_unhandled_handlers(bot, update)
             }
             _ => (),
@@ -1317,14 +1323,13 @@ where
     }
 }
 
-fn is_command(text: &types::Text) -> bool {
+fn is_command(text: &Text) -> bool {
     text.entities.get(0).map(|entity| {
-        entity.kind == types::MessageEntityKind::BotCommand
-            && entity.offset == 0
+        entity.kind == EntityKind::BotCommand && entity.offset == 0
     }) == Some(true)
 }
 
-fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
+fn parse_command(text: &Text) -> (&str, Option<&str>) {
     let mut iter =
         text.value.split_whitespace().next().unwrap()[1..].split('@');
 
@@ -1334,7 +1339,7 @@ fn parse_command(text: &types::Text) -> (&str, Option<&str>) {
     (command, username)
 }
 
-fn trim_command(text: types::Text) -> types::Text {
+fn trim_command(text: Text) -> Text {
     let mut entities = text.entities.into_iter();
     let command_entity = entities.next().unwrap();
     let old_length = text.value.chars().count();
@@ -1348,14 +1353,14 @@ fn trim_command(text: types::Text) -> types::Text {
     let new_length = value.chars().count();
 
     let entities = entities
-        .map(|entity| types::MessageEntity {
+        .map(|entity| Entity {
             kind: entity.kind,
             length: entity.length,
             offset: entity.offset - (old_length - new_length),
         })
         .collect();
 
-    types::Text {
+    Text {
         value,
         entities,
     }

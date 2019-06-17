@@ -1,6 +1,8 @@
 use super::*;
-use crate::internal::Client;
-use types::input_file::*;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{input_file::*, keyboard::inline},
+};
 
 /// Represents the [`editMessageMedia`][docs] method for inline messages.
 ///
@@ -12,7 +14,7 @@ pub struct EditInlineMedia<'a, C> {
     token: Token,
     inline_message_id: &'a str,
     media: EditableMedia<'a>,
-    reply_markup: Option<types::InlineKeyboard<'a>>,
+    reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditInlineMedia<'a, C> {
@@ -32,7 +34,7 @@ impl<'a, C> EditInlineMedia<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: types::InlineKeyboard<'a>) -> Self {
+    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }
@@ -44,8 +46,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

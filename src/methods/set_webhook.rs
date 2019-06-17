@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::Client;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::parameters::Updates,
+};
 
 /// This method isn't meant to be used by users directly.
 #[derive(Debug, Clone)]
@@ -10,7 +13,7 @@ pub(crate) struct SetWebhook<'a, C> {
     url: &'a str,
     certificate: Option<&'a str>,
     max_connections: Option<u8>,
-    allowed_updates: Option<&'a [types::Updates]>,
+    allowed_updates: Option<&'a [Updates]>,
 }
 
 impl<'a, C> SetWebhook<'a, C> {
@@ -20,7 +23,7 @@ impl<'a, C> SetWebhook<'a, C> {
         url: &'a str,
         certificate: Option<&'a str>,
         max_connections: Option<u8>,
-        allowed_updates: Option<&'a [types::Updates]>,
+        allowed_updates: Option<&'a [Updates]>,
     ) -> Self {
         Self {
             client,
@@ -39,8 +42,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

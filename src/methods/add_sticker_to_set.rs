@@ -1,7 +1,11 @@
 use super::*;
-use crate::internal::Client;
-use types::input_file::{InputFile, PngSticker};
-use types::MaskPosition;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{
+        input_file::{InputFile, PngSticker},
+        sticker::MaskPosition,
+    },
+};
 
 /// Represents the [`addStickerToSet`][docs] method.
 ///
@@ -51,8 +55,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 

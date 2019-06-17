@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::Client;
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{chat, parameters::ChatId},
+};
 
 /// Represents the [`sendChatAction`][docs] method.
 ///
@@ -11,16 +14,16 @@ pub struct SendChatAction<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: types::ChatId<'a>,
-    action: types::ChatAction,
+    chat_id: ChatId<'a>,
+    action: chat::Action,
 }
 
 impl<'a, C> SendChatAction<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<types::ChatId<'a>>,
-        action: types::ChatAction,
+        chat_id: impl Into<ChatId<'a>>,
+        action: chat::Action,
     ) -> Self {
         Self {
             client,
@@ -37,8 +40,7 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    type Future =
-        Box<dyn Future<Item = Self::Item, Error = Self::Error> + Send>;
+    type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = DeliveryError;
 
