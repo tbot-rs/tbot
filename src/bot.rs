@@ -3,7 +3,8 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        chat, inline_query, input_file::*, keyboard::inline, parameters::ChatId,
+        chat, inline_query, input_file::*, keyboard::inline,
+        parameters::ChatId, LabeledPrice,
     },
 };
 use std::sync::Arc;
@@ -629,6 +630,32 @@ impl<C> Bot<C> {
             self.token.clone(),
             chat_id,
             document,
+        )
+    }
+
+    /// Constructs a new` SendInvoice` inerring your bot's token.
+    pub fn send_invoice<'a>(
+        &'a self,
+        chat_id: i64,
+        title: &'a str,
+        description: &'a str,
+        payload: &'a str,
+        provider_token: &'a str,
+        start_parameter: &'a str,
+        currency: &'a str,
+        prices: &'a [LabeledPrice<'a>],
+    ) -> methods::SendInvoice<'a, C> {
+        methods::SendInvoice::new(
+            &self.client,
+            self.token.clone(),
+            chat_id,
+            title,
+            description,
+            payload,
+            provider_token,
+            start_parameter,
+            currency,
+            prices,
         )
     }
 

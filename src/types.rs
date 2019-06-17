@@ -16,6 +16,7 @@ pub mod input_file;
 pub mod input_message_content;
 mod invoice;
 pub mod keyboard;
+mod labeled_price;
 mod location;
 mod login_url;
 pub mod message;
@@ -35,8 +36,8 @@ pub mod webhook_info;
 pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
     document::*, file::*, game::Game, inline_query::InlineQuery,
-    input_message_content::InputMessageContent, invoice::*, location::*,
-    login_url::*, message::Message, photo_size::*, poll::Poll,
+    input_message_content::InputMessageContent, invoice::*, labeled_price::*,
+    location::*, login_url::*, message::Message, photo_size::*, poll::Poll,
     sticker::Sticker, update::Update, user::User, venue::*, video::*,
     video_note::*, voice::*, webhook_info::WebhookInfo,
 };

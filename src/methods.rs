@@ -107,6 +107,7 @@ mod send_chat_action;
 mod send_contact;
 mod send_document;
 mod send_game;
+mod send_invoice;
 mod send_location;
 mod send_media_group;
 mod send_message;
@@ -147,16 +148,16 @@ pub use {
     kick_chat_member::*, leave_chat::*, pin_chat_message::*,
     promote_chat_member::*, restrict_chat_member::*, send_animation::*,
     send_audio::*, send_chat_action::*, send_contact::*, send_document::*,
-    send_game::*, send_location::*, send_media_group::*, send_message::*,
-    send_photo::*, send_photo::*, send_poll::*, send_poll::*, send_sticker::*,
-    send_sticker::*, send_venue::*, send_venue::*, send_video::*,
-    send_video::*, send_video_note::*, send_video_note::*, send_voice::*,
-    send_voice::*, set_chat_description::*, set_chat_description::*,
-    set_chat_photo::*, set_chat_photo::*, set_chat_sticker_set::*,
-    set_chat_title::*, set_chat_title::*, set_inline_game_score::*,
-    set_message_game_score::*, set_sticker_position_in_set::*,
-    set_sticker_position_in_set::*, stop_inline_location::*,
-    stop_inline_location::*, stop_message_location::*,
+    send_game::*, send_invoice::*, send_location::*, send_media_group::*,
+    send_message::*, send_photo::*, send_photo::*, send_poll::*, send_poll::*,
+    send_sticker::*, send_sticker::*, send_venue::*, send_venue::*,
+    send_video::*, send_video::*, send_video_note::*, send_video_note::*,
+    send_voice::*, send_voice::*, set_chat_description::*,
+    set_chat_description::*, set_chat_photo::*, set_chat_photo::*,
+    set_chat_sticker_set::*, set_chat_title::*, set_chat_title::*,
+    set_inline_game_score::*, set_message_game_score::*,
+    set_sticker_position_in_set::*, set_sticker_position_in_set::*,
+    stop_inline_location::*, stop_inline_location::*, stop_message_location::*,
     stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,
     unban_chat_member::*, unpin_chat_message::*, unpin_chat_message::*,
     upload_sticker_file::*, upload_sticker_file::*,

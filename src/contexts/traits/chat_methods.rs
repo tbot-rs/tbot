@@ -1,6 +1,8 @@
 use crate::{
     methods::*,
-    types::{chat, input_file::*, keyboard::inline, parameters::ChatId},
+    types::{
+        chat, input_file::*, keyboard::inline, parameters::ChatId, LabeledPrice,
+    },
     Bot,
 };
 
@@ -229,6 +231,52 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
         document: &'a Document<'a>,
     ) -> SendDocument<'a, C> {
         self.send_document(document).reply_to_message_id(self.message_id())
+    }
+
+    /// Sends an invoice to this chat.
+    fn send_invoice(
+        &'a self,
+        title: &'a str,
+        description: &'a str,
+        payload: &'a str,
+        provider_token: &'a str,
+        start_parameter: &'a str,
+        currency: &'a str,
+        prices: &'a [LabeledPrice<'a>],
+    ) -> SendInvoice<'a, C> {
+        self.bot().send_invoice(
+            self.chat_id(),
+            title,
+            description,
+            payload,
+            provider_token,
+            start_parameter,
+            currency,
+            prices,
+        )
+    }
+
+    /// Sends an invoice in reply to this message.
+    fn send_invoice_in_reply(
+        &'a self,
+        title: &'a str,
+        description: &'a str,
+        payload: &'a str,
+        provider_token: &'a str,
+        start_parameter: &'a str,
+        currency: &'a str,
+        prices: &'a [LabeledPrice<'a>],
+    ) -> SendInvoice<'a, C> {
+        self.send_invoice(
+            title,
+            description,
+            payload,
+            provider_token,
+            start_parameter,
+            currency,
+            prices,
+        )
+        .reply_to_message_id(self.message_id())
     }
 
     /// Sends a location to this chat.
