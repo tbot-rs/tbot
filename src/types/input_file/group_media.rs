@@ -1,7 +1,9 @@
 use super::*;
+use serde::Serialize;
 
 /// Represents a media that can be sent in a group (aka albums).
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[serde(untagged)]
 // todo: #[non_exhaustive]
 pub enum GroupMedia<'a> {
     /// A group's photo.
@@ -37,14 +39,5 @@ impl<'a> From<Photo<'a>> for GroupMedia<'a> {
 impl<'a> From<Video<'a>> for GroupMedia<'a> {
     fn from(video: Video<'a>) -> Self {
         GroupMedia::Video(video)
-    }
-}
-
-impl<'a> serde::Serialize for GroupMedia<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        match self {
-            GroupMedia::Photo(photo) => photo.serialize(s),
-            GroupMedia::Video(video) => video.serialize(s),
-        }
     }
 }
