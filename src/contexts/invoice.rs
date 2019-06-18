@@ -2,7 +2,7 @@ media_message! {
     struct Invoice {
         /// The invoice.
         invoice: types::Invoice,
-    } -> Bot::game
+    } -> Bot::invoice
 
     fn new() -> Self {
         Self { }
