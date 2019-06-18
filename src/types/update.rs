@@ -1,6 +1,9 @@
 //! Types related to updates.
 
-use super::{callback, ChosenInlineResult, InlineQuery, Message, Poll, shipping, PreCheckoutQuery};
+use super::{
+    callback, shipping, ChosenInlineResult, InlineQuery, Message, Poll,
+    PreCheckoutQuery,
+};
 use serde::de::{
     Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
 };
@@ -117,7 +120,7 @@ impl Kind {
         match self {
             Kind::ShippingQuery(..) => true,
             _ => false,
-}
+        }
     }
 
     /// Checks if `self` is `PreCheckoutQuery`.
@@ -190,14 +193,11 @@ impl<'de> Deserialize<'de> for Update {
                             ))
                         }
                         SHIPPING_QUERY => {
-                            kind = Some(Kind::ShippingQuery(
-                                map.next_value()?,
-                            ))
+                            kind = Some(Kind::ShippingQuery(map.next_value()?))
                         }
                         PRE_CHECKOUT_QUERY => {
-                            kind = Some(Kind::PreCheckoutQuery(
-                                map.next_value()?,
-                            ))
+                            kind =
+                                Some(Kind::PreCheckoutQuery(map.next_value()?))
                         }
                         POLL => kind = Some(Kind::Poll(map.next_value()?)),
                         _ => {

@@ -1,4 +1,4 @@
-use crate::types::{User, pre_checkout_query, PreCheckoutQuery, OrderInfo};
+use crate::types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User};
 
 common! {
     /// The context for [`pre_checkout`][handler] handlers.
@@ -25,10 +25,7 @@ common! {
 impl<C> PreCheckout<C> {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(
-        bot: Arc<Bot<C>>,
-        query: PreCheckoutQuery,
-    ) -> Self {
+    pub(crate) fn new(bot: Arc<Bot<C>>, query: PreCheckoutQuery) -> Self {
         Self {
             bot,
             id: query.id,

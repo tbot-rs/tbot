@@ -100,6 +100,8 @@ mod new_members;
 mod photo;
 mod pinned_message;
 mod poll;
+mod pre_checkout;
+mod shipping;
 mod sticker;
 mod text;
 mod unhandled;
@@ -109,8 +111,6 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
-mod shipping;
-mod pre_checkout;
 
 pub mod traits;
 
@@ -121,6 +121,6 @@ pub use {
     edited_text::*, edited_video::*, game::*, game_callback::*, inline::*,
     invoice::*, left_member::*, location::*, migration::*, new_chat_photo::*,
     new_chat_title::*, new_members::*, photo::*, pinned_message::*, poll::*,
-    sticker::*, text::*, unhandled::*, update::*, updated_poll::*, venue::*,
-    video::*, video_note::*, voice::*, shipping::*, pre_checkout::*,
+    pre_checkout::*, shipping::*, sticker::*, text::*, unhandled::*, update::*,
+    updated_poll::*, venue::*, video::*, video_note::*, voice::*,
 };
