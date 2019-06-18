@@ -1,7 +1,9 @@
+use crate::types::message;
+
 media_message! {
     struct Text {
         /// The text of the message.
-        text: types::message::Text,
+        text: message::Text,
     } -> EventLoop::text
 
     fn new() -> Self {

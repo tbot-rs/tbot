@@ -1,7 +1,9 @@
+use crate::types::Location;
+
 edited_message! {
     struct EditedLocation {
         /// The location.
-        location: types::Location,
+        location: Location,
     } -> EventLoop::edited_location
 
     fn new() -> Self {

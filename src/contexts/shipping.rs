@@ -1,7 +1,9 @@
 use crate::{
+    Bot,
     methods::AnswerShippingQuery,
     types::{shipping, User},
 };
+use std::sync::Arc;
 
 common! {
     /// The context for [`shipping`][handler] handlers.

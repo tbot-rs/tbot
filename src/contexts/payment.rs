@@ -1,7 +1,9 @@
+use crate::types::SuccessfulPayment;
+
 media_message! {
     struct Payment {
         /// Information about the payment.
-        invoice: types::SuccessfulPayment,
+        invoice: SuccessfulPayment,
     } -> EventLoop::payment
 
     fn new() -> Self {

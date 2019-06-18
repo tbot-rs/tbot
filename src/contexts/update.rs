@@ -1,3 +1,5 @@
+use std::sync::Arc;
+use crate::Bot;
 
 common! {
     /// The context for [`before_update`][before] and [`after_update`][after]

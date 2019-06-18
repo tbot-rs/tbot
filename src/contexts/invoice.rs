@@ -1,3 +1,5 @@
+use crate::types;
+
 media_message! {
     struct Invoice {
         /// The invoice.

@@ -16,7 +16,7 @@ macro_rules! edited_message {
         message_base! {
             struct $name {
                 /// The replied message.
-                reply_to: Option<types::Message>,
+                reply_to: Option<crate::types::Message>,
                 /// The author's signature, if enabled for the channel.
                 author_signature: Option<String>,
                 /// The last time when the message was edited.
@@ -42,7 +42,7 @@ macro_rules! edited_message {
             }
         }
 
-        impl<'a, C: 'static> Forwardable<'a, C> for $name<C> {}
-        impl<'a, C: 'static> Pinnable<'a, C> for $name<C> {}
+        impl<'a, C: 'static> super::traits::Forwardable<'a, C> for $name<C> {}
+        impl<'a, C: 'static> super::traits::Pinnable<'a, C> for $name<C> {}
     };
 }

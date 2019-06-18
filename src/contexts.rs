@@ -67,8 +67,6 @@
                                       // we re-export everything under one namespace
 #![allow(clippy::module_name_repetitions)]
 
-use super::*;
-
 #[macro_use]
 mod macros;
 

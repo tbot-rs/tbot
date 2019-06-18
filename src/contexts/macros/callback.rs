@@ -4,8 +4,6 @@ macro_rules! callback {
             #[doc = $kind_doc:literal] $kind:ident: $kind_type:ty,
         } -> EventLoop::$handler:ident
     ) => {
-        use types::{User, callback};
-
         common! {
             #[doc = concat!(
                 "Context for the [`", stringify!($handler), "`][handler] ", "handler.\n\n",
@@ -17,9 +15,9 @@ macro_rules! callback {
                 /// The ID of the callback.
                 id: String,
                 /// The user who initiated the callback.
-                from: User,
+                from: crate::types::User,
                 /// The origin of the query.
-                origin: callback::Origin,
+                origin: crate::types::callback::Origin,
                 /// The identifier of the chat.
                 chat_instance: String,
                 #[doc = $kind_doc]
@@ -31,10 +29,10 @@ macro_rules! callback {
             // https://github.com/rust-lang/rust-clippy/issues/4041
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: Arc<Bot<C>>,
+                bot: std::sync::Arc<crate::Bot<C>>,
                 id: String,
-                from: User,
-                origin: callback::Origin,
+                from: crate::types::User,
+                origin: crate::types::callback::Origin,
                 chat_instance: String,
                 $kind: $kind_type,
             ) -> Self {
@@ -49,8 +47,8 @@ macro_rules! callback {
             }
         }
 
-        impl<'a, C: 'static> traits::Callback<'a, C> for $name<C> {
-            fn bot(&self) -> &Bot<C> {
+        impl<'a, C: 'static> super::traits::Callback<'a, C> for $name<C> {
+            fn bot(&self) -> &crate::Bot<C> {
                 &self.bot
             }
 

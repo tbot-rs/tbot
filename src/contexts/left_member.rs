@@ -1,10 +1,12 @@
+use crate::types::User;
+
 message_base! {
     struct LeftMember {
         /// The left member.
-        member: types::User,
+        member: User,
     } -> EventLoop::left_member
 
-    fn new(member: types::User,) -> Self {
+    fn new(member: User,) -> Self {
         Self {
             member: member,
         }

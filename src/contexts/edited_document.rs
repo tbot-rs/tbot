@@ -1,12 +1,14 @@
+use crate::types::{Document, message::Text};
+
 edited_message! {
     struct EditedDocument {
         /// The document.
-        document: types::Document,
+        document: Document,
         /// The caption of the document.
-        caption: types::message::Text,
+        caption: Text,
     } -> EventLoop::edited_document
 
-    fn new(caption: types::message::Text,) -> Self {
+    fn new(caption: Text,) -> Self {
         Self {
             caption: caption,
         }

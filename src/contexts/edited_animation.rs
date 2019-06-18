@@ -1,12 +1,14 @@
+use crate::types::{Animation, message::Text};
+
 edited_message! {
     struct EditedAnimation {
         /// The animation.
-        animation: types::Animation,
+        animation: Animation,
         /// The caption of the animation.
-        caption: types::message::Text,
+        caption: Text,
     } -> EventLoop::edited_animation
 
-    fn new(caption: types::message::Text,) -> Self {
+    fn new(caption: Text,) -> Self {
         Self {
             caption: caption,
         }

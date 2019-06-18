@@ -1,4 +1,5 @@
-use crate::{methods::AnswerInlineQuery, types::inline_query};
+use crate::{Bot, methods::AnswerInlineQuery, types::{User, Location, inline_query, InlineQuery}};
+use std::sync::Arc;
 
 common! {
     /// The context for [`inline`][handler] handlers.
@@ -8,9 +9,9 @@ common! {
         /// The ID of the query.
         id: inline_query::Id,
         /// The user who sent the query.
-        from: types::User,
+        from: User,
         /// The location of the user, if enabled and allowed.
-        location: Option<types::Location>,
+        location: Option<Location>,
         /// The query itself.
         query: String,
         /// The offset of the result to be returned.
@@ -23,7 +24,7 @@ impl<C> Inline<C> {
     #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: Arc<Bot<C>>,
-        inline_query: types::InlineQuery,
+        inline_query: InlineQuery,
     ) -> Self {
         Self {
             bot,
