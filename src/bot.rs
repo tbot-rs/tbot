@@ -4,7 +4,7 @@ use crate::{
     methods::*,
     types::{
         chat, inline_query, input_file::*, keyboard::inline,
-        parameters::ChatId, LabeledPrice,
+        parameters::ChatId, shipping, LabeledPrice,
     },
 };
 use std::sync::Arc;
@@ -130,6 +130,20 @@ impl<C> Bot<C> {
             self.token.clone(),
             inline_query_id,
             results,
+        )
+    }
+
+    /// Constructs a new `AnswerShippingQuery` inferring your bot's token.
+    pub(crate) fn answer_shipping_query<'a>(
+        &'a self,
+        shipping_query_id: shipping::query::id::Ref<'a>,
+        result: Result<&'a [shipping::Option<'a>], &'a str>,
+    ) -> methods::AnswerShippingQuery<'a, C> {
+        methods::AnswerShippingQuery::new(
+            &self.client,
+            self.token.clone(),
+            shipping_query_id,
+            result,
         )
     }
 
