@@ -2,6 +2,6 @@
 
 mod address;
 mod option;
-mod query;
+pub mod query;
 
-pub use {address::*, option::*, query::*};
+pub use {address::*, option::*, query::Query};
