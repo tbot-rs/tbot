@@ -1,4 +1,4 @@
-use crate::types::{Audio, message::Text};
+use crate::types::{message::Text, Audio};
 
 edited_message! {
     struct EditedAudio {

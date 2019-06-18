@@ -1,4 +1,4 @@
-use crate::types::{Document, message::Text};
+use crate::types::{message::Text, Document};
 
 edited_message! {
     struct EditedDocument {

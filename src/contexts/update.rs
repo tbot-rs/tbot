@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use crate::Bot;
+use std::sync::Arc;
 
 common! {
     /// The context for [`before_update`][before] and [`after_update`][after]
@@ -15,7 +15,6 @@ common! {
         update_id: u32,
     }
 }
-
 
 impl<C> Update<C> {
     pub(crate) const fn new(bot: Arc<Bot<C>>, update_id: u32) -> Self {

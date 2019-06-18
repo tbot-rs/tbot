@@ -1,4 +1,8 @@
-use crate::{Bot, methods::AnswerInlineQuery, types::{User, Location, inline_query, InlineQuery}};
+use crate::{
+    methods::AnswerInlineQuery,
+    types::{inline_query, InlineQuery, Location, User},
+    Bot,
+};
 use std::sync::Arc;
 
 common! {
@@ -22,10 +26,7 @@ common! {
 impl<C> Inline<C> {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(
-        bot: Arc<Bot<C>>,
-        inline_query: InlineQuery,
-    ) -> Self {
+    pub(crate) fn new(bot: Arc<Bot<C>>, inline_query: InlineQuery) -> Self {
         Self {
             bot,
             id: inline_query.id,

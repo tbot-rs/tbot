@@ -1,4 +1,7 @@
-use crate::{Bot, types::{ChosenInlineResult, Location, User}};
+use crate::{
+    types::{ChosenInlineResult, Location, User},
+    Bot,
+};
 use std::sync::Arc;
 
 common! {

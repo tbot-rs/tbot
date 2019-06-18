@@ -1,4 +1,4 @@
-use crate::types::{PhotoSize, message::Text};
+use crate::types::{message::Text, PhotoSize};
 
 media_message! {
     struct Photo {

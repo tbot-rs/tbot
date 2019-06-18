@@ -1,7 +1,7 @@
 use crate::{
-    Bot,
     methods::AnswerShippingQuery,
     types::{shipping, User},
+    Bot,
 };
 use std::sync::Arc;
 

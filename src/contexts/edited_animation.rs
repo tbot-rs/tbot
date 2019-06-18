@@ -1,4 +1,4 @@
-use crate::types::{Animation, message::Text};
+use crate::types::{message::Text, Animation};
 
 edited_message! {
     struct EditedAnimation {

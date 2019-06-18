@@ -1,5 +1,5 @@
+use crate::{types::Poll, Bot};
 use std::sync::Arc;
-use crate::{Bot, types::Poll};
 
 common! {
     /// The context for [`updated_poll`][handler] handlers.

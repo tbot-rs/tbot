@@ -1,4 +1,4 @@
-use crate::types::{Video, message::Text};
+use crate::types::{message::Text, Video};
 
 edited_message! {
     struct EditedVideo {
