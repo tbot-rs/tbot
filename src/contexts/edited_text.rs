@@ -2,7 +2,7 @@ edited_message! {
     struct EditedText {
         /// The text of the message.
         text: types::message::Text,
-    } -> Bot::edited_text
+    } -> EventLoop::edited_text
 
     fn new() -> Self {
         Self { }

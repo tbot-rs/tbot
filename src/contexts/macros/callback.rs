@@ -2,14 +2,16 @@ macro_rules! callback {
     (
         struct $name:ident {
             #[doc = $kind_doc:literal] $kind:ident: $kind_type:ty,
-        } -> Bot::$handler:ident
+        } -> EventLoop::$handler:ident
     ) => {
         use types::{User, callback};
 
         common! {
             #[doc = concat!(
-                "Context for the [`", stringify!($handler), "`][handler] handler.\n\n",
-                "[handler]: ../struct.Bot.html#method.", stringify!($handler),
+                "Context for the [`", stringify!($handler), "`][handler] ", "handler.\n\n",
+
+                "[handler]: ../event_loop/struct.Event.html#method.",
+                stringify!($handler),
             )]
             struct $name {
                 /// The ID of the callback.

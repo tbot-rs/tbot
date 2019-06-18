@@ -3,7 +3,7 @@ macro_rules! media_message {
         struct $name:ident {
             #[doc = $media_doc:literal] $media:ident: $media_type:ty,
             $(#[doc = $field_doc:literal] $field:ident: $type:ty,)*
-        } -> Bot::$handler:ident
+        } -> EventLoop::$handler:ident
 
         fn new(
             $($param:ident: $param_type:ty,)*
@@ -24,7 +24,7 @@ macro_rules! media_message {
                 #[doc = $media_doc]
                 $media: $media_type,
                 $(#[doc = $field_doc] $field: $type,)*
-            } -> Bot::$handler
+            } -> EventLoop::$handler
 
             fn new(
                 $media: $media_type,

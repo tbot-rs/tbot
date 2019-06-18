@@ -1,7 +1,7 @@
 common! {
     /// The context for [`updated_poll`][handler] handlers.
     ///
-    /// [handler]: ../struct.Bot.html#method.updated_poll
+    /// [handler]: ../event_loop/struct.EventLoop.html#method.updated_poll
     struct UpdatedPoll {
         /// The new state of the poll.
         poll: types::Poll,

@@ -4,7 +4,7 @@ edited_message! {
         animation: types::Animation,
         /// The caption of the animation.
         caption: types::message::Text,
-    } -> Bot::edited_animation
+    } -> EventLoop::edited_animation
 
     fn new(caption: types::message::Text,) -> Self {
         Self {

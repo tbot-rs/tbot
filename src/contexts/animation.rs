@@ -4,7 +4,7 @@ media_message! {
         animation: types::Animation,
         /// The caption of the animation.
         caption: types::message::Text,
-    } -> Bot::animation
+    } -> EventLoop::animation
 
     fn new(caption: types::message::Text,) -> Self {
         Self {

@@ -2,7 +2,7 @@ media_message! {
     struct Venue {
         /// The venue.
         venue: types::Venue,
-    } -> Bot::venue
+    } -> EventLoop::venue
 
     fn new() -> Self {
         Self { }

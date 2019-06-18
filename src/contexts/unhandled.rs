@@ -1,7 +1,7 @@
 common! {
     /// The context for [`unhandled`] handlers.
     ///
-    /// [`unhandled`]: ../struct.Bot.html#method.unhandled
+    /// [`unhandled`]: ../event_loop/struct.EventLoop.html#method.unhandled
     struct Unhandled {
         /// The unhandled update.
         update: types::update::Kind,

@@ -2,7 +2,7 @@ media_message! {
     struct Game {
         /// The game.
         game: types::Game,
-    } -> Bot::game
+    } -> EventLoop::game
 
     fn new() -> Self {
         Self { }

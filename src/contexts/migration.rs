@@ -2,7 +2,7 @@ message_base! {
     struct Migration {
         /// The old ID of the group.
         old_id: i64,
-    } -> Bot::migration
+    } -> EventLoop::migration
 
     fn new(old_id: i64,) -> Self {
         Self {

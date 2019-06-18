@@ -2,7 +2,7 @@ macro_rules! message_base {
     (
         struct $name:ident {
             $(#[doc = $field_doc:literal] $field:ident: $type:ty,)*
-        } -> Bot::$handler:ident
+        } -> EventLoop::$handler:ident
 
         fn new(
             $($param:ident: $param_type:ty,)*
@@ -16,8 +16,10 @@ macro_rules! message_base {
     ) => {
         common! {
             #[doc = concat!(
-                "The context for [`", stringify!($handler), "`][handler] handlers.\n\n",
-                "[handler]: ../struct.Bot.html#method.", stringify!($handler),
+                "The context for [`", stringify!($handler), "`][handler] ",
+                "handlers.\n\n",
+                "[handler]: ../event_loop/struct.EventLoop.html#method.",
+                stringify!($handler),
             )]
             struct $name {
                 /// ID of the message.

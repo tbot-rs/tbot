@@ -2,7 +2,7 @@ media_message! {
     struct Sticker {
         /// The sticker.
         sticker: types::Sticker,
-    } -> Bot::sticker
+    } -> EventLoop::sticker
 
     fn new() -> Self {
         Self { }

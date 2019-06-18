@@ -2,7 +2,7 @@ media_message! {
     struct Poll {
         /// The poll.
         poll: types::Poll,
-    } -> Bot::poll
+    } -> EventLoop::poll
 
     fn new() -> Self {
         Self { }

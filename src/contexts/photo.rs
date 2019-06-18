@@ -6,7 +6,7 @@ media_message! {
         caption: types::message::Text,
         /// The media group's ID.
         media_group_id: Option<i32>,
-    } -> Bot::photo
+    } -> EventLoop::photo
 
     fn new(caption: types::message::Text, media_group_id: Option<i32>,) -> Self {
         Self {

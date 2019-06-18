@@ -4,7 +4,7 @@ media_message! {
         voice: types::Voice,
         /// The caption of the voice.
         caption: types::message::Text,
-    } -> Bot::voice
+    } -> EventLoop::voice
 
     fn new(caption: types::message::Text,) -> Self {
         Self {

@@ -4,7 +4,7 @@ media_message! {
         document: types::Document,
         /// The caption of the document.
         caption: types::message::Text,
-    } -> Bot::document
+    } -> EventLoop::document
 
     fn new(caption: types::message::Text,) -> Self {
         Self {
