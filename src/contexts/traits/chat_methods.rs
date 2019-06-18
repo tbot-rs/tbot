@@ -234,6 +234,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends an invoice to this chat.
+    #[allow(clippy::too_many_arguments)]
     fn send_invoice(
         &'a self,
         title: &'a str,
@@ -257,6 +258,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends an invoice in reply to this message.
+    #[allow(clippy::too_many_arguments)]
     fn send_invoice_in_reply(
         &'a self,
         title: &'a str,
