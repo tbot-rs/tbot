@@ -4,7 +4,7 @@ use crate::{
     methods::*,
     types::{
         chat, inline_query, input_file::*, keyboard::inline,
-        parameters::ChatId, shipping, LabeledPrice,
+        parameters::ChatId, pre_checkout_query, shipping, LabeledPrice,
     },
 };
 use std::sync::Arc;
@@ -130,6 +130,20 @@ impl<C> Bot<C> {
             self.token.clone(),
             inline_query_id,
             results,
+        )
+    }
+
+    /// Constructs a new `AnswerPreCheckoutQuery` inferring your bot's token.
+    pub(crate) fn answer_pre_checkout_query<'a>(
+        &'a self,
+        pre_checkout_query_id: pre_checkout_query::id::Ref<'a>,
+        result: Result<(), &'a str>,
+    ) -> methods::AnswerPreCheckoutQuery<'a, C> {
+        methods::AnswerPreCheckoutQuery::new(
+            &self.client,
+            self.token.clone(),
+            pre_checkout_query_id,
+            result,
         )
     }
 

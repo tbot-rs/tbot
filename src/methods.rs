@@ -67,6 +67,7 @@ use super::*;
 mod add_sticker_to_set;
 mod answer_callback_query;
 mod answer_inline_query;
+mod answer_pre_checkout_query;
 mod answer_shipping_query;
 mod create_new_sticker_set;
 mod delete_chat_photo;
@@ -136,7 +137,8 @@ mod upload_sticker_file;
 
 pub use {
     add_sticker_to_set::*, answer_callback_query::*, answer_inline_query::*,
-    answer_shipping_query::*, create_new_sticker_set::*, delete_chat_photo::*,
+    answer_pre_checkout_query::*, answer_shipping_query::*,
+    create_new_sticker_set::*, delete_chat_photo::*,
     delete_chat_sticker_set::*, delete_message::*, delete_sticker_from_set::*,
     edit_inline_caption::*, edit_inline_location::*, edit_inline_media::*,
     edit_inline_reply_markup::*, edit_inline_text::*, edit_message_caption::*,

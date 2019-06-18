@@ -1,4 +1,7 @@
-use crate::types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User};
+use crate::{
+    methods::AnswerPreCheckoutQuery,
+    types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User},
+};
 
 common! {
     /// The context for [`pre_checkout`][handler] handlers.
@@ -36,5 +39,30 @@ impl<C> PreCheckout<C> {
             shipping_option_id: query.shipping_option_id,
             order_info: query.order_info,
         }
+    }
+
+    /// Reports if the checkout is possible.
+    ///
+    /// Note that this method suits better when you already deal with
+    /// an `Option`. You might also want to use the [`ok`] and [`err`]
+    /// methods from this context.
+    ///
+    /// [`ok`]: #method.ok
+    /// [`err`]: #method.err
+    pub fn answer<'a>(
+        &'a self,
+        result: Result<(), &'a str>,
+    ) -> AnswerPreCheckoutQuery<'a, C> {
+        self.bot.answer_pre_checkout_query(self.id.as_ref(), result)
+    }
+
+    /// Reports that shipping is possible and shows possible shipping options.
+    pub fn ok(&self) -> AnswerPreCheckoutQuery<'_, C> {
+        self.answer(Ok(()))
+    }
+
+    /// Reports that shipping is impossible and shows the error message.
+    pub fn err<'a>(&'a self, err: &'a str) -> AnswerPreCheckoutQuery<'a, C> {
+        self.answer(Err(err))
     }
 }
