@@ -9,7 +9,7 @@ macro_rules! common {
         use std::sync::Arc;
 
         $(#[doc = $doc])+
-        #[derive(Clone)]
+        #[derive(Debug, Clone)]
         // todo: #[non_exhaustive]
         pub struct $name<C> {
             /// A mock bot for calling API without information inference.
