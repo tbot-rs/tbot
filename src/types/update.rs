@@ -1,6 +1,6 @@
 //! Types related to updates.
 
-use super::{callback, ChosenInlineResult, InlineQuery, Message, Poll};
+use super::{callback, ChosenInlineResult, InlineQuery, Message, Poll, shipping, PreCheckoutQuery};
 use serde::de::{
     Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
 };
@@ -29,6 +29,10 @@ pub enum Kind {
     Poll(Poll),
     /// A chosen inline result.
     ChosenInlineResult(ChosenInlineResult),
+    /// A shipping query.
+    ShippingQuery(shipping::Query),
+    /// A pre-checkout query.
+    PreCheckoutQuery(PreCheckoutQuery),
     /// Unknown update kind.
     Unknown,
 }
@@ -107,6 +111,22 @@ impl Kind {
             _ => false,
         }
     }
+
+    /// Checks if `self` is `ShippingQuery`.
+    pub fn is_shipping_query(&self) -> bool {
+        match self {
+            Kind::ShippingQuery(..) => true,
+            _ => false,
+}
+    }
+
+    /// Checks if `self` is `PreCheckoutQuery`.
+    pub fn is_pre_checkout_query(&self) -> bool {
+        match self {
+            Kind::PreCheckoutQuery(..) => true,
+            _ => false,
+        }
+    }
 }
 
 const UPDATE_ID: &str = "update_id";
@@ -117,6 +137,8 @@ const EDITED_CHANNEL_POST: &str = "edited_channel_post";
 const INLINE_QUERY: &str = "inline_query";
 const CALLBACK_QUERY: &str = "callback_query";
 const CHOSEN_INLINE_RESULT: &str = "chosen_inline_result";
+const SHIPPING_QUERY: &str = "shipping_query";
+const PRE_CHECKOUT_QUERY: &str = "pre_checkout_query";
 const POLL: &str = "poll";
 
 impl<'de> Deserialize<'de> for Update {
@@ -167,6 +189,16 @@ impl<'de> Deserialize<'de> for Update {
                                 map.next_value()?,
                             ))
                         }
+                        SHIPPING_QUERY => {
+                            kind = Some(Kind::ShippingQuery(
+                                map.next_value()?,
+                            ))
+                        }
+                        PRE_CHECKOUT_QUERY => {
+                            kind = Some(Kind::PreCheckoutQuery(
+                                map.next_value()?,
+                            ))
+                        }
                         POLL => kind = Some(Kind::Poll(map.next_value()?)),
                         _ => {
                             let _ = map.next_value::<IgnoredAny>()?;
@@ -191,6 +223,8 @@ impl<'de> Deserialize<'de> for Update {
                 EDITED_CHANNEL_POST,
                 INLINE_QUERY,
                 CHOSEN_INLINE_RESULT,
+                SHIPPING_QUERY,
+                PRE_CHECKOUT_QUERY,
             ],
             UpdateVisitor,
         )
