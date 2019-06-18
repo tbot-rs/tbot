@@ -58,6 +58,7 @@ type MigrationHandler<C> = Handler<contexts::Migration<C>>;
 type NewChatPhotoHandler<C> = Handler<contexts::NewChatPhoto<C>>;
 type NewChatTitleHandler<C> = Handler<contexts::NewChatTitle<C>>;
 type NewMembersHandler<C> = Handler<contexts::NewMembers<C>>;
+type PaymentHandler<C> = Handler<contexts::Payment<C>>;
 type PhotoHandler<C> = Handler<contexts::Photo<C>>;
 type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
 type PollHandler<C> = Handler<contexts::Poll<C>>;
@@ -126,6 +127,7 @@ pub struct EventLoop<C> {
     new_chat_photo_handlers: Handlers<NewChatPhotoHandler<C>>,
     new_chat_title_handlers: Handlers<NewChatTitleHandler<C>>,
     new_members_handlers: Handlers<NewMembersHandler<C>>,
+    payment_handlers: Handlers<PaymentHandler<C>>,
     photo_handlers: Handlers<PhotoHandler<C>>,
     pinned_message_handlers: Handlers<PinnedMessageHandler<C>>,
     poll_handlers: Handlers<PollHandler<C>>,
@@ -176,6 +178,7 @@ impl<C> EventLoop<C> {
             new_chat_photo_handlers: Vec::new(),
             new_chat_title_handlers: Vec::new(),
             new_members_handlers: Vec::new(),
+            payment_handlers: Vec::new(),
             photo_handlers: Vec::new(),
             pinned_message_handlers: Vec::new(),
             poll_handlers: Vec::new(),
@@ -534,6 +537,15 @@ impl<C> EventLoop<C> {
         contexts::NewMembers<C>,
         run_new_members_handlers,
         will_handle_new_members,
+    }
+
+    handler! {
+        /// Adds a new handler for successful payments.
+        payment_handlers,
+        payment,
+        contexts::Payment<C>,
+        run_payment_handlers,
+        will_handle_payment,
     }
 
     handler! {
@@ -1137,6 +1149,19 @@ impl<C> EventLoop<C> {
 
                     self.run_created_group_handlers(&context);
                 } else if self.will_handle_unhandled() {
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            message::Kind::SuccessfulPayment(payment) => {
+                if self.will_handle_payment() {
+                    let context = contexts::Payment::new(bot, data, payment);
+
+                    self.run_payment_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::SuccessfulPayment(payment);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
 
