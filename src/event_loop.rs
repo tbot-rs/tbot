@@ -51,16 +51,20 @@ type EditedVideoHandler<C> = Handler<contexts::EditedVideo<C>>;
 type GameCallbackHandler<C> = Handler<contexts::GameCallback<C>>;
 type GameHandler<C> = Handler<contexts::Game<C>>;
 type InlineHandler<C> = Handler<contexts::Inline<C>>;
+type InvoiceHandler<C> = Handler<contexts::Invoice<C>>;
 type LeftMemberHandler<C> = Handler<contexts::LeftMember<C>>;
 type LocationHandler<C> = Handler<contexts::Location<C>>;
 type MigrationHandler<C> = Handler<contexts::Migration<C>>;
 type NewChatPhotoHandler<C> = Handler<contexts::NewChatPhoto<C>>;
 type NewChatTitleHandler<C> = Handler<contexts::NewChatTitle<C>>;
 type NewMembersHandler<C> = Handler<contexts::NewMembers<C>>;
+type PaymentHandler<C> = Handler<contexts::Payment<C>>;
 type PhotoHandler<C> = Handler<contexts::Photo<C>>;
 type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
 type PollHandler<C> = Handler<contexts::Poll<C>>;
 type PollingErrorHandler = Handler<methods::DeliveryError>;
+type PreCheckoutHandler<C> = Handler<contexts::PreCheckout<C>>;
+type ShippingHandler<C> = Handler<contexts::Shipping<C>>;
 type StickerHandler<C> = Handler<contexts::Sticker<C>>;
 type TextHandler<C> = Handler<contexts::Text<C>>;
 type UnhandledHandler<C> = Handler<contexts::Unhandled<C>>;
@@ -116,16 +120,20 @@ pub struct EventLoop<C> {
     game_callback_handlers: Handlers<GameCallbackHandler<C>>,
     game_handlers: Handlers<GameHandler<C>>,
     inline_handlers: Handlers<InlineHandler<C>>,
+    invoice_handlers: Handlers<InvoiceHandler<C>>,
     left_member_handlers: Handlers<LeftMemberHandler<C>>,
     location_handlers: Handlers<LocationHandler<C>>,
     migration_handlers: Handlers<MigrationHandler<C>>,
     new_chat_photo_handlers: Handlers<NewChatPhotoHandler<C>>,
     new_chat_title_handlers: Handlers<NewChatTitleHandler<C>>,
     new_members_handlers: Handlers<NewMembersHandler<C>>,
+    payment_handlers: Handlers<PaymentHandler<C>>,
     photo_handlers: Handlers<PhotoHandler<C>>,
     pinned_message_handlers: Handlers<PinnedMessageHandler<C>>,
     poll_handlers: Handlers<PollHandler<C>>,
     polling_error_handlers: Handlers<PollingErrorHandler>,
+    pre_checkout_handlers: Handlers<PreCheckoutHandler<C>>,
+    shipping_handlers: Handlers<ShippingHandler<C>>,
     sticker_handlers: Handlers<StickerHandler<C>>,
     text_handlers: Handlers<TextHandler<C>>,
     unhandled_handlers: Handlers<UnhandledHandler<C>>,
@@ -163,16 +171,20 @@ impl<C> EventLoop<C> {
             game_callback_handlers: Vec::new(),
             game_handlers: Vec::new(),
             inline_handlers: Vec::new(),
+            invoice_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
             migration_handlers: Vec::new(),
             new_chat_photo_handlers: Vec::new(),
             new_chat_title_handlers: Vec::new(),
             new_members_handlers: Vec::new(),
+            payment_handlers: Vec::new(),
             photo_handlers: Vec::new(),
             pinned_message_handlers: Vec::new(),
             poll_handlers: Vec::new(),
             polling_error_handlers: Vec::new(),
+            pre_checkout_handlers: Vec::new(),
+            shipping_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
             text_handlers: Vec::new(),
             unhandled_handlers: Vec::new(),
@@ -465,6 +477,15 @@ impl<C> EventLoop<C> {
     }
 
     handler! {
+        /// Adds a new handler for invoices.
+        invoice_handlers,
+        invoice,
+        contexts::Invoice<C>,
+        run_invoice_handlers,
+        will_handle_invoice,
+    }
+
+    handler! {
         /// Adds a new handler for left members.
         left_member_handlers,
         left_member,
@@ -519,6 +540,15 @@ impl<C> EventLoop<C> {
     }
 
     handler! {
+        /// Adds a new handler for successful payments.
+        payment_handlers,
+        payment,
+        contexts::Payment<C>,
+        run_payment_handlers,
+        will_handle_payment,
+    }
+
+    handler! {
         /// Adds a new handler for photos.
         photo_handlers,
         photo,
@@ -551,6 +581,24 @@ impl<C> EventLoop<C> {
         polling_error,
         methods::DeliveryError,
         run_polling_error_handlers,
+    }
+
+    handler! {
+        /// Adds a new handler for pre-checkout queries.
+        pre_checkout_handlers,
+        pre_checkout,
+        contexts::PreCheckout<C>,
+        run_pre_checkout_handlers,
+        will_handle_pre_checkout,
+    }
+
+    handler! {
+        /// Adds a new handler for shipping queries.
+        shipping_handlers,
+        shipping,
+        contexts::Shipping<C>,
+        run_shipping_handlers,
+        will_handle_shipping,
     }
 
     handler! {
@@ -732,6 +780,28 @@ impl<C> EventLoop<C> {
                     }
                 }
             },
+            update::Kind::ShippingQuery(query) => {
+                if self.will_handle_shipping() {
+                    let context = contexts::Shipping::new(bot, query);
+
+                    self.run_shipping_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let update = update::Kind::ShippingQuery(query);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            update::Kind::PreCheckoutQuery(query) => {
+                if self.will_handle_pre_checkout() {
+                    let context = contexts::PreCheckout::new(bot, query);
+
+                    self.run_pre_checkout_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let update = update::Kind::PreCheckoutQuery(query);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
             update @ update::Kind::Unknown => {
                 self.run_unhandled_handlers(bot, update);
             }
@@ -968,6 +1038,19 @@ impl<C> EventLoop<C> {
                     self.run_unhandled_handlers(bot, update);
                 }
             }
+            message::Kind::Invoice(invoice) => {
+                if self.will_handle_invoice() {
+                    let context = contexts::Invoice::new(bot, data, invoice);
+
+                    self.run_invoice_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::Invoice(invoice);
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
             message::Kind::LeftChatMember(member) => {
                 if self.will_handle_left_member() {
                     let context = contexts::LeftMember::new(bot, data, member);
@@ -1066,6 +1149,19 @@ impl<C> EventLoop<C> {
 
                     self.run_created_group_handlers(&context);
                 } else if self.will_handle_unhandled() {
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            message::Kind::SuccessfulPayment(payment) => {
+                if self.will_handle_payment() {
+                    let context = contexts::Payment::new(bot, data, payment);
+
+                    self.run_payment_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::SuccessfulPayment(payment);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
 

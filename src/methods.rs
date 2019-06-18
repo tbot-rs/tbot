@@ -67,6 +67,8 @@ use super::*;
 mod add_sticker_to_set;
 mod answer_callback_query;
 mod answer_inline_query;
+mod answer_pre_checkout_query;
+mod answer_shipping_query;
 mod create_new_sticker_set;
 mod delete_chat_photo;
 mod delete_chat_sticker_set;
@@ -107,6 +109,7 @@ mod send_chat_action;
 mod send_contact;
 mod send_document;
 mod send_game;
+mod send_invoice;
 mod send_location;
 mod send_media_group;
 mod send_message;
@@ -134,6 +137,7 @@ mod upload_sticker_file;
 
 pub use {
     add_sticker_to_set::*, answer_callback_query::*, answer_inline_query::*,
+    answer_pre_checkout_query::*, answer_shipping_query::*,
     create_new_sticker_set::*, delete_chat_photo::*,
     delete_chat_sticker_set::*, delete_message::*, delete_sticker_from_set::*,
     edit_inline_caption::*, edit_inline_location::*, edit_inline_media::*,
@@ -147,16 +151,16 @@ pub use {
     kick_chat_member::*, leave_chat::*, pin_chat_message::*,
     promote_chat_member::*, restrict_chat_member::*, send_animation::*,
     send_audio::*, send_chat_action::*, send_contact::*, send_document::*,
-    send_game::*, send_location::*, send_media_group::*, send_message::*,
-    send_photo::*, send_photo::*, send_poll::*, send_poll::*, send_sticker::*,
-    send_sticker::*, send_venue::*, send_venue::*, send_video::*,
-    send_video::*, send_video_note::*, send_video_note::*, send_voice::*,
-    send_voice::*, set_chat_description::*, set_chat_description::*,
-    set_chat_photo::*, set_chat_photo::*, set_chat_sticker_set::*,
-    set_chat_title::*, set_chat_title::*, set_inline_game_score::*,
-    set_message_game_score::*, set_sticker_position_in_set::*,
-    set_sticker_position_in_set::*, stop_inline_location::*,
-    stop_inline_location::*, stop_message_location::*,
+    send_game::*, send_invoice::*, send_location::*, send_media_group::*,
+    send_message::*, send_photo::*, send_photo::*, send_poll::*, send_poll::*,
+    send_sticker::*, send_sticker::*, send_venue::*, send_venue::*,
+    send_video::*, send_video::*, send_video_note::*, send_video_note::*,
+    send_voice::*, send_voice::*, set_chat_description::*,
+    set_chat_description::*, set_chat_photo::*, set_chat_photo::*,
+    set_chat_sticker_set::*, set_chat_title::*, set_chat_title::*,
+    set_inline_game_score::*, set_message_game_score::*,
+    set_sticker_position_in_set::*, set_sticker_position_in_set::*,
+    stop_inline_location::*, stop_inline_location::*, stop_message_location::*,
     stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,
     unban_chat_member::*, unpin_chat_message::*, unpin_chat_message::*,
     upload_sticker_file::*, upload_sticker_file::*,

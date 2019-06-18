@@ -63,7 +63,7 @@ pub enum Kind {
     /// An invoice.
     Invoice(Invoice),
     /// A service message about a successful payment.
-    SuccessfulPayment(raw::SuccessfulPayment),
+    SuccessfulPayment(SuccessfulPayment),
     /// A connected website.
     ConnectedWebsite(String),
     /// Passport data.

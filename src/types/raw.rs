@@ -3,67 +3,6 @@
 
 use super::*;
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
-pub struct SuccessfulPayment {
-    pub currency: String,
-    pub total_amount: u32,
-    pub invoice_payload: String,
-    pub shipping_option_id: Option<String>,
-    pub order_info: Option<OrderInfo>,
-    pub telegram_payment_charge_id: String,
-    pub provider_payment_charge_id: String,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
-pub struct LabeledPrice {
-    pub label: String,
-    pub amount: u32,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
-pub struct ShippingAddress {
-    pub country_code: String,
-    pub state: String,
-    pub city: String,
-    pub street_line1: String,
-    pub street_line2: String,
-    pub post_code: String,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
-pub struct OrderInfo {
-    pub name: Option<String>,
-    pub phone_number: Option<String>,
-    pub email: Option<String>,
-    pub shipping_address: Option<ShippingAddress>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
-pub struct ShippingOption {
-    pub id: String,
-    pub title: String,
-    pub prices: Vec<LabeledPrice>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct ShippingQuery {
-    pub id: String,
-    pub from: User,
-    pub invoice_payload: String,
-    pub shipping_address: ShippingAddress,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-pub struct PreCheckoutQuery {
-    pub id: String,
-    pub from: User,
-    pub currency: String,
-    pub total_amount: u32,
-    pub invoice_payload: String,
-    pub shipping_option_id: Option<String>,
-    pub order_info: Option<OrderInfo>,
-}
-
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 pub struct PassportData {
     pub data: Vec<EncryptedPassportElement>,
