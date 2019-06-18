@@ -35,6 +35,7 @@ mod video;
 mod video_note;
 mod voice;
 pub mod webhook_info;
+pub mod pre_checkout_query;
 
 pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
@@ -43,5 +44,5 @@ pub use {
     location::*, login_url::*, message::Message, order_info::*, photo_size::*,
     poll::Poll, sticker::Sticker, successful_payment::*, update::Update,
     user::User, venue::*, video::*, video_note::*, voice::*,
-    webhook_info::WebhookInfo,
+    webhook_info::WebhookInfo, pre_checkout_query::PreCheckoutQuery,
 };

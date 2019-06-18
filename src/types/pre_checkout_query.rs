@@ -1,6 +1,6 @@
 //! Types related to pre-checkout queries.
 
-use super::OrderInfo;
+use super::{OrderInfo, User};
 use serde::Deserialize;
 
 pub mod id;
@@ -8,7 +8,7 @@ pub mod id;
 pub use id::Id;
 
 /// Represents [`PreCheckoutQuery`][docs].
-/// 
+///
 /// [docs]: https://core.telegram.org/bots/api#precheckoutquery
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 // todo: #[non_exhaustive]
