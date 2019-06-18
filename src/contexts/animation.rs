@@ -1,12 +1,14 @@
+use crate::types::{self, message::Text};
+
 media_message! {
     struct Animation {
         /// The animation.
         animation: types::Animation,
         /// The caption of the animation.
-        caption: types::message::Text,
-    } -> Bot::animation
+        caption: Text,
+    } -> EventLoop::animation
 
-    fn new(caption: types::message::Text,) -> Self {
+    fn new(caption: Text,) -> Self {
         Self {
             caption: caption,
         }

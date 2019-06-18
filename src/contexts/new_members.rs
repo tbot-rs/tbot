@@ -1,10 +1,12 @@
+use crate::types::User;
+
 message_base! {
     struct NewMembers {
         /// The new members.
-        members: Vec<types::User>,
-    } -> Bot::new_members
+        members: Vec<User>,
+    } -> EventLoop::new_members
 
-    fn new(members: Vec<types::User>,) -> Self {
+    fn new(members: Vec<User>,) -> Self {
         Self {
             members: members,
         }

@@ -1,8 +1,10 @@
+use crate::types;
+
 media_message! {
     struct VideoNote {
         /// The video note.
         video_note: types::VideoNote,
-    } -> Bot::video_note
+    } -> EventLoop::video_note
 
     fn new() -> Self {
         Self { }

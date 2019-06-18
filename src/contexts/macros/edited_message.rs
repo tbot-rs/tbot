@@ -3,7 +3,7 @@ macro_rules! edited_message {
         struct $name:ident {
             #[doc = $media_doc:literal] $media:ident: $media_type:ty,
             $(#[doc = $field_doc:literal] $field:ident: $type:ty,)*
-        } -> Bot::$handler:ident
+        } -> EventLoop::$handler:ident
 
         fn new(
             $($param:ident: $param_type:ty,)*
@@ -16,7 +16,7 @@ macro_rules! edited_message {
         message_base! {
             struct $name {
                 /// The replied message.
-                reply_to: Option<types::Message>,
+                reply_to: Option<crate::types::Message>,
                 /// The author's signature, if enabled for the channel.
                 author_signature: Option<String>,
                 /// The last time when the message was edited.
@@ -24,7 +24,7 @@ macro_rules! edited_message {
                 #[doc = $media_doc]
                 $media: $media_type,
                 $(#[doc = $field_doc] $field: $type,)*
-            } -> Bot::$handler
+            } -> EventLoop::$handler
 
             fn new(
                 edit_date: i64,
@@ -42,7 +42,7 @@ macro_rules! edited_message {
             }
         }
 
-        impl<'a, C: 'static> Forwardable<'a, C> for $name<C> {}
-        impl<'a, C: 'static> Pinnable<'a, C> for $name<C> {}
+        impl<'a, C: 'static> super::traits::Forwardable<'a, C> for $name<C> {}
+        impl<'a, C: 'static> super::traits::Pinnable<'a, C> for $name<C> {}
     };
 }

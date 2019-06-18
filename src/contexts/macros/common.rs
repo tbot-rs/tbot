@@ -5,15 +5,12 @@ macro_rules! common {
             $(#[doc = $field_doc:literal] $field:ident: $type:ty,)+
         }
     ) => {
-        use super::*;
-        use std::sync::Arc;
-
         $(#[doc = $doc])+
-        #[derive(Clone)]
+        #[derive(Debug, Clone)]
         // todo: #[non_exhaustive]
         pub struct $name<C> {
-            /// A mock bot for calling API without information inference.
-            pub bot: Arc<Bot<C>>,
+            /// A bot for calling API without information inference.
+            pub bot: std::sync::Arc<crate::Bot<C>>,
             $(#[doc = $field_doc] pub $field: $type,)+
         }
 

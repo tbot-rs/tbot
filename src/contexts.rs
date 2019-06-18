@@ -63,12 +63,6 @@
 //! [`ChatMethods`]: ./traits/trait.ChatMethods.html
 //! [`Pinnable`]: ./traits/trait.Pinnable.html
 
-#![allow(clippy::too_many_arguments)] // can't do much
-                                      // we re-export everything under one namespace
-#![allow(clippy::module_name_repetitions)]
-
-use super::*;
-
 #[macro_use]
 mod macros;
 

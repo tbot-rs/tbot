@@ -1,7 +1,9 @@
 use crate::{
     methods::AnswerPreCheckoutQuery,
     types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User},
+    Bot,
 };
+use std::sync::Arc;
 
 common! {
     /// The context for [`pre_checkout`][handler] handlers.

@@ -1,10 +1,12 @@
+use crate::types::PhotoSize;
+
 message_base! {
     struct NewChatPhoto {
         /// The photo.
-        photo: Vec<types::PhotoSize>,
-    } -> Bot::new_chat_photo
+        photo: Vec<PhotoSize>,
+    } -> EventLoop::new_chat_photo
 
-    fn new(photo: Vec<types::PhotoSize>,) -> Self {
+    fn new(photo: Vec<PhotoSize>,) -> Self {
         Self {
             photo: photo,
         }

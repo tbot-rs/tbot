@@ -1,18 +1,18 @@
+use crate::{types::update, Bot};
+use std::sync::Arc;
+
 common! {
     /// The context for [`unhandled`] handlers.
     ///
-    /// [`unhandled`]: ../struct.Bot.html#method.unhandled
+    /// [`unhandled`]: ../event_loop/struct.EventLoop.html#method.unhandled
     struct Unhandled {
         /// The unhandled update.
-        update: types::update::Kind,
+        update: update::Kind,
     }
 }
 
 impl<C> Unhandled<C> {
-    pub(crate) const fn new(
-        bot: Arc<Bot<C>>,
-        update: types::update::Kind,
-    ) -> Self {
+    pub(crate) const fn new(bot: Arc<Bot<C>>, update: update::Kind) -> Self {
         Self {
             bot,
             update,

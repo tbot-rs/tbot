@@ -1,5 +1,8 @@
-use crate::Bot;
-use types::{ChosenInlineResult, Location, User};
+use crate::{
+    types::{ChosenInlineResult, Location, User},
+    Bot,
+};
+use std::sync::Arc;
 
 common! {
     /// The context for [`chosen_inline`][handler] handlers.
