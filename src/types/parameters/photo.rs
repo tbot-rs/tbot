@@ -15,7 +15,7 @@ pub struct Photo<'a> {
 
 impl<'a> Photo<'a> {
     /// Constructs a `Photo`.
-    pub fn new(url: &'a str) -> Self {
+    pub const fn new(url: &'a str) -> Self {
         Self {
             url,
             size: None,

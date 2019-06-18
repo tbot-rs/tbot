@@ -13,7 +13,7 @@ pub struct Option<'a> {
 
 impl<'a> Option<'a> {
     /// Constructs a shipping `Option`.
-    pub fn new(
+    pub const fn new(
         id: &'a str,
         title: &'a str,
         prices: &'a [LabeledPrice<'a>],

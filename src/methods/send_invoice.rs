@@ -57,7 +57,8 @@ pub struct SendInvoice<'a, C> {
 }
 
 impl<'a, C> SendInvoice<'a, C> {
-    pub(crate) fn new(
+    #[allow(clippy::too_many_arguments)] // I know, brother
+    pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
         chat_id: i64,

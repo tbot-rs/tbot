@@ -648,6 +648,7 @@ impl<C> Bot<C> {
     }
 
     /// Constructs a new` SendInvoice` inerring your bot's token.
+    #[allow(clippy::too_many_arguments)]
     pub fn send_invoice<'a>(
         &'a self,
         chat_id: i64,

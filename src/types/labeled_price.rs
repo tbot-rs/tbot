@@ -12,7 +12,7 @@ pub struct LabeledPrice<'a> {
 
 impl<'a> LabeledPrice<'a> {
     /// Constructs a `LabeledPrice`.
-    pub fn new(label: &'a str, amount: u32) -> Self {
+    pub const fn new(label: &'a str, amount: u32) -> Self {
         Self {
             label,
             amount,
