@@ -19,11 +19,11 @@
 //! ```no_run
 //! use tbot::{
 //!     prelude::*,
-//!     types::parameters::ParseMode::Markdown,
+//!     types::{chat, parameters::ParseMode::Markdown},
 //!     Token,
 //! };
 //!
-//! const CHAT: i64 = 0;
+//! const CHAT: chat::Id = chat::Id(0);
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
 //!
 //! let bot = tbot::bot!("BOT_TOKEN");
@@ -63,6 +63,7 @@
 //! [`types::Message`]: ../types/struct.Message.html
 
 use super::*;
+use crate::types::chat;
 
 mod add_sticker_to_set;
 mod answer_callback_query;
@@ -190,7 +191,7 @@ pub enum DeliveryError {
         /// The error code for this error.
         error_code: u16,
         /// The group moved to a supergroup with the following ID.
-        migrate_to_chat_id: Option<i64>,
+        migrate_to_chat_id: Option<chat::Id>,
         /// The bot exceeded flood threshold. You can make another request
         /// after the following amount of seconds.
         retry_after: Option<u64>,

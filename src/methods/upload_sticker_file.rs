@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::{BoxFuture, Client};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::user,
+};
 
 /// Represents the [`uploadStickerFile`][docs] method.
 ///
@@ -9,7 +12,7 @@ use crate::internal::{BoxFuture, Client};
 pub struct UploadStickerFile<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    user_id: i64,
+    user_id: user::Id,
     png_sticker: &'a [u8],
 }
 
@@ -17,7 +20,7 @@ impl<'a, C> UploadStickerFile<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        user_id: i64,
+        user_id: user::Id,
         png_sticker: &'a [u8],
     ) -> Self {
         Self {

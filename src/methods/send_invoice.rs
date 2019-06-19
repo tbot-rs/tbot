@@ -2,7 +2,9 @@ use super::*;
 use crate::{
     internal::{BoxFuture, Client},
     types::{
+        chat,
         keyboard::inline,
+        message,
         parameters::{
             Flexibility, NotificationState, Photo, Requirement,
             SendToProviderState,
@@ -22,7 +24,7 @@ pub struct SendInvoice<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    chat_id: i64,
+    chat_id: chat::Id,
     title: &'a str,
     description: &'a str,
     payload: &'a str,
@@ -51,17 +53,17 @@ pub struct SendInvoice<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<u32>,
+    reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
 impl<'a, C> SendInvoice<'a, C> {
     #[allow(clippy::too_many_arguments)] // I know, brother
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: i64,
+        chat_id: impl Into<chat::Id>,
         title: &'a str,
         description: &'a str,
         payload: &'a str,
@@ -73,7 +75,7 @@ impl<'a, C> SendInvoice<'a, C> {
         Self {
             client,
             token,
-            chat_id,
+            chat_id: chat_id.into(),
             title,
             description,
             payload,
@@ -163,7 +165,7 @@ impl<'a, C> SendInvoice<'a, C> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u32) -> Self {
+    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

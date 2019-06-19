@@ -1,7 +1,10 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        user,
+    },
 };
 
 /// Represents the [`promoteChatMember`][docs] method.
@@ -15,7 +18,7 @@ pub struct PromoteChatMember<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    user_id: i64,
+    user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_change_info: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,8 +41,8 @@ impl<'a, C> PromoteChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        chat_id: impl ImplicitChatId<'a>,
+        user_id: user::Id,
     ) -> Self {
         Self {
             client,

@@ -3,17 +3,18 @@
 use super::*;
 
 pub mod forward;
+mod id;
 mod kind;
 pub mod text;
 
-pub use {forward::Forward, kind::Kind, text::Text};
+pub use {forward::Forward, id::Id, kind::Kind, text::Text};
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
 // todo: #[non_exhaustive]
 pub struct Message {
     /// The ID of the message.
-    pub id: u32,
+    pub id: Id,
     /// The author of the message. Note that this field is `None` for messages
     /// from channels.
     pub from: Option<User>,
@@ -34,7 +35,7 @@ pub struct Message {
 }
 
 pub(crate) struct Data {
-    pub id: u32,
+    pub id: Id,
     pub from: Option<User>,
     pub date: i64,
     pub chat: Chat,

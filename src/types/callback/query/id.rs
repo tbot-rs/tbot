@@ -1,19 +1,19 @@
-//! Types representing a shipping query ID.
+//! Types representing a callback query ID.
 
 use serde::{Deserialize, Serialize};
 
-/// Represents a shipping query ID.
+/// Represents a callback query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[serde(transparent)]
 pub struct Id(pub String);
 
-/// Contains a reference to a shipping query ID.
+/// Contains a reference to a callback query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(transparent)]
 pub struct Ref<'a>(pub &'a str);
 
 impl Id {
-    /// Constructs a shipping query ID [`Ref`] based on `self`.
+    /// Constructs a callback query ID [`Ref`] based on `self`.
     ///
     /// [`IdRef`]: ./struct.Ref.html
     pub fn as_ref(&self) -> Ref<'_> {
@@ -22,7 +22,7 @@ impl Id {
 }
 
 impl<'a> Ref<'a> {
-    /// Constructs a shipping query [`Id`] based on `self`.
+    /// Constructs a callback query [`Id`] based on `self`.
     ///
     /// [`Id`]: ./struct.Id.html
     pub fn to_owned(&self) -> Id {

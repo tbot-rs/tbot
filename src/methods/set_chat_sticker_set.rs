@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::parameters::{ChatId, ImplicitChatId},
 };
 
 /// Represents the [`setChatStickerSet`][docs] method.
@@ -22,7 +22,7 @@ impl<'a, C> SetChatStickerSet<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         sticker_set_name: &'a str,
     ) -> Self {
         Self {

@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{keyboard::inline, parameters::ParseMode},
+    types::{inline_message_id, keyboard::inline, parameters::ParseMode},
 };
 /// Represents the [`editMessageCaption`][docs] method for inline messages.
 ///
@@ -13,7 +13,7 @@ pub struct EditInlineCaption<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_message_id: &'a str,
+    inline_message_id: inline_message_id::Ref<'a>,
     caption: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
@@ -25,7 +25,7 @@ impl<'a, C> EditInlineCaption<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         caption: &'a str,
     ) -> Self {
         Self {

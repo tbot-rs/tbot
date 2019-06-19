@@ -3,7 +3,7 @@ use crate::{
     internal::{BoxFuture, Client},
     types::{
         input_file::{ChatPhoto, InputFile},
-        parameters::ChatId,
+        parameters::{ChatId, ImplicitChatId},
     },
 };
 
@@ -23,7 +23,7 @@ impl<'a, C> SetChatPhoto<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         photo: &'a ChatPhoto<'a>,
     ) -> Self {
         Self {

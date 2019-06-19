@@ -1,9 +1,9 @@
 #[cfg(not(feature = "proxy"))]
 compile_error!("compile the example with the `proxy` feature enabled");
 
-use tbot::{connectors::proxy::*, prelude::*};
+use tbot::{connectors::proxy::*, prelude::*, types::chat};
 
-const CHAT: i64 = 0;
+const CHAT: chat::Id = chat::Id(0);
 const PROXY: &str = "http://127.0.0.1:8080";
 
 fn main() {

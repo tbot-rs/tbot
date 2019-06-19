@@ -1,10 +1,11 @@
 //! Types related to users.
 
-use super::*;
+use serde::Deserialize;
 
+mod id;
 mod profile_photos;
 
-pub use profile_photos::*;
+pub use {id::*, profile_photos::*};
 
 /// Represents a [`User`].
 ///
@@ -13,7 +14,7 @@ pub use profile_photos::*;
 // todo: #[non_exhaustive]
 pub struct User {
     /// The ID of the user.
-    pub id: i64,
+    pub id: Id,
     /// `true` if the user is a bot.
     pub is_bot: bool,
     /// The first name of the user.

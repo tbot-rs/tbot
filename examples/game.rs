@@ -1,9 +1,9 @@
 //! Simple but stupid game. Note that it's implemented
 
 use std::sync::{Arc, Mutex};
-use tbot::prelude::*;
+use tbot::{prelude::*, types::chat};
 
-const CHAT: i64 = 0;
+const CHAT: chat::Id = chat::Id(0);
 const GAME: &str = "";
 const GOOD_PHRASE: &str = "tbot good";
 const BAD_PHRASE: &str = "tbot bad";

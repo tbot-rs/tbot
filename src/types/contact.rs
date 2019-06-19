@@ -13,7 +13,7 @@ pub struct Contact {
     /// The last name of the contact.
     pub last_name: Option<String>,
     /// The user id of the contact.
-    pub user_id: Option<i64>,
+    pub user_id: Option<user::Id>,
     /// The vCard of the contact.
     pub vcard: Option<String>,
 }

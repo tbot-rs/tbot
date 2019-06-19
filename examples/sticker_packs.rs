@@ -18,7 +18,7 @@ fn main() {
 
     let sticker_pack = bot
         .create_new_sticker_set(
-            USER,
+            USER.into(),
             NAME,
             TITLE,
             &PngSticker::bytes(first_sticker.0),
@@ -31,7 +31,7 @@ fn main() {
         .and_then(|_| {
             iter_ok(stickers).for_each(move |sticker| {
                 bot.add_sticker_to_set(
-                    USER,
+                    USER.into(),
                     NAME,
                     &PngSticker::bytes(sticker.0),
                     sticker.1,

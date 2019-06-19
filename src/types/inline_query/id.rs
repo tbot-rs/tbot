@@ -5,26 +5,14 @@ use serde::{Deserialize, Serialize};
 /// Represents an inline query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[serde(transparent)]
-pub struct Id(String);
+pub struct Id(pub String);
 
 /// Contains a reference to an inline query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(transparent)]
-pub struct Ref<'a>(&'a str);
+pub struct Ref<'a>(pub &'a str);
 
 impl Id {
-    /// Constructs an inline query ID.
-    pub const fn new(id: String) -> Self {
-        Self(id)
-    }
-
-    // https://github.com/rust-lang/rust-clippy/issues/4041
-    #[allow(clippy::missing_const_for_fn)]
-    /// Unwraps the ID.
-    pub fn into_inner(self) -> String {
-        self.0
-    }
-
     /// Constructs an inline query ID [`Ref`] based on `self`.
     ///
     /// [`IdRef`]: ./struct.Ref.html
@@ -34,16 +22,6 @@ impl Id {
 }
 
 impl<'a> Ref<'a> {
-    /// Constructs a reference to an inline query ID.
-    pub const fn new(id: &'a str) -> Self {
-        Self(id)
-    }
-
-    /// Unwraps the ID.
-    pub const fn into_inner(self) -> &'a str {
-        self.0
-    }
-
     /// Constructs an inline query [`Id`] based on `self`.
     ///
     /// [`Id`]: ./struct.Id.html

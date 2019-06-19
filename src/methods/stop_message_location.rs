@@ -1,7 +1,11 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{keyboard::inline, parameters::ChatId},
+    types::{
+        keyboard::inline,
+        message,
+        parameters::{ChatId, ImplicitChatId},
+    },
 };
 
 /// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
@@ -15,7 +19,7 @@ pub struct StopMessageLocation<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -24,8 +28,8 @@ impl<'a, C> StopMessageLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        chat_id: impl ImplicitChatId<'a>,
+        message_id: message::Id,
     ) -> Self {
         Self {
             client,

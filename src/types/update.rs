@@ -4,10 +4,16 @@ use super::{
     callback, shipping, ChosenInlineResult, InlineQuery, Message, Poll,
     PreCheckoutQuery,
 };
-use serde::de::{
-    Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
+use serde::{
+    de::{Deserializer, Error, IgnoredAny, MapAccess, Visitor},
+    Deserialize,
 };
 use std::fmt::{self, Formatter};
+
+/// Represents an update ID.
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
+#[serde(transparent)]
+pub struct Id(pub u32);
 
 /// Represents different types of updates from Telegram.
 #[derive(Debug, PartialEq, Clone)]
@@ -45,7 +51,7 @@ pub enum Kind {
 // todo: #[non_exhaustive]
 pub struct Update {
     /// The ID of the update.
-    pub id: u32,
+    pub id: Id,
     /// The kind of the update.
     pub kind: Kind,
 }

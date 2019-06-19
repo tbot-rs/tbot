@@ -1,19 +1,19 @@
-//! Types representing a shipping query ID.
+//! Types representing an inline message ID.
 
 use serde::{Deserialize, Serialize};
 
-/// Represents a shipping query ID.
+/// Represents an inline message ID.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[serde(transparent)]
-pub struct Id(pub String);
+pub struct InlineMessageId(pub String);
 
-/// Contains a reference to a shipping query ID.
+/// Contains a reference to an inline message ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(transparent)]
 pub struct Ref<'a>(pub &'a str);
 
-impl Id {
-    /// Constructs a shipping query ID [`Ref`] based on `self`.
+impl InlineMessageId {
+    /// Constructs an inline message ID [`Ref`] based on `self`.
     ///
     /// [`IdRef`]: ./struct.Ref.html
     pub fn as_ref(&self) -> Ref<'_> {
@@ -22,15 +22,15 @@ impl Id {
 }
 
 impl<'a> Ref<'a> {
-    /// Constructs a shipping query [`Id`] based on `self`.
+    /// Constructs an inline message [`Id`] based on `self`.
     ///
     /// [`Id`]: ./struct.Id.html
-    pub fn to_owned(&self) -> Id {
-        Id(self.0.into())
+    pub fn to_owned(&self) -> InlineMessageId {
+        InlineMessageId(self.0.into())
     }
 }
 
-impl From<String> for Id {
+impl From<String> for InlineMessageId {
     fn from(id: String) -> Self {
         Self(id)
     }
@@ -42,14 +42,14 @@ impl<'a> From<&'a str> for Ref<'a> {
     }
 }
 
-impl<'a> PartialEq<Ref<'a>> for Id {
+impl<'a> PartialEq<Ref<'a>> for InlineMessageId {
     fn eq(&self, other: &Ref<'a>) -> bool {
         self.0 == other.0
     }
 }
 
-impl<'a> PartialEq<Id> for Ref<'a> {
-    fn eq(&self, other: &Id) -> bool {
+impl<'a> PartialEq<InlineMessageId> for Ref<'a> {
+    fn eq(&self, other: &InlineMessageId) -> bool {
         self.0 == other.0
     }
 }

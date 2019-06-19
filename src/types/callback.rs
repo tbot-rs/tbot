@@ -1,6 +1,9 @@
 //! Types related to callbacks.
 
 mod game;
-mod query;
+pub mod query;
 
-pub use {game::*, query::*};
+pub use {
+    game::*,
+    query::{Kind, Origin, Query},
+};

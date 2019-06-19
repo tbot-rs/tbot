@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::{BoxFuture, Client};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::{inline_message_id, user},
+};
 
 /// Represents the [`setGameScore`][docs] method for inline messages.
 ///
@@ -11,9 +14,9 @@ pub struct SetInlineGameScore<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    user_id: i64,
+    user_id: user::Id,
     score: u32,
-    inline_message_id: &'a str,
+    inline_message_id: inline_message_id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24,8 +27,8 @@ impl<'a, C> SetInlineGameScore<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: &'a str,
-        user_id: i64,
+        inline_message_id: inline_message_id::Ref<'a>,
+        user_id: user::Id,
         score: u32,
     ) -> Self {
         Self {

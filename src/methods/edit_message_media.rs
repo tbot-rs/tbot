@@ -1,7 +1,12 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{input_file::*, keyboard::inline, parameters::ChatId},
+    types::{
+        input_file::*,
+        keyboard::inline,
+        message,
+        parameters::{ChatId, ImplicitChatId},
+    },
 };
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
@@ -13,7 +18,7 @@ pub struct EditMessageMedia<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -22,8 +27,8 @@ impl<'a, C> EditMessageMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        chat_id: impl ImplicitChatId<'a>,
+        message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {

@@ -1,5 +1,6 @@
 use crate::{
     methods::{AnswerCallbackQuery, CallbackAnswerAction},
+    types::callback,
     Bot,
 };
 
@@ -8,7 +9,7 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
     #[doc(hidden)]
     fn bot(&self) -> &Bot<C>;
     #[doc(hidden)]
-    fn id(&self) -> &str;
+    fn id(&self) -> callback::query::id::Ref<'_>;
 
     /// Opens a URL.
     fn open_url(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {

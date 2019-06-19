@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::parameters::{ChatId, ImplicitChatId},
 };
 
 /// Represents the [`leaveChat`][docs] method.
@@ -21,7 +21,7 @@ impl<'a, C> LeaveChat<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
     ) -> Self {
         Self {
             client,

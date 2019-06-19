@@ -1,4 +1,10 @@
+//! Types related to callback queries.
+
 use crate::types::{Message, User};
+
+pub mod id;
+
+pub use id::Id;
 
 /// Represents the origin of the callback.
 #[derive(Debug, PartialEq, Clone)]
@@ -27,7 +33,7 @@ pub enum Kind {
 // todo: #[non_exhaustive]
 pub struct Query {
     /// The ID of the callback.
-    pub id: String,
+    pub id: Id,
     /// The user who initiated the callback.
     pub from: User,
     /// The origin of the query.

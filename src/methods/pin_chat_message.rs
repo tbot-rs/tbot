@@ -1,7 +1,10 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::{ChatId, NotificationState},
+    types::{
+        message,
+        parameters::{ChatId, ImplicitChatId, NotificationState},
+    },
 };
 
 /// Represents the [`pinChatMessage`][docs] method.
@@ -15,7 +18,7 @@ pub struct PinChatMessage<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
 }
@@ -24,8 +27,8 @@ impl<'a, C> PinChatMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        chat_id: impl ImplicitChatId<'a>,
+        message_id: message::Id,
     ) -> Self {
         Self {
             client,

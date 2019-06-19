@@ -4,7 +4,7 @@ use futures::Stream;
 
 #[derive(Deserialize)]
 struct ResponseParameters {
-    migrate_to_chat_id: Option<i64>,
+    migrate_to_chat_id: Option<chat::Id>,
     retry_after: Option<u64>,
 }
 

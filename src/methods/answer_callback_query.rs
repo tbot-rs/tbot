@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::{BoxFuture, Client};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::callback,
+};
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
@@ -74,7 +77,7 @@ pub struct AnswerCallbackQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    callback_query_id: &'a str,
+    callback_query_id: callback::query::id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -89,7 +92,7 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        callback_query_id: &'a str,
+        callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAnswerAction<'a>,
     ) -> Self {
         Self {

@@ -3,7 +3,8 @@ use crate::{
     internal::{BoxFuture, Client},
     types::{
         input_file::*,
-        parameters::{ChatId, NotificationState},
+        message,
+        parameters::{ChatId, ImplicitChatId, NotificationState},
     },
 };
 
@@ -18,7 +19,7 @@ pub struct SendMediaGroup<'a, C> {
     chat_id: ChatId<'a>,
     media: Vec<GroupMedia<'a>>,
     disable_notification: Option<bool>,
-    reply_to_message_id: Option<u32>,
+    reply_to_message_id: Option<message::Id>,
 }
 
 impl<'a, C> SendMediaGroup<'a, C> {
@@ -30,7 +31,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         media: Vec<GroupMedia<'a>>,
     ) -> Self {
         Self {
@@ -50,7 +51,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u32) -> Self {
+    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

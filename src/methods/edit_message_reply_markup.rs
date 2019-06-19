@@ -1,7 +1,11 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{keyboard::inline, parameters::ChatId},
+    types::{
+        keyboard::inline,
+        message,
+        parameters::{ChatId, ImplicitChatId},
+    },
 };
 
 /// Represents the [`editMessageReplyMarkup`][docs] method for chat messsages.
@@ -15,7 +19,7 @@ pub struct EditMessageReplyMarkup<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
     reply_markup: inline::Keyboard<'a>,
 }
 
@@ -23,8 +27,8 @@ impl<'a, C> EditMessageReplyMarkup<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        chat_id: impl ImplicitChatId<'a>,
+        message_id: message::Id,
         reply_markup: inline::Keyboard<'a>,
     ) -> Self {
         Self {

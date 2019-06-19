@@ -3,11 +3,12 @@
 use super::*;
 
 mod action;
+mod id;
 mod kind;
 pub mod member;
 mod photo;
 
-pub use {action::*, kind::*, member::*, photo::*};
+pub use {action::*, id::*, kind::*, member::*, photo::*};
 
 /// Represents a [`Chat`].
 ///
@@ -16,7 +17,7 @@ pub use {action::*, kind::*, member::*, photo::*};
 // todo: #[non_exhaustive]
 pub struct Chat {
     /// The ID of the chat.
-    pub id: i64,
+    pub id: Id,
     /// The kind of the chat.
     pub kind: Kind,
     /// The photo of the chat.
