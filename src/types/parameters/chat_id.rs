@@ -60,6 +60,9 @@ impl<'a> From<&'a str> for ChatId<'a> {
 /// into `ChatId` implicitly is not safe, as the primitive might have a
 /// different meaning. Because of that, we require to turn primitives into
 /// `ChatId` explicitly.
+#[allow(clippy::module_name_repetitions)]
+// `parameters::chat_id::Implicit` is a less obvious name than
+// `parameters::ImplicitChatId`
 pub trait ImplicitChatId<'a>: Into<ChatId<'a>> {}
 
 impl<'a> ImplicitChatId<'a> for ChatId<'a> {}

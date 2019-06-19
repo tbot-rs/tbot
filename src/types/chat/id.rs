@@ -21,6 +21,6 @@ impl Display for Id {
 
 impl From<user::Id> for Id {
     fn from(id: user::Id) -> Self {
-        Id(id.0)
+        Self(id.0)
     }
 }
