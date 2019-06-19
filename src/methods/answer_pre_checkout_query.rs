@@ -8,9 +8,9 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Represents the [`answerShippingQuery`][docs] method.
+/// Represents the [`answerPreCheckoutQuery`][docs] method.
 ///
-/// [docs]: https://core.telegram.org/bots/api#answershippingquery
+/// [docs]: https://core.telegram.org/bots/api#answerprecheckoutquery
 #[derive(Debug, Clone, Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerPreCheckoutQuery<'a, C> {
