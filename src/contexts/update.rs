@@ -1,4 +1,4 @@
-use crate::Bot;
+use crate::{types::update, Bot};
 use std::sync::Arc;
 
 common! {
@@ -12,12 +12,12 @@ common! {
     /// [after]: ../event_loop/struct.EventLoop.html#method.after_update
     struct Update {
         /// The ID of the update.
-        update_id: u32,
+        update_id: update::Id,
     }
 }
 
 impl<C> Update<C> {
-    pub(crate) const fn new(bot: Arc<Bot<C>>, update_id: u32) -> Self {
+    pub(crate) const fn new(bot: Arc<Bot<C>>, update_id: update::Id) -> Self {
         Self {
             bot,
             update_id,

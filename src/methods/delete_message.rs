@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::{message, parameters::ChatId},
 };
 
 /// Represents the [`deleteMessage`][docs] method.
@@ -15,7 +15,7 @@ pub struct DeleteMessage<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
 }
 
 impl<'a, C> DeleteMessage<'a, C> {
@@ -23,7 +23,7 @@ impl<'a, C> DeleteMessage<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> Self {
         Self {
             client,

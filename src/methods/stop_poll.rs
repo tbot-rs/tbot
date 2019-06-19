@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{keyboard, parameters::ChatId},
+    types::{keyboard, message, parameters::ChatId},
 };
 
 /// Represents the [`stopPoll`][docs] method.
@@ -15,7 +15,7 @@ pub struct StopPoll<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<keyboard::Any<'a>>,
 }
@@ -25,7 +25,7 @@ impl<'a, C> StopPoll<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> Self {
         Self {
             client,

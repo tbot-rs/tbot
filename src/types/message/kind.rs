@@ -55,9 +55,9 @@ pub enum Kind {
     /// A service message that the channel was created.
     ChannelCreated,
     /// A service message that the group migrated to a supergroup with this ID.
-    MigrateTo(i64),
+    MigrateTo(chat::Id),
     /// A service message that the supergroup used to be a group with this ID.
-    MigrateFrom(i64),
+    MigrateFrom(chat::Id),
     /// A service message that this message was pinned.
     Pinned(Box<Message>),
     /// An invoice.

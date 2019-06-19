@@ -3,7 +3,7 @@ use crate::{
     internal::{BoxFuture, Client},
     types::{
         input_file::{Animation, InputFile},
-        keyboard,
+        keyboard, message,
         parameters::{ChatId, NotificationState},
     },
 };
@@ -19,7 +19,7 @@ pub struct SendAnimation<'a, C> {
     chat_id: ChatId<'a>,
     animation: &'a Animation<'a>,
     disable_notification: Option<bool>,
-    reply_to_message_id: Option<u32>,
+    reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
@@ -48,7 +48,7 @@ impl<'a, C> SendAnimation<'a, C> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u32) -> Self {
+    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

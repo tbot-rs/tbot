@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::{parameters::ChatId, user},
 };
 
 /// Represents the [`restrictChatMember`][docs] method.
@@ -15,7 +15,7 @@ pub struct RestrictChatMember<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    user_id: i64,
+    user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,7 +33,7 @@ impl<'a, C> RestrictChatMember<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> Self {
         Self {
             client,

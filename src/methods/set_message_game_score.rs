@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::{message, parameters::ChatId, user},
 };
 
 /// Represents the [`setGameScore`][docs] method for chat messages.
@@ -14,10 +14,10 @@ pub struct SetMessageGameScore<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    user_id: i64,
+    user_id: user::Id,
     score: u32,
     chat_id: ChatId<'a>,
-    message_id: u32,
+    message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,8 +29,8 @@ impl<'a, C> SetMessageGameScore<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
-        user_id: i64,
+        message_id: message::Id,
+        user_id: user::Id,
         score: u32,
     ) -> Self {
         Self {

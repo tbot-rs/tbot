@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::{parameters::ChatId, user},
 };
 
 /// Represents the [`unbanChatMember`][docs] method.
@@ -15,7 +15,7 @@ pub struct UnbanChatMember<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    user_id: i64,
+    user_id: user::Id,
 }
 
 impl<'a, C> UnbanChatMember<'a, C> {
@@ -23,7 +23,7 @@ impl<'a, C> UnbanChatMember<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> Self {
         Self {
             client,

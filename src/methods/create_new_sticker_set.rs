@@ -4,6 +4,7 @@ use crate::{
     types::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
+        user,
     },
 };
 
@@ -15,7 +16,7 @@ use crate::{
 pub struct CreateNewStickerSet<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    user_id: i64,
+    user_id: user::Id,
     name: &'a str,
     title: &'a str,
     png_sticker: &'a PngSticker<'a>,
@@ -28,7 +29,7 @@ impl<'a, C> CreateNewStickerSet<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        user_id: i64,
+        user_id: user::Id,
         name: &'a str,
         title: &'a str,
         png_sticker: &'a PngSticker<'a>,

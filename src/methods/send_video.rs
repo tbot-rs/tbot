@@ -3,7 +3,7 @@ use crate::{
     internal::{BoxFuture, Client},
     types::{
         input_file::{InputFile, Video},
-        keyboard,
+        keyboard, message,
         parameters::{ChatId, NotificationState},
     },
 };
@@ -19,7 +19,7 @@ pub struct SendVideo<'a, C> {
     chat_id: ChatId<'a>,
     video: &'a Video<'a>,
     disable_notification: Option<bool>,
-    reply_to_message_id: Option<u32>,
+    reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
@@ -48,7 +48,7 @@ impl<'a, C> SendVideo<'a, C> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u32) -> Self {
+    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

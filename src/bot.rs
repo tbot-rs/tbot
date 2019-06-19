@@ -3,8 +3,9 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        chat, inline_query, input_file::*, keyboard::inline,
-        parameters::ChatId, pre_checkout_query, shipping, LabeledPrice,
+        callback, chat, inline_message_id, inline_query, input_file::*,
+        keyboard::inline, message, parameters::ChatId, pre_checkout_query,
+        shipping, user, LabeledPrice,
     },
 };
 use std::sync::Arc;
@@ -90,7 +91,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AddStickerToSet` inferring your bot's token.
     pub fn add_sticker_to_set<'a>(
         &'a self,
-        user_id: i64,
+        user_id: user::Id,
         name: &'a str,
         png_sticker: &'a PngSticker<'a>,
         emojis: &'a str,
@@ -108,7 +109,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerCallbackQuery` inferring your bot's token.
     pub fn answer_callback_query<'a>(
         &'a self,
-        callback_query_id: &'a str,
+        callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAnswerAction<'a>,
     ) -> methods::AnswerCallbackQuery<'a, C> {
         methods::AnswerCallbackQuery::new(
@@ -164,7 +165,7 @@ impl<C> Bot<C> {
     /// Constructs a new `CreateNewStickerSet` inferring your bot's token.
     pub fn create_new_sticker_set<'a>(
         &'a self,
-        user_id: i64,
+        user_id: user::Id,
         name: &'a str,
         title: &'a str,
         png_sticker: &'a PngSticker<'a>,
@@ -205,7 +206,7 @@ impl<C> Bot<C> {
     pub fn delete_message<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> methods::DeleteMessage<'a, C> {
         methods::DeleteMessage::new(
             &self.client,
@@ -230,7 +231,7 @@ impl<C> Bot<C> {
     /// Constructs a new `EditInlineCaption` inferring your bot's token.
     pub fn edit_inline_caption<'a>(
         &'a self,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         caption: &'a str,
     ) -> methods::EditInlineCaption<'a, C> {
         methods::EditInlineCaption::new(
@@ -244,7 +245,7 @@ impl<C> Bot<C> {
     /// Constructs a new `EditInlineLocation` inferring your bot's token.
     pub fn edit_inline_location<'a>(
         &'a self,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         position: (f64, f64),
     ) -> methods::EditInlineLocation<'a, C> {
         methods::EditInlineLocation::new(
@@ -258,7 +259,7 @@ impl<C> Bot<C> {
     /// Constructs a new `EditInlineMedia` inferring your bot's token.
     pub fn edit_inline_media<'a>(
         &'a self,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditInlineMedia<'a, C> {
         methods::EditInlineMedia::new(
@@ -272,7 +273,7 @@ impl<C> Bot<C> {
     /// Constructs a new `EditInlineReplyMarkup` inferring your bot's token.
     pub fn edit_inline_reply_markup<'a>(
         &'a self,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         reply_markup: inline::Keyboard<'a>,
     ) -> methods::EditInlineReplyMarkup<'a, C> {
         methods::EditInlineReplyMarkup::new(
@@ -286,7 +287,7 @@ impl<C> Bot<C> {
     /// Constructs a new `EditInlineText` inferring your bot's token.
     pub fn edit_inline_text<'a>(
         &'a self,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         text: &'a str,
     ) -> methods::EditInlineText<'a, C> {
         methods::EditInlineText::new(
@@ -301,7 +302,7 @@ impl<C> Bot<C> {
     pub fn edit_message_caption<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
         caption: &'a str,
     ) -> methods::EditMessageCaption<'a, C> {
         methods::EditMessageCaption::new(
@@ -317,7 +318,7 @@ impl<C> Bot<C> {
     pub fn edit_message_location<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
         position: (f64, f64),
     ) -> methods::EditMessageLocation<'a, C> {
         methods::EditMessageLocation::new(
@@ -333,7 +334,7 @@ impl<C> Bot<C> {
     pub fn edit_message_media<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
     ) -> methods::EditMessageMedia<'a, C> {
         methods::EditMessageMedia::new(
@@ -349,7 +350,7 @@ impl<C> Bot<C> {
     pub fn edit_message_reply_markup<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
         reply_markup: inline::Keyboard<'a>,
     ) -> methods::EditMessageReplyMarkup<'a, C> {
         methods::EditMessageReplyMarkup::new(
@@ -365,7 +366,7 @@ impl<C> Bot<C> {
     pub fn edit_message_text<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
         text: &'a str,
     ) -> methods::EditMessageText<'a, C> {
         methods::EditMessageText::new(
@@ -394,7 +395,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
         from_chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> methods::ForwardMessage<'a, C> {
         methods::ForwardMessage::new(
             &self.client,
@@ -416,8 +417,8 @@ impl<C> Bot<C> {
     /// Constructs a new `GetInlineGameHighScores` inferring your bot's token.
     pub fn get_inline_game_high_scores<'a>(
         &'a self,
-        inline_message_id: &'a str,
-        user_id: i64,
+        inline_message_id: inline_message_id::Ref<'a>,
+        user_id: user::Id,
     ) -> methods::GetInlineGameHighScores<'a, C> {
         methods::GetInlineGameHighScores::new(
             &self.client,
@@ -443,7 +444,7 @@ impl<C> Bot<C> {
     pub fn get_chat_member<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> methods::GetChatMember<'a, C> {
         methods::GetChatMember::new(
             &self.client,
@@ -469,8 +470,8 @@ impl<C> Bot<C> {
     pub fn get_message_game_high_scores<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
-        user_id: i64,
+        message_id: message::Id,
+        user_id: user::Id,
     ) -> methods::GetMessageGameHighScores<'a, C> {
         methods::GetMessageGameHighScores::new(
             &self.client,
@@ -497,7 +498,7 @@ impl<C> Bot<C> {
     /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
     pub fn get_user_profile_photos(
         &self,
-        user_id: i64,
+        user_id: user::Id,
     ) -> methods::GetUserProfilePhotos<'_, C> {
         methods::GetUserProfilePhotos::new(
             &self.client,
@@ -515,7 +516,7 @@ impl<C> Bot<C> {
     pub fn kick_chat_member<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> methods::KickChatMember<'a, C> {
         methods::KickChatMember::new(
             &self.client,
@@ -537,7 +538,7 @@ impl<C> Bot<C> {
     pub fn pin_chat_message<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> methods::PinChatMessage<'a, C> {
         methods::PinChatMessage::new(
             &self.client,
@@ -551,7 +552,7 @@ impl<C> Bot<C> {
     pub fn promote_chat_member<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> methods::PromoteChatMember<'a, C> {
         methods::PromoteChatMember::new(
             &self.client,
@@ -565,7 +566,7 @@ impl<C> Bot<C> {
     pub fn restrict_chat_member<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> methods::RestrictChatMember<'a, C> {
         methods::RestrictChatMember::new(
             &self.client,
@@ -665,7 +666,7 @@ impl<C> Bot<C> {
     #[allow(clippy::too_many_arguments)]
     pub fn send_invoice<'a>(
         &'a self,
-        chat_id: i64,
+        chat_id: impl Into<chat::Id>,
         title: &'a str,
         description: &'a str,
         payload: &'a str,
@@ -893,8 +894,8 @@ impl<C> Bot<C> {
     /// Constructs a new `SetInlineGameScore` inferring your bot's token.
     pub fn set_inline_game_score<'a>(
         &'a self,
-        inline_message_id: &'a str,
-        user_id: i64,
+        inline_message_id: inline_message_id::Ref<'a>,
+        user_id: user::Id,
         score: u32,
     ) -> methods::SetInlineGameScore<'a, C> {
         methods::SetInlineGameScore::new(
@@ -910,8 +911,8 @@ impl<C> Bot<C> {
     pub fn set_message_game_score<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
-        user_id: i64,
+        message_id: message::Id,
+        user_id: user::Id,
         score: u32,
     ) -> methods::SetMessageGameScore<'a, C> {
         methods::SetMessageGameScore::new(
@@ -941,7 +942,7 @@ impl<C> Bot<C> {
     /// Constructs a new `StopInlineLocation` inferring your bot's token.
     pub fn stop_inline_location<'a>(
         &'a self,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
     ) -> methods::StopInlineLocation<'a, C> {
         methods::StopInlineLocation::new(
             &self.client,
@@ -954,7 +955,7 @@ impl<C> Bot<C> {
     pub fn stop_message_location<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> methods::StopMessageLocation<'a, C> {
         methods::StopMessageLocation::new(
             &self.client,
@@ -968,7 +969,7 @@ impl<C> Bot<C> {
     pub fn stop_poll<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> methods::StopPoll<'a, C> {
         methods::StopPoll::new(
             &self.client,
@@ -982,7 +983,7 @@ impl<C> Bot<C> {
     pub fn unban_chat_member<'a>(
         &'a self,
         chat_id: impl Into<ChatId<'a>>,
-        user_id: i64,
+        user_id: user::Id,
     ) -> methods::UnbanChatMember<'a, C> {
         methods::UnbanChatMember::new(
             &self.client,
@@ -1007,7 +1008,7 @@ impl<C> Bot<C> {
     /// Constructs a new `UploadStickerFile` inferring your bot's token.
     pub fn upload_sticker_file<'a>(
         &'a self,
-        user_id: i64,
+        user_id: user::Id,
         png_sticker: &'a [u8],
     ) -> methods::UploadStickerFile<'a, C> {
         methods::UploadStickerFile::new(

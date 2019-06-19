@@ -1,5 +1,6 @@
 //! Types representing a forward.
 
+use super::Id;
 use crate::types::{Chat, User};
 
 /// Represents a forward source.
@@ -16,7 +17,7 @@ pub enum From {
         /// Information about the channel.
         chat: Chat,
         /// The ID of the original message.
-        message_id: u32,
+        message_id: Id,
         /// The author's signature.
         signature: Option<String>,
     },

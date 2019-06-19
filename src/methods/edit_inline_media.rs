@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{input_file::*, keyboard::inline},
+    types::{inline_message_id, input_file::*, keyboard::inline},
 };
 
 /// Represents the [`editMessageMedia`][docs] method for inline messages.
@@ -12,7 +12,7 @@ use crate::{
 pub struct EditInlineMedia<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    inline_message_id: &'a str,
+    inline_message_id: inline_message_id::Ref<'a>,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -21,7 +21,7 @@ impl<'a, C> EditInlineMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: &'a str,
+        inline_message_id: inline_message_id::Ref<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
@@ -55,7 +55,7 @@ where
             self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
 
         let mut multipart = Multipart::new(4)
-            .str("inline_message_id", self.inline_message_id)
+            .str("inline_message_id", self.inline_message_id.0)
             .maybe_string("reply_markup", &reply_markup);
 
         match &self.media {

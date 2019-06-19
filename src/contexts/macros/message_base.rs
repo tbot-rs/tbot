@@ -23,7 +23,7 @@ macro_rules! message_base {
             )]
             struct $name {
                 /// ID of the message.
-                message_id: u32,
+                message_id: crate::types::message::Id,
                 /// The author of the message.
                 from: Option<crate::types::User>,
                 /// The timestamp of the message.
@@ -59,11 +59,11 @@ macro_rules! message_base {
                 &self.bot
             }
 
-            fn chat_id(&self) -> i64 {
+            fn chat_id(&self) -> crate::types::chat::Id {
                 self.chat.id
             }
 
-            fn message_id(&self) -> u32 {
+            fn message_id(&self) -> crate::types::message::Id {
                 self.message_id
             }
         }

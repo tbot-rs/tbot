@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     internal::{BoxFuture, Client},
     types::{
-        keyboard,
+        keyboard, message,
         parameters::{
             ChatId, NotificationState, ParseMode, WebPagePreviewState,
         },
@@ -28,7 +28,7 @@ pub struct SendMessage<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<u32>,
+    reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<keyboard::Any<'a>>,
 }
@@ -72,7 +72,7 @@ impl<'a, C> SendMessage<'a, C> {
     }
 
     /// Configures `reply_to_message_id`.
-    pub fn reply_to_message_id(mut self, id: u32) -> Self {
+    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

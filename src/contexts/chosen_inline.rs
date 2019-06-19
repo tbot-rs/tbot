@@ -1,5 +1,5 @@
 use crate::{
-    types::{ChosenInlineResult, Location, User},
+    types::{ChosenInlineResult, InlineMessageId, Location, User},
     Bot,
 };
 use std::sync::Arc;
@@ -16,7 +16,7 @@ common! {
         /// The location of the user, if enabled and allowed.
         location: Option<Location>,
         /// The ID of the sent message.
-        inline_message_id: Option<String>,
+        inline_message_id: Option<InlineMessageId>,
         /// The query used to obtain the result.
         query: String,
     }
@@ -27,15 +27,15 @@ impl<C> ChosenInline<C> {
     #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: Arc<Bot<C>>,
-        inline_query: ChosenInlineResult,
+        chosen_result: ChosenInlineResult,
     ) -> Self {
         Self {
             bot,
-            result_id: inline_query.result_id,
-            from: inline_query.from,
-            location: inline_query.location,
-            inline_message_id: inline_query.inline_message_id,
-            query: inline_query.query,
+            result_id: chosen_result.result_id,
+            from: chosen_result.from,
+            location: chosen_result.location,
+            inline_message_id: chosen_result.inline_message_id,
+            query: chosen_result.query,
         }
     }
 }

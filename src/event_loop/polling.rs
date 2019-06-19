@@ -123,7 +123,7 @@ where
             let handler = updates
                 .map(move |updates| {
                     if let Some(update) = updates.last() {
-                        *new_offset.lock().unwrap() = Some(update.id + 1);
+                        *new_offset.lock().unwrap() = Some(update.id.0 + 1);
                     }
 
                     for update in updates {

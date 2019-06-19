@@ -14,7 +14,7 @@ pub struct GetUserProfilePhotos<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    user_id: i64,
+    user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,7 +25,7 @@ impl<'a, C> GetUserProfilePhotos<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        user_id: i64,
+        user_id: user::Id,
     ) -> Self {
         Self {
             client,

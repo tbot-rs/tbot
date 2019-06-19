@@ -1,7 +1,8 @@
 use crate::{
     methods::*,
     types::{
-        chat, input_file::*, keyboard::inline, parameters::ChatId, LabeledPrice,
+        chat, input_file::*, keyboard::inline, message, parameters::ChatId,
+        user, LabeledPrice,
     },
     Bot,
 };
@@ -11,9 +12,9 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     #[doc(hidden)]
     fn bot(&'a self) -> &'a Bot<C>;
     #[doc(hidden)]
-    fn chat_id(&self) -> i64;
+    fn chat_id(&self) -> chat::Id;
     #[doc(hidden)]
-    fn message_id(&self) -> u32;
+    fn message_id(&self) -> message::Id;
 
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&'a self) -> DeleteChatPhoto<'a, C> {
@@ -26,7 +27,10 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Deletes a message in this chat.
-    fn delete_message(&'a self, message_id: u32) -> DeleteMessage<'a, C> {
+    fn delete_message(
+        &'a self,
+        message_id: message::Id,
+    ) -> DeleteMessage<'a, C> {
         self.bot().delete_message(self.chat_id(), message_id)
     }
 
@@ -38,7 +42,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Updates the caption of a message in this group.
     fn edit_message_caption(
         &'a self,
-        message_id: u32,
+        message_id: message::Id,
         caption: &'a str,
     ) -> EditMessageCaption<'a, C> {
         self.bot().edit_message_caption(self.chat_id(), message_id, caption)
@@ -47,7 +51,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Updates a live location in this group.
     fn edit_message_location(
         &'a self,
-        message_id: u32,
+        message_id: message::Id,
         location: (f64, f64),
     ) -> EditMessageLocation<'a, C> {
         self.bot().edit_message_location(self.chat_id(), message_id, location)
@@ -56,7 +60,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Updates the media of a message in this group.
     fn edit_message_media(
         &'a self,
-        message_id: u32,
+        message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditMessageMedia<'a, C> {
         self.bot().edit_message_media(self.chat_id(), message_id, media)
@@ -65,7 +69,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Updates the reply markup of a message in this group.
     fn edit_message_reply_markup(
         &'a self,
-        message_id: u32,
+        message_id: message::Id,
         reply_markup: inline::Keyboard<'a>,
     ) -> EditMessageReplyMarkup<'a, C> {
         self.bot().edit_message_reply_markup(
@@ -78,7 +82,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Updates the text of a message in this group.
     fn edit_message_text(
         &'a self,
-        message_id: u32,
+        message_id: message::Id,
         text: &'a str,
     ) -> EditMessageText<'a, C> {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
@@ -93,7 +97,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn forward_here(
         &'a self,
         from_chat_id: impl Into<ChatId<'a>>,
-        message_id: u32,
+        message_id: message::Id,
     ) -> ForwardMessage<'a, C> {
         self.bot().forward_message(self.chat_id(), from_chat_id, message_id)
     }
@@ -109,7 +113,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Gets information about a member of this chat.
-    fn get_chat_member(&'a self, user_id: i64) -> GetChatMember<'a, C> {
+    fn get_chat_member(&'a self, user_id: user::Id) -> GetChatMember<'a, C> {
         self.bot().get_chat_member(self.chat_id(), user_id)
     }
 
@@ -121,8 +125,8 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Gets infomation about high scores in a game sent in this chat.
     fn get_message_game_high_scores(
         &'a self,
-        message_id: u32,
-        user_id: i64,
+        message_id: message::Id,
+        user_id: user::Id,
     ) -> GetMessageGameHighScores<'a, C> {
         self.bot().get_message_game_high_scores(
             self.chat_id(),
@@ -132,7 +136,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Kicks a member of this chat.
-    fn kick_chat_member(&'a self, user_id: i64) -> KickChatMember<'a, C> {
+    fn kick_chat_member(&'a self, user_id: user::Id) -> KickChatMember<'a, C> {
         self.bot().kick_chat_member(self.chat_id(), user_id)
     }
 
@@ -142,14 +146,17 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Promotes a member of this chat.
-    fn promote_chat_member(&'a self, user_id: i64) -> PromoteChatMember<'a, C> {
+    fn promote_chat_member(
+        &'a self,
+        user_id: user::Id,
+    ) -> PromoteChatMember<'a, C> {
         self.bot().promote_chat_member(self.chat_id(), user_id)
     }
 
     /// Restricts a member of this chat.
     fn restrict_chat_member(
         &'a self,
-        user_id: i64,
+        user_id: user::Id,
     ) -> RestrictChatMember<'a, C> {
         self.bot().restrict_chat_member(self.chat_id(), user_id)
     }
@@ -450,8 +457,8 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sets a new high score for a player who played a game in this chat.
     fn set_message_game_score(
         &'a self,
-        message_id: u32,
-        user_id: i64,
+        message_id: message::Id,
+        user_id: user::Id,
         score: u32,
     ) -> SetMessageGameScore<'a, C> {
         self.bot().set_message_game_score(
@@ -463,7 +470,10 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Unbans a member of this chat.
-    fn unban_chat_member(&'a self, user_id: i64) -> UnbanChatMember<'a, C> {
+    fn unban_chat_member(
+        &'a self,
+        user_id: user::Id,
+    ) -> UnbanChatMember<'a, C> {
         self.bot().unban_chat_member(self.chat_id(), user_id)
     }
 
