@@ -1,8 +1,8 @@
 use std::time::{Duration, Instant};
-use tbot::prelude::*;
+use tbot::{prelude::*, types::chat};
 use tokio::timer::Delay;
 
-const CHAT: i64 = 0;
+const CHAT: chat::Id = chat::Id(0);
 const QUESTION: &str = "Do you like tbot?";
 const OPTIONS: &[&str] =
     &["Yes", "Also yes", "I like shooting myself in the foot more"];

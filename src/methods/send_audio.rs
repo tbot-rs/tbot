@@ -4,7 +4,7 @@ use crate::{
     types::{
         input_file::{Audio, InputFile},
         keyboard, message,
-        parameters::{ChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId, NotificationState},
     },
 };
 
@@ -27,7 +27,7 @@ impl<'a, C> SendAudio<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         audio: &'a Audio<'a>,
     ) -> Self {
         Self {

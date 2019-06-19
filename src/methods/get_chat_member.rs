@@ -1,7 +1,11 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{chat, parameters::ChatId, user},
+    types::{
+        chat,
+        parameters::{ChatId, ImplicitChatId},
+        user,
+    },
 };
 
 /// Represents the [`getChatMember`][docs] method.
@@ -22,7 +26,7 @@ impl<'a, C> GetChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> Self {
         Self {

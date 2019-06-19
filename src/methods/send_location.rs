@@ -3,7 +3,7 @@ use crate::{
     internal::{BoxFuture, Client},
     types::{
         keyboard, message,
-        parameters::{ChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId, NotificationState},
     },
 };
 
@@ -34,7 +34,7 @@ impl<'a, C> SendLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {

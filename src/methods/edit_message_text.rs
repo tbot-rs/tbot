@@ -4,7 +4,7 @@ use crate::{
     types::{
         keyboard::inline,
         message,
-        parameters::{ChatId, ParseMode, WebPagePreviewState},
+        parameters::{ChatId, ImplicitChatId, ParseMode, WebPagePreviewState},
     },
 };
 
@@ -33,7 +33,7 @@ impl<'a, C> EditMessageText<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         text: &'a str,
     ) -> Self {

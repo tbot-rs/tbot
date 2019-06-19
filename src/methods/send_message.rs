@@ -4,7 +4,8 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{
-            ChatId, NotificationState, ParseMode, WebPagePreviewState,
+            ChatId, ImplicitChatId, NotificationState, ParseMode,
+            WebPagePreviewState,
         },
     },
 };
@@ -37,7 +38,7 @@ impl<'a, C> SendMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         text: &'a str,
     ) -> Self {
         Self {

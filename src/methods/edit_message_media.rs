@@ -1,7 +1,12 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{input_file::*, keyboard::inline, message, parameters::ChatId},
+    types::{
+        input_file::*,
+        keyboard::inline,
+        message,
+        parameters::{ChatId, ImplicitChatId},
+    },
 };
 
 /// Represents the [`editMessageMedia`][docs] method for chat messages.
@@ -22,7 +27,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {

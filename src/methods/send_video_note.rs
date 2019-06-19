@@ -4,7 +4,7 @@ use crate::{
     types::{
         input_file::{InputFile, VideoNote},
         keyboard, message,
-        parameters::{ChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId, NotificationState},
     },
 };
 
@@ -27,7 +27,7 @@ impl<'a, C> SendVideoNote<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         video_note: &'a VideoNote<'a>,
     ) -> Self {
         Self {

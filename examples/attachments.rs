@@ -1,9 +1,12 @@
 use tbot::{
     prelude::*,
-    types::input_file::{Animation, Document, Photo, Video},
+    types::{
+        chat,
+        input_file::{Animation, Document, Photo, Video},
+    },
 };
 
-const CHAT: i64 = 0;
+const CHAT: chat::Id = chat::Id(0);
 const PHOTO: &[u8] = include_bytes!("./assets/photo.jpg");
 const GIF: &[u8] = include_bytes!("./assets/gif.mp4");
 const TUTORIAL: &[u8] = include_bytes!("./tutorial.rs");

@@ -1,7 +1,12 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{game::HighScore, message, parameters::ChatId, user},
+    types::{
+        game::HighScore,
+        message,
+        parameters::{ChatId, ImplicitChatId},
+        user,
+    },
 };
 
 /// Represents the [`getGameHighScores`][docs] method for chat messages.
@@ -23,7 +28,7 @@ impl<'a, C> GetMessageGameHighScores<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         user_id: user::Id,
     ) -> Self {

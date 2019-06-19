@@ -1,7 +1,7 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::parameters::ChatId,
+    types::parameters::{ChatId, ImplicitChatId},
 };
 
 /// Represents the [`setChatDescription`][docs] method.
@@ -22,7 +22,7 @@ impl<'a, C> SetChatDescription<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         description: &'a str,
     ) -> Self {
         Self {

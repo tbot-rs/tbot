@@ -1,8 +1,8 @@
 use std::time::{Duration, Instant};
-use tbot::prelude::*;
+use tbot::{prelude::*, types::chat};
 use tokio::{prelude::*, timer::Interval};
 
-const CHAT: i64 = 0;
+const CHAT: chat::Id = chat::Id(0);
 const INTERVAL: u64 = 15;
 const PLACES: [(f64, f64); 6] = [
     (38.904722, -77.016389), // Washington

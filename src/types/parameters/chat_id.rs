@@ -53,3 +53,15 @@ impl<'a> From<&'a str> for ChatId<'a> {
         ChatId::Username(username)
     }
 }
+
+/// Allows certian types to be turned into `ChatId` implicitly.
+///
+/// Implicit turning is safe for chat ID wrappers. However, turning primitives
+/// into `ChatId` implicitly is not safe, as the primitive might have a
+/// different meaning. Because of that, we require to turn primitives into
+/// `ChatId` explicitly.
+pub trait ImplicitChatId<'a>: Into<ChatId<'a>> {}
+
+impl<'a> ImplicitChatId<'a> for ChatId<'a> {}
+impl ImplicitChatId<'_> for chat::Id {}
+impl ImplicitChatId<'_> for user::Id {}

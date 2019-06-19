@@ -1,7 +1,10 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{message, parameters::ChatId},
+    types::{
+        message,
+        parameters::{ChatId, ImplicitChatId},
+    },
 };
 
 /// Represents the [`deleteMessage`][docs] method.
@@ -22,7 +25,7 @@ impl<'a, C> DeleteMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> Self {
         Self {

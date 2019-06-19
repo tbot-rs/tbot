@@ -3,7 +3,7 @@ use crate::{
     internal::{BoxFuture, Client},
     types::{
         message,
-        parameters::{ChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId, NotificationState},
     },
 };
 
@@ -27,7 +27,7 @@ impl<'a, C> PinChatMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> Self {
         Self {

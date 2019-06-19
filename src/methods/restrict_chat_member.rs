@@ -1,7 +1,10 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{parameters::ChatId, user},
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        user,
+    },
 };
 
 /// Represents the [`restrictChatMember`][docs] method.
@@ -32,7 +35,7 @@ impl<'a, C> RestrictChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> Self {
         Self {

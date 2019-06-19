@@ -1,9 +1,12 @@
 use tbot::{
     prelude::*,
-    types::keyboard::inline::{Button, ButtonKind},
+    types::{
+        chat,
+        keyboard::inline::{Button, ButtonKind},
+    },
 };
 
-const CHAT: i64 = 0;
+const CHAT: chat::Id = chat::Id(0);
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 
 fn main() {

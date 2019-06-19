@@ -1,7 +1,11 @@
 use super::*;
 use crate::{
     internal::{BoxFuture, Client},
-    types::{message, parameters::ChatId, user},
+    types::{
+        message,
+        parameters::{ChatId, ImplicitChatId},
+        user,
+    },
 };
 
 /// Represents the [`setGameScore`][docs] method for chat messages.
@@ -28,7 +32,7 @@ impl<'a, C> SetMessageGameScore<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        chat_id: impl Into<ChatId<'a>>,
+        chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         user_id: user::Id,
         score: u32,
