@@ -37,7 +37,8 @@
 //! # use tbot::prelude::*;
 //! # let mut bot = tbot::Bot::new(tbot::Token::new(String::new()))
 //! #     .event_loop();
-//! const ADMIN_CHAT: i64 = 0;
+//! use tbot::types::chat;
+//! const ADMIN_CHAT: chat::Id = chat::Id(0);
 //!
 //! bot.text(|context| {
 //!     let notification = context

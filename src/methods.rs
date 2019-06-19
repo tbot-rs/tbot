@@ -19,11 +19,11 @@
 //! ```no_run
 //! use tbot::{
 //!     prelude::*,
-//!     types::parameters::ParseMode::Markdown,
+//!     types::{chat, parameters::ParseMode::Markdown},
 //!     Token,
 //! };
 //!
-//! const CHAT: i64 = 0;
+//! const CHAT: chat::Id = chat::Id(0);
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
 //!
 //! let bot = tbot::bot!("BOT_TOKEN");
