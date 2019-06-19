@@ -58,6 +58,7 @@ type MigrationHandler<C> = Handler<contexts::Migration<C>>;
 type NewChatPhotoHandler<C> = Handler<contexts::NewChatPhoto<C>>;
 type NewChatTitleHandler<C> = Handler<contexts::NewChatTitle<C>>;
 type NewMembersHandler<C> = Handler<contexts::NewMembers<C>>;
+type PassportHandler<C> = Handler<contexts::Passport<C>>;
 type PaymentHandler<C> = Handler<contexts::Payment<C>>;
 type PhotoHandler<C> = Handler<contexts::Photo<C>>;
 type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
@@ -127,6 +128,7 @@ pub struct EventLoop<C> {
     new_chat_photo_handlers: Handlers<NewChatPhotoHandler<C>>,
     new_chat_title_handlers: Handlers<NewChatTitleHandler<C>>,
     new_members_handlers: Handlers<NewMembersHandler<C>>,
+    passport_handlers: Handlers<PassportHandler<C>>,
     payment_handlers: Handlers<PaymentHandler<C>>,
     photo_handlers: Handlers<PhotoHandler<C>>,
     pinned_message_handlers: Handlers<PinnedMessageHandler<C>>,
@@ -178,6 +180,7 @@ impl<C> EventLoop<C> {
             new_chat_photo_handlers: Vec::new(),
             new_chat_title_handlers: Vec::new(),
             new_members_handlers: Vec::new(),
+            passport_handlers: Vec::new(),
             payment_handlers: Vec::new(),
             photo_handlers: Vec::new(),
             pinned_message_handlers: Vec::new(),
@@ -537,6 +540,15 @@ impl<C> EventLoop<C> {
         contexts::NewMembers<C>,
         run_new_members_handlers,
         will_handle_new_members,
+    }
+
+    handler! {
+        /// Adds a new handler for passport data.
+        passport_handlers,
+        passport,
+        contexts::Passport<C>,
+        run_passport_handlers,
+        will_handle_passport,
     }
 
     handler! {
@@ -1124,6 +1136,20 @@ impl<C> EventLoop<C> {
                     self.run_new_members_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatMembers(members);
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            message::Kind::PassportData(passport_data) => {
+                if self.will_handle_passport() {
+                    let context =
+                        contexts::Passport::new(bot, data, passport_data);
+
+                    self.run_passport_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::PassportData(passport_data);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
 

@@ -92,6 +92,7 @@ mod migration;
 mod new_chat_photo;
 mod new_chat_title;
 mod new_members;
+mod passport;
 mod payment;
 mod photo;
 mod pinned_message;
@@ -116,7 +117,8 @@ pub use {
     edited_audio::*, edited_document::*, edited_location::*, edited_photo::*,
     edited_text::*, edited_video::*, game::*, game_callback::*, inline::*,
     invoice::*, left_member::*, location::*, migration::*, new_chat_photo::*,
-    new_chat_title::*, new_members::*, payment::*, photo::*, pinned_message::*,
-    poll::*, pre_checkout::*, shipping::*, sticker::*, text::*, unhandled::*,
-    update::*, updated_poll::*, venue::*, video::*, video_note::*, voice::*,
+    new_chat_title::*, new_members::*, passport::*, payment::*, photo::*,
+    pinned_message::*, poll::*, pre_checkout::*, shipping::*, sticker::*,
+    text::*, unhandled::*, update::*, updated_poll::*, venue::*, video::*,
+    video_note::*, voice::*,
 };
