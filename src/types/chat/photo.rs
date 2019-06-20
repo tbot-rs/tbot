@@ -8,7 +8,9 @@ use serde::Deserialize;
 // todo: #[non_exhaustive]
 pub struct Photo {
     /// The file ID of the small photo.
-    pub small_file_id: file::Id,
-    /// THe file ID of the big photo.
-    pub big_file_id: file::Id,
+    #[serde(rename = "small_file_id")]
+    pub small: file::Id,
+    /// The file ID of the big photo.
+    #[serde(rename = "big_file_id")]
+    pub big: file::Id,
 }
