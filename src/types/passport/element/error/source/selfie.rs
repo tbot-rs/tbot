@@ -49,7 +49,7 @@ pub struct Selfie<'a> {
 
 impl<'a> Selfie<'a> {
     /// Constructs a new `Selfie`.
-    pub fn new(kind: Kind, file_hash: &'a str) -> Self {
+    pub const fn new(kind: Kind, file_hash: &'a str) -> Self {
         Self {
             kind,
             file_hash,

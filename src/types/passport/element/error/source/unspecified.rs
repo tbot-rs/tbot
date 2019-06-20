@@ -112,7 +112,7 @@ impl Kind {
 
 impl<'a> Unspecified<'a> {
     /// Constructs a new `Unspecified`.
-    pub fn new(kind: Kind, element_hash: &'a str) -> Self {
+    pub const fn new(kind: Kind, element_hash: &'a str) -> Self {
         Self {
             kind,
             element_hash,
