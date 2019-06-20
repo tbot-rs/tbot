@@ -1,3 +1,5 @@
+//! Types related to unspecified errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for unspecified error.

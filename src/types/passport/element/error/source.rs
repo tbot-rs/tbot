@@ -1,12 +1,12 @@
 use serde::Serialize;
 
-mod data;
-mod file;
-mod front_side;
-mod reverse_side;
-mod selfie;
-mod translation_file;
-mod unspecified;
+pub mod data;
+pub mod file;
+pub mod front_side;
+pub mod reverse_side;
+pub mod selfie;
+pub mod translation_file;
+pub mod unspecified;
 
 pub use {
     data::Data,

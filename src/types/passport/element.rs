@@ -1,14 +1,14 @@
 //! Types related to passport elements.
 
 use serde::de::{
-    Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
+    self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor,
 };
 use std::fmt::{self, Formatter};
 
 pub mod error;
 mod kind;
 
-pub use kind::*;
+pub use {error::Error, kind::*};
 
 /// Represents an [`EncryptedPassportElement`][docs].
 ///
@@ -88,20 +88,20 @@ impl<'v> Visitor<'v> for ElementVisitor {
             }
         }
 
-        let kind = kind.ok_or_else(|| Error::missing_field(TYPE))?;
-        let data = data.ok_or_else(|| Error::missing_field(DATA));
+        let kind = kind.ok_or_else(|| de::Error::missing_field(TYPE))?;
+        let data = data.ok_or_else(|| de::Error::missing_field(DATA));
         let phone_number =
-            phone_number.ok_or_else(|| Error::missing_field(PHONE_NUMBER));
-        let email = email.ok_or_else(|| Error::missing_field(EMAIL));
-        let files = files.ok_or_else(|| Error::missing_field(FILES));
+            phone_number.ok_or_else(|| de::Error::missing_field(PHONE_NUMBER));
+        let email = email.ok_or_else(|| de::Error::missing_field(EMAIL));
+        let files = files.ok_or_else(|| de::Error::missing_field(FILES));
         let front_side =
-            front_side.ok_or_else(|| Error::missing_field(FRONT_SIDE));
+            front_side.ok_or_else(|| de::Error::missing_field(FRONT_SIDE));
         let reverse_side =
-            reverse_side.ok_or_else(|| Error::missing_field(REVERSE_SIDE));
-        let selfie = selfie.ok_or_else(|| Error::missing_field(SELFIE));
+            reverse_side.ok_or_else(|| de::Error::missing_field(REVERSE_SIDE));
+        let selfie = selfie.ok_or_else(|| de::Error::missing_field(SELFIE));
         let translation =
-            translation.ok_or_else(|| Error::missing_field(TRANSLATION));
-        let hash = hash.ok_or_else(|| Error::missing_field(HASH))?;
+            translation.ok_or_else(|| de::Error::missing_field(TRANSLATION));
+        let hash = hash.ok_or_else(|| de::Error::missing_field(HASH))?;
 
         let kind = match kind {
             PERSONAL_DETAILS => Kind::PersonalDetails(data?),
@@ -155,7 +155,7 @@ impl<'v> Visitor<'v> for ElementVisitor {
             PHONE_NUMBER => Kind::PhoneNumber(phone_number?),
             EMAIL => Kind::Email(email?),
             kind => {
-                return Err(Error::unknown_variant(
+                return Err(de::Error::unknown_variant(
                     kind,
                     &[
                         PERSONAL_DETAILS,

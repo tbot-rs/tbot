@@ -1,3 +1,5 @@
+//! Types related to reverse side errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for reverse side error.

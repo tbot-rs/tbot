@@ -1,3 +1,5 @@
+//! Types related to data passport errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for data error.
@@ -64,7 +66,11 @@ pub struct Data<'a> {
 
 impl<'a> Data<'a> {
     /// Constructs a new `Data`.
-    pub const fn new(kind: Kind, field_name: &'a str, data_hash: &'a str) -> Self {
+    pub const fn new(
+        kind: Kind,
+        field_name: &'a str,
+        data_hash: &'a str,
+    ) -> Self {
         Self {
             kind,
             field_name,

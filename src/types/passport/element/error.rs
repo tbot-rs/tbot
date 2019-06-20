@@ -18,9 +18,9 @@ pub struct Error<'a> {
 
 impl<'a> Error<'a> {
     /// Constructs a passport element `Error`.
-    pub const fn new(source: Source<'a>, message: &'a str) -> Self {
+    pub fn new(source: impl Into<Source<'a>>, message: &'a str) -> Self {
         Self {
-            source,
+            source: source.into(),
             message,
         }
     }

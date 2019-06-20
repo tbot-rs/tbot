@@ -1,3 +1,5 @@
+//! Types related to file passport errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for file error.

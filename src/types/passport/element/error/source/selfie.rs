@@ -1,3 +1,5 @@
+//! Types related to selfie errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for selfie error.

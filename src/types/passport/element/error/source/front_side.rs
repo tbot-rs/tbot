@@ -1,3 +1,5 @@
+//! Types related to front side errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for front side error.

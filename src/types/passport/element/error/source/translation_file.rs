@@ -1,3 +1,5 @@
+//! Types related to translation file errors.
+
 use serde::Serialize;
 
 /// Represents possible element kinds for translation error.
