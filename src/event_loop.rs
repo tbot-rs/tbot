@@ -36,6 +36,7 @@ type Handler<T> = dyn FnMut(&T) + Send + Sync;
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
 type ChosenInlineHandler<C> = Handler<contexts::ChosenInline<C>>;
+type ConnectedWebsiteHandler<C> = Handler<contexts::ConnectedWebsite<C>>;
 type ContactHandler<C> = Handler<contexts::Contact<C>>;
 type CreatedGroupHandler<C> = Handler<contexts::CreatedGroup<C>>;
 type DataCallbackHandler<C> = Handler<contexts::DataCallback<C>>;
@@ -107,6 +108,7 @@ pub struct EventLoop<C> {
     before_update_handlers: Handlers<UpdateHandler<C>>,
     chosen_inline_handlers: Handlers<ChosenInlineHandler<C>>,
     contact_handlers: Handlers<ContactHandler<C>>,
+    connected_website_handlers: Handlers<ConnectedWebsiteHandler<C>>,
     created_group_handlers: Handlers<CreatedGroupHandler<C>>,
     data_callback_handlers: Handlers<DataCallbackHandler<C>>,
     deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler<C>>,
@@ -159,6 +161,7 @@ impl<C> EventLoop<C> {
             before_update_handlers: Vec::new(),
             chosen_inline_handlers: Vec::new(),
             contact_handlers: Vec::new(),
+            connected_website_handlers: Vec::new(),
             created_group_handlers: Vec::new(),
             data_callback_handlers: Vec::new(),
             deleted_chat_photo_handlers: Vec::new(),
@@ -351,6 +354,15 @@ impl<C> EventLoop<C> {
         contexts::Contact<C>,
         run_contact_handlers,
         will_handle_contact,
+    }
+
+    handler! {
+        /// Adds a new handler for connected websites.
+        connected_website_handlers,
+        connected_website,
+        contexts::ConnectedWebsite<C>,
+        run_connected_website_handlers,
+        will_handle_connected_website,
     }
 
     handler! {
@@ -1199,6 +1211,20 @@ impl<C> EventLoop<C> {
                 "\n[tbot] Expected a `{supergroup,channel}_created` update to \
                  never exist\n",
             ),
+            message::Kind::ConnectedWebsite(website) => {
+                if self.will_handle_connected_website() {
+                    let context =
+                        contexts::ConnectedWebsite::new(bot, data, website);
+
+                    self.run_connected_website_handlers(&context);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::ConnectedWebsite(website);
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = update::Kind::Message(message);
