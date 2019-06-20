@@ -67,7 +67,7 @@ pub enum Kind {
     /// A connected website.
     ConnectedWebsite(String),
     /// Passport data.
-    PassportData(raw::PassportData),
+    PassportData(passport::Data),
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }

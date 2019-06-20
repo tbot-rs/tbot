@@ -4,7 +4,7 @@ use crate::{
     methods::*,
     types::{
         callback, chat, inline_message_id, inline_query, input_file::*,
-        keyboard::inline, message, parameters::ImplicitChatId,
+        keyboard::inline, message, parameters::ImplicitChatId, passport,
         pre_checkout_query, shipping, user, LabeledPrice,
     },
 };
@@ -922,6 +922,20 @@ impl<C> Bot<C> {
             message_id,
             user_id,
             score,
+        )
+    }
+
+    /// Constructs a new `SetPassportDataErrors` inferring your bot's token.
+    pub fn set_passport_data_errors<'a>(
+        &'a self,
+        user_id: user::Id,
+        errors: &'a [passport::element::Error<'a>],
+    ) -> methods::SetPassportDataErrors<'a, C> {
+        methods::SetPassportDataErrors::new(
+            &self.client,
+            self.token.clone(),
+            user_id,
+            errors,
         )
     }
 
