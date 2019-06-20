@@ -1213,7 +1213,8 @@ impl<C> EventLoop<C> {
             ),
             message::Kind::ConnectedWebsite(website) => {
                 if self.will_handle_connected_website() {
-                    let context = contexts::ConnectedWebsite::new(bot, data, website);
+                    let context =
+                        contexts::ConnectedWebsite::new(bot, data, website);
 
                     self.run_connected_website_handlers(&context);
                 } else if self.will_handle_unhandled() {
