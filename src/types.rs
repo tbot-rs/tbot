@@ -9,7 +9,7 @@ pub mod chat;
 mod chosen_inline_result;
 mod contact;
 mod document;
-mod file;
+pub mod file;
 pub mod game;
 pub mod inline_message_id;
 pub mod inline_query;
@@ -40,7 +40,7 @@ pub mod webhook_info;
 
 pub use {
     animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
-    document::*, file::*, game::Game, inline_message_id::InlineMessageId,
+    document::*, file::File, game::Game, inline_message_id::InlineMessageId,
     inline_query::InlineQuery, input_message_content::InputMessageContent,
     invoice::*, labeled_price::*, location::*, login_url::*, message::Message,
     order_info::*, photo_size::*, poll::Poll,

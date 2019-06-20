@@ -7,7 +7,7 @@ use super::*;
 // todo: #[non_exhaustive]
 pub struct Animation {
     /// The file ID of the animation.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The width of the animation.
     pub width: u32,
     /// The height of the animation.

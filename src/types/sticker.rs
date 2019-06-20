@@ -1,6 +1,6 @@
 //! Types related to stickers.
 
-use super::PhotoSize;
+use super::{file, PhotoSize};
 use serde::Deserialize;
 
 pub mod mask_position;
@@ -15,7 +15,7 @@ pub use {mask_position::MaskPosition, set::*};
 // todo: #[non_exhaustive]
 pub struct Sticker {
     /// The file ID of the sticker.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The width of the sticker.
     pub width: u32,
     /// The height of the sticker.

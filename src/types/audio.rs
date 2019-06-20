@@ -7,7 +7,7 @@ use super::*;
 // todo: #[non_exhaustive]
 pub struct Audio {
     /// The file ID of the audio.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The duration of the audio.
     pub duration: u32,
     /// The performer of the audio.

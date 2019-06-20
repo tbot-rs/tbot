@@ -1,4 +1,10 @@
+//! Types related to downloadable files.
+
 use serde::*;
+
+pub mod id;
+
+pub use id::Id;
 
 /// Represents a [`File`].
 ///
@@ -8,7 +14,7 @@ use serde::*;
 pub struct File {
     /// The ID of the file.
     #[serde(rename = "file_id")]
-    pub id: String,
+    pub id: Id,
     /// The size fo the file.
     #[serde(rename = "file_size")]
     pub size: Option<u32>,

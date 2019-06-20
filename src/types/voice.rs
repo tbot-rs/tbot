@@ -7,7 +7,7 @@ use super::*;
 // todo: #[non_exhaustive]
 pub struct Voice {
     /// The file ID of the voice.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The duration of the voice.
     pub duration: u32,
     /// The MIME type of the voice.

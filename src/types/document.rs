@@ -7,7 +7,7 @@ use super::*;
 // todo: #[non_exhaustive]
 pub struct Document {
     /// The file ID of the document.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The thumb of the document.
     pub thumb: Option<PhotoSize>,
     /// The file name of the document.
