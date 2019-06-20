@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use crate::types::file;
 
 /// Represents a [`PassportFile`][docs].
 ///
@@ -7,7 +8,7 @@ use serde::Deserialize;
 // todo: #[non_exhaustive]
 pub struct File {
     /// The ID of the file.
-    pub id: String,
+    pub id: file::Id,
     /// The size of the file.
     pub size: usize,
     /// The date of the file.
