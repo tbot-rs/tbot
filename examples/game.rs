@@ -1,7 +1,7 @@
 //! Simple but stupid game. Note that it's implemented
 
 use std::sync::{Arc, Mutex};
-use tbot::{prelude::*, types::chat};
+use tbot::{errors, prelude::*, types::chat};
 
 const CHAT: chat::Id = chat::Id(0);
 const GAME: &str = "";
@@ -51,17 +51,13 @@ fn main() {
                 )
                 .force(true)
                 .into_future()
-                .map_err(|error| {
-                    if let tbot::methods::DeliveryError::RequestError {
-                        description,
+                .map_err(|err| match err {
+                    errors::MethodCall::RequestError {
+                        ref description,
                         ..
-                    } = &error
-                    {
-                        if description != SCORE_NOT_MODIFIED {
-                            dbg!(error);
-                        }
-                    } else {
-                        dbg!(error);
+                    } if description == SCORE_NOT_MODIFIED => (),
+                    err => {
+                        dbg!(err);
                     }
                 });
 
