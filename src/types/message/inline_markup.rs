@@ -1,14 +1,14 @@
 //! Types representing inline keyboard markup coming from Telegram.
-//! 
+//!
 //! The reason that we can't re-use the types from `types::keyboard` is that
-//! those types are meant for serialization, and so they're compoud of 
+//! those types are meant for serialization, and so they're compoud of
 //! references. These references, however, would be a pain if deserialized.
 //! That's why we mirrored the inline keyboard types coming from Telegram
-//! without references. 
+//! without references.
 
 use crate::types::callback::Game;
-use serde::{
-    de::{self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor},
+use serde::de::{
+    self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor,
 };
 use std::fmt::{self, Formatter};
 
@@ -210,7 +210,9 @@ impl<'v> Visitor<'v> for ButtonVisitor {
         } else if let Some(pay) = pay {
             ButtonKind::Pay(pay)
         } else {
-            return Err(serde::de::Error::custom("Could not construct Button's kind"));
+            return Err(serde::de::Error::custom(
+                "Could not construct Button's kind",
+            ));
         };
 
         Ok(Button {
