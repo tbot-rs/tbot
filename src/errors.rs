@@ -34,3 +34,55 @@ pub enum MethodCall {
         retry_after: Option<u64>,
     },
 }
+
+impl Download {
+    /// Checks if `self` is `NoPath`.
+    pub fn is_no_path(&self) -> bool {
+        match self {
+            Download::NoPath => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Network`.
+    pub fn is_network(&self) -> bool {
+        match self {
+            Download::Network(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `InvalidStatusCode`.
+    pub fn is_invalid_status_code(&self) -> bool {
+        match self {
+            Download::InvalidStatusCode(..) => true,
+            _ => false,
+        }
+    }
+}
+
+impl MethodCall {
+    /// Checks if `self` is `Network`.
+    pub fn is_network(&self) -> bool {
+        match self {
+            MethodCall::Network(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `TelegramOutOfService`.
+    pub fn is_out_of_service(&self) -> bool {
+        match self {
+            MethodCall::TelegramOutOfService => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `RequestError`.
+    pub fn is_request_error(&self) -> bool {
+        match self {
+            MethodCall::RequestError { .. } => true,
+            _ => false,
+        }
+    }
+}
