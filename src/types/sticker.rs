@@ -1,6 +1,9 @@
 //! Types related to stickers.
 
-use super::PhotoSize;
+use super::{
+    file::{self, id::AsFileId},
+    PhotoSize,
+};
 use serde::Deserialize;
 
 pub mod mask_position;
@@ -15,7 +18,7 @@ pub use {mask_position::MaskPosition, set::*};
 // todo: #[non_exhaustive]
 pub struct Sticker {
     /// The file ID of the sticker.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The width of the sticker.
     pub width: u32,
     /// The height of the sticker.
@@ -30,4 +33,12 @@ pub struct Sticker {
     pub mask_position: Option<MaskPosition>,
     /// The file size of the sticker.
     pub file_size: Option<u32>,
+}
+
+impl crate::internal::Sealed for Sticker {}
+
+impl AsFileId for Sticker {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }

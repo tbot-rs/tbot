@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::file::id::AsFileId;
 
 /// Represents a [`Video`].
 ///
@@ -7,7 +8,7 @@ use super::*;
 // todo: #[non_exhaustive]
 pub struct Video {
     /// The file ID of the video.
-    pub file_id: String,
+    pub file_id: file::Id,
     /// The width of the video.
     pub width: u32,
     /// The height of the video.
@@ -20,4 +21,12 @@ pub struct Video {
     pub mime_type: Option<String>,
     /// The file size of the video.
     pub file_size: Option<u32>,
+}
+
+impl crate::internal::Sealed for Video {}
+
+impl AsFileId for Video {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }
