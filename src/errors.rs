@@ -20,7 +20,7 @@ pub enum MethodCall {
     /// A network error.
     Network(hyper::Error),
     /// Bots API is likely to be down.
-    TelegramOutOfService,
+    OutOfService,
     /// An error returned in response.
     RequestError {
         /// A human-readable description of the error.
@@ -70,10 +70,10 @@ impl MethodCall {
         }
     }
 
-    /// Checks if `self` is `TelegramOutOfService`.
+    /// Checks if `self` is `OutOfService`.
     pub fn is_out_of_service(&self) -> bool {
         match self {
-            MethodCall::TelegramOutOfService => true,
+            MethodCall::OutOfService => true,
             _ => false,
         }
     }

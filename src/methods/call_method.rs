@@ -70,7 +70,7 @@ where
             if response.starts_with(b"<") {
                 // If so, then Bots API is down and returns an HTML. Handling
                 // this case specially.
-                return Err(errors::MethodCall::TelegramOutOfService);
+                return Err(errors::MethodCall::OutOfService);
             }
 
             serde_json::from_slice::<Response<T>>(&response[..]).map_err(
