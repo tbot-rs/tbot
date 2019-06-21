@@ -3,9 +3,14 @@ use crate::{
     event_loop::EventLoop,
     methods::*,
     types::{
-        callback, chat, inline_message_id, inline_query, input_file::*,
-        keyboard::inline, message, parameters::ImplicitChatId, passport,
-        pre_checkout_query, shipping, user, LabeledPrice,
+        callback, chat,
+        file::{id::AsFileId, File},
+        inline_message_id, inline_query,
+        input_file::*,
+        keyboard::inline,
+        message,
+        parameters::ImplicitChatId,
+        passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
 };
 use std::sync::Arc;
@@ -412,6 +417,14 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
     ) -> methods::GetChat<'a, C> {
         methods::GetChat::new(&self.client, self.token.clone(), chat_id)
+    }
+
+    /// Constructs a new `GetFile` inferring your bot's token.
+    pub fn get_file<'a>(
+        &'a self,
+        file_id: &'a impl AsFileId,
+    ) -> methods::GetFile<'a, C> {
+        methods::GetFile::new(&self.client, self.token.clone(), file_id)
     }
 
     /// Constructs a new `GetInlineGameHighScores` inferring your bot's token.
@@ -1056,6 +1069,14 @@ where
         connector: C,
     ) -> Self {
         Self::with_connector(extract_token(env_var), connector)
+    }
+
+    /// Downloads a file.
+    pub fn download_file(
+        &self,
+        file: &File,
+    ) -> impl Future<Item = Vec<u8>, Error = DownloadError> {
+        download_file(&self.client, self.token.clone(), file)
     }
 }
 

@@ -44,6 +44,7 @@
 #![allow(clippy::multiple_crate_versions)] // can't do much
 
 mod bot;
+mod download_file;
 mod internal;
 mod multipart;
 mod token;
@@ -55,8 +56,8 @@ pub mod methods;
 pub mod types;
 
 use serde::{Deserialize, Serialize};
-pub use {bot::*, token::*};
-use {multipart::*, prelude::*};
+pub use {bot::*, download_file::DownloadError, token::*};
+use {download_file::download_file, multipart::*, prelude::*};
 
 /// A wrapper around `tokio::run` without `F::Item: ()`.
 ///
