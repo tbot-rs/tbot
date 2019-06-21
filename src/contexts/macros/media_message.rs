@@ -21,6 +21,8 @@ macro_rules! media_message {
                 author_signature: Option<String>,
                 /// The origin of the message if it's a forward.
                 forward: Option<crate::types::message::Forward>,
+                /// The inline keyboard attached to the message.
+                reply_markup: Option<crate::types::message::inline_markup::Keyboard>,
                 #[doc = $media_doc]
                 $media: $media_type,
                 $(#[doc = $field_doc] $field: $type,)*
@@ -33,6 +35,7 @@ macro_rules! media_message {
                 infer reply_to;
                 infer author_signature;
                 infer forward;
+                infer reply_markup;
 
                 Self {
                     $media: $media,

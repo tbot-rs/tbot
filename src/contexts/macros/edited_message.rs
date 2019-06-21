@@ -21,6 +21,8 @@ macro_rules! edited_message {
                 author_signature: Option<String>,
                 /// The last time when the message was edited.
                 edit_date: i64,
+                /// The inline keyboard attached to the message.
+                reply_markup: Option<crate::types::message::inline_markup::Keyboard>,
                 #[doc = $media_doc]
                 $media: $media_type,
                 $(#[doc = $field_doc] $field: $type,)*
@@ -33,6 +35,7 @@ macro_rules! edited_message {
             ) -> Self {
                 infer reply_to;
                 infer author_signature;
+                infer reply_markup;
 
                 Self {
                     edit_date: edit_date,

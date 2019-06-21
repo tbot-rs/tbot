@@ -4,10 +4,13 @@ use super::*;
 
 pub mod forward;
 mod id;
+pub mod inline_markup;
 mod kind;
 pub mod text;
 
-pub use {forward::Forward, id::Id, kind::Kind, text::Text};
+pub use {
+    forward::Forward, id::Id, inline_markup::Keyboard, kind::Kind, text::Text,
+};
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
@@ -30,6 +33,8 @@ pub struct Message {
     pub edit_date: Option<i64>,
     /// The author's signature, if enabled for the channel.
     pub author_signature: Option<String>,
+    /// The inline keyboard attached to the message.
+    pub reply_markup: Option<Keyboard>,
     /// The kind of the message.
     pub kind: Kind,
 }
@@ -43,6 +48,7 @@ pub(crate) struct Data {
     pub reply_to: Option<Message>,
     pub edit_date: Option<i64>,
     pub author_signature: Option<String>,
+    pub reply_markup: Option<Keyboard>,
 }
 
 impl Message {
@@ -58,6 +64,7 @@ impl Message {
             reply_to: data.reply_to.map(Box::new),
             edit_date: data.edit_date,
             author_signature: data.author_signature,
+            reply_markup: data.reply_markup,
             kind,
         }
     }
@@ -74,6 +81,7 @@ impl Message {
             reply_to: self.reply_to.map(|message| *message),
             edit_date: self.edit_date,
             author_signature: self.author_signature,
+            reply_markup: self.reply_markup,
         };
 
         (data, self.kind)
@@ -128,6 +136,7 @@ const INVOICE: &str = "invoice";
 const SUCCESSFUL_PAYMENT: &str = "successful_payment";
 const CONNECTED_WEBSITE: &str = "connected_website";
 const PASSPORT_DATA: &str = "passport_data";
+const REPLY_MARKUP: &str = "reply_markup";
 
 struct MessageVisitor;
 
@@ -189,6 +198,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         let mut successful_payment = None;
         let mut connected_website = None;
         let mut passport_data = None;
+        let mut reply_markup = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -258,6 +268,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                     connected_website = Some(map.next_value()?)
                 }
                 PASSPORT_DATA => passport_data = Some(map.next_value()?),
+                REPLY_MARKUP => reply_markup = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<serde_json::Value>();
                 }
@@ -373,6 +384,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             reply_to: reply_to_message,
             edit_date,
             author_signature,
+            reply_markup,
             kind,
         })
     }
@@ -433,6 +445,7 @@ impl<'de> serde::Deserialize<'de> for Message {
                 SUCCESSFUL_PAYMENT,
                 CONNECTED_WEBSITE,
                 PASSPORT_DATA,
+                REPLY_MARKUP,
             ],
             MessageVisitor,
         )
