@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::file::id::AsFileId;
 
 /// Represents a [`Document`].
 ///
@@ -16,4 +17,12 @@ pub struct Document {
     pub mime_type: Option<String>,
     /// The file size of the document.
     pub file_size: Option<u32>,
+}
+
+impl crate::internal::Sealed for Document {}
+
+impl AsFileId for Document {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }

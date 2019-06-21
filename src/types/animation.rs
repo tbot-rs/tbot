@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::file::id::AsFileId;
 
 /// Represents an [`Animation`].
 ///
@@ -20,4 +21,12 @@ pub struct Animation {
     pub mime_type: Option<String>,
     /// The file size of the animation.
     pub file_size: Option<u32>,
+}
+
+impl crate::internal::Sealed for Animation {}
+
+impl AsFileId for Animation {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }

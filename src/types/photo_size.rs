@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::file::id::AsFileId;
 
 /// Represents a [`PhotoSize`].
 ///
@@ -14,4 +15,12 @@ pub struct PhotoSize {
     pub height: u32,
     /// The file size of the photo.
     pub file_size: Option<u32>,
+}
+
+impl crate::internal::Sealed for PhotoSize {}
+
+impl AsFileId for PhotoSize {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }

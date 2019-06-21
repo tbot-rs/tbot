@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::file::id::AsFileId;
 
 /// Represents a [`Voice`].
 ///
@@ -14,4 +15,12 @@ pub struct Voice {
     pub mime_type: Option<String>,
     /// The file size of the voice.
     pub file_size: Option<u32>,
+}
+
+impl crate::internal::Sealed for Voice {}
+
+impl AsFileId for Voice {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }

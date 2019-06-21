@@ -1,4 +1,5 @@
 use super::*;
+use crate::types::file::id::AsFileId;
 
 /// Represents an [`Audio`].
 ///
@@ -20,4 +21,12 @@ pub struct Audio {
     pub file_size: Option<u32>,
     /// The thumb of the audio.
     pub thumb: Option<PhotoSize>,
+}
+
+impl crate::internal::Sealed for Audio {}
+
+impl AsFileId for Audio {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
+    }
 }

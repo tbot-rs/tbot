@@ -1,5 +1,5 @@
+use crate::types::file::{self, id::AsFileId};
 use serde::Deserialize;
-use crate::types::file;
 
 /// Represents a [`PassportFile`][docs].
 ///
@@ -13,4 +13,12 @@ pub struct File {
     pub size: usize,
     /// The date of the file.
     pub date: i64,
+}
+
+impl crate::internal::Sealed for File {}
+
+impl AsFileId for File {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.id.as_ref()
+    }
 }
