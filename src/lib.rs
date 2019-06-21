@@ -49,9 +49,9 @@ mod internal;
 mod multipart;
 mod token;
 
-pub mod errors;
 pub mod connectors;
 pub mod contexts;
+pub mod errors;
 pub mod event_loop;
 pub mod methods;
 pub mod types;
