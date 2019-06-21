@@ -1,15 +1,4 @@
-/// Represents possible errors whic may occur while downloading a file.
-#[derive(Debug)]
-pub enum DownloadError {
-    /// The provided file had the `path` field set to `None`.
-    NoPath,
-    /// A network error.
-    Network(hyper::Error),
-    /// Telegram returned a different from 200 status code.
-    InvalidStatusCode(StatusCode),
-}
-
-use crate::{internal::Client, prelude::*, types::File, Token};
+use crate::{errors, internal::Client, prelude::*, types::File, Token};
 use futures::{
     future::{err, Either},
     Stream,
@@ -20,7 +9,7 @@ pub fn download_file<C>(
     client: &Client<C>,
     token: &Token,
     file: &File,
-) -> impl Future<Item = Vec<u8>, Error = DownloadError>
+) -> impl Future<Item = Vec<u8>, Error = errors::Download>
 where
     C: hyper::client::connect::Connect + Sync + 'static,
     C::Transport: 'static,
@@ -28,7 +17,7 @@ where
 {
     let path = match &file.path {
         Some(path) => path,
-        None => return Either::A(err(DownloadError::NoPath)),
+        None => return Either::A(err(errors::Download::NoPath)),
     };
 
     let url = Uri::builder()
@@ -45,7 +34,7 @@ where
     Either::B(
         client
             .get(url)
-            .map_err(DownloadError::Network)
+            .map_err(errors::Download::Network)
             .and_then(|response| {
                 let status = response.status();
 
@@ -54,10 +43,10 @@ where
                         response
                             .into_body()
                             .concat2()
-                            .map_err(DownloadError::Network),
+                            .map_err(errors::Download::Network),
                     )
                 } else {
-                    Either::B(err(DownloadError::InvalidStatusCode(status)))
+                    Either::B(err(errors::Download::InvalidStatusCode(status)))
                 }
             })
             .map(|response| response[..].to_vec()),

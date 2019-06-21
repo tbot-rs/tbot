@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    errors,
     internal::{BoxFuture, Client},
     types::{passport, user},
 };
@@ -42,7 +43,7 @@ where
 {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
-    type Error = DeliveryError;
+    type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
         Box::new(

@@ -51,12 +51,13 @@ mod token;
 
 pub mod connectors;
 pub mod contexts;
+pub mod errors;
 pub mod event_loop;
 pub mod methods;
 pub mod types;
 
 use serde::{Deserialize, Serialize};
-pub use {bot::*, download_file::DownloadError, token::*};
+pub use {bot::*, token::*};
 use {download_file::download_file, multipart::*, prelude::*};
 
 /// A wrapper around `tokio::run` without `F::Item: ()`.

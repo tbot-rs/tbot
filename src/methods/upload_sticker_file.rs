@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    errors,
     internal::{BoxFuture, Client},
     types::user,
 };
@@ -40,7 +41,7 @@ where
 {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::File;
-    type Error = DeliveryError;
+    type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
         let (boundary, body) = Multipart::new(2)

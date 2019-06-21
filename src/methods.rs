@@ -174,29 +174,3 @@ pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
 
 mod call_method;
 use call_method::*;
-
-/// Represents different errors that may happen during a request.
-#[derive(Debug)]
-pub enum DeliveryError {
-    /// Telegram Bots API is likely to be down.
-    TelegramOutOfService,
-    /// Failed to parse the response from Telegram. It's likely to be a bug
-    /// in `tbot`, so feel free to fill an issue on [our GitLab][issues].
-    ///
-    /// [issues]: https://gitlab.com/snejugal/tbot/issues
-    InvalidResponse(serde_json::error::Error),
-    /// Failed to send the request.
-    NetworkError(hyper::Error),
-    /// Telegram returned an error in response.
-    RequestError {
-        /// A human-readable description of the error.
-        description: String,
-        /// The error code for this error.
-        error_code: u16,
-        /// The group moved to a supergroup with the following ID.
-        migrate_to_chat_id: Option<chat::Id>,
-        /// The bot exceeded flood threshold. You can make another request
-        /// after the following amount of seconds.
-        retry_after: Option<u64>,
-    },
-}

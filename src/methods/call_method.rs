@@ -1,5 +1,5 @@
 use super::*;
-use crate::internal::Client;
+use crate::{errors, internal::Client};
 use futures::Stream;
 
 #[derive(Deserialize)]
@@ -59,24 +59,28 @@ fn create_request(
 #[must_use]
 fn process_response<T>(
     request: hyper::client::ResponseFuture,
-) -> impl Future<Item = T, Error = DeliveryError>
+) -> impl Future<Item = T, Error = errors::MethodCall>
 where
     T: serde::de::DeserializeOwned,
 {
     request
         .and_then(|response| response.into_body().concat2())
-        .map_err(DeliveryError::NetworkError)
+        .map_err(errors::MethodCall::Network)
         .and_then(|response| {
             if response.starts_with(b"<") {
                 // If so, then Bots API is down and returns an HTML. Handling
                 // this case specially.
-                return Err(DeliveryError::TelegramOutOfService);
+                return Err(errors::MethodCall::OutOfService);
             }
 
-            match serde_json::from_slice::<Response<T>>(&response[..]) {
-                Ok(response) => Ok(response),
-                Err(error) => Err(DeliveryError::InvalidResponse(error)),
-            }
+            serde_json::from_slice::<Response<T>>(&response[..]).map_err(
+                |err| {
+                    panic!(
+                        "\n[tbot]: Failed to parse Telegram's response. Please \
+                        fill an issue on our GitLab. {:#?}",
+                        err);
+                },
+            )
         })
         .and_then(|response| {
             if let Some(result) = response.result {
@@ -93,7 +97,7 @@ where
             // If result is empty, then it's a error. In this case, description
             // and error_code are guaranteed to be specified in the response,
             // so we can unwrap it.
-            Err(DeliveryError::RequestError {
+            Err(errors::MethodCall::RequestError {
                 description: response.description.unwrap(),
                 error_code: response.error_code.unwrap(),
                 migrate_to_chat_id,
@@ -109,7 +113,7 @@ pub fn send_method<T, C>(
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
-) -> impl Future<Item = T, Error = DeliveryError>
+) -> impl Future<Item = T, Error = errors::MethodCall>
 where
     T: serde::de::DeserializeOwned,
     C: hyper::client::connect::Connect + Sync + 'static,
