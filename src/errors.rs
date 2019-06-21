@@ -1,5 +1,7 @@
-use hyper::StatusCode;
+//! Types representing errors.
+
 use crate::types::chat;
+use hyper::StatusCode;
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]
@@ -14,17 +16,12 @@ pub enum Download {
 
 /// Represents possible errors that may happen during a method call.
 #[derive(Debug)]
-pub enum DeliveryError {
-    /// Failed to send the request.
-    NetworkError(hyper::Error),
-    /// Telegram Bots API is likely to be down.
+pub enum MethodCall {
+    /// A network error.
+    Network(hyper::Error),
+    /// Bots API is likely to be down.
     TelegramOutOfService,
-    /// Failed to parse the response from Telegram. It's likely to be a bug
-    /// in `tbot`, so feel free to fill an issue on [our GitLab][issues].
-    ///
-    /// [issues]: https://gitlab.com/snejugal/tbot/issues
-    InvalidResponse(serde_json::error::Error),
-    /// Telegram returned an error in response.
+    /// An error returned in response.
     RequestError {
         /// A human-readable description of the error.
         description: String,
