@@ -1,7 +1,7 @@
 //! The event loop for handling bot updates.
 
 use crate::{
-    contexts, methods,
+    contexts, errors,
     prelude::*,
     types::{
         self, callback,
@@ -64,7 +64,7 @@ type PaymentHandler<C> = Handler<contexts::Payment<C>>;
 type PhotoHandler<C> = Handler<contexts::Photo<C>>;
 type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
 type PollHandler<C> = Handler<contexts::Poll<C>>;
-type PollingErrorHandler = Handler<methods::DeliveryError>;
+type PollingErrorHandler = Handler<errors::MethodCall>;
 type PreCheckoutHandler<C> = Handler<contexts::PreCheckout<C>>;
 type ShippingHandler<C> = Handler<contexts::Shipping<C>>;
 type StickerHandler<C> = Handler<contexts::Sticker<C>>;
@@ -603,7 +603,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for polling errors.
         polling_error_handlers,
         polling_error,
-        methods::DeliveryError,
+        errors::MethodCall,
         run_polling_error_handlers,
     }
 

@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    errors,
     internal::{BoxFuture, Client},
     types::{
         input_file::{InputFile, Sticker},
@@ -71,7 +72,7 @@ where
 {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Message;
-    type Error = DeliveryError;
+    type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {

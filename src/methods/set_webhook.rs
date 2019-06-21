@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    errors,
     internal::{BoxFuture, Client},
     types::parameters::Updates,
 };
@@ -44,7 +45,7 @@ where
 {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
-    type Error = DeliveryError;
+    type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
         let max_connections = self.max_connections.map(|x| x.to_string());

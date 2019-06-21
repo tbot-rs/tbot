@@ -1,6 +1,7 @@
 // use super::*;
-use super::{send_method, DeliveryError};
+use super::send_method;
 use crate::{
+    errors,
     internal::{BoxFuture, Client},
     prelude::*,
     types::inline_query,
@@ -86,7 +87,7 @@ where
 {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
-    type Error = DeliveryError;
+    type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
         Box::new(

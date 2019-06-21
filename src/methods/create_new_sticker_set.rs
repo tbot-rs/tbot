@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    errors,
     internal::{BoxFuture, Client},
     types::{
         input_file::{InputFile, PngSticker},
@@ -69,7 +70,7 @@ where
 {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
-    type Error = DeliveryError;
+    type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
         let user_id = self.user_id.to_string();
