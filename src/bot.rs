@@ -1075,7 +1075,7 @@ where
     pub fn download_file(
         &self,
         file: &File,
-    ) -> impl Future<Item = Vec<u8>, Error = DownloadError> {
+    ) -> impl Future<Item = Vec<u8>, Error = errors::Download> {
         download_file(&self.client, &self.token, file)
     }
 }
