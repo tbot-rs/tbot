@@ -81,7 +81,9 @@ impl MethodCall {
     /// Checks if `self` is `RequestError`.
     pub fn is_request_error(&self) -> bool {
         match self {
-            MethodCall::RequestError { .. } => true,
+            MethodCall::RequestError {
+                ..
+            } => true,
             _ => false,
         }
     }
