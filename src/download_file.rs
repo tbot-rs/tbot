@@ -18,7 +18,7 @@ use hyper::{StatusCode, Uri};
 
 pub fn download_file<C>(
     client: &Client<C>,
-    token: Token,
+    token: &Token,
     file: &File,
 ) -> impl Future<Item = Vec<u8>, Error = DownloadError>
 where

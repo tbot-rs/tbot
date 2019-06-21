@@ -1076,7 +1076,7 @@ where
         &self,
         file: &File,
     ) -> impl Future<Item = Vec<u8>, Error = DownloadError> {
-        download_file(&self.client, self.token.clone(), file)
+        download_file(&self.client, &self.token, file)
     }
 }
 
