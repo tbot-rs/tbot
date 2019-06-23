@@ -14,8 +14,8 @@
 //!     let reply = context
 //!         .send_message_in_reply(&reversed)
 //!         .into_future()
-//!         .map_err(|error| {
-//!             dbg!(error);
+//!         .map_err(|err| {
+//!             dbg!(err);
 //!         });
 //!
 //!     tbot::spawn(reply);
@@ -45,8 +45,8 @@
 //!         .bot
 //!         .send_message(ADMIN_CHAT, "New message!")
 //!         .into_future()
-//!         .map_err(|error| {
-//!             dbg!(error);
+//!         .map_err(|err| {
+//!             dbg!(err);
 //!         });
 //!
 //!     tbot::spawn(notification);

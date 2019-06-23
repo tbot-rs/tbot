@@ -31,8 +31,8 @@
 //! let request = bot.send_message(CHAT, MESSAGE)
 //!     .parse_mode(Markdown)
 //!     .into_future()
-//!     .map_err(|error| {
-//!         dbg!(error);
+//!     .map_err(|err| {
+//!         dbg!(err);
 //!     });
 //!
 //! tbot::run(request);
