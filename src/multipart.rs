@@ -1,11 +1,4 @@
-use rand::{distributions::Alphanumeric, rngs::SmallRng, FromEntropy, Rng};
-
-fn generate_boundary() -> Vec<u8> {
-    let mut rng = SmallRng::from_entropy();
-    let ascii = rng.sample_iter(&Alphanumeric).map(|x| x as u8);
-
-    ascii.take(40).collect()
-}
+use std::collections::HashSet;
 
 enum Header<'a> {
     Field(&'static str),
@@ -86,8 +79,34 @@ impl<'a> Multipart<'a> {
     }
 
     pub fn finish(self) -> (String, Vec<u8>) {
-        let boundary = generate_boundary();
+        let mut line_lengths = HashSet::new();
+
+        for part in &self.parts {
+            let mut current_line_length = 0;
+
+            for line in part.body.split(|byte| *byte == b'\n') {
+                current_line_length += line.len();
+
+                if line.ends_with(b"\r") {
+                    line_lengths.insert(current_line_length - 1);
+                    current_line_length = 0;
+                } else {
+                    current_line_length += 1; // to count the \n
+                }
+            }
+
+            line_lengths.insert(current_line_length - 1);
+        }
+
+        let boundary_length = (1..).filter(|n| {
+            !line_lengths.contains(&(*n + 2)) // --boundary
+            && !line_lengths.contains(&(*n + 4)) // --boundary--
+        }).next().unwrap();
+
+        let boundary = vec![b'-'; boundary_length];
+
         let mut body = Vec::new();
+
         for part in self.parts {
             if body.is_empty() {
                 body.extend_from_slice(b"--");
@@ -103,7 +122,9 @@ impl<'a> Multipart<'a> {
             body.extend_from_slice(b"\r\n--");
             body.extend_from_slice(&boundary);
         }
+
         body.extend_from_slice(b"--\r\n");
+
         (String::from_utf8(boundary).unwrap(), body)
     }
 }
