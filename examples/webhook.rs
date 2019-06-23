@@ -1,4 +1,4 @@
-use tbot::{prelude::*, types::parameters::ParseMode::Markdown};
+use tbot::prelude::*;
 
 const URL: &str = "https://example.com";
 const PORT: u16 = 2000;
@@ -7,14 +7,8 @@ fn main() {
     let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
     bot.text(|context| {
-        let message = match meval::eval_str(&context.text.value) {
-            Ok(result) => format!("= `{}`", result),
-            Err(_) => "Whops, I couldn't evaluate your expression :(".into(),
-        };
-
         let reply = context
-            .send_message_in_reply(&message)
-            .parse_mode(Markdown)
+            .send_message_in_reply(&context.text.value)
             .into_future()
             .map_err(|error| {
                 dbg!(error);
