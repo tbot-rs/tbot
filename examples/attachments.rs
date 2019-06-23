@@ -1,42 +1,66 @@
 use tbot::{
     prelude::*,
-    types::{
-        chat,
-        input_file::{Animation, Document, Photo, Video},
-    },
+    types::input_file::{Animation, Document, Photo, Video},
 };
 
-const CHAT: chat::Id = chat::Id(0);
 const PHOTO: &[u8] = include_bytes!("./assets/photo.jpg");
 const GIF: &[u8] = include_bytes!("./assets/gif.mp4");
 const TUTORIAL: &[u8] = include_bytes!("./tutorial.rs");
 
 fn main() {
-    let bot = tbot::bot!("BOT_TOKEN");
+    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
-    let photo = bot.send_photo(CHAT, &Photo::bytes(PHOTO)).into_future();
-    let animation =
-        bot.send_animation(CHAT, &Animation::bytes(GIF)).into_future();
-    let document = bot
-        .send_document(CHAT, &Document::bytes("tutorial.rs", TUTORIAL))
-        .into_future();
+    bot.command("photo", |context| {
+        let photo = Photo::bytes(PHOTO);
+        let message = context.send_photo(&photo).into_future().map_err(|err| {
+            dbg!(err);
+        });
+
+        tbot::spawn(message);
+    });
+
+    bot.command("animation", |context| {
+        let animation = Animation::bytes(GIF);
+        let message =
+            context.send_animation(&animation).into_future().map_err(|err| {
+                dbg!(err);
+            });
+
+        tbot::spawn(message);
+    });
+
+    bot.command("document", |context| {
+        let document = Document::bytes("tutorial.rs", TUTORIAL);
+        let message =
+            context.send_document(&document).into_future().map_err(|err| {
+                dbg!(err);
+            });
+
+        tbot::spawn(message);
+    });
 
     // Because the video for this example is silent, Telegram will send it as a
     // gif. You can try sending a video with sound and it will be sent as a
     // video. Also, Telegram seems not to create the thumb and figure out the
     // duration on its own, so the video might look somewhat corrupted at first.
-    let video = bot.send_video(CHAT, &Video::bytes(GIF)).into_future();
-    let album = bot
-        .send_media_group(
-            CHAT,
-            vec![Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()],
-        )
-        .into_future();
-
-    let joined =
-        photo.join5(animation, document, video, album).map_err(|err| {
+    bot.command("video", |context| {
+        let video = Video::bytes(GIF);
+        let message = context.send_video(&video).into_future().map_err(|err| {
             dbg!(err);
         });
 
-    tbot::run(joined);
+        tbot::spawn(message);
+    });
+
+    bot.command("album", |context| {
+        let album = vec![Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
+        let message =
+            context.send_media_group(album).into_future().map_err(|err| {
+                dbg!(err);
+            });
+
+        tbot::spawn(message);
+    });
+
+    bot.polling().start();
 }
