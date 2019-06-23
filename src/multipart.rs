@@ -1,4 +1,6 @@
-use std::collections::HashSet;
+use crate::types::parameters::ChatId;
+use serde::Serialize;
+use std::{borrow::Cow, collections::HashSet};
 
 enum Header<'a> {
     Field(&'static str),
@@ -22,7 +24,7 @@ impl<'a> Header<'a> {
 
 struct Part<'a> {
     header: Header<'a>,
-    body: &'a [u8],
+    body: Cow<'a, [u8]>,
 }
 
 pub struct Multipart<'a> {
@@ -39,26 +41,60 @@ impl<'a> Multipart<'a> {
     pub fn str(mut self, name: &'static str, value: &'a str) -> Self {
         self.parts.push(Part {
             header: Header::Field(name),
-            body: value.as_bytes(),
+            body: Cow::Borrowed(value.as_bytes()),
         });
         self
     }
 
-    pub fn maybe_string(
-        self,
-        name: &'static str,
-        value: &'a Option<String>,
-    ) -> Self {
-        match value {
-            Some(value) => self.str(name, value),
-            None => self,
-        }
+    fn part(mut self, name: &'static str, body: Cow<'a, [u8]>) -> Self {
+        self.parts.push(Part {
+            header: Header::Field(name),
+            body,
+        });
+        self
+    }
+
+    pub fn string(self, name: &'static str, value: &impl ToString) -> Self {
+        self.part(name, Cow::Owned(value.to_string().into_bytes()))
+    }
+
+    pub fn json(self, name: &'static str, value: impl Serialize) -> Self {
+        self.part(name, Cow::Owned(serde_json::to_vec(&value).unwrap()))
     }
 
     pub fn maybe_str(self, name: &'static str, value: Option<&'a str>) -> Self {
         match value {
             Some(value) => self.str(name, value),
             None => self,
+        }
+    }
+
+    pub fn maybe_string(
+        self,
+        name: &'static str,
+        value: Option<impl ToString>,
+    ) -> Self {
+        match value {
+            Some(value) => self.string(name, &value),
+            None => self,
+        }
+    }
+
+    pub fn maybe_json(
+        self,
+        name: &'static str,
+        value: Option<impl Serialize>,
+    ) -> Self {
+        match value {
+            Some(value) => self.json(name, &value),
+            None => self,
+        }
+    }
+
+    pub fn chat_id(self, name: &'static str, id: ChatId<'a>) -> Self {
+        match id {
+            ChatId::Id(id) => self.string(name, &id),
+            ChatId::Username(username) => self.str(name, username),
         }
     }
 
@@ -73,7 +109,7 @@ impl<'a> Multipart<'a> {
                 name,
                 filename,
             },
-            body,
+            body: Cow::Borrowed(body),
         });
         self
     }
@@ -120,7 +156,10 @@ impl<'a> Multipart<'a> {
             );
             body.extend_from_slice(b"\r\n\r\n");
 
-            body.extend_from_slice(part.body);
+            match part.body {
+                Cow::Owned(bytes) => body.extend_from_slice(&bytes[..]),
+                Cow::Borrowed(bytes) => body.extend_from_slice(bytes),
+            }
             body.extend_from_slice(b"\r\n");
         }
 

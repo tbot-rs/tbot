@@ -45,7 +45,7 @@ where
 
     fn into_future(self) -> Self::Future {
         let (boundary, body) = Multipart::new(2)
-            .str("user_id", &self.user_id.to_string())
+            .string("user_id", &self.user_id)
             .file("png_sticker", "sticker.png", self.png_sticker)
             .finish();
 

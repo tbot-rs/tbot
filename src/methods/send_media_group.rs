@@ -69,14 +69,6 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let chat_id = match self.chat_id {
-            ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
-        };
-
-        let is_disabled = self.disable_notification.map(|x| x.to_string());
-        let reply_to = self.reply_to_message_id.map(|id| id.to_string());
-
         let mut media = self.media;
 
         for (index, media) in media.iter_mut().enumerate() {
@@ -115,9 +107,9 @@ where
         }
 
         let mut multipart = Multipart::new(4 + media.len())
-            .str("chat_id", &chat_id)
-            .maybe_string("disabled_notification", &is_disabled)
-            .maybe_string("reply_to_message_id", &reply_to);
+            .chat_id("chat_id", self.chat_id)
+            .maybe_string("disabled_notification", self.disable_notification)
+            .maybe_string("reply_to_message_id", self.reply_to_message_id);
 
         for media in &media {
             match media {
@@ -145,8 +137,7 @@ where
             }
         }
 
-        let media = serde_json::to_string(&media).unwrap();
-        let (boundary, body) = multipart.str("media", &media).finish();
+        let (boundary, body) = multipart.json("media", &media).finish();
 
         Box::new(send_method(
             self.client,
