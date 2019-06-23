@@ -1,9 +1,11 @@
 //! Simple but stupid game. Note that it's implemented
 
-use std::sync::{Arc, Mutex};
-use tbot::{errors, prelude::*, types::chat};
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
+use tbot::{errors, prelude::*};
 
-const CHAT: chat::Id = chat::Id(0);
 const GAME: &str = "";
 const GOOD_PHRASE: &str = "tbot good";
 const BAD_PHRASE: &str = "tbot bad";
@@ -13,56 +15,61 @@ const BAD_MULTIPLIER: i32 = 100;
 const SCORE_NOT_MODIFIED: &str = "Bad Request: BOT_SCORE_NOT_MODIFIED";
 
 fn main() {
-    let bot = tbot::bot!("BOT_TOKEN");
+    let chats = Arc::new(Mutex::new(HashMap::new()));
+    let game_chats_ref = Arc::clone(&chats);
 
-    let message_id = Arc::new(Mutex::new(None));
-    let on_ok = Arc::clone(&message_id);
+    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
-    let game = bot
-        .send_game(CHAT, GAME)
-        .into_future()
-        .map(move |message| {
-            *on_ok.lock().unwrap() = Some(message.id);
-        })
-        .map_err(|err| {
-            dbg!(err);
-        });
+    bot.command("game", move |context| {
+        let chats = Arc::clone(&game_chats_ref);
+        let game = context
+            .send_game(GAME)
+            .into_future()
+            .map(move |message| {
+                chats.lock().unwrap().insert(message.chat.id, message.id);
+            })
+            .map_err(|err| {
+                dbg!(err);
+            });
 
-    tbot::run(game);
-
-    let message_id =
-        Arc::try_unwrap(message_id).unwrap().into_inner().unwrap().unwrap();
-
-    let mut bot = bot.event_loop();
+        tbot::spawn(game);
+    });
 
     bot.text(move |context| {
-        if let Some(user) = &context.from {
-            let text = context.text.value.to_lowercase();
-            let good_score = text.matches(GOOD_PHRASE).count() as i32;
-            let bad_score = text.matches(BAD_PHRASE).count() as i32;
-            let score =
-                GOOD_MULTIPLIER * good_score - BAD_MULTIPLIER * bad_score;
+        let message_id = {
+            let chats = chats.lock().unwrap();
 
-            let update = context
-                .set_message_game_score(
-                    message_id,
-                    user.id,
-                    score.max(1) as u32,
-                )
-                .force(true)
-                .into_future()
-                .map_err(|err| match err {
-                    errors::MethodCall::RequestError {
-                        ref description,
-                        ..
-                    } if description == SCORE_NOT_MODIFIED => (),
-                    err => {
-                        dbg!(err);
-                    }
-                });
+            match chats.get(&context.chat.id) {
+                Some(id) => *id,
+                None => return,
+            }
+        };
 
-            tbot::spawn(update);
-        }
+        let user = match &context.from {
+            Some(user) => user,
+            None => return,
+        };
+
+        let text = context.text.value.to_lowercase();
+        let good_score = text.matches(GOOD_PHRASE).count() as i32;
+        let bad_score = text.matches(BAD_PHRASE).count() as i32;
+        let score = GOOD_MULTIPLIER * good_score - BAD_MULTIPLIER * bad_score;
+
+        let update = context
+            .set_message_game_score(message_id, user.id, score.max(1) as u32)
+            .force(true)
+            .into_future()
+            .map_err(|err| match err {
+                errors::MethodCall::RequestError {
+                    ref description,
+                    ..
+                } if description == SCORE_NOT_MODIFIED => (),
+                err => {
+                    dbg!(err);
+                }
+            });
+
+        tbot::spawn(update);
     });
 
     bot.polling().start();
