@@ -12,8 +12,8 @@ fn main() {
         let reply = context
             .send_message(&context.text.value)
             .into_future()
-            .map_err(|error| {
-                dbg!(error);
+            .map_err(|err| {
+                dbg!(err);
             });
 
         tbot::spawn(reply);
