@@ -108,21 +108,22 @@ impl<'a> Multipart<'a> {
         let mut body = Vec::new();
 
         for part in self.parts {
-            if body.is_empty() {
-                body.extend_from_slice(b"--");
-                body.extend_from_slice(&boundary);
-            }
+            body.extend_from_slice(b"--");
+            body.extend_from_slice(&boundary);
             body.extend_from_slice(b"\r\n");
+
             body.extend_from_slice(b"Content-Disposition: form-data; ");
             body.extend_from_slice(
                 part.header.content_disposition().as_bytes(),
             );
             body.extend_from_slice(b"\r\n\r\n");
+
             body.extend_from_slice(part.body);
-            body.extend_from_slice(b"\r\n--");
-            body.extend_from_slice(&boundary);
+            body.extend_from_slice(b"\r\n");
         }
 
+        body.extend_from_slice(b"--");
+        body.extend_from_slice(&boundary);
         body.extend_from_slice(b"--\r\n");
 
         (String::from_utf8(boundary).unwrap(), body)
