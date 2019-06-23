@@ -1,11 +1,6 @@
-use rand::{distributions::Alphanumeric, rngs::SmallRng, FromEntropy, Rng};
-
-fn generate_boundary() -> Vec<u8> {
-    let mut rng = SmallRng::from_entropy();
-    let ascii = rng.sample_iter(&Alphanumeric).map(|x| x as u8);
-
-    ascii.take(40).collect()
-}
+use crate::types::parameters::ChatId;
+use serde::Serialize;
+use std::{borrow::Cow, collections::HashSet};
 
 enum Header<'a> {
     Field(&'static str),
@@ -29,7 +24,7 @@ impl<'a> Header<'a> {
 
 struct Part<'a> {
     header: Header<'a>,
-    body: &'a [u8],
+    body: Cow<'a, [u8]>,
 }
 
 pub struct Multipart<'a> {
@@ -46,26 +41,60 @@ impl<'a> Multipart<'a> {
     pub fn str(mut self, name: &'static str, value: &'a str) -> Self {
         self.parts.push(Part {
             header: Header::Field(name),
-            body: value.as_bytes(),
+            body: Cow::Borrowed(value.as_bytes()),
         });
         self
     }
 
-    pub fn maybe_string(
-        self,
-        name: &'static str,
-        value: &'a Option<String>,
-    ) -> Self {
-        match value {
-            Some(value) => self.str(name, value),
-            None => self,
-        }
+    fn part(mut self, name: &'static str, body: Cow<'a, [u8]>) -> Self {
+        self.parts.push(Part {
+            header: Header::Field(name),
+            body,
+        });
+        self
+    }
+
+    pub fn string(self, name: &'static str, value: &impl ToString) -> Self {
+        self.part(name, Cow::Owned(value.to_string().into_bytes()))
+    }
+
+    pub fn json(self, name: &'static str, value: impl Serialize) -> Self {
+        self.part(name, Cow::Owned(serde_json::to_vec(&value).unwrap()))
     }
 
     pub fn maybe_str(self, name: &'static str, value: Option<&'a str>) -> Self {
         match value {
             Some(value) => self.str(name, value),
             None => self,
+        }
+    }
+
+    pub fn maybe_string(
+        self,
+        name: &'static str,
+        value: Option<impl ToString>,
+    ) -> Self {
+        match value {
+            Some(value) => self.string(name, &value),
+            None => self,
+        }
+    }
+
+    pub fn maybe_json(
+        self,
+        name: &'static str,
+        value: Option<impl Serialize>,
+    ) -> Self {
+        match value {
+            Some(value) => self.json(name, &value),
+            None => self,
+        }
+    }
+
+    pub fn chat_id(self, name: &'static str, id: ChatId<'a>) -> Self {
+        match id {
+            ChatId::Id(id) => self.string(name, &id),
+            ChatId::Username(username) => self.str(name, username),
         }
     }
 
@@ -80,30 +109,64 @@ impl<'a> Multipart<'a> {
                 name,
                 filename,
             },
-            body,
+            body: Cow::Borrowed(body),
         });
         self
     }
 
     pub fn finish(self) -> (String, Vec<u8>) {
-        let boundary = generate_boundary();
-        let mut body = Vec::new();
-        for part in self.parts {
-            if body.is_empty() {
-                body.extend_from_slice(b"--");
-                body.extend_from_slice(&boundary);
+        let mut line_lengths = HashSet::new();
+
+        for part in &self.parts {
+            let mut current_line_length = 0;
+
+            for line in part.body.split(|byte| *byte == b'\n') {
+                current_line_length += line.len();
+
+                if line.ends_with(b"\r") {
+                    line_lengths.insert(current_line_length - 1);
+                    current_line_length = 0;
+                } else {
+                    current_line_length += 1; // to count the \n
+                }
             }
+
+            line_lengths.insert(current_line_length - 1);
+        }
+
+        let boundary_length = (1..=usize::max_value())
+            .find(|n| {
+                !line_lengths.contains(&(*n + 2)) // --boundary
+                && !line_lengths.contains(&(*n + 4)) // --boundary--
+            })
+            .unwrap();
+
+        let boundary = vec![b'-'; boundary_length];
+
+        let mut body = Vec::new();
+
+        for part in self.parts {
+            body.extend_from_slice(b"--");
+            body.extend_from_slice(&boundary);
             body.extend_from_slice(b"\r\n");
+
             body.extend_from_slice(b"Content-Disposition: form-data; ");
             body.extend_from_slice(
                 part.header.content_disposition().as_bytes(),
             );
             body.extend_from_slice(b"\r\n\r\n");
-            body.extend_from_slice(part.body);
-            body.extend_from_slice(b"\r\n--");
-            body.extend_from_slice(&boundary);
+
+            match part.body {
+                Cow::Owned(bytes) => body.extend_from_slice(&bytes[..]),
+                Cow::Borrowed(bytes) => body.extend_from_slice(bytes),
+            }
+            body.extend_from_slice(b"\r\n");
         }
+
+        body.extend_from_slice(b"--");
+        body.extend_from_slice(&boundary);
         body.extend_from_slice(b"--\r\n");
+
         (String::from_utf8(boundary).unwrap(), body)
     }
 }

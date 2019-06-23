@@ -52,12 +52,9 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let reply_markup =
-            self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
-
         let mut multipart = Multipart::new(4)
             .str("inline_message_id", self.inline_message_id.0)
-            .maybe_string("reply_markup", &reply_markup);
+            .maybe_json("reply_markup", self.reply_markup);
 
         match &self.media {
             EditableMedia::Animation(Animation {
@@ -91,8 +88,7 @@ where
             }
         }
 
-        let media = serde_json::to_string(&self.media).unwrap();
-        let (boundary, body) = multipart.str("media", &media).finish();
+        let (boundary, body) = multipart.json("media", self.media).finish();
 
         Box::new(
             send_method::<bool, C>(

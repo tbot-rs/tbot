@@ -48,15 +48,11 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let max_connections = self.max_connections.map(|x| x.to_string());
-        let allowed_updates =
-            self.allowed_updates.and_then(|x| serde_json::to_string(&x).ok());
-
         let (boundary, body) = Multipart::new(4)
             .str("url", self.url)
             .maybe_str("certificate", self.certificate)
-            .maybe_string("max_connections", &max_connections)
-            .maybe_string("allowed_updates", &allowed_updates)
+            .maybe_string("max_connections", self.max_connections)
+            .maybe_json("allowed_updates", self.allowed_updates)
             .finish();
 
         Box::new(

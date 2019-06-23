@@ -75,33 +75,17 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let chat_id = match self.chat_id {
-            ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
-        };
-
-        let duration = self.video.duration.map(|x| x.to_string());
-        let width = self.video.width.map(|x| x.to_string());
-        let height = self.video.height.map(|x| x.to_string());
-        let parse_mode = self.video.parse_mode.map(|x| x.to_string());
-        let is_disabled = self.disable_notification.map(|x| x.to_string());
-        let is_streamed = self.video.supports_streaming.map(|x| x.to_string());
-        let reply_to = self.reply_to_message_id.map(|id| id.to_string());
-        let reply_markup = self
-            .reply_markup
-            .and_then(|markup| serde_json::to_string(&markup).ok());
-
         let mut multipart = Multipart::new(12)
-            .str("chat_id", &chat_id)
-            .maybe_string("duration", &duration)
-            .maybe_string("width", &width)
-            .maybe_string("height", &height)
+            .chat_id("chat_id", self.chat_id)
+            .maybe_string("duration", self.video.duration)
+            .maybe_string("width", self.video.width)
+            .maybe_string("height", self.video.height)
             .maybe_str("caption", self.video.caption)
-            .maybe_string("parse_mode", &parse_mode)
-            .maybe_string("disable_notification", &is_disabled)
-            .maybe_string("supports_streaming", &is_streamed)
-            .maybe_string("reply_to_message_id", &reply_to)
-            .maybe_string("reply_markup", &reply_markup);
+            .maybe_json("parse_mode", self.video.parse_mode)
+            .maybe_string("disable_notification", self.disable_notification)
+            .maybe_string("supports_streaming", self.video.supports_streaming)
+            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_json("reply_markup", self.reply_markup);
 
         match self.video.media {
             InputFile::File {

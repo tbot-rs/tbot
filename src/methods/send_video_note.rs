@@ -75,25 +75,13 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let chat_id = match self.chat_id {
-            ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
-        };
-
-        let duration = self.video_note.duration.map(|x| x.to_string());
-        let length = self.video_note.length.map(|x| x.to_string());
-        let reply_to = self.reply_to_message_id.map(|id| id.to_string());
-        let is_disabled = self.disable_notification.map(|x| x.to_string());
-        let reply_markup =
-            self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
-
         let mut multipart = Multipart::new(8)
-            .str("chat_id", &chat_id)
-            .maybe_string("duration", &duration)
-            .maybe_string("length", &length)
-            .maybe_string("disable_notification", &is_disabled)
-            .maybe_string("reply_to_message_id", &reply_to)
-            .maybe_string("reply_markup", &reply_markup);
+            .chat_id("chat_id", self.chat_id)
+            .maybe_string("duration", self.video_note.duration)
+            .maybe_string("length", self.video_note.length)
+            .maybe_string("disable_notification", self.disable_notification)
+            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_json("reply_markup", self.reply_markup);
 
         match self.video_note.media {
             InputFile::File {

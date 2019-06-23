@@ -49,9 +49,9 @@ impl<'a, C> CreateNewStickerSet<'a, C> {
         }
     }
 
-    /// Configures `contains_mask`.
-    pub fn contains_mask(mut self, contains_mask: bool) -> Self {
-        self.contains_masks = Some(contains_mask);
+    /// Configures `contains_masks`.
+    pub fn contains_masks(mut self, contains_masks: bool) -> Self {
+        self.contains_masks = Some(contains_masks);
         self
     }
 
@@ -73,18 +73,13 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let user_id = self.user_id.to_string();
-        let contains_mask = self.contains_masks.map(|x| x.to_string());
-        let mask_position =
-            self.mask_position.and_then(|x| serde_json::to_string(&x).ok());
-
         let mut multipart = Multipart::new(7)
-            .str("user_id", &user_id)
+            .string("user_id", &self.user_id)
             .str("name", self.name)
             .str("title", self.title)
             .str("emojis", self.emojis)
-            .maybe_string("contains_masks", &contains_mask)
-            .maybe_string("mask_position", &mask_position);
+            .maybe_string("contains_masks", self.contains_masks)
+            .maybe_json("mask_position", self.mask_position);
 
         match self.png_sticker.media {
             InputFile::File {

@@ -62,15 +62,11 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let user_id = self.user_id.to_string();
-        let mask_position =
-            self.mask_position.and_then(|x| serde_json::to_string(&x).ok());
-
         let mut multipart = Multipart::new(5)
-            .str("user_id", &user_id)
+            .string("user_id", &self.user_id)
             .str("name", self.name)
             .str("emojis", self.emojis)
-            .maybe_string("mask_position", &mask_position);
+            .maybe_json("mask_position", self.mask_position);
 
         match self.png_sticker.media {
             InputFile::File {

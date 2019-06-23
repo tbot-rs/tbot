@@ -75,25 +75,13 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let chat_id = match self.chat_id {
-            ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
-        };
-
-        let parse_mode = self.photo.parse_mode.map(|x| x.to_string());
-        let is_disabled = self.disable_notification.map(|x| x.to_string());
-        let reply_to = self.reply_to_message_id.map(|id| id.to_string());
-        let reply_markup = self
-            .reply_markup
-            .and_then(|markup| serde_json::to_string(&markup).ok());
-
         let mut multipart = Multipart::new(7)
-            .str("chat_id", &chat_id)
+            .chat_id("chat_id", self.chat_id)
             .maybe_str("caption", self.photo.caption)
-            .maybe_string("parse_mode", &parse_mode)
-            .maybe_string("disabled_notification", &is_disabled)
-            .maybe_string("reply_to_message_id", &reply_to)
-            .maybe_string("reply_markup", &reply_markup);
+            .maybe_json("parse_mode", self.photo.parse_mode)
+            .maybe_string("disabled_notification", self.disable_notification)
+            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_json("reply_markup", self.reply_markup);
 
         match self.photo.media {
             InputFile::File {

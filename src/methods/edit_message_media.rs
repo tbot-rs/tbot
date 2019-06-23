@@ -60,18 +60,10 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let chat_id = match self.chat_id {
-            ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
-        };
-        let message_id = self.message_id.to_string();
-        let reply_markup =
-            self.reply_markup.and_then(|x| serde_json::to_string(&x).ok());
-
         let mut multipart = Multipart::new(5)
-            .str("chat_id", &chat_id)
-            .str("message_id", &message_id)
-            .maybe_string("reply_markup", &reply_markup);
+            .chat_id("chat_id", self.chat_id)
+            .string("message_id", &self.message_id)
+            .maybe_json("reply_markup", self.reply_markup);
 
         match &self.media {
             EditableMedia::Animation(Animation {
@@ -105,8 +97,7 @@ where
             }
         }
 
-        let media = serde_json::to_string(&self.media).unwrap();
-        let (boundary, body) = multipart.str("media", &media).finish();
+        let (boundary, body) = multipart.json("media", self.media).finish();
 
         Box::new(send_method(
             self.client,
