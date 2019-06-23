@@ -35,6 +35,15 @@ pub enum MethodCall {
     },
 }
 
+/// Represents possible errors that a webhook server may return.
+#[derive(Debug)]
+pub enum Webhook {
+    /// An error during setting the webhook.
+    SetWebhook(MethodCall),
+    /// An error while running the server.
+    Server(hyper::Error),
+}
+
 impl Download {
     /// Checks if `self` is `NoPath`.
     pub fn is_no_path(&self) -> bool {
@@ -84,6 +93,24 @@ impl MethodCall {
             MethodCall::RequestError {
                 ..
             } => true,
+            _ => false,
+        }
+    }
+}
+
+impl Webhook {
+    /// Checks if `self` is `SetWebhook`.
+    pub fn is_set_webhook(&self) -> bool {
+        match self {
+            Webhook::SetWebhook(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Server`.
+    pub fn is_server(&self) -> bool {
+        match self {
+            Webhook::Server(..) => true,
             _ => false,
         }
     }
