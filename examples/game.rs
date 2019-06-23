@@ -24,8 +24,8 @@ fn main() {
         .map(move |message| {
             *on_ok.lock().unwrap() = Some(message.id);
         })
-        .map_err(|error| {
-            dbg!(error);
+        .map_err(|err| {
+            dbg!(err);
         });
 
     tbot::run(game);

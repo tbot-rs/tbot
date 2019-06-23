@@ -6,8 +6,8 @@ fn main() {
     let get_me = bot
         .get_me()
         .into_future()
-        .map_err(|error| {
-            dbg!(error);
+        .map_err(|err| {
+            dbg!(err);
         })
         .map(|me| {
             dbg!(me);

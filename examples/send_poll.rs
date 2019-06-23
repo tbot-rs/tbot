@@ -14,19 +14,19 @@ fn main() {
     let poll = bot
         .send_poll(CHAT, QUESTION, OPTIONS)
         .into_future()
-        .map_err(|error| {
-            dbg!(error);
+        .map_err(|err| {
+            dbg!(err);
         })
         .and_then(|message| {
             Delay::new(Instant::now() + Duration::from_secs(CLOSE_AFTER))
                 .map(|_| message)
-                .map_err(|error| {
-                    dbg!(error);
+                .map_err(|err| {
+                    dbg!(err);
                 })
         })
         .and_then(move |message| {
-            bot.stop_poll(CHAT, message.id).into_future().map_err(|error| {
-                dbg!(error);
+            bot.stop_poll(CHAT, message.id).into_future().map_err(|err| {
+                dbg!(err);
             })
         });
 

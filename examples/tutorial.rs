@@ -20,8 +20,8 @@ fn main() {
             .send_message_in_reply(&message)
             .parse_mode(Markdown)
             .into_future()
-            .map_err(|error| {
-                dbg!(error);
+            .map_err(|err| {
+                dbg!(err);
             });
 
         tbot::spawn(reply);

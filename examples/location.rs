@@ -22,15 +22,15 @@ fn main() {
         .send_location(CHAT, *places.next().unwrap())
         .live_period(UPDATE_PERIOD)
         .into_future()
-        .map_err(|error| {
-            dbg!(error);
+        .map_err(|err| {
+            dbg!(err);
         })
         .and_then(|message| {
             Interval::new(Instant::now(), Duration::from_secs(INTERVAL))
                 .skip(1)
                 .zip(futures::stream::iter_ok(places))
-                .map_err(|error| {
-                    dbg!(error);
+                .map_err(|err| {
+                    dbg!(err);
                 })
                 .for_each(move |(_, place)| {
                     bot.edit_message_location(
@@ -39,8 +39,8 @@ fn main() {
                         *place,
                     )
                     .into_future()
-                    .map_err(|error| {
-                        dbg!(error);
+                    .map_err(|err| {
+                        dbg!(err);
                     })
                     .map(|_| ())
                 })

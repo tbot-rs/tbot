@@ -34,8 +34,8 @@ fn main() {
         .into_future();
 
     let joined =
-        photo.join5(animation, document, video, album).map_err(|error| {
-            dbg!(error);
+        photo.join5(animation, document, video, album).map_err(|err| {
+            dbg!(err);
         });
 
     tbot::run(joined);

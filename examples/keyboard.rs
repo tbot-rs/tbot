@@ -30,8 +30,8 @@ fn main() {
             ][..],
         )
         .into_future()
-        .map_err(|error| {
-            dbg!(error);
+        .map_err(|err| {
+            dbg!(err);
         });
 
     tbot::run(message);

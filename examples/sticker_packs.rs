@@ -25,8 +25,8 @@ fn main() {
             first_sticker.1,
         )
         .into_future()
-        .map_err(|error| {
-            dbg!(error);
+        .map_err(|err| {
+            dbg!(err);
         })
         .and_then(|_| {
             iter_ok(stickers).for_each(move |sticker| {
@@ -37,8 +37,8 @@ fn main() {
                     sticker.1,
                 )
                 .into_future()
-                .map_err(|error| {
-                    dbg!(error);
+                .map_err(|err| {
+                    dbg!(err);
                 })
             })
         })
