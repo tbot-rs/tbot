@@ -98,12 +98,11 @@ impl<'a> Multipart<'a> {
             line_lengths.insert(current_line_length - 1);
         }
 
-        let boundary_length = (1..)
-            .filter(|n| {
+        let boundary_length = (1..=usize::max_value())
+            .find(|n| {
                 !line_lengths.contains(&(*n + 2)) // --boundary
-            && !line_lengths.contains(&(*n + 4)) // --boundary--
+                && !line_lengths.contains(&(*n + 4)) // --boundary--
             })
-            .next()
             .unwrap();
 
         let boundary = vec![b'-'; boundary_length];
