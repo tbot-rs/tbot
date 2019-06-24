@@ -8,12 +8,17 @@ use crate::{
     types::parameters::Updates,
 };
 use futures::Stream;
-use std::{sync::Arc, time::Duration};
+use std::{
+    sync::{Arc, Mutex},
+    time::Duration,
+};
 use tokio::timer;
 
 mod schedule;
 
 use schedule::Schedule;
+
+type ErrorHandler = dyn FnMut(errors::MethodCall) + Send + Sync;
 
 /// Configures and starts polling.
 ///
@@ -27,16 +32,20 @@ pub struct Polling<C> {
     timeout: Option<u64>,
     allowed_updates: Option<&'static [Updates]>,
     poll_interval: Duration,
+    error_handler: Mutex<Box<ErrorHandler>>,
 }
 
 impl<C> Polling<C> {
-    pub(crate) const fn new(event_loop: EventLoop<C>) -> Self {
+    pub(crate) fn new(event_loop: EventLoop<C>) -> Self {
         Self {
             event_loop,
             limit: None,
             timeout: None,
             allowed_updates: None,
             poll_interval: Duration::from_millis(25),
+            error_handler: Mutex::new(Box::new(|err| {
+                panic!("\n[tbot] Polling error: {:#?}", err);
+            })),
         }
     }
 
@@ -58,6 +67,15 @@ impl<C> Polling<C> {
         allowed_updates: &'static [Updates],
     ) -> Self {
         self.allowed_updates = Some(allowed_updates);
+        self
+    }
+
+    /// Adds a handler for errors ocurred while polling.
+    pub fn error_handler(
+        mut self,
+        handler: impl FnMut(errors::MethodCall) + Send + Sync + 'static,
+    ) -> Self {
+        self.error_handler = Mutex::new(Box::new(handler));
         self
     }
 
@@ -128,17 +146,19 @@ where
             limit,
             timeout,
             allowed_updates,
+            error_handler,
         } = self;
 
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
+        let error_handler = Arc::new(error_handler);
 
         let stream = Schedule::new(poll_interval).into_stream();
 
         let stream = stream.for_each(move |(last_offset, schedule)| {
             let bot = Arc::clone(&bot);
-            let on_ok = Arc::clone(&event_loop);
-            let on_error = Arc::clone(&event_loop);
+            let event_loop = Arc::clone(&event_loop);
+            let error_handler = Arc::clone(&error_handler);
             let on_error_schedule = Arc::clone(&schedule);
 
             let handler = GetUpdates::new(
@@ -161,11 +181,12 @@ where
                 std::mem::drop(schedule);
 
                 for update in updates {
-                    on_ok.handle_update(Arc::clone(&bot), update);
+                    event_loop.handle_update(Arc::clone(&bot), update);
                 }
             })
             .map_err(move |error| {
-                on_error.run_polling_error_handlers(&error);
+                (&mut *(*error_handler).lock().unwrap())(error);
+
                 on_error_schedule.lock().unwrap().schedule_next_tick();
             });
 
