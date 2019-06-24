@@ -12,13 +12,17 @@ use std::{
     sync::{Arc, Mutex},
     time::Duration,
 };
-use tokio::timer;
+use tokio::{
+    timer::{self, timeout},
+    util::FutureExt,
+};
 
 mod schedule;
 
 use schedule::Schedule;
 
-type ErrorHandler = dyn FnMut(errors::MethodCall) + Send + Sync;
+type Error = timeout::Error<errors::MethodCall>;
+type ErrorHandler = dyn FnMut(Error) + Send + Sync;
 
 /// Configures and starts polling.
 ///
@@ -33,6 +37,7 @@ pub struct Polling<C> {
     allowed_updates: Option<&'static [Updates]>,
     poll_interval: Duration,
     error_handler: Mutex<Box<ErrorHandler>>,
+    request_timeout: Option<Duration>,
 }
 
 impl<C> Polling<C> {
@@ -46,6 +51,7 @@ impl<C> Polling<C> {
             error_handler: Mutex::new(Box::new(|err| {
                 panic!("\n[tbot] Polling error: {:#?}", err);
             })),
+            request_timeout: None,
         }
     }
 
@@ -73,7 +79,7 @@ impl<C> Polling<C> {
     /// Adds a handler for errors ocurred while polling.
     pub fn error_handler(
         mut self,
-        handler: impl FnMut(errors::MethodCall) + Send + Sync + 'static,
+        handler: impl FnMut(Error) + Send + Sync + 'static,
     ) -> Self {
         self.error_handler = Mutex::new(Box::new(handler));
         self
@@ -82,6 +88,17 @@ impl<C> Polling<C> {
     /// Configures the minimal interval between making requests.
     pub const fn poll_interval(mut self, poll_interval: Duration) -> Self {
         self.poll_interval = poll_interval;
+        self
+    }
+
+    /// Configures for how long `tbot` should wait for `getUpdates`. If this
+    /// timeout is exceeded, an [error handler] is triggered. If you don't
+    /// congfigure this value, it is set to
+    /// `Duration::from_secs(timeout.unwrap_or(0) + 60)`.
+    ///
+    /// [error handler]: #method.error_handler
+    pub const fn request_timeout(mut self, timeout: Duration) -> Self {
+        self.request_timeout = Some(timeout);
         self
     }
 }
@@ -118,14 +135,17 @@ where
     }
 
     /// Deleted the webhook of this bot.
-    pub fn delete_webhook(
-        &self,
-    ) -> impl Future<Item = (), Error = errors::MethodCall> {
+    pub fn delete_webhook(&self) -> impl Future<Item = (), Error = Error> {
+        let request_timeout = self.request_timeout.unwrap_or_else(|| {
+            Duration::from_secs(self.timeout.unwrap_or(0) + 60)
+        });
+
         DeleteWebhook::new(
             &self.event_loop.bot.client,
             self.event_loop.bot.token.clone(),
         )
         .into_future()
+        .timeout(request_timeout)
     }
 }
 
@@ -147,7 +167,11 @@ where
             timeout,
             allowed_updates,
             error_handler,
+            request_timeout,
         } = self;
+
+        let request_timeout = request_timeout
+            .unwrap_or_else(|| Duration::from_secs(timeout.unwrap_or(0) + 60));
 
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
@@ -184,6 +208,7 @@ where
                     event_loop.handle_update(Arc::clone(&bot), update);
                 }
             })
+            .timeout(request_timeout)
             .map_err(move |error| {
                 (&mut *(*error_handler).lock().unwrap())(error);
 
