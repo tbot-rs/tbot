@@ -1,4 +1,4 @@
-use futures::{try_ready, Async, Poll, Stream};
+use futures::{try_ready, Async, Poll};
 use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
@@ -14,7 +14,7 @@ pub struct Schedule {
     queue: DelayQueue<()>,
 }
 
-pub struct ScheduleStream {
+pub struct Stream {
     schedule: Arc<Mutex<Schedule>>,
 }
 
@@ -46,14 +46,14 @@ impl Schedule {
         self.queue.insert_at((), next_instant);
     }
 
-    pub fn into_stream(self) -> ScheduleStream {
-        ScheduleStream {
+    pub fn into_stream(self) -> Stream {
+        Stream {
             schedule: Arc::new(Mutex::new(self)),
         }
     }
 }
 
-impl Stream for ScheduleStream {
+impl futures::Stream for Stream {
     type Item = Option<(Option<u32>, Arc<Mutex<Schedule>>)>;
     type Error = timer::Error;
 

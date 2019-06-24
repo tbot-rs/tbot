@@ -13,7 +13,7 @@ use tokio::timer;
 
 mod schedule;
 
-use schedule::*;
+use schedule::Schedule;
 
 /// Configures and starts polling.
 ///
