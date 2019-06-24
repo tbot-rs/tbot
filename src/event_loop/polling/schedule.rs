@@ -1,4 +1,7 @@
-use futures::{try_ready, Async, Poll, Future, task::{current, Task}};
+use futures::{
+    task::{current, Task},
+    try_ready, Async, Future, Poll,
+};
 use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
