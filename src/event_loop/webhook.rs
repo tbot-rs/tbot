@@ -3,7 +3,6 @@ use crate::{
     errors, internal::BoxFuture, methods, prelude::*,
     types::parameters::Updates, Bot,
 };
-use tokio::util::FutureExt;
 use futures::{future::Either, Stream};
 use hyper::{
     client::connect::Connect, service::service_fn, Body, Method, Request,
@@ -14,6 +13,7 @@ use std::{
     sync::Arc,
     time::Duration,
 };
+use tokio::util::FutureExt;
 
 /// Configures webhook and starts a server.
 ///

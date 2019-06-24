@@ -9,6 +9,8 @@ use crate::{
 };
 use futures::Stream;
 use std::{
+    convert::TryInto,
+    num::NonZeroUsize,
     sync::{Arc, Mutex},
     time::Duration,
 };
@@ -38,6 +40,7 @@ pub struct Polling<C> {
     poll_interval: Duration,
     error_handler: Mutex<Box<ErrorHandler>>,
     request_timeout: Option<Duration>,
+    offset: Option<isize>,
 }
 
 impl<C> Polling<C> {
@@ -52,6 +55,7 @@ impl<C> Polling<C> {
                 panic!("\n[tbot] Polling error: {:#?}", err);
             })),
             request_timeout: None,
+            offset: None,
         }
     }
 
@@ -100,6 +104,18 @@ impl<C> Polling<C> {
     /// [error handler]: #method.error_handler
     pub const fn request_timeout(mut self, timeout: Duration) -> Self {
         self.request_timeout = Some(timeout);
+        self
+    }
+
+    /// Configures how many updates `tbot` will process on start. If configured,
+    /// `tbot` sets `offset`'s value to `-n` when making the first request.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `n` can't be converted to `isize` safely.
+    pub fn last_n_updates(mut self, n: NonZeroUsize) -> Self {
+        let n: isize = n.get().try_into().unwrap();
+        self.offset = Some(-n);
         self
     }
 }
@@ -169,6 +185,7 @@ where
             allowed_updates,
             error_handler,
             request_timeout,
+            offset,
         } = self;
 
         let request_timeout = request_timeout
@@ -178,7 +195,7 @@ where
         let event_loop = Arc::new(event_loop);
         let error_handler = Arc::new(error_handler);
 
-        let stream = Schedule::new(poll_interval).into_stream();
+        let stream = Schedule::new(offset, poll_interval).into_stream();
 
         let stream = stream.for_each(move |(last_offset, schedule)| {
             let bot = Arc::clone(&bot);

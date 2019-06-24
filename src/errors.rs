@@ -1,8 +1,8 @@
 //! Types representing errors.
 
 use crate::types::chat;
-use tokio::timer::timeout;
 use hyper::StatusCode;
+use tokio::timer::timeout;
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]

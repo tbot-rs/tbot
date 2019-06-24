@@ -10,7 +10,7 @@ use tokio::timer::{self, Delay};
 
 #[derive(Debug)]
 pub struct Schedule {
-    pub last_offset: Option<u32>,
+    pub last_offset: Option<isize>,
 
     last_run: Instant,
     duration: Duration,
@@ -24,10 +24,10 @@ pub struct Stream {
 }
 
 impl Schedule {
-    pub fn new(duration: Duration) -> Self {
+    pub fn new(last_offset: Option<isize>, duration: Duration) -> Self {
         let now = Instant::now();
         Self {
-            last_offset: None,
+            last_offset,
             last_run: now,
             duration,
             delay: Delay::new(now),
@@ -56,7 +56,7 @@ impl Schedule {
 }
 
 impl futures::Stream for Stream {
-    type Item = (Option<u32>, Arc<Mutex<Schedule>>);
+    type Item = (Option<isize>, Arc<Mutex<Schedule>>);
     type Error = timer::Error;
 
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {

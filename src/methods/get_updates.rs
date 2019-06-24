@@ -13,7 +13,7 @@ pub(crate) struct GetUpdates<'a, C> {
     #[serde(skip)]
     token: Token,
     #[serde(skip_serializing_if = "Option::is_none")]
-    offset: Option<u32>,
+    offset: Option<isize>,
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26,7 +26,7 @@ impl<'a, C> GetUpdates<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        offset: Option<u32>,
+        offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
         allowed_updates: Option<&'a [Updates]>,
