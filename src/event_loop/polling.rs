@@ -26,7 +26,7 @@ pub struct Polling<C> {
     limit: Option<u8>,
     timeout: Option<u64>,
     allowed_updates: Option<&'static [Updates]>,
-    poll_interval: u64,
+    poll_interval: Duration,
 }
 
 impl<C> Polling<C> {
@@ -36,7 +36,7 @@ impl<C> Polling<C> {
             limit: None,
             timeout: None,
             allowed_updates: None,
-            poll_interval: 25,
+            poll_interval: Duration::from_millis(25),
         }
     }
 
@@ -62,7 +62,7 @@ impl<C> Polling<C> {
     }
 
     /// Configures the minimal interval between making requests.
-    pub const fn poll_interval(mut self, poll_interval: u64) -> Self {
+    pub const fn poll_interval(mut self, poll_interval: Duration) -> Self {
         self.poll_interval = poll_interval;
         self
     }
@@ -129,7 +129,6 @@ where
             timeout,
             allowed_updates,
         } = self;
-        let poll_interval = Duration::from_millis(poll_interval);
 
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
