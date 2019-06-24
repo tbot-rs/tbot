@@ -135,12 +135,7 @@ where
 
         let stream = Schedule::new(poll_interval).into_stream();
 
-        let stream = stream.map(move |ready_to_fetch| {
-            let (last_offset, schedule) = match ready_to_fetch {
-                Some(x) => x,
-                None => return,
-            };
-
+        let stream = stream.map(move |(last_offset, schedule)| {
             let bot = Arc::clone(&bot);
             let on_ok = Arc::clone(&event_loop);
             let on_error = Arc::clone(&event_loop);

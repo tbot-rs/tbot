@@ -1,4 +1,4 @@
-use futures::{try_ready, Async, Poll};
+use futures::{try_ready, Async, Poll, task::{current, Task}};
 use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
@@ -12,6 +12,7 @@ pub struct Schedule {
     last_run: Instant,
     duration: Duration,
     queue: DelayQueue<()>,
+    task: Option<Task>,
 }
 
 pub struct Stream {
@@ -30,6 +31,7 @@ impl Schedule {
             last_run: now,
             duration,
             queue,
+            task: None,
         }
     }
 
@@ -44,6 +46,10 @@ impl Schedule {
         };
 
         self.queue.insert_at((), next_instant);
+
+        if let Some(task) = self.task.take() {
+            task.notify();
+        }
     }
 
     pub fn into_stream(self) -> Stream {
@@ -54,16 +60,24 @@ impl Schedule {
 }
 
 impl futures::Stream for Stream {
-    type Item = Option<(Option<u32>, Arc<Mutex<Schedule>>)>;
+    type Item = (Option<u32>, Arc<Mutex<Schedule>>);
     type Error = timer::Error;
 
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         let mut schedule = self.schedule.lock().unwrap();
         let last_offset = schedule.last_offset;
 
-        let item = try_ready!(schedule.queue.poll())
-            .map(|_| (last_offset, Arc::clone(&self.schedule)));
+        let is_ready = match try_ready!(schedule.queue.poll()) {
+            Some(..) => {
+                let item = (last_offset, Arc::clone(&self.schedule));
+                Async::Ready(Some(item))
+            },
+            None => {
+                schedule.task = Some(current());
+                Async::NotReady
+            },
+        };
 
-        Ok(Async::Ready(Some(item)))
+        Ok(is_ready)
     }
 }
