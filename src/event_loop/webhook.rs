@@ -3,6 +3,7 @@ use crate::{
     errors, internal::BoxFuture, methods, prelude::*,
     types::parameters::Updates, Bot,
 };
+use tokio::util::FutureExt;
 use futures::{future::Either, Stream};
 use hyper::{
     client::connect::Connect, service::service_fn, Body, Method, Request,
@@ -11,6 +12,7 @@ use hyper::{
 use std::{
     net::{IpAddr, Ipv4Addr, SocketAddr},
     sync::Arc,
+    time::Duration,
 };
 
 /// Configures webhook and starts a server.
@@ -23,6 +25,7 @@ pub struct Webhook<'a, C> {
     event_loop: EventLoop<C>,
     ip: IpAddr,
     port: u16,
+    request_timeout: Duration,
 
     url: &'a str,
     certificate: Option<&'a str>,
@@ -40,6 +43,8 @@ impl<'a, C> Webhook<'a, C> {
             event_loop,
             ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
             port,
+            request_timeout: Duration::from_secs(60),
+
             url,
             certificate: None,
             max_connections: None,
@@ -68,6 +73,13 @@ impl<'a, C> Webhook<'a, C> {
     /// Configures `allowed_updates`.
     pub fn allowed_updates(mut self, updates: &'a [Updates]) -> Self {
         self.allowed_updates = Some(updates);
+        self
+    }
+
+    /// Configures for how long `tbot` should wait for `setWebhook`. If you
+    /// don't configure this value, it is set to `60s`.
+    pub const fn request_timeout(mut self, timeout: Duration) -> Self {
+        self.request_timeout = timeout;
         self
     }
 }
@@ -111,6 +123,7 @@ where
             self.allowed_updates,
         )
         .into_future()
+        .timeout(self.request_timeout)
         .map_err(errors::Webhook::SetWebhook);
 
         let Self {

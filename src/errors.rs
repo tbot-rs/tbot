@@ -1,6 +1,7 @@
 //! Types representing errors.
 
 use crate::types::chat;
+use tokio::timer::timeout;
 use hyper::StatusCode;
 
 /// Represents possible errors whic may occur while downloading a file.
@@ -39,7 +40,7 @@ pub enum MethodCall {
 #[derive(Debug)]
 pub enum Webhook {
     /// An error during setting the webhook.
-    SetWebhook(MethodCall),
+    SetWebhook(timeout::Error<MethodCall>),
     /// An error while running the server.
     Server(hyper::Error),
 }
