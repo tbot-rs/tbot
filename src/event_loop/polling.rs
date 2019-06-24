@@ -145,6 +145,7 @@ where
             let bot = Arc::clone(&bot);
             let on_ok = Arc::clone(&event_loop);
             let on_error = Arc::clone(&event_loop);
+            let on_error_schedule = Arc::clone(&schedule);
 
             let handler = GetUpdates::new(
                 &event_loop.bot.client,
@@ -169,7 +170,10 @@ where
                     on_ok.handle_update(Arc::clone(&bot), update);
                 }
             })
-            .map_err(move |error| on_error.run_polling_error_handlers(&error));
+            .map_err(move |error| {
+                on_error.run_polling_error_handlers(&error);
+                on_error_schedule.lock().unwrap().schedule_next_tick();
+            });
 
             crate::spawn(handler);
         });
