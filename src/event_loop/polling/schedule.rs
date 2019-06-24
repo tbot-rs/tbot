@@ -1,9 +1,9 @@
-use futures::{try_ready, Async, Poll, task::{current, Task}};
+use futures::{try_ready, Async, Poll, Future, task::{current, Task}};
 use std::{
     sync::{Arc, Mutex},
     time::{Duration, Instant},
 };
-use tokio::timer::{self, DelayQueue};
+use tokio::timer::{self, Delay};
 
 #[derive(Debug)]
 pub struct Schedule {
@@ -11,7 +11,8 @@ pub struct Schedule {
 
     last_run: Instant,
     duration: Duration,
-    queue: DelayQueue<()>,
+    delay: Delay,
+    has_polled: bool,
     task: Option<Task>,
 }
 
@@ -22,30 +23,22 @@ pub struct Stream {
 impl Schedule {
     pub fn new(duration: Duration) -> Self {
         let now = Instant::now();
-        let mut queue = DelayQueue::new();
-
-        queue.insert_at((), now);
-
         Self {
             last_offset: None,
             last_run: now,
             duration,
-            queue,
+            delay: Delay::new(now),
+            has_polled: false,
             task: None,
         }
     }
 
     pub fn schedule_next_tick(&mut self) {
-        let now = Instant::now();
-        let processed_for = now - self.last_run;
+        let next_instant = self.last_run + self.duration;
 
-        let next_instant = if processed_for > self.duration {
-            now
-        } else {
-            self.last_run + self.duration
-        };
-
-        self.queue.insert_at((), next_instant);
+        self.last_run = Instant::now();
+        self.has_polled = false;
+        self.delay.reset(next_instant);
 
         if let Some(task) = self.task.take() {
             task.notify();
@@ -65,19 +58,17 @@ impl futures::Stream for Stream {
 
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         let mut schedule = self.schedule.lock().unwrap();
-        let last_offset = schedule.last_offset;
 
-        let is_ready = match try_ready!(schedule.queue.poll()) {
-            Some(..) => {
-                let item = (last_offset, Arc::clone(&self.schedule));
-                Async::Ready(Some(item))
-            },
-            None => {
-                schedule.task = Some(current());
-                Async::NotReady
-            },
-        };
+        if schedule.has_polled {
+            schedule.task = Some(current());
+            return Ok(Async::NotReady);
+        }
 
-        Ok(is_ready)
+        try_ready!(schedule.delay.poll());
+
+        schedule.has_polled = true;
+        let item = (schedule.last_offset, Arc::clone(&self.schedule));
+
+        Ok(Async::Ready(Some(item)))
     }
 }
