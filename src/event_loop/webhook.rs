@@ -1,15 +1,18 @@
 use super::EventLoop;
 use crate::{
-    internal::BoxFuture, methods, prelude::*, types::parameters::Updates, Bot,
+    errors, internal::BoxFuture, prelude::*, types::parameters::Updates, Bot,
 };
-use futures::Stream;
+use futures::{future::Either, Stream};
 use hyper::{
-    service::service_fn, Body, Error, Method, Request, Response, Server,
+    client::connect::Connect, service::service_fn, Body, Method, Request,
+    Response, Server,
 };
 use std::{
     net::{IpAddr, Ipv4Addr, SocketAddr},
-    sync::{Arc, Mutex},
+    sync::Arc,
+    time::Duration,
 };
+use tokio::util::FutureExt;
 
 /// Configures webhook and starts a server.
 ///
@@ -21,6 +24,7 @@ pub struct Webhook<'a, C> {
     event_loop: EventLoop<C>,
     ip: IpAddr,
     port: u16,
+    request_timeout: Duration,
 
     url: &'a str,
     certificate: Option<&'a str>,
@@ -38,6 +42,8 @@ impl<'a, C> Webhook<'a, C> {
             event_loop,
             ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
             port,
+            request_timeout: Duration::from_secs(60),
+
             url,
             certificate: None,
             max_connections: None,
@@ -68,62 +74,68 @@ impl<'a, C> Webhook<'a, C> {
         self.allowed_updates = Some(updates);
         self
     }
+
+    /// Configures for how long `tbot` should wait for `setWebhook`. If you
+    /// don't configure this value, it is set to `60s`.
+    pub const fn request_timeout(mut self, timeout: Duration) -> Self {
+        self.request_timeout = timeout;
+        self
+    }
 }
 
 impl<'a, C> Webhook<'a, C>
 where
-    C: hyper::client::connect::Connect + Clone + Sync + 'static,
+    C: Connect + Clone + Sync + 'static,
     C::Transport: 'static,
     C::Future: 'static,
 {
     /// Starts the server.
     pub fn start(self) -> ! {
-        self.set_webhook();
-        self.start_event_loop();
+        crate::run(self.into_future().map_err(|err| {
+            eprintln!("\n[tbot] Webhook error: {:#?}", err);
+        }));
+
+        panic!(
+            "\n[tbot] The webhook server unexpectedly returned. \
+             An error should be printed above.\n",
+        );
     }
+}
 
-    fn set_webhook(&self) {
-        let error = Arc::new(Mutex::new(None));
-        let outer_error = Arc::clone(&error);
+impl<'a, C> IntoFuture for Webhook<'a, C>
+where
+    C: Connect + Clone + Sync + 'static,
+    C::Transport: 'static,
+    C::Future: 'static,
+{
+    type Future = BoxFuture<Self::Item, Self::Error>;
+    type Item = ();
+    type Error = errors::Webhook;
 
-        let set_webhook = methods::SetWebhook::new(
-            &self.event_loop.bot.client,
-            self.event_loop.bot.token.clone(),
-            self.url,
-            self.certificate,
-            self.max_connections,
-            self.allowed_updates,
-        )
-        .into_future()
-        .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
+    fn into_future(self) -> Self::Future {
+        let set_webhook = self
+            .event_loop
+            .bot
+            .set_webhook(
+                self.url,
+                self.certificate,
+                self.max_connections,
+                self.allowed_updates,
+            )
+            .into_future()
+            .timeout(self.request_timeout)
+            .map_err(errors::Webhook::SetWebhook);
 
-        crate::run(set_webhook);
+        let Self {
+            event_loop,
+            ip,
+            port,
+            ..
+        } = self;
 
-        let error = &*error.lock().unwrap();
-
-        if let Some(error) = error {
-            panic!("\n[tbot] Error while setting webhook: {:#?}\n", error);
-        }
-    }
-
-    fn start_event_loop(self) -> ! {
-        let error = Arc::new(Mutex::new(None));
-        let outer_error = Arc::clone(&error);
-        let server = init_server(self.event_loop, self.ip, self.port)
-            .map_err(move |error| *outer_error.lock().unwrap() = Some(error));
-
-        crate::run(server);
-
-        let error = &*error.lock().unwrap();
-
-        if let Some(error) = error {
-            panic!(
-                "\n[tbot] Webhook server returned with an error: {:#?}\n",
-                error,
-            );
-        }
-
-        unreachable!();
+        Box::new(set_webhook.and_then(move |_| {
+            init_server(event_loop, ip, port).map_err(errors::Webhook::Server)
+        }))
     }
 }
 
@@ -139,7 +151,7 @@ fn handle<C>(
     bot: Arc<Bot<C>>,
     event_loop: Arc<EventLoop<C>>,
     request: Request<Body>,
-) -> BoxFuture<Response<Body>, Error>
+) -> impl Future<Item = Response<Body>, Error = hyper::Error>
 where
     C: Send + Sync + 'static,
 {
@@ -156,12 +168,12 @@ where
             Response::new(Body::empty())
         });
 
-        Box::new(handler)
+        Either::A(handler)
     } else {
         let response = Response::new(Body::empty());
         let future = futures::future::ok(response);
 
-        Box::new(future)
+        Either::B(future)
     }
 }
 
@@ -169,7 +181,7 @@ fn init_server<C>(
     event_loop: EventLoop<C>,
     ip: IpAddr,
     port: u16,
-) -> impl Future<Error = Error>
+) -> impl Future<Item = (), Error = hyper::Error>
 where
     C: Clone + Send + Sync + 'static,
 {

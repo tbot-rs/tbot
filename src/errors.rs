@@ -2,6 +2,7 @@
 
 use crate::types::chat;
 use hyper::StatusCode;
+use tokio::timer::timeout;
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]
@@ -33,6 +34,15 @@ pub enum MethodCall {
         /// after the following amount of seconds.
         retry_after: Option<u64>,
     },
+}
+
+/// Represents possible errors that a webhook server may return.
+#[derive(Debug)]
+pub enum Webhook {
+    /// An error during setting the webhook.
+    SetWebhook(timeout::Error<MethodCall>),
+    /// An error while running the server.
+    Server(hyper::Error),
 }
 
 impl Download {
@@ -84,6 +94,24 @@ impl MethodCall {
             MethodCall::RequestError {
                 ..
             } => true,
+            _ => false,
+        }
+    }
+}
+
+impl Webhook {
+    /// Checks if `self` is `SetWebhook`.
+    pub fn is_set_webhook(&self) -> bool {
+        match self {
+            Webhook::SetWebhook(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Server`.
+    pub fn is_server(&self) -> bool {
+        match self {
+            Webhook::Server(..) => true,
             _ => false,
         }
     }

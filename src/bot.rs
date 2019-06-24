@@ -9,7 +9,7 @@ use crate::{
         input_file::*,
         keyboard::inline,
         message,
-        parameters::ImplicitChatId,
+        parameters::{ImplicitChatId, Updates},
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
 };
@@ -231,6 +231,10 @@ impl<C> Bot<C> {
             self.token.clone(),
             sticker,
         )
+    }
+
+    pub(crate) fn delete_webhook(&self) -> methods::DeleteWebhook<'_, C> {
+        methods::DeleteWebhook::new(&self.client, self.token.clone())
     }
 
     /// Constructs a new `EditInlineCaption` inferring your bot's token.
@@ -506,6 +510,23 @@ impl<C> Bot<C> {
         name: &'a str,
     ) -> methods::GetStickerSet<'a, C> {
         methods::GetStickerSet::new(&self.client, self.token.clone(), name)
+    }
+
+    pub(crate) fn get_updates<'a>(
+        &'a self,
+        offset: Option<isize>,
+        limit: Option<u8>,
+        timeout: Option<u64>,
+        allowed_updates: Option<&'a [Updates]>,
+    ) -> methods::GetUpdates<'a, C> {
+        methods::GetUpdates::new(
+            &self.client,
+            self.token.clone(),
+            offset,
+            limit,
+            timeout,
+            allowed_updates,
+        )
     }
 
     /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
@@ -963,6 +984,23 @@ impl<C> Bot<C> {
             self.token.clone(),
             sticker,
             position,
+        )
+    }
+
+    pub(crate) fn set_webhook<'a>(
+        &'a self,
+        url: &'a str,
+        certificate: Option<&'a str>,
+        max_connections: Option<u8>,
+        allowed_updates: Option<&'a [Updates]>,
+    ) -> methods::SetWebhook<'a, C> {
+        methods::SetWebhook::new(
+            &self.client,
+            self.token.clone(),
+            url,
+            certificate,
+            max_connections,
+            allowed_updates,
         )
     }
 

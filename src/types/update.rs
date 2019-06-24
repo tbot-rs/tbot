@@ -13,7 +13,7 @@ use std::fmt::{self, Formatter};
 /// Represents an update ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 #[serde(transparent)]
-pub struct Id(pub u32);
+pub struct Id(pub isize);
 
 /// Represents different types of updates from Telegram.
 #[derive(Debug, PartialEq, Clone)]

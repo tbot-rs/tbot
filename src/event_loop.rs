@@ -1,7 +1,7 @@
 //! The event loop for handling bot updates.
 
 use crate::{
-    contexts, errors,
+    contexts,
     prelude::*,
     types::{
         self, callback,
@@ -64,7 +64,6 @@ type PaymentHandler<C> = Handler<contexts::Payment<C>>;
 type PhotoHandler<C> = Handler<contexts::Photo<C>>;
 type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
 type PollHandler<C> = Handler<contexts::Poll<C>>;
-type PollingErrorHandler = Handler<errors::MethodCall>;
 type PreCheckoutHandler<C> = Handler<contexts::PreCheckout<C>>;
 type ShippingHandler<C> = Handler<contexts::Shipping<C>>;
 type StickerHandler<C> = Handler<contexts::Sticker<C>>;
@@ -135,7 +134,6 @@ pub struct EventLoop<C> {
     photo_handlers: Handlers<PhotoHandler<C>>,
     pinned_message_handlers: Handlers<PinnedMessageHandler<C>>,
     poll_handlers: Handlers<PollHandler<C>>,
-    polling_error_handlers: Handlers<PollingErrorHandler>,
     pre_checkout_handlers: Handlers<PreCheckoutHandler<C>>,
     shipping_handlers: Handlers<ShippingHandler<C>>,
     sticker_handlers: Handlers<StickerHandler<C>>,
@@ -188,7 +186,6 @@ impl<C> EventLoop<C> {
             photo_handlers: Vec::new(),
             pinned_message_handlers: Vec::new(),
             poll_handlers: Vec::new(),
-            polling_error_handlers: Vec::new(),
             pre_checkout_handlers: Vec::new(),
             shipping_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
@@ -211,7 +208,7 @@ impl<C> EventLoop<C> {
     }
 
     /// Starts polling configuration.
-    pub const fn polling<'a>(self) -> Polling<'a, C> {
+    pub fn polling(self) -> Polling<C> {
         Polling::new(self)
     }
 
@@ -597,14 +594,6 @@ impl<C> EventLoop<C> {
         contexts::Poll<C>,
         run_poll_handlers,
         will_handle_poll,
-    }
-
-    handler! {
-        /// Adds a new handler for polling errors.
-        polling_error_handlers,
-        polling_error,
-        errors::MethodCall,
-        run_polling_error_handlers,
     }
 
     handler! {
