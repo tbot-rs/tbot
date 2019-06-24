@@ -211,7 +211,7 @@ impl<C> EventLoop<C> {
     }
 
     /// Starts polling configuration.
-    pub const fn polling<'a>(self) -> Polling<'a, C> {
+    pub const fn polling(self) -> Polling<C> {
         Polling::new(self)
     }
 
