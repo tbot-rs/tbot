@@ -94,7 +94,7 @@ impl<C> Polling<C> {
 
     /// Configures for how long `tbot` should wait for `getUpdates`. If this
     /// timeout is exceeded, an [error handler] is triggered. If you don't
-    /// congfigure this value, it is set to
+    /// configure this value, it is set to
     /// `Duration::from_secs(timeout.unwrap_or(0) + 60)`.
     ///
     /// [error handler]: #method.error_handler
