@@ -135,7 +135,7 @@ where
 
         let stream = Schedule::new(poll_interval).into_stream();
 
-        let stream = stream.map(move |(last_offset, schedule)| {
+        let stream = stream.for_each(move |(last_offset, schedule)| {
             let bot = Arc::clone(&bot);
             let on_ok = Arc::clone(&event_loop);
             let on_error = Arc::clone(&event_loop);
@@ -170,10 +170,10 @@ where
             });
 
             crate::spawn(handler);
+
+            Ok(())
         });
 
-        let future = stream.for_each(|_| Ok(()));
-
-        Box::new(future)
+        Box::new(stream)
     }
 }
