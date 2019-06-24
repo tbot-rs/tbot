@@ -1,11 +1,7 @@
 // use super::*;
 use super::EventLoop;
 use crate::{
-    errors,
-    internal::BoxFuture,
-    methods::{DeleteWebhook, GetUpdates},
-    prelude::*,
-    types::parameters::Updates,
+    errors, internal::BoxFuture, prelude::*, types::parameters::Updates,
 };
 use futures::Stream;
 use std::{
@@ -157,12 +153,11 @@ where
             Duration::from_secs(self.timeout.unwrap_or(0) + 60)
         });
 
-        DeleteWebhook::new(
-            &self.event_loop.bot.client,
-            self.event_loop.bot.token.clone(),
-        )
-        .into_future()
-        .timeout(request_timeout)
+        self.event_loop
+            .bot
+            .delete_webhook()
+            .into_future()
+            .timeout(request_timeout)
     }
 }
 
@@ -203,35 +198,29 @@ where
             let error_handler = Arc::clone(&error_handler);
             let on_error_schedule = Arc::clone(&schedule);
 
-            let handler = GetUpdates::new(
-                &event_loop.bot.client,
-                event_loop.bot.token.clone(),
-                last_offset,
-                limit,
-                timeout,
-                allowed_updates,
-            )
-            .into_future()
-            .map(move |updates| {
-                let mut schedule = schedule.lock().unwrap();
+            let handler = bot
+                .get_updates(last_offset, limit, timeout, allowed_updates)
+                .into_future()
+                .map(move |updates| {
+                    let mut schedule = schedule.lock().unwrap();
 
-                if let Some(update) = updates.last() {
-                    schedule.last_offset = Some(update.id.0 + 1);
-                }
+                    if let Some(update) = updates.last() {
+                        schedule.last_offset = Some(update.id.0 + 1);
+                    }
 
-                schedule.schedule_next_tick();
-                std::mem::drop(schedule);
+                    schedule.schedule_next_tick();
+                    std::mem::drop(schedule);
 
-                for update in updates {
-                    event_loop.handle_update(Arc::clone(&bot), update);
-                }
-            })
-            .timeout(request_timeout)
-            .map_err(move |error| {
-                (&mut *(*error_handler).lock().unwrap())(error);
+                    for update in updates {
+                        event_loop.handle_update(Arc::clone(&bot), update);
+                    }
+                })
+                .timeout(request_timeout)
+                .map_err(move |error| {
+                    (&mut *(*error_handler).lock().unwrap())(error);
 
-                on_error_schedule.lock().unwrap().schedule_next_tick();
-            });
+                    on_error_schedule.lock().unwrap().schedule_next_tick();
+                });
 
             crate::spawn(handler);
 

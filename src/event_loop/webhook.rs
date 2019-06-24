@@ -1,7 +1,6 @@
 use super::EventLoop;
 use crate::{
-    errors, internal::BoxFuture, methods, prelude::*,
-    types::parameters::Updates, Bot,
+    errors, internal::BoxFuture, prelude::*, types::parameters::Updates, Bot,
 };
 use futures::{future::Either, Stream};
 use hyper::{
@@ -114,17 +113,18 @@ where
     type Error = errors::Webhook;
 
     fn into_future(self) -> Self::Future {
-        let set_webhook = methods::SetWebhook::new(
-            &self.event_loop.bot.client,
-            self.event_loop.bot.token.clone(),
-            self.url,
-            self.certificate,
-            self.max_connections,
-            self.allowed_updates,
-        )
-        .into_future()
-        .timeout(self.request_timeout)
-        .map_err(errors::Webhook::SetWebhook);
+        let set_webhook = self
+            .event_loop
+            .bot
+            .set_webhook(
+                self.url,
+                self.certificate,
+                self.max_connections,
+                self.allowed_updates,
+            )
+            .into_future()
+            .timeout(self.request_timeout)
+            .map_err(errors::Webhook::SetWebhook);
 
         let Self {
             event_loop,
