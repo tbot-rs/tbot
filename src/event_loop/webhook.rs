@@ -114,7 +114,7 @@ where
         .map_err(errors::Webhook::SetWebhook);
 
         let Self {
-            event_loop, 
+            event_loop,
             ip,
             port,
             ..
