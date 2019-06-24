@@ -85,7 +85,8 @@ impl<C> Polling<C> {
         self
     }
 
-    /// Configures the minimal interval between making requests.
+    /// Configures the minimal interval between making requests. Set to `25ms`
+    /// by default.
     pub const fn poll_interval(mut self, poll_interval: Duration) -> Self {
         self.poll_interval = poll_interval;
         self
