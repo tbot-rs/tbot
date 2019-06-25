@@ -37,3 +37,9 @@ impl<'a> From<&'a str> for Text<'a> {
         Text::plain(text)
     }
 }
+
+impl<'a> From<&'a String> for Text<'a> {
+    fn from(text: &'a String) -> Self {
+        Text::plain(text.as_str())
+    }
+}
