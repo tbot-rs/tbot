@@ -2,7 +2,7 @@ use futures::future::Either;
 use tbot::{
     prelude::*,
     types::{
-        parameters::{Flexibility::Flexible, ParseMode::Markdown, Photo},
+        parameters::{Flexibility::Flexible, Photo, Text},
         shipping, LabeledPrice,
     },
 };
@@ -50,8 +50,7 @@ fn main() {
 
             Either::A(invoice.into_future())
         } else {
-            let reply =
-                context.send_message(&start_message).parse_mode(Markdown);
+            let reply = context.send_message(Text::markdown(&start_message));
             Either::B(reply.into_future())
         };
 
