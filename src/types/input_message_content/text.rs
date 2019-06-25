@@ -1,4 +1,4 @@
-use crate::types::parameters::{ParseMode, WebPagePreviewState};
+use crate::types::parameters::{self, ParseMode, WebPagePreviewState};
 use serde::Serialize;
 
 /// Represents an [`InputTextMessageContent`][docs].
@@ -15,18 +15,14 @@ pub struct Text<'a> {
 
 impl<'a> Text<'a> {
     /// Constructs a new `Text`.
-    pub const fn new(message_text: &'a str) -> Self {
+    pub fn new(message_text: impl Into<parameters::Text<'a>>) -> Self {
+        let message_text = message_text.into();
+
         Self {
-            message_text,
-            parse_mode: None,
+            message_text: message_text.text,
+            parse_mode: message_text.parse_mode,
             disable_web_page_preview: None,
         }
-    }
-
-    /// Configures the parse mode.
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
-        self
     }
 
     /// Configures if the web page preview will be shown.

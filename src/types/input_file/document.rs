@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::parameters::ParseMode;
+use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 
 /// Represents a document to be sent.
@@ -65,14 +65,11 @@ impl<'a> Document<'a> {
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
+    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+        let caption = caption.into();
 
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
-        self.parse_mode = Some(mode);
+        self.caption = Some(caption.text);
+        self.parse_mode = caption.parse_mode;
         self
     }
 }

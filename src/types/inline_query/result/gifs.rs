@@ -15,7 +15,7 @@ macro_rules! gif_base {
       struct: $struct:ident,
       doc_link_part: $doc_link_part:literal,
     ) => {
-        use crate::types::{InputMessageContent, parameters::ParseMode};
+        use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
         use serde::Serialize;
 
         /// Represents a non-cached GIF.
@@ -147,14 +147,11 @@ macro_rules! gif_base {
             }
 
             /// Configures the caption of the GIF.
-            pub fn caption(mut self, caption: &'a str) -> Self {
-                self.caption = Some(caption);
-                self
-            }
+            pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+                let caption = caption.into();
 
-            /// Configures the parse mode of the GIF's caption.
-            pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-                self.parse_mode = Some(parse_mode);
+                self.caption = Some(caption.text);
+                self.parse_mode = caption.parse_mode;
                 self
             }
 

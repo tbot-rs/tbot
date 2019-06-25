@@ -5,7 +5,9 @@ use crate::{
     types::{
         keyboard::inline,
         message,
-        parameters::{ChatId, ImplicitChatId, ParseMode, WebPagePreviewState},
+        parameters::{
+            ChatId, ImplicitChatId, ParseMode, Text, WebPagePreviewState,
+        },
     },
 };
 
@@ -36,24 +38,20 @@ impl<'a, C> EditMessageText<'a, C> {
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> Self {
+        let text = text.into();
+
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             message_id,
-            text,
-            parse_mode: None,
+            text: text.text,
+            parse_mode: text.parse_mode,
             disable_web_page_preview: None,
             reply_markup: None,
         }
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
     }
 
     /// Configures `disable_web_page_preview`.

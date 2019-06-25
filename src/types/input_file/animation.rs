@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::parameters::ParseMode;
+use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 
 /// Represents an animation to be sent.
@@ -70,14 +70,11 @@ impl<'a> Animation<'a> {
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
+    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+        let caption = caption.into();
 
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+        self.caption = Some(caption.text);
+        self.parse_mode = caption.parse_mode;
         self
     }
 

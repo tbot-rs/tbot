@@ -9,7 +9,7 @@ use crate::{
         input_file::*,
         keyboard::inline,
         message,
-        parameters::{ImplicitChatId, Updates},
+        parameters::{ImplicitChatId, Text, Updates},
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
 };
@@ -241,7 +241,7 @@ impl<C> Bot<C> {
     pub fn edit_inline_caption<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
-        caption: &'a str,
+        caption: impl Into<Text<'a>>,
     ) -> methods::EditInlineCaption<'a, C> {
         methods::EditInlineCaption::new(
             &self.client,
@@ -297,7 +297,7 @@ impl<C> Bot<C> {
     pub fn edit_inline_text<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> methods::EditInlineText<'a, C> {
         methods::EditInlineText::new(
             &self.client,
@@ -312,7 +312,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
-        caption: &'a str,
+        caption: impl Into<Text<'a>>,
     ) -> methods::EditMessageCaption<'a, C> {
         methods::EditMessageCaption::new(
             &self.client,
@@ -376,7 +376,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> methods::EditMessageText<'a, C> {
         methods::EditMessageText::new(
             &self.client,
@@ -755,7 +755,7 @@ impl<C> Bot<C> {
     pub fn send_message<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> methods::SendMessage<'a, C> {
         methods::SendMessage::new(
             &self.client,

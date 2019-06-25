@@ -5,7 +5,7 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{
-            ChatId, ImplicitChatId, NotificationState, ParseMode,
+            ChatId, ImplicitChatId, NotificationState, ParseMode, Text,
             WebPagePreviewState,
         },
     },
@@ -40,25 +40,21 @@ impl<'a, C> SendMessage<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> Self {
+        let text = text.into();
+
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            text,
-            parse_mode: None,
+            text: text.text,
+            parse_mode: text.parse_mode,
             disable_web_page_preview: None,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
         }
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
     }
 
     /// Configures `disable_web_page_preview`.
