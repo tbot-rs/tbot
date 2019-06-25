@@ -5,7 +5,7 @@ use crate::{
     types::{
         keyboard::inline,
         message,
-        parameters::{ChatId, ImplicitChatId, ParseMode},
+        parameters::{ChatId, ImplicitChatId, ParseMode, Text},
     },
 };
 
@@ -34,23 +34,19 @@ impl<'a, C> EditMessageCaption<'a, C> {
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
-        caption: &'a str,
+        caption: impl Into<Text<'a>>,
     ) -> Self {
+        let caption = caption.into();
+
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             message_id,
-            caption,
-            parse_mode: None,
+            caption: caption.text,
+            parse_mode: caption.parse_mode,
             reply_markup: None,
         }
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
     }
 
     /// Configures `reply_markup`.

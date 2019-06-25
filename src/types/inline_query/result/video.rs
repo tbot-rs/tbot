@@ -2,7 +2,10 @@
 //!
 //! [docs]: ../enum.InlineQueryResult.html#variant.Video
 
-use crate::types::{parameters::ParseMode, InputMessageContent};
+use crate::types::{
+    parameters::{ParseMode, Text},
+    InputMessageContent,
+};
 use serde::Serialize;
 
 /// Represents possible MIME types.
@@ -144,14 +147,11 @@ impl<'a> Video<'a> {
     }
 
     /// Configures the caption of the video.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
+    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+        let caption = caption.into();
 
-    /// Configures the parse mode of the video's caption.
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+        self.caption = Some(caption.text);
+        self.parse_mode = caption.parse_mode;
         self
     }
 

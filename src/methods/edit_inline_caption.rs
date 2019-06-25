@@ -2,7 +2,11 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::{inline_message_id, keyboard::inline, parameters::ParseMode},
+    types::{
+        inline_message_id,
+        keyboard::inline,
+        parameters::{ParseMode, Text},
+    },
 };
 /// Represents the [`editMessageCaption`][docs] method for inline messages.
 ///
@@ -23,26 +27,22 @@ pub struct EditInlineCaption<'a, C> {
 }
 
 impl<'a, C> EditInlineCaption<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         inline_message_id: inline_message_id::Ref<'a>,
-        caption: &'a str,
+        caption: impl Into<Text<'a>>,
     ) -> Self {
+        let caption = caption.into();
+
         Self {
             client,
             token,
             inline_message_id,
-            caption,
-            parse_mode: None,
+            caption: caption.text,
+            parse_mode: caption.parse_mode,
             reply_markup: None,
         }
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
     }
 
     /// Configures `reply_markup`.

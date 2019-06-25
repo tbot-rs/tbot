@@ -3,7 +3,10 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Document
 
 use super::Thumb;
-use crate::types::{parameters::ParseMode, InputMessageContent};
+use crate::types::{
+    parameters::{ParseMode, Text},
+    InputMessageContent,
+};
 use serde::Serialize;
 
 /// Represents possible MIME types for a fresh document.
@@ -120,14 +123,11 @@ impl<'a> Document<'a> {
     }
 
     /// Configures the caption of the document.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
+    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+        let caption = caption.into();
 
-    /// Configures the parse mode of the document's caption.
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+        self.caption = Some(caption.text);
+        self.parse_mode = caption.parse_mode;
         self
     }
 

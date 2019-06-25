@@ -5,7 +5,7 @@ use crate::{
     types::{
         inline_message_id,
         keyboard::inline,
-        parameters::{ParseMode, WebPagePreviewState},
+        parameters::{ParseMode, Text, WebPagePreviewState},
     },
 };
 
@@ -30,27 +30,23 @@ pub struct EditInlineText<'a, C> {
 }
 
 impl<'a, C> EditInlineText<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         inline_message_id: inline_message_id::Ref<'a>,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> Self {
+        let text = text.into();
+
         Self {
             client,
             token,
             inline_message_id,
-            text,
-            parse_mode: None,
+            text: text.text,
+            parse_mode: text.parse_mode,
             disable_web_page_preview: None,
             reply_markup: None,
         }
-    }
-
-    /// Configures `parse_mode`.
-    pub fn parse_mode(mut self, mode: ParseMode) -> Self {
-        self.parse_mode = Some(mode);
-        self
     }
 
     /// Configures `disable_web_page_preview`.

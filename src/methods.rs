@@ -19,7 +19,7 @@
 //! ```no_run
 //! use tbot::{
 //!     prelude::*,
-//!     types::{chat, parameters::ParseMode::Markdown},
+//!     types::{chat, parameters::Text},
 //!     Token,
 //! };
 //!
@@ -28,8 +28,7 @@
 //!
 //! let bot = tbot::bot!("BOT_TOKEN");
 //!
-//! let request = bot.send_message(CHAT, MESSAGE)
-//!     .parse_mode(Markdown)
+//! let request = bot.send_message(CHAT, Text::markdown(MESSAGE))
 //!     .into_future()
 //!     .map_err(|err| {
 //!         dbg!(err);

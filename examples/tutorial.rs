@@ -3,7 +3,7 @@ use tbot::{
     types::{
         inline_query::{self, result::Article},
         input_message_content::Text,
-        parameters::ParseMode::Markdown,
+        parameters::Text as ParseMode,
     },
 };
 
@@ -17,8 +17,7 @@ fn main() {
         };
 
         let reply = context
-            .send_message_in_reply(&message)
-            .parse_mode(Markdown)
+            .send_message_in_reply(ParseMode::markdown(&message))
             .into_future()
             .map_err(|err| {
                 dbg!(err);
@@ -44,7 +43,7 @@ fn main() {
         id += 1;
 
         let id = id.to_string();
-        let content = Text::new(&message).parse_mode(Markdown);
+        let content = Text::new(ParseMode::markdown(&message));
         let article = Article::new(&title, content).description(&message);
         let result = inline_query::Result::new(&id, article);
         let answer = context.answer(&[result]).into_future().map_err(|err| {

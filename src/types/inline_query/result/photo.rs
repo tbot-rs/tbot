@@ -2,7 +2,10 @@
 //!
 //! [docs]: ../enum.InlineQueryResult.html#variant.Photo
 
-use crate::types::{parameters::ParseMode, InputMessageContent};
+use crate::types::{
+    parameters::{ParseMode, Text},
+    InputMessageContent,
+};
 use serde::Serialize;
 
 /// Represents a non-cached photo.
@@ -106,14 +109,11 @@ impl<'a> Photo<'a> {
     }
 
     /// Configures the caption of the photo.
-    pub fn caption(mut self, caption: &'a str) -> Self {
-        self.caption = Some(caption);
-        self
-    }
+    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+        let caption = caption.into();
 
-    /// Configures the parse mode of the photo's caption.
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+        self.caption = Some(caption.text);
+        self.parse_mode = caption.parse_mode;
         self
     }
 

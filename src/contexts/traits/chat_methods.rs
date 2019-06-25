@@ -1,8 +1,12 @@
 use crate::{
     methods::*,
     types::{
-        chat, input_file::*, keyboard::inline, message,
-        parameters::ImplicitChatId, user, LabeledPrice,
+        chat,
+        input_file::*,
+        keyboard::inline,
+        message,
+        parameters::{ImplicitChatId, Text},
+        user, LabeledPrice,
     },
     Bot,
 };
@@ -43,7 +47,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn edit_message_caption(
         &'a self,
         message_id: message::Id,
-        caption: &'a str,
+        caption: impl Into<Text<'a>>,
     ) -> EditMessageCaption<'a, C> {
         self.bot().edit_message_caption(self.chat_id(), message_id, caption)
     }
@@ -83,7 +87,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn edit_message_text(
         &'a self,
         message_id: message::Id,
-        text: &'a str,
+        text: impl Into<Text<'a>>,
     ) -> EditMessageText<'a, C> {
         self.bot().edit_message_text(self.chat_id(), message_id, text)
     }
@@ -318,12 +322,15 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends a message to this chat.
-    fn send_message(&'a self, text: &'a str) -> SendMessage<'a, C> {
+    fn send_message(&'a self, text: impl Into<Text<'a>>) -> SendMessage<'a, C> {
         self.bot().send_message(self.chat_id(), text)
     }
 
     /// Sends a message in reply to this message.
-    fn send_message_in_reply(&'a self, text: &'a str) -> SendMessage<'a, C> {
+    fn send_message_in_reply(
+        &'a self,
+        text: impl Into<Text<'a>>,
+    ) -> SendMessage<'a, C> {
         self.send_message(text).reply_to_message_id(self.message_id())
     }
 
