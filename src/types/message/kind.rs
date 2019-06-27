@@ -18,12 +18,12 @@ pub enum Kind {
     Game(Game),
     /// A photo. The second item is the caption, the third one is
     /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Photo(Vec<PhotoSize>, Text, Option<i32>),
+    Photo(Vec<PhotoSize>, Text, Option<String>),
     /// A sticker.
     Sticker(Sticker),
     /// A video. The second item is the caption, the third one is
     /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Video(Video, Text, Option<i32>),
+    Video(Video, Text, Option<String>),
     /// A voice message. The second item is the caption.
     Voice(Voice, Text),
     /// A video note.
