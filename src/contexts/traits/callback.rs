@@ -11,21 +11,40 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
     #[doc(hidden)]
     fn id(&self) -> callback::query::id::Ref<'_>;
 
+    /// Answers the callback query.
+    ///
+    /// If you don't need to choose the action dynamically, using dedicated
+    /// methods will be more convenient: [`ignore`], [`open_url`], [`notify`]
+    /// and [`alert`].
+    ///
+    /// [`ignore`]: #method.ignore
+    /// [`open_url`]: #method.open_url
+    /// [`notify`]: #method.notify
+    /// [`alert`]: #method.alert
+    fn answer(
+        &'a self,
+        action: CallbackAction<'a>,
+    ) -> AnswerCallbackQuery<'a, C> {
+        self.bot().answer_callback_query(self.id(), action)
+    }
+
+    /// Answers the query without any action.
+    fn ignore(&'a self) -> AnswerCallbackQuery<'a, C> {
+        self.answer(CallbackAction::none())
+    }
+
     /// Opens a URL.
     fn open_url(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.bot().answer_callback_query(self.id(), CallbackAction::url(url))
+        self.answer(CallbackAction::url(url))
     }
 
     /// Shows a notification to the user.
     fn notify(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.bot().answer_callback_query(
-            self.id(),
-            CallbackAction::notification(text),
-        )
+        self.answer(CallbackAction::notification(text))
     }
 
     /// Shows an alert to the user.
     fn alert(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.bot().answer_callback_query(self.id(), CallbackAction::alert(text))
+        self.answer(CallbackAction::alert(text))
     }
 }
