@@ -2,71 +2,8 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::callback,
+    types::{callback, parameters::CallbackAction},
 };
-
-/// Represent possible actions for [`AnswerCallbackQuery`].
-///
-/// Though you can consturct variants directly, there are convenient methods
-/// to do that: [`none`], [`notification`], [`alert`], [`url`].
-///
-/// [`AnswerCallbackQuery`]: ./struct.AnswerCallbackQuery.html
-/// [`none`]: #method.none
-/// [`notification`]: #method.notification
-/// [`alert`]: #method.alert
-/// [`url`]: #method.url
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-pub enum CallbackAnswerAction<'a> {
-    /// No action.
-    None,
-    /// Show text to the user. The last item configures `show_alert`.
-    Text(&'a str, bool),
-    /// Open a URL.
-    Url(&'a str),
-}
-
-impl<'a> CallbackAnswerAction<'a> {
-    /// Constructs the `None` variant.
-    pub const fn none() -> Self {
-        CallbackAnswerAction::None
-    }
-
-    /// Constructs the `Text` variant that shows a simple notification.
-    pub fn notification(text: &'a str) -> Self {
-        CallbackAnswerAction::Text(text, false)
-    }
-
-    /// Constructs the `Text` variant that shows an alert.
-    pub fn alert(text: &'a str) -> Self {
-        CallbackAnswerAction::Text(text, true)
-    }
-
-    /// Constructs the `Url` variant.
-    pub fn url(url: &'a str) -> Self {
-        CallbackAnswerAction::Url(url)
-    }
-
-    fn to_text(self) -> Option<&'a str> {
-        match self {
-            CallbackAnswerAction::Text(text, _) => Some(text),
-            _ => None,
-        }
-    }
-
-    fn to_show_alert(self) -> Option<bool> {
-        match self {
-            CallbackAnswerAction::Text(_, should_show) => Some(should_show),
-            _ => None,
-        }
-    }
-
-    fn to_url(self) -> Option<&'a str> {
-        match self {
-            CallbackAnswerAction::Url(url) => Some(url),
-            _ => None,
-        }
-    }
-}
 
 /// Represents the [`answerCallbackQuery`][docs] method.
 ///
@@ -94,7 +31,7 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
         client: &'a Client<C>,
         token: Token,
         callback_query_id: callback::query::id::Ref<'a>,
-        action: CallbackAnswerAction<'a>,
+        action: CallbackAction<'a>,
     ) -> Self {
         Self {
             client,
