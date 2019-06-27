@@ -1,5 +1,6 @@
 //! Types used as parameters, mainly for methods.
 
+mod callback_action;
 mod chat_id;
 mod flexibility;
 mod notification_state;
@@ -13,7 +14,7 @@ mod web_page_preview_state;
 
 pub(crate) use text::ParseMode;
 pub use {
-    chat_id::*, flexibility::*, notification_state::*, photo::*,
-    requirement::*, send_to_provider_state::*, text::Text, updates::*,
-    url_visibility::*, web_page_preview_state::*,
+    callback_action::*, chat_id::*, flexibility::*, notification_state::*,
+    photo::*, requirement::*, send_to_provider_state::*, text::Text,
+    updates::*, url_visibility::*, web_page_preview_state::*,
 };

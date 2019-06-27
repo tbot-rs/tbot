@@ -1,6 +1,6 @@
 use crate::{
-    methods::{AnswerCallbackQuery, CallbackAnswerAction},
-    types::callback,
+    methods::AnswerCallbackQuery,
+    types::{callback, parameters::CallbackAction},
     Bot,
 };
 
@@ -13,21 +13,19 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
 
     /// Opens a URL.
     fn open_url(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.bot()
-            .answer_callback_query(self.id(), CallbackAnswerAction::url(url))
+        self.bot().answer_callback_query(self.id(), CallbackAction::url(url))
     }
 
     /// Shows a notification to the user.
     fn notify(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
         self.bot().answer_callback_query(
             self.id(),
-            CallbackAnswerAction::notification(text),
+            CallbackAction::notification(text),
         )
     }
 
     /// Shows an alert to the user.
     fn alert(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.bot()
-            .answer_callback_query(self.id(), CallbackAnswerAction::alert(text))
+        self.bot().answer_callback_query(self.id(), CallbackAction::alert(text))
     }
 }

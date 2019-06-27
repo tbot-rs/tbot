@@ -1,7 +1,6 @@
 use super::*;
 use crate::{
     event_loop::EventLoop,
-    methods::*,
     types::{
         callback, chat,
         file::{id::AsFileId, File},
@@ -9,7 +8,7 @@ use crate::{
         input_file::*,
         keyboard::inline,
         message,
-        parameters::{ImplicitChatId, Text, Updates},
+        parameters::{CallbackAction, ImplicitChatId, Text, Updates},
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
 };
@@ -115,7 +114,7 @@ impl<C> Bot<C> {
     pub fn answer_callback_query<'a>(
         &'a self,
         callback_query_id: callback::query::id::Ref<'a>,
-        action: CallbackAnswerAction<'a>,
+        action: CallbackAction<'a>,
     ) -> methods::AnswerCallbackQuery<'a, C> {
         methods::AnswerCallbackQuery::new(
             &self.client,
