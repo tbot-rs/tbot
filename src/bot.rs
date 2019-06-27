@@ -111,7 +111,7 @@ impl<C> Bot<C> {
     }
 
     /// Constructs a new `AnswerCallbackQuery` inferring your bot's token.
-    pub fn answer_callback_query<'a>(
+    pub(crate) fn answer_callback_query<'a>(
         &'a self,
         callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAction<'a>,
