@@ -97,7 +97,7 @@ impl<C> Bot<C> {
         &'a self,
         user_id: user::Id,
         name: &'a str,
-        png_sticker: &'a PngSticker<'a>,
+        png_sticker: PngSticker<'a>,
         emojis: &'a str,
     ) -> methods::AddStickerToSet<'a, C> {
         methods::AddStickerToSet::new(
@@ -172,7 +172,7 @@ impl<C> Bot<C> {
         user_id: user::Id,
         name: &'a str,
         title: &'a str,
-        png_sticker: &'a PngSticker<'a>,
+        png_sticker: PngSticker<'a>,
         emojis: &'a str,
     ) -> methods::CreateNewStickerSet<'a, C> {
         methods::CreateNewStickerSet::new(
@@ -613,7 +613,7 @@ impl<C> Bot<C> {
     pub fn send_animation<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        animation: &'a Animation<'a>,
+        animation: Animation<'a>,
     ) -> methods::SendAnimation<'a, C> {
         methods::SendAnimation::new(
             &self.client,
@@ -627,7 +627,7 @@ impl<C> Bot<C> {
     pub fn send_audio<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        audio: &'a Audio<'a>,
+        audio: Audio<'a>,
     ) -> methods::SendAudio<'a, C> {
         methods::SendAudio::new(
             &self.client,
@@ -685,7 +685,7 @@ impl<C> Bot<C> {
     pub fn send_document<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        document: &'a Document<'a>,
+        document: Document<'a>,
     ) -> methods::SendDocument<'a, C> {
         methods::SendDocument::new(
             &self.client,
@@ -768,7 +768,7 @@ impl<C> Bot<C> {
     pub fn send_photo<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        photo: &'a Photo<'a>,
+        photo: Photo<'a>,
     ) -> methods::SendPhoto<'a, C> {
         methods::SendPhoto::new(
             &self.client,
@@ -798,7 +798,7 @@ impl<C> Bot<C> {
     pub fn send_sticker<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        sticker: &'a Sticker<'a>,
+        sticker: Sticker<'a>,
     ) -> methods::SendSticker<'a, C> {
         methods::SendSticker::new(
             &self.client,
@@ -830,7 +830,7 @@ impl<C> Bot<C> {
     pub fn send_video_note<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        video_note: &'a VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> methods::SendVideoNote<'a, C> {
         methods::SendVideoNote::new(
             &self.client,
@@ -844,7 +844,7 @@ impl<C> Bot<C> {
     pub fn send_video<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        video: &'a Video<'a>,
+        video: Video<'a>,
     ) -> methods::SendVideo<'a, C> {
         methods::SendVideo::new(
             &self.client,
@@ -858,7 +858,7 @@ impl<C> Bot<C> {
     pub fn send_voice<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        voice: &'a Voice<'a>,
+        voice: Voice<'a>,
     ) -> methods::SendVoice<'a, C> {
         methods::SendVoice::new(
             &self.client,
@@ -886,7 +886,7 @@ impl<C> Bot<C> {
     pub fn set_chat_photo<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        photo: &'a ChatPhoto<'a>,
+        photo: ChatPhoto<'a>,
     ) -> methods::SetChatPhoto<'a, C> {
         methods::SetChatPhoto::new(
             &self.client,

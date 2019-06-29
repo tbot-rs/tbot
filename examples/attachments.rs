@@ -12,7 +12,7 @@ fn main() {
 
     bot.command("photo", |context| {
         let photo = Photo::bytes(PHOTO);
-        let message = context.send_photo(&photo).into_future().map_err(|err| {
+        let message = context.send_photo(photo).into_future().map_err(|err| {
             dbg!(err);
         });
 
@@ -22,7 +22,7 @@ fn main() {
     bot.command("animation", |context| {
         let animation = Animation::bytes(GIF);
         let message =
-            context.send_animation(&animation).into_future().map_err(|err| {
+            context.send_animation(animation).into_future().map_err(|err| {
                 dbg!(err);
             });
 
@@ -32,7 +32,7 @@ fn main() {
     bot.command("document", |context| {
         let document = Document::bytes("tutorial.rs", TUTORIAL);
         let message =
-            context.send_document(&document).into_future().map_err(|err| {
+            context.send_document(document).into_future().map_err(|err| {
                 dbg!(err);
             });
 
@@ -45,7 +45,7 @@ fn main() {
     // duration on its own, so the video might look somewhat corrupted at first.
     bot.command("video", |context| {
         let video = Video::bytes(GIF);
-        let message = context.send_video(&video).into_future().map_err(|err| {
+        let message = context.send_video(video).into_future().map_err(|err| {
             dbg!(err);
         });
 

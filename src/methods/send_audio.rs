@@ -18,7 +18,7 @@ pub struct SendAudio<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    audio: &'a Audio<'a>,
+    audio: Audio<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendAudio<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        audio: &'a Audio<'a>,
+        audio: Audio<'a>,
     ) -> Self {
         Self {
             client,

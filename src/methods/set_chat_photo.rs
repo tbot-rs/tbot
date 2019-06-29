@@ -17,7 +17,7 @@ pub struct SetChatPhoto<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    photo: &'a ChatPhoto<'a>,
+    photo: ChatPhoto<'a>,
 }
 
 impl<'a, C> SetChatPhoto<'a, C> {
@@ -25,7 +25,7 @@ impl<'a, C> SetChatPhoto<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        photo: &'a ChatPhoto<'a>,
+        photo: ChatPhoto<'a>,
     ) -> Self {
         Self {
             client,

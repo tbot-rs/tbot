@@ -18,7 +18,7 @@ pub struct SendVideo<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    video: &'a Video<'a>,
+    video: Video<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendVideo<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        video: &'a Video<'a>,
+        video: Video<'a>,
     ) -> Self {
         Self {
             client,

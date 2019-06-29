@@ -21,7 +21,7 @@ fn main() {
             USER.into(),
             NAME,
             TITLE,
-            &PngSticker::bytes(first_sticker.0),
+            PngSticker::bytes(first_sticker.0),
             first_sticker.1,
         )
         .into_future()
@@ -33,7 +33,7 @@ fn main() {
                 bot.add_sticker_to_set(
                     USER.into(),
                     NAME,
-                    &PngSticker::bytes(sticker.0),
+                    PngSticker::bytes(sticker.0),
                     sticker.1,
                 )
                 .into_future()

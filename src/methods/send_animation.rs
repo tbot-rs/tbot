@@ -18,7 +18,7 @@ pub struct SendAnimation<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    animation: &'a Animation<'a>,
+    animation: Animation<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendAnimation<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        animation: &'a Animation<'a>,
+        animation: Animation<'a>,
     ) -> Self {
         Self {
             client,

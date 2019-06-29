@@ -20,7 +20,7 @@ pub struct CreateNewStickerSet<'a, C> {
     user_id: user::Id,
     name: &'a str,
     title: &'a str,
-    png_sticker: &'a PngSticker<'a>,
+    png_sticker: PngSticker<'a>,
     emojis: &'a str,
     contains_masks: Option<bool>,
     mask_position: Option<MaskPosition>,
@@ -33,7 +33,7 @@ impl<'a, C> CreateNewStickerSet<'a, C> {
         user_id: user::Id,
         name: &'a str,
         title: &'a str,
-        png_sticker: &'a PngSticker<'a>,
+        png_sticker: PngSticker<'a>,
         emojis: &'a str,
     ) -> Self {
         Self {
