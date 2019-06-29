@@ -1,22 +1,22 @@
-use super::{InputFile, Thumb};
+use super::{InputFile, Thumb, WithName};
 use serde::Serialize;
 
 /// Represents a video note to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct VideoNote<'a> {
-    pub(crate) media: InputFile<'a>,
+    pub(crate) media: WithName<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) length: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) thumb: Option<InputFile<'a>>,
+    pub(crate) thumb: Option<Thumb<'a>>,
 }
 
 impl<'a> VideoNote<'a> {
     const fn new(media: InputFile<'a>) -> Self {
         Self {
-            media,
+            media: media.with_name("video_note"),
             duration: None,
             length: None,
             thumb: None,
@@ -26,7 +26,6 @@ impl<'a> VideoNote<'a> {
     /// Constructs an `VideoNote` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "video_note".into(),
             filename: "video_note.mp4",
             bytes,
         })
@@ -74,7 +73,7 @@ impl<'a> VideoNote<'a> {
 
     /// Configures `thumb`.
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
-        self.thumb = Some(thumb.0);
+        self.thumb = Some(thumb);
         self
     }
 }

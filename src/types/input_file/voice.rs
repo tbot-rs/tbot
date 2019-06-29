@@ -1,11 +1,11 @@
-use super::InputFile;
+use super::{InputFile, WithName};
 use crate::types::parameters::{ParseMode, Text};
 use serde::Serialize;
 
 /// Represents a voice to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Voice<'a> {
-    pub(crate) media: InputFile<'a>,
+    pub(crate) media: WithName<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,7 +17,7 @@ pub struct Voice<'a> {
 impl<'a> Voice<'a> {
     const fn new(media: InputFile<'a>) -> Self {
         Self {
-            media,
+            media: media.with_name("voice"),
             duration: None,
             caption: None,
             parse_mode: None,
@@ -27,7 +27,6 @@ impl<'a> Voice<'a> {
     /// Constructs a `Voice` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "voice".into(),
             filename: "voice.ogg",
             bytes,
         })

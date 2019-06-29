@@ -3,7 +3,7 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
-        input_file::{InputFile, VideoNote},
+        input_file::{InputFile, Thumb, VideoNote},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
@@ -18,7 +18,7 @@ pub struct SendVideoNote<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    video_note: &'a VideoNote<'a>,
+    video_note: VideoNote<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendVideoNote<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        video_note: &'a VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> Self {
         Self {
             client,
@@ -83,7 +83,7 @@ where
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.video_note.media {
+        match self.video_note.media.file {
             InputFile::File {
                 filename,
                 bytes,
@@ -94,11 +94,11 @@ where
             }
         }
 
-        if let Some(InputFile::File {
+        if let Some(Thumb(InputFile::File {
             filename,
             bytes,
             ..
-        }) = self.video_note.thumb
+        })) = self.video_note.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

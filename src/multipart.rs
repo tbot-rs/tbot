@@ -5,7 +5,7 @@ use std::{borrow::Cow, collections::HashSet};
 enum Header<'a> {
     Field(&'static str),
     File {
-        name: &'a str,
+        name: Cow<'a, str>,
         filename: &'a str,
     },
 }
@@ -98,9 +98,9 @@ impl<'a> Multipart<'a> {
         }
     }
 
-    pub fn file(
+    fn file_cow(
         mut self,
-        name: &'a str,
+        name: Cow<'a, str>,
         filename: &'a str,
         body: &'a [u8],
     ) -> Self {
@@ -112,6 +112,24 @@ impl<'a> Multipart<'a> {
             body: Cow::Borrowed(body),
         });
         self
+    }
+
+    pub fn file(
+        self,
+        name: &'a str,
+        filename: &'a str,
+        body: &'a [u8],
+    ) -> Self {
+        self.file_cow(Cow::Borrowed(name), filename, body)
+    }
+
+    pub fn file_owned_name(
+        self,
+        name: String,
+        filename: &'a str,
+        body: &'a [u8],
+    ) -> Self {
+        self.file_cow(Cow::Owned(name), filename, body)
     }
 
     pub fn finish(self) -> (String, Vec<u8>) {

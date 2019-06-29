@@ -18,7 +18,7 @@ pub struct SendSticker<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    sticker: &'a Sticker<'a>,
+    sticker: Sticker<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendSticker<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        sticker: &'a Sticker<'a>,
+        sticker: Sticker<'a>,
     ) -> Self {
         Self {
             client,

@@ -20,10 +20,9 @@ pub use {
     video_note::*, voice::*,
 };
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub(crate) enum InputFile<'a> {
     File {
-        name: String,
         filename: &'a str,
         bytes: &'a [u8],
     },
@@ -31,19 +30,40 @@ pub(crate) enum InputFile<'a> {
     Id(&'a str),
 }
 
-impl<'a> serde::Serialize for InputFile<'a> {
-    fn serialize<S: serde::Serializer>(
-        &self,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error> {
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub(crate) struct WithName<'a> {
+    pub(crate) file: InputFile<'a>,
+    pub(crate) name: &'a str,
+}
+
+impl<'a> InputFile<'a> {
+    fn serialize<S>(&self, serializer: S, name: &str) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
         match self {
             InputFile::File {
-                name,
                 ..
             } => serializer.serialize_str(&format!("attach://{}", name)),
             InputFile::Url(file) | InputFile::Id(file) => {
                 serializer.serialize_str(file)
             }
         }
+    }
+
+    const fn with_name(self, name: &'a str) -> WithName<'a> {
+        WithName {
+            file: self,
+            name,
+        }
+    }
+}
+
+impl<'a> serde::Serialize for WithName<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.file.serialize(serializer, self.name)
     }
 }

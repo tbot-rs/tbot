@@ -3,7 +3,7 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
-        input_file::{Document, InputFile},
+        input_file::{Document, InputFile, Thumb},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
@@ -18,7 +18,7 @@ pub struct SendDocument<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    document: &'a Document<'a>,
+    document: Document<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendDocument<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        document: &'a Document<'a>,
+        document: Document<'a>,
     ) -> Self {
         Self {
             client,
@@ -94,11 +94,11 @@ where
             }
         }
 
-        if let Some(InputFile::File {
+        if let Some(Thumb(InputFile::File {
             filename,
             bytes,
             ..
-        }) = self.document.thumb
+        })) = self.document.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

@@ -2,7 +2,7 @@ use super::*;
 use serde::ser::SerializeMap;
 
 /// Represents a sticker to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Sticker<'a> {
     pub(crate) media: InputFile<'a>,
 }
@@ -17,7 +17,6 @@ impl<'a> Sticker<'a> {
     /// Constructs a `Sticker` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "sticker".into(),
             filename: "sticker.webm",
             bytes,
         })
@@ -57,7 +56,7 @@ impl<'a> serde::Serialize for Sticker<'a> {
         let mut map = s.serialize_map(None)?;
 
         map.serialize_entry("type", "sticker")?;
-        map.serialize_entry("media", &self.media)?;
+        map.serialize_entry("media", &self.media.with_name("sticker"))?;
 
         map.end()
     }

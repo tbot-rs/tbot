@@ -19,7 +19,7 @@ pub struct AddStickerToSet<'a, C> {
     token: Token,
     user_id: user::Id,
     name: &'a str,
-    png_sticker: &'a PngSticker<'a>,
+    png_sticker: PngSticker<'a>,
     emojis: &'a str,
     mask_position: Option<MaskPosition>,
 }
@@ -30,7 +30,7 @@ impl<'a, C> AddStickerToSet<'a, C> {
         token: Token,
         user_id: user::Id,
         name: &'a str,
-        png_sticker: &'a PngSticker<'a>,
+        png_sticker: PngSticker<'a>,
         emojis: &'a str,
     ) -> Self {
         Self {

@@ -18,7 +18,7 @@ pub struct SendPhoto<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    photo: &'a Photo<'a>,
+    photo: Photo<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendPhoto<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        photo: &'a Photo<'a>,
+        photo: Photo<'a>,
     ) -> Self {
         Self {
             client,

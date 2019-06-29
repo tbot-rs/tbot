@@ -168,7 +168,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Send an animation to this chat.
     fn send_animation(
         &'a self,
-        animation: &'a Animation<'a>,
+        animation: Animation<'a>,
     ) -> SendAnimation<'a, C> {
         self.bot().send_animation(self.chat_id(), animation)
     }
@@ -176,18 +176,18 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an animation in reply to this message.
     fn send_animation_in_reply(
         &'a self,
-        animation: &'a Animation<'a>,
+        animation: Animation<'a>,
     ) -> SendAnimation<'a, C> {
         self.send_animation(animation).reply_to_message_id(self.message_id())
     }
 
     /// Sends an audio to this chat.
-    fn send_audio(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a, C> {
+    fn send_audio(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
         self.bot().send_audio(self.chat_id(), audio)
     }
 
     /// Sends an audio in reply to this message.
-    fn send_audio_in_reply(&'a self, audio: &'a Audio<'a>) -> SendAudio<'a, C> {
+    fn send_audio_in_reply(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
         self.send_audio(audio).reply_to_message_id(self.message_id())
     }
 
@@ -229,17 +229,14 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends a document to this chat.
-    fn send_document(
-        &'a self,
-        document: &'a Document<'a>,
-    ) -> SendDocument<'a, C> {
+    fn send_document(&'a self, document: Document<'a>) -> SendDocument<'a, C> {
         self.bot().send_document(self.chat_id(), document)
     }
 
     /// Sends a document in reply to this message.
     fn send_document_in_reply(
         &'a self,
-        document: &'a Document<'a>,
+        document: Document<'a>,
     ) -> SendDocument<'a, C> {
         self.send_document(document).reply_to_message_id(self.message_id())
     }
@@ -308,7 +305,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an album to this chat.
     fn send_media_group(
         &'a self,
-        media: Vec<GroupMedia<'a>>,
+        media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
         self.bot().send_media_group(self.chat_id(), media)
     }
@@ -316,7 +313,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an album in reply to this message.
     fn send_media_group_in_reply(
         &'a self,
-        media: Vec<GroupMedia<'a>>,
+        media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
         self.send_media_group(media).reply_to_message_id(self.message_id())
     }
@@ -335,12 +332,12 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends a photo to this chat.
-    fn send_photo(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a, C> {
+    fn send_photo(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
         self.bot().send_photo(self.chat_id(), photo)
     }
 
     /// Sends a photo in reply to this message.
-    fn send_photo_in_reply(&'a self, photo: &'a Photo<'a>) -> SendPhoto<'a, C> {
+    fn send_photo_in_reply(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
@@ -363,14 +360,14 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends a sticker to this chat.
-    fn send_sticker(&'a self, sticker: &'a Sticker<'a>) -> SendSticker<'a, C> {
+    fn send_sticker(&'a self, sticker: Sticker<'a>) -> SendSticker<'a, C> {
         self.bot().send_sticker(self.chat_id(), sticker)
     }
 
     /// Sends a sticker in reply to this message.
     fn send_sticker_in_reply(
         &'a self,
-        sticker: &'a Sticker<'a>,
+        sticker: Sticker<'a>,
     ) -> SendSticker<'a, C> {
         self.send_sticker(sticker).reply_to_message_id(self.message_id())
     }
@@ -397,19 +394,19 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends a video to this chat.
-    fn send_video(&'a self, video: &'a Video<'a>) -> SendVideo<'a, C> {
+    fn send_video(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
         self.bot().send_video(self.chat_id(), video)
     }
 
     /// Sends a video in reply to this message.
-    fn send_video_in_reply(&'a self, video: &'a Video<'a>) -> SendVideo<'a, C> {
+    fn send_video_in_reply(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
         self.send_video(video).reply_to_message_id(self.message_id())
     }
 
     /// Sends a video note to this chat.
     fn send_video_note(
         &'a self,
-        video_note: &'a VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a, C> {
         self.bot().send_video_note(self.chat_id(), video_note)
     }
@@ -417,18 +414,18 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends a video note in reply to this message.
     fn send_video_note_in_reply(
         &'a self,
-        video_note: &'a VideoNote<'a>,
+        video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a, C> {
         self.send_video_note(video_note).reply_to_message_id(self.message_id())
     }
 
     /// Sends a voice to this chat.
-    fn send_voice(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a, C> {
+    fn send_voice(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
         self.bot().send_voice(self.chat_id(), voice)
     }
 
     /// Sends a voice in reply to this message.
-    fn send_voice_in_reply(&'a self, voice: &'a Voice<'a>) -> SendVoice<'a, C> {
+    fn send_voice_in_reply(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
@@ -441,10 +438,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sets a new photo of this chat.
-    fn set_chat_photo(
-        &'a self,
-        photo: &'a ChatPhoto<'a>,
-    ) -> SetChatPhoto<'a, C> {
+    fn set_chat_photo(&'a self, photo: ChatPhoto<'a>) -> SetChatPhoto<'a, C> {
         self.bot().set_chat_photo(self.chat_id(), photo)
     }
 

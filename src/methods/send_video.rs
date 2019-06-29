@@ -3,7 +3,7 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
-        input_file::{InputFile, Video},
+        input_file::{InputFile, Thumb, Video},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
@@ -18,7 +18,7 @@ pub struct SendVideo<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    video: &'a Video<'a>,
+    video: Video<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -29,7 +29,7 @@ impl<'a, C> SendVideo<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        video: &'a Video<'a>,
+        video: Video<'a>,
     ) -> Self {
         Self {
             client,
@@ -98,11 +98,11 @@ where
             }
         }
 
-        if let Some(InputFile::File {
+        if let Some(Thumb(InputFile::File {
             filename,
             bytes,
             ..
-        }) = self.video.thumb
+        })) = self.video.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

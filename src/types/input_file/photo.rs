@@ -3,7 +3,7 @@ use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 
 /// Represents a photo to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Photo<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) caption: Option<&'a str>,
@@ -22,7 +22,6 @@ impl<'a> Photo<'a> {
     /// Constructs a `Photo` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "photo".into(),
             filename: "photo.jpg",
             bytes,
         })
@@ -64,14 +63,19 @@ impl<'a> Photo<'a> {
         self.parse_mode = caption.parse_mode;
         self
     }
-}
 
-impl<'a> serde::Serialize for Photo<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let mut map = s.serialize_map(None)?;
+    pub(crate) fn serialize<S>(
+        &self,
+        serializer: S,
+        name: &str,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut map = serializer.serialize_map(None)?;
 
         map.serialize_entry("type", "photo")?;
-        map.serialize_entry("media", &self.media)?;
+        map.serialize_entry("media", &self.media.with_name(name))?;
 
         if let Some(caption) = self.caption {
             map.serialize_entry("caption", caption)?;
@@ -81,5 +85,14 @@ impl<'a> serde::Serialize for Photo<'a> {
         }
 
         map.end()
+    }
+}
+
+impl<'a> serde::Serialize for Photo<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.serialize(serializer, "photo")
     }
 }

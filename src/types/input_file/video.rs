@@ -3,10 +3,10 @@ use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 
 /// Represents a video to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Video<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<InputFile<'a>>,
+    pub(crate) thumb: Option<Thumb<'a>>,
     pub(crate) caption: Option<&'a str>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) width: Option<u32>,
@@ -32,7 +32,6 @@ impl<'a> Video<'a> {
     /// Constructs a `Video` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "video".into(),
             filename: "video.mp4",
             bytes,
         })
@@ -68,7 +67,7 @@ impl<'a> Video<'a> {
 
     /// Configures `thumb`.
     pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
-        self.thumb = Some(thumb.0);
+        self.thumb = Some(thumb);
         self
     }
 
@@ -104,17 +103,23 @@ impl<'a> Video<'a> {
         self.supports_streaming = Some(is_streamed);
         self
     }
-}
 
-impl<'a> serde::Serialize for Video<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let mut map = s.serialize_map(None)?;
+    pub(crate) fn serialize<S>(
+        &self,
+        serialize: S,
+        video_name: &str,
+        thumb_name: &str,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut map = serialize.serialize_map(None)?;
 
         map.serialize_entry("type", "video")?;
-        map.serialize_entry("media", &self.media)?;
+        map.serialize_entry("media", &self.media.with_name(video_name))?;
 
-        if let Some(thumb) = &self.thumb {
-            map.serialize_entry("thumb", &thumb)?;
+        if let Some(thumb) = self.thumb {
+            map.serialize_entry("thumb", &thumb.with_name(thumb_name))?;
         }
         if let Some(caption) = self.caption {
             map.serialize_entry("caption", caption)?;
@@ -136,5 +141,14 @@ impl<'a> serde::Serialize for Video<'a> {
         }
 
         map.end()
+    }
+}
+
+impl<'a> serde::Serialize for Video<'a> {
+    fn serialize<S>(&self, serialize: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.serialize(serialize, "video", "thumb")
     }
 }
