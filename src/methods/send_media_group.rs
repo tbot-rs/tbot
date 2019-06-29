@@ -18,22 +18,18 @@ pub struct SendMediaGroup<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    media: Vec<GroupMedia<'a>>,
+    media: &'a [GroupMedia<'a>],
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
 }
 
 impl<'a, C> SendMediaGroup<'a, C> {
     /// Contructs a new `SendMediaGroup`.
-    ///
-    /// **Note:** unlike other methods, this one takes ownership of the media
-    /// because it modifies the media's metadata, and thus further reuse of the
-    /// media would lead to errors.
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        media: Vec<GroupMedia<'a>>,
+        media: &'a [GroupMedia<'a>],
     ) -> Self {
         Self {
             client,
@@ -69,74 +65,54 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let mut media = self.media;
-
-        for (index, media) in media.iter_mut().enumerate() {
-            if let GroupMedia::Photo(Photo {
-                media:
-                    InputFile::File {
-                        ref mut name,
-                        ..
-                    },
-                ..
-            }) = media
-            {
-                *name = format!("photo_{}", index);
-            }
-
-            if let GroupMedia::Video(Video {
-                media:
-                    InputFile::File {
-                        ref mut name,
-                        ..
-                    },
-                thumb,
-                ..
-            }) = media
-            {
-                *name = format!("video_{}", index);
-
-                if let Some(InputFile::File {
-                    ref mut name,
-                    ..
-                }) = thumb
-                {
-                    *name = format!("thumb_{}", index);
-                }
-            }
-        }
-
-        let mut multipart = Multipart::new(4 + media.len())
+        let mut multipart = Multipart::new(4 + self.media.len())
             .chat_id("chat_id", self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id);
 
-        for media in &media {
+        for (index, media) in self.media.iter().enumerate() {
             match media {
                 GroupMedia::Photo(Photo {
                     media:
                         InputFile::File {
-                            name,
-                            filename,
-                            bytes,
-                        },
-                    ..
-                })
-                | GroupMedia::Video(Video {
-                    media:
-                        InputFile::File {
-                            name,
                             filename,
                             bytes,
                         },
                     ..
                 }) => {
-                    multipart = multipart.file(name, filename, bytes);
+                    let name = format!("photo_{}", index);
+
+                    multipart =
+                        multipart.file_owned_name(name, filename, bytes);
+                }
+                GroupMedia::Video(Video {
+                    media:
+                        InputFile::File {
+                            filename,
+                            bytes,
+                        },
+                    thumb,
+                    ..
+                }) => {
+                    let name = format!("video_{}", index);
+                    multipart =
+                        multipart.file_owned_name(name, filename, bytes);
+
+                    if let Some(Thumb(InputFile::File {
+                        filename,
+                        bytes,
+                    })) = thumb
+                    {
+                        let name = format!("thumb_{}", index);
+                        multipart =
+                            multipart.file_owned_name(name, filename, bytes);
+                    }
                 }
                 _ => (),
             }
         }
 
+        let media = Album(self.media);
         let (boundary, body) = multipart.json("media", &media).finish();
 
         Box::new(send_method(

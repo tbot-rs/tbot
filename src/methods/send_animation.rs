@@ -3,7 +3,7 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
-        input_file::{Animation, InputFile},
+        input_file::{Animation, InputFile, Thumb},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
@@ -97,11 +97,11 @@ where
             }
         }
 
-        if let Some(InputFile::File {
+        if let Some(Thumb(InputFile::File {
             filename,
             bytes,
             ..
-        }) = self.animation.thumb
+        })) = self.animation.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

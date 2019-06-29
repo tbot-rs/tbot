@@ -3,10 +3,10 @@ use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 
 /// Represents an animation to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Animation<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<InputFile<'a>>,
+    pub(crate) thumb: Option<Thumb<'a>>,
     pub(crate) caption: Option<&'a str>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) width: Option<u32>,
@@ -30,7 +30,6 @@ impl<'a> Animation<'a> {
     /// Constructs an `Animation` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "animaion".into(),
             filename: "animation.mp4",
             bytes,
         })
@@ -65,7 +64,7 @@ impl<'a> Animation<'a> {
 
     /// Configures `thumb`.
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
-        self.thumb = Some(thumb.0);
+        self.thumb = Some(thumb);
         self
     }
 
@@ -102,7 +101,7 @@ impl<'a> serde::Serialize for Animation<'a> {
         let mut map = s.serialize_map(None)?;
 
         map.serialize_entry("type", "animation")?;
-        map.serialize_entry("media", &self.media)?;
+        map.serialize_entry("media", &self.media.with_name("animation"))?;
 
         if let Some(thumb) = &self.thumb {
             map.serialize_entry("thumb", &thumb)?;

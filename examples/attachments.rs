@@ -53,7 +53,7 @@ fn main() {
     });
 
     bot.command("album", |context| {
-        let album = vec![Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
+        let album = &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
         let message =
             context.send_media_group(album).into_future().map_err(|err| {
                 dbg!(err);

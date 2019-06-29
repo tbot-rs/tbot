@@ -87,12 +87,12 @@ where
                 ..
             }) => {
                 if let InputFile::File {
-                    name,
                     filename,
                     bytes,
                 } = media
                 {
-                    multipart = multipart.file(name, filename, bytes);
+                    multipart =
+                        multipart.file(self.media.name(), filename, bytes);
                 }
             }
         }

@@ -58,7 +58,7 @@ where
             filename,
             bytes,
             ..
-        } = self.photo.0
+        } = self.photo.0.file
         {
             multipart = multipart.file("photo", filename, bytes);
         }

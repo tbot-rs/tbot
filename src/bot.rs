@@ -740,7 +740,7 @@ impl<C> Bot<C> {
     pub fn send_media_group<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        media: Vec<GroupMedia<'a>>,
+        media: &'a [GroupMedia<'a>],
     ) -> methods::SendMediaGroup<'a, C> {
         methods::SendMediaGroup::new(
             &self.client,

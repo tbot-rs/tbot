@@ -3,10 +3,10 @@ use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 
 /// Represents an audio to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Audio<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<InputFile<'a>>,
+    pub(crate) thumb: Option<Thumb<'a>>,
     pub(crate) caption: Option<&'a str>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) duration: Option<u32>,
@@ -30,7 +30,6 @@ impl<'a> Audio<'a> {
     /// Constructs an `Audio` from bytes.
     pub fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
-            name: "audio".into(),
             filename: "audio.mp3",
             bytes,
         })
@@ -66,7 +65,7 @@ impl<'a> Audio<'a> {
 
     /// Configures `thumb`.
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
-        self.thumb = Some(thumb.0);
+        self.thumb = Some(thumb);
         self
     }
 
@@ -103,7 +102,7 @@ impl<'a> serde::Serialize for Audio<'a> {
         let mut map = s.serialize_map(None)?;
 
         map.serialize_entry("type", "audio")?;
-        map.serialize_entry("media", &self.media)?;
+        map.serialize_entry("media", &self.media.with_name("audio"))?;
 
         if let Some(thumb) = &self.thumb {
             map.serialize_entry("thumb", &thumb)?;

@@ -308,7 +308,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an album to this chat.
     fn send_media_group(
         &'a self,
-        media: Vec<GroupMedia<'a>>,
+        media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
         self.bot().send_media_group(self.chat_id(), media)
     }
@@ -316,7 +316,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an album in reply to this message.
     fn send_media_group_in_reply(
         &'a self,
-        media: Vec<GroupMedia<'a>>,
+        media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
         self.send_media_group(media).reply_to_message_id(self.message_id())
     }
