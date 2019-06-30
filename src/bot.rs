@@ -16,7 +16,7 @@ use std::sync::Arc;
 
 /// Provides methods to call the Bots API.
 ///
-/// A `Bot` provides all methods from the [methods] module, inferring the token:
+/// A `Bot` lets you call methods from the [`methods`] module.
 ///
 /// ```no_run
 /// use tbot::prelude::*;
@@ -40,6 +40,7 @@ use std::sync::Arc;
 /// responsible for configuring handlers and listening to updates.
 ///
 /// [`EventLoop`]: ./event_loop/struct.EventLoop.html
+/// [`methods`]: ./methods/index.html
 #[derive(Debug, Clone)]
 pub struct Bot<C> {
     pub(crate) token: Token,
