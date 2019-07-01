@@ -40,32 +40,19 @@ fill an issue on either our [GitLab] or [GitHub] repository.
 
 ## Installing
 
-<!--
 Add `tbot` to your Cargo.toml:
 
 ```toml
 [dependencies]
 tbot = "0.1"
 ```
--->
-
-Add `tbot` to your `Cargo.toml`. Right now, it can only be done via git until
-the first release:
-
-```toml
-[dependencies]
-tbot = { git = "https://gitlab.com/SnejUgal/tbot.git" }
-```
 
 ## Documentation
 
 There are many examples in the [`examples`] directory to see `tbot` in action.
 If you want to get started with `tbot`, go through the [tutorial]. When you
-start making your bot, our [How-to guides][how-to] will help you. And you can
+start making your bot, our [How-to guides][how-to] may help you. And you can
 always refer to our API docs on [*docs.rs*][api-docs].
-
-> **Note**: As `tbot` is only in development at this moment, its technical
-> docs are only available locally with `cargo doc`.
 
 ## Contribution
 
