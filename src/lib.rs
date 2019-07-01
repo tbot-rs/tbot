@@ -57,7 +57,7 @@ pub mod methods;
 pub mod types;
 
 use serde::{Deserialize, Serialize};
-pub use {bot::*, token::*};
+pub use {bot::*, token::*, event_loop::EventLoop};
 use {download_file::download_file, multipart::*, prelude::*};
 
 /// A wrapper around `tokio::run` without `F::Item: ()`.
