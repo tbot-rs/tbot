@@ -1,4 +1,5 @@
 test:
+  stage: test
   script:
     - cargo fmt -- --check
     - cargo clippy --target-dir=../target -- -D warnings
@@ -8,9 +9,10 @@ test:
     - branches
 
 pages:
+  stage: docs
   script:
-    - cargo doc --target-dir=../target
-    - mv ../target ./public
+    - cargo doc --no-deps --target-dir=../target
+    - mv ../target/doc ./public
   artifacts:
     paths:
       - public
@@ -19,4 +21,4 @@ pages:
 
 stages:
   - test
-  - pages
+  - docs
