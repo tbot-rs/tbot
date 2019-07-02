@@ -1,4 +1,5 @@
 test:
+  stage: test
   script:
     - cargo fmt -- --check
     - cargo clippy --target-dir=../target -- -D warnings
@@ -7,5 +8,18 @@ test:
   only:
     - branches
 
+pages:
+  stage: docs
+  script:
+    - cargo doc --release --no-deps --target-dir=../target
+    - mv ../target/doc ./public
+    - echo '<meta http-equiv="refresh" content="0; url=./tbot/index.html">' > ./public/index.html
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+
 stages:
   - test
+  - docs

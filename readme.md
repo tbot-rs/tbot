@@ -52,7 +52,8 @@ tbot = "0.1"
 There are many examples in the [`examples`] directory to see `tbot` in action.
 If you want to get started with `tbot`, go through the [tutorial]. When you
 start making your bot, our [How-to guides][how-to] may help you. And you can
-always refer to our API docs on [*docs.rs*][api-docs].
+always refer to our API docs on [*docs.rs*][api-docs] (docs for `master` are
+also available [here][master-docs]).
 
 ## Contribution
 
@@ -68,3 +69,4 @@ create your pull/merge request there if you can. We accept pull requests on
 [GitHub]: https://github.com/SnejUgal/tbot
 [`examples`]: ./examples/
 [api-docs]: https://docs.rs/tbot
+[master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
