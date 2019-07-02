@@ -7,5 +7,16 @@ test:
   only:
     - branches
 
+pages:
+  script:
+    - cargo doc --target-dir=../target
+    - mv ../target ./public
+  artifacts:
+    paths:
+      - public
+  only:
+    - branches #TODO: change to master before merge
+
 stages:
   - test
+  - pages
