@@ -18,7 +18,7 @@ pages:
     paths:
       - public
   only:
-    - branches #TODO: change to master before merge
+    - master
 
 stages:
   - test
