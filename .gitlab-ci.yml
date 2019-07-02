@@ -11,8 +11,9 @@ test:
 pages:
   stage: docs
   script:
-    - cargo doc --no-deps --target-dir=../target
+    - cargo doc --release --no-deps --target-dir=../target
     - mv ../target/doc ./public
+    - echo "<meta http-equiv="refresh" content="0; url=/tbot/">" > ./public/index.html
   artifacts:
     paths:
       - public
