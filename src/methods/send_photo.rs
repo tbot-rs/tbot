@@ -78,7 +78,7 @@ where
         let mut multipart = Multipart::new(7)
             .chat_id("chat_id", self.chat_id)
             .maybe_str("caption", self.photo.caption)
-            .maybe_json("parse_mode", self.photo.parse_mode)
+            .maybe_string("parse_mode", self.photo.parse_mode)
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);

@@ -1,4 +1,5 @@
 use serde::Serialize;
+use std::fmt::{self, Display};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub enum ParseMode {
@@ -12,6 +13,15 @@ pub enum ParseMode {
 pub struct Text<'a> {
     pub(crate) text: &'a str,
     pub(crate) parse_mode: Option<ParseMode>,
+}
+
+impl Display for ParseMode {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(match self {
+            ParseMode::Markdown => "Markdown",
+            ParseMode::Html => "HTML",
+        })
+    }
 }
 
 impl<'a> Text<'a> {
