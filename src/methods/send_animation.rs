@@ -81,7 +81,7 @@ where
             .maybe_string("width", self.animation.width)
             .maybe_string("height", self.animation.height)
             .maybe_str("caption", self.animation.caption)
-            .maybe_json("parse_mode", self.animation.parse_mode)
+            .maybe_string("parse_mode", self.animation.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);

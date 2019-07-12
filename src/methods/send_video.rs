@@ -81,7 +81,7 @@ where
             .maybe_string("width", self.video.width)
             .maybe_string("height", self.video.height)
             .maybe_str("caption", self.video.caption)
-            .maybe_json("parse_mode", self.video.parse_mode)
+            .maybe_string("parse_mode", self.video.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("supports_streaming", self.video.supports_streaming)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
