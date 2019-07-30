@@ -321,7 +321,12 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         } else if let Some(photo) = photo {
             Kind::Photo(photo, caption, media_group_id)
         } else if let Some(sticker) = sticker {
-            Kind::Sticker(sticker)
+            match sticker {
+                sticker::Any::Sticker(sticker) => Kind::Sticker(sticker),
+                sticker::Any::Animated(sticker) => {
+                    Kind::AnimatedSticker(sticker)
+                }
+            }
         } else if let Some(video) = video {
             Kind::Video(video, caption, media_group_id)
         } else if let Some(voice) = voice {

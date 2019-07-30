@@ -13,6 +13,8 @@ pub struct Set {
     pub title: String,
     /// `true` if the sticket set has masks.
     pub contains_masks: bool,
+    /// `true` if the sticket set is animated.
+    pub is_animated: bool,
     /// The stickers from this set.
     pub stickers: Vec<Sticker>,
 }
