@@ -89,7 +89,7 @@ impl<'v> serde::de::Visitor<'v> for AnyVisitor {
     type Value = Any;
 
     fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(fmt, "struct Any")
+        write!(fmt, "struct Sticker")
     }
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
@@ -165,7 +165,7 @@ impl<'de> serde::Deserialize<'de> for Any {
         D: serde::de::Deserializer<'de>,
     {
         d.deserialize_struct(
-            "Any",
+            "Sticker",
             &[
                 FILE_ID,
                 WIDTH,
