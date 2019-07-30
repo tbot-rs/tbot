@@ -21,6 +21,8 @@ pub enum Kind {
     Photo(Vec<PhotoSize>, Text, Option<String>),
     /// A sticker.
     Sticker(Sticker),
+    /// An animated sticker.
+    AnimatedSticker(sticker::Animated),
     /// A video. The second item is the caption, the third one is
     /// `media_group_id`, i.e. this photo belongs to an album with this ID.
     Video(Video, Text, Option<String>),
@@ -117,6 +119,14 @@ impl Kind {
     pub fn is_sticker(&self) -> bool {
         match self {
             Kind::Sticker(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `AnimatedSticker`.
+    pub fn is_animated_sticker(&self) -> bool {
+        match self {
+            Kind::AnimatedSticker(..) => true,
             _ => false,
         }
     }
