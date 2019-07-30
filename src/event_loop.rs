@@ -33,6 +33,7 @@ type Map<T> = HashMap<&'static str, Handlers<T>>;
 // Wish trait alises came out soon
 type Handler<T> = dyn FnMut(&T) + Send + Sync;
 
+type AnimatedStickerHandler<C> = Handler<contexts::AnimatedSticker<C>>;
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
 type ChosenInlineHandler<C> = Handler<contexts::ChosenInline<C>>;
@@ -101,6 +102,7 @@ pub struct EventLoop<C> {
 
     command_handlers: Map<TextHandler<C>>,
     edited_command_handlers: Map<EditedTextHandler<C>>,
+    animated_sticker_handlers: Handlers<AnimatedStickerHandler<C>>,
     after_update_handlers: Handlers<UpdateHandler<C>>,
     animation_handlers: Handlers<AnimationHandler<C>>,
     audio_handlers: Handlers<AudioHandler<C>>,
@@ -153,6 +155,7 @@ impl<C> EventLoop<C> {
             username: None,
             command_handlers: HashMap::new(),
             edited_command_handlers: HashMap::new(),
+            animated_sticker_handlers: Vec::new(),
             after_update_handlers: Vec::new(),
             animation_handlers: Vec::new(),
             audio_handlers: Vec::new(),
@@ -307,6 +310,15 @@ impl<C> EventLoop<C> {
         after_update,
         contexts::Update<C>,
         run_after_update_handlers,
+    }
+
+    handler! {
+        /// Adds a new handler for animated stickers.
+        animated_sticker_handlers,
+        animated_sticker,
+        contexts::AnimatedSticker<C>,
+        run_animated_sticker_handlers,
+        will_handle_animated_sticker,
     }
 
     handler! {
@@ -917,6 +929,20 @@ impl<C> EventLoop<C> {
                     self.run_sticker_handlers(&context);
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Sticker(sticker);
+                    let message = Message::new(data, kind);
+                    let update = update::Kind::Message(message);
+
+                    self.run_unhandled_handlers(bot, update);
+                }
+            }
+            message::Kind::AnimatedSticker(sticker) => {
+                if self.will_handle_animated_sticker() {
+                    let contexts =
+                        contexts::AnimatedSticker::new(bot, data, sticker);
+
+                    self.run_animated_sticker_handlers(&contexts);
+                } else if self.will_handle_unhandled() {
+                    let kind = message::Kind::AnimatedSticker(sticker);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
 
