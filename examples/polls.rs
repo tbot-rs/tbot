@@ -2,15 +2,20 @@ use futures::future::Either;
 use tbot::prelude::*;
 
 const QUESTION: &str = "Do you like tbot?";
-const OPTIONS: &[&str] =
-    &["Yes", "Also yes", "I like shooting myself in the foot more"];
 
 fn main() {
+    let options = [
+        "Yes".into(),
+        "Also yes".into(),
+        "I like shooting myself in the foot more".into(),
+    ];
     let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
-    bot.command("poll", |context| {
-        let poll =
-            context.send_poll(QUESTION, OPTIONS).into_future().map_err(|err| {
+    bot.command("poll", move |context| {
+        let poll = context
+            .send_poll(QUESTION, &options[..])
+            .into_future()
+            .map_err(|err| {
                 dbg!(err);
             });
 

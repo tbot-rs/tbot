@@ -14,7 +14,7 @@ fn main() {
                 dbg!(err);
             })
             .and_then(move |file| {
-                bot.download_file(&file).map_err(|err| {
+                bot.download_file(file).map_err(|err| {
                     dbg!(err);
                 })
             })

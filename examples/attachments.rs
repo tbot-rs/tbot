@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::input_file::{Animation, Document, Photo, Video},
+    types::input_file::{Animation, Document, GroupMedia, Photo, Video},
 };
 
 const PHOTO: &[u8] = include_bytes!("./assets/photo.jpg");
@@ -53,9 +53,11 @@ fn main() {
     });
 
     bot.command("album", |context| {
-        let album = &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
+        let photo: GroupMedia = Photo::bytes(PHOTO).into();
+        let video: GroupMedia = Video::bytes(GIF).into();
+        let album = [photo.into(), video.into()];
         let message =
-            context.send_media_group(album).into_future().map_err(|err| {
+            context.send_media_group(&album[..]).into_future().map_err(|err| {
                 dbg!(err);
             });
 

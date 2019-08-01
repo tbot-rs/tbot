@@ -4,6 +4,7 @@ use tbot::{
         inline_query::{self, result::Article},
         input_message_content::Text,
         parameters::Text as ParseMode,
+        InputMessageContent,
     },
 };
 
@@ -42,13 +43,17 @@ fn main() {
 
         id += 1;
 
-        let id = id.to_string();
-        let content = Text::new(ParseMode::markdown(&message));
-        let article = Article::new(&title, content).description(&message);
-        let result = inline_query::Result::new(&id, article);
-        let answer = context.answer(&[result]).into_future().map_err(|err| {
-            dbg!(err);
-        });
+        let content: InputMessageContent =
+            Text::new(ParseMode::markdown(&message)).into();
+
+        let article: inline_query::result::Kind =
+            Article::new(title, content).description(&message).into();
+
+        let result = inline_query::Result::new(id.to_string(), article);
+        let answer =
+            context.answer(&[result.into()][..]).into_future().map_err(|err| {
+                dbg!(err);
+            });
 
         tbot::spawn(answer);
     });

@@ -10,20 +10,16 @@ use tbot::{
 const PAYLOAD: &str = "crab";
 const START_PARAMETER: &str = "crab";
 const TITLE: &str = "A crab";
-const PHOTO: Photo =
-    Photo::new("https://www.rustacean.net/assets/rustacean-flat-happy.png");
 const DESCRIPTION: &str = "Have you ever come across a heisenbug in your \
 program? No more! Our crab will take all bugs out of your program for you.";
 const CURRENCY: &str = "USD";
-const PRICE: &[LabeledPrice] = &[LabeledPrice::new(TITLE, 1_00)];
-const DELIVERY: &[shipping::Option] = &[shipping::Option::new(
-    "crab",
-    "Delivery Crab",
-    &[LabeledPrice::new("At your home", 1_00)],
-)];
 const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
 fn main() {
+    let photo =
+        Photo::new("https://www.rustacean.net/assets/rustacean-flat-happy.png");
+    let price = [LabeledPrice::new(TITLE, 1_00).into()];
+
     // I don't want everyone to set up another environment variable
     // so they don't see constant errors from RLS or `cargo test`.
     let provider_token: &str = option_env!("PROVIDER_TOKEN").unwrap();
@@ -43,9 +39,9 @@ fn main() {
                     provider_token,
                     START_PARAMETER,
                     CURRENCY,
-                    PRICE,
+                    &price[..],
                 )
-                .photo(PHOTO)
+                .photo(&photo)
                 .flexibility(Flexible);
 
             Either::A(invoice.into_future())
@@ -59,8 +55,15 @@ fn main() {
         }));
     });
 
-    bot.shipping(|context| {
-        let report = context.ok(DELIVERY).into_future().map_err(|err| {
+    let delivery = [shipping::Option::new(
+        "crab",
+        "Delivery Crab",
+        vec![LabeledPrice::new("At your home", 1_00).into()],
+    )
+    .into()];
+
+    bot.shipping(move |context| {
+        let report = context.ok(&delivery[..]).into_future().map_err(|err| {
             dbg!(err);
         });
 

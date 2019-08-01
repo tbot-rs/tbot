@@ -1,24 +1,37 @@
 use tbot::{
     prelude::*,
-    types::keyboard::inline::{Button, ButtonKind},
+    types::keyboard::{
+        self,
+        inline::{Button, ButtonKind, Markup},
+    },
 };
 
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
-const KEYBOARD: &[&[Button]] = &[
-    &[
-        Button::new("Cool!", ButtonKind::CallbackData("cool")),
-        Button::new("Amazing!", ButtonKind::CallbackData("amazing")),
-    ],
-    &[Button::new("I wanna get started with it!", ButtonKind::Url(TUTORIAL))],
-];
 
 fn main() {
+    let keyboard: Markup = vec![
+        vec![
+            Button::new("Cool!", ButtonKind::CallbackData("cool".into()))
+                .into(),
+            Button::new("Amazing!", ButtonKind::CallbackData("amazing".into()))
+                .into(),
+        ]
+        .into(),
+        vec![Button::new(
+            "I wanna get started with it!",
+            ButtonKind::Url(TUTORIAL.into()),
+        )
+        .into()]
+        .into(),
+    ]
+    .into();
+    let keyboard: keyboard::Any = keyboard.into();
     let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
-    bot.command("keyboard", |context| {
+    bot.command("keyboard", move |context| {
         let message = context
             .send_message("This is a keyboard done with tbot!")
-            .reply_markup(KEYBOARD)
+            .reply_markup(&keyboard)
             .into_future()
             .map_err(|err| {
                 dbg!(err);
