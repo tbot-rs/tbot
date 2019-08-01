@@ -32,6 +32,7 @@ pub mod sticker;
 mod successful_payment;
 pub mod update;
 pub mod user;
+pub mod value;
 mod venue;
 mod video;
 mod video_note;
@@ -45,6 +46,6 @@ pub use {
     invoice::*, labeled_price::*, location::*, login_url::*, message::Message,
     order_info::*, photo_size::*, poll::Poll,
     pre_checkout_query::PreCheckoutQuery, sticker::Sticker,
-    successful_payment::*, update::Update, user::User, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::WebhookInfo,
+    successful_payment::*, update::Update, user::User, value::Value, venue::*,
+    video::*, video_note::*, voice::*, webhook_info::WebhookInfo,
 };
