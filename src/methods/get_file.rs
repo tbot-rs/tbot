@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::file::{self, id::AsFileId, File},
+    types::{
+        file::{id::AsFileId, File},
+        value::FileId,
+    },
 };
 
 /// Represents the [`getfile`][docs] method.
@@ -15,14 +18,14 @@ pub struct GetFile<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    file_id: file::id::Ref<'a>,
+    file_id: FileId<'a>,
 }
 
 impl<'a, C> GetFile<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        file_id: &'a impl AsFileId,
+        file_id: impl AsFileId<'a>,
     ) -> Self {
         Self {
             client,

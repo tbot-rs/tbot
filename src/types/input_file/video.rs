@@ -1,13 +1,16 @@
 use super::*;
-use crate::types::parameters::{ParseMode, Text};
-use serde::ser::SerializeMap;
+use crate::types::{
+    parameters::{ParseMode, Text},
+    value::{self, Bytes, Ref},
+};
+use serde::{ser::SerializeMap, Serializer};
 
 /// Represents a video to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Video<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<Thumb<'a>>,
-    pub(crate) caption: Option<&'a str>,
+    pub(crate) thumb: Option<Ref<'a, Thumb<'a>>>,
+    pub(crate) caption: Option<value::String<'a>>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) width: Option<u32>,
     pub(crate) height: Option<u32>,
@@ -30,10 +33,10 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a `Video` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Bytes<'a>>) -> Self {
         Self::new(InputFile::File {
-            filename: "video.mp4",
-            bytes,
+            filename: "video.mp4".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -42,9 +45,11 @@ impl<'a> Video<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<FileId<'a>>) -> Self {
+        let id = id.into();
+
         assert!(
-            !id.starts_with("attach://"),
+            !id.as_ref().0.starts_with("attach://"),
             "\n[tbot]: Video's ID cannot start with `attach://`\n",
         );
 
@@ -56,9 +61,11 @@ impl<'a> Video<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<value::String<'a>>) -> Self {
+        let url = url.into();
+
         assert!(
-            !url.starts_with("attach://"),
+            !url.as_str().starts_with("attach://"),
             "\n[tbot]: Video's URL cannot start with `attach://`\n",
         );
 
@@ -66,8 +73,8 @@ impl<'a> Video<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
-        self.thumb = Some(thumb);
+    pub fn thumb(mut self, thumb: impl Into<Ref<'a, Thumb<'a>>>) -> Self {
+        self.thumb = Some(thumb.into());
         self
     }
 
@@ -106,23 +113,26 @@ impl<'a> Video<'a> {
 
     pub(crate) fn serialize<S>(
         &self,
-        serialize: S,
+        serializer: S,
         video_name: &str,
         thumb_name: &str,
     ) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: Serializer,
     {
-        let mut map = serialize.serialize_map(None)?;
+        let mut map = serializer.serialize_map(None)?;
 
         map.serialize_entry("type", "video")?;
-        map.serialize_entry("media", &self.media.with_name(video_name))?;
+        map.serialize_entry("media", &self.media.borrow_with_name(video_name))?;
 
-        if let Some(thumb) = self.thumb {
-            map.serialize_entry("thumb", &thumb.with_name(thumb_name))?;
+        if let Some(thumb) = &self.thumb {
+            map.serialize_entry(
+                "thumb",
+                &thumb.as_ref().borrow_with_name(thumb_name),
+            )?;
         }
-        if let Some(caption) = self.caption {
-            map.serialize_entry("caption", caption)?;
+        if let Some(caption) = &self.caption {
+            map.serialize_entry("caption", &caption)?;
         }
         if let Some(parse_mode) = self.parse_mode {
             map.serialize_entry("parse_mode", &parse_mode)?;
@@ -144,11 +154,11 @@ impl<'a> Video<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Video<'a> {
-    fn serialize<S>(&self, serialize: S) -> Result<S::Ok, S::Error>
+impl serde::Serialize for Video<'_> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: Serializer,
     {
-        self.serialize(serialize, "video", "thumb")
+        self.serialize(serializer, "video", "thumb")
     }
 }

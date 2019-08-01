@@ -5,6 +5,7 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::Ref,
     },
 };
 
@@ -28,7 +29,7 @@ pub struct SendLocation<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendLocation<'a, C> {
@@ -72,7 +73,7 @@ impl<'a, C> SendLocation<'a, C> {
     /// Confgiures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

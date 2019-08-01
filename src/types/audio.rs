@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::file::id::AsFileId;
+use crate::types::{file::id::AsFileId, value::FileId};
 
 /// Represents an [`Audio`].
 ///
@@ -24,9 +24,16 @@ pub struct Audio {
 }
 
 impl crate::internal::Sealed for Audio {}
+impl crate::internal::Sealed for &'_ Audio {}
 
-impl AsFileId for Audio {
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+impl<'a> AsFileId<'a> for Audio {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.into()
+    }
+}
+
+impl<'a> AsFileId<'a> for &'a Audio {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.as_ref().into()
     }
 }

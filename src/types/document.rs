@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::file::id::AsFileId;
+use crate::types::{file::id::AsFileId, value::FileId};
 
 /// Represents a [`Document`].
 ///
@@ -20,9 +20,16 @@ pub struct Document {
 }
 
 impl crate::internal::Sealed for Document {}
+impl crate::internal::Sealed for &'_ Document {}
 
-impl AsFileId for Document {
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+impl<'a> AsFileId<'a> for Document {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.into()
+    }
+}
+
+impl<'a> AsFileId<'a> for &'a Document {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.as_ref().into()
     }
 }

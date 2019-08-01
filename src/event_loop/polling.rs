@@ -1,7 +1,13 @@
 // use super::*;
 use super::EventLoop;
 use crate::{
-    errors, internal::BoxFuture, prelude::*, types::parameters::Updates,
+    errors,
+    internal::BoxFuture,
+    prelude::*,
+    types::{
+        parameters::Updates,
+        value::{Seq, Value},
+    },
 };
 use futures::Stream;
 use std::{
@@ -32,7 +38,7 @@ pub struct Polling<C> {
     event_loop: EventLoop<C>,
     limit: Option<u8>,
     timeout: Option<u64>,
-    allowed_updates: Option<&'static [Updates]>,
+    allowed_updates: Option<Seq<'static, Updates>>,
     poll_interval: Duration,
     error_handler: Mutex<Box<ErrorHandler>>,
     request_timeout: Option<Duration>,
@@ -70,9 +76,9 @@ impl<C> Polling<C> {
     /// Configures which updates you'd like to listen to.
     pub fn allowed_updates(
         mut self,
-        allowed_updates: &'static [Updates],
+        allowed_updates: impl Into<Seq<'static, Updates>>,
     ) -> Self {
-        self.allowed_updates = Some(allowed_updates);
+        self.allowed_updates = Some(allowed_updates.into());
         self
     }
 
@@ -182,6 +188,15 @@ where
             request_timeout,
             offset,
         } = self;
+
+        let allowed_updates = match allowed_updates {
+            Some(Value::Borrowed(updates)) => Some(updates),
+            Some(Value::Owned(updates)) => {
+                let updates: &'static [Updates] = Box::leak(updates.into());
+                Some(updates)
+            }
+            None => None,
+        };
 
         let request_timeout = request_timeout
             .unwrap_or_else(|| Duration::from_secs(timeout.unwrap_or(0) + 60));

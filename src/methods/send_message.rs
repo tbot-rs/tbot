@@ -8,6 +8,7 @@ use crate::{
             ChatId, ImplicitChatId, NotificationState, ParseMode, Text,
             WebPagePreviewState,
         },
+        value::{self, Ref},
     },
 };
 
@@ -22,7 +23,7 @@ pub struct SendMessage<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    text: &'a str,
+    text: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32,7 +33,7 @@ pub struct SendMessage<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendMessage<'a, C> {
@@ -42,14 +43,17 @@ impl<'a, C> SendMessage<'a, C> {
         chat_id: impl ImplicitChatId<'a>,
         text: impl Into<Text<'a>>,
     ) -> Self {
-        let text = text.into();
+        let Text {
+            text,
+            parse_mode,
+        } = text.into();
 
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            text: text.text,
-            parse_mode: text.parse_mode,
+            text,
+            parse_mode,
             disable_web_page_preview: None,
             disable_notification: None,
             reply_to_message_id: None,
@@ -78,7 +82,7 @@ impl<'a, C> SendMessage<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

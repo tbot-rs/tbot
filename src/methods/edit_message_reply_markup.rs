@@ -6,6 +6,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
+        value::Ref,
     },
 };
 
@@ -21,7 +22,7 @@ pub struct EditMessageReplyMarkup<'a, C> {
     token: Token,
     chat_id: ChatId<'a>,
     message_id: message::Id,
-    reply_markup: inline::Keyboard<'a>,
+    reply_markup: Ref<'a, inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditMessageReplyMarkup<'a, C> {
@@ -30,14 +31,14 @@ impl<'a, C> EditMessageReplyMarkup<'a, C> {
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
-        reply_markup: inline::Keyboard<'a>,
+        reply_markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             message_id,
-            reply_markup,
+            reply_markup: reply_markup.into(),
         }
     }
 }

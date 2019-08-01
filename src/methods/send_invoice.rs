@@ -10,6 +10,7 @@ use crate::{
             Flexibility, NotificationState, Photo, Requirement,
             SendToProviderState,
         },
+        value::{self, Ref, Seq},
         LabeledPrice,
     },
 };
@@ -26,17 +27,17 @@ pub struct SendInvoice<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: chat::Id,
-    title: &'a str,
-    description: &'a str,
-    payload: &'a str,
-    provider_token: &'a str,
-    start_parameter: &'a str,
-    currency: &'a str,
-    prices: &'a [LabeledPrice<'a>],
+    title: value::String<'a>,
+    description: value::String<'a>,
+    payload: value::String<'a>,
+    provider_token: value::String<'a>,
+    start_parameter: value::String<'a>,
+    currency: value::String<'a>,
+    prices: Seq<'a, Ref<'a, LabeledPrice<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    provider_data: Option<&'a str>,
+    provider_data: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    photo: Option<Photo<'a>>,
+    photo: Option<Ref<'a, Photo<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     need_name: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,7 +57,7 @@ pub struct SendInvoice<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> SendInvoice<'a, C> {
@@ -65,25 +66,25 @@ impl<'a, C> SendInvoice<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl Into<chat::Id>,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<value::String<'a>>,
+        description: impl Into<value::String<'a>>,
+        payload: impl Into<value::String<'a>>,
+        provider_token: impl Into<value::String<'a>>,
+        start_parameter: impl Into<value::String<'a>>,
+        currency: impl Into<value::String<'a>>,
+        prices: impl Into<Seq<'a, Ref<'a, LabeledPrice<'a>>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            title,
-            description,
-            payload,
-            provider_token,
-            start_parameter,
-            currency,
-            prices,
+            title: title.into(),
+            description: description.into(),
+            payload: payload.into(),
+            provider_token: provider_token.into(),
+            start_parameter: start_parameter.into(),
+            currency: currency.into(),
+            prices: prices.into(),
             provider_data: None,
             photo: None,
             need_name: None,
@@ -100,14 +101,17 @@ impl<'a, C> SendInvoice<'a, C> {
     }
 
     /// Configures `provider_data`.
-    pub fn provider_data(mut self, provider_data: &'a str) -> Self {
-        self.provider_data = Some(provider_data);
+    pub fn provider_data(
+        mut self,
+        provider_data: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.provider_data = Some(provider_data.into());
         self
     }
 
     /// Configures `photo_url`, `photo_width` and `photo_height`.
-    pub fn photo(mut self, photo: Photo<'a>) -> Self {
-        self.photo = Some(photo);
+    pub fn photo(mut self, photo: impl Into<Ref<'a, Photo<'a>>>) -> Self {
+        self.photo = Some(photo.into());
         self
     }
 
@@ -172,8 +176,11 @@ impl<'a, C> SendInvoice<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }

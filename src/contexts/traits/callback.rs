@@ -1,6 +1,10 @@
 use crate::{
     methods::AnswerCallbackQuery,
-    types::{callback, parameters::CallbackAction},
+    types::{
+        callback,
+        parameters::CallbackAction,
+        value::{self, Ref},
+    },
     Bot,
 };
 
@@ -23,7 +27,7 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
     /// [`alert`]: #method.alert
     fn answer(
         &'a self,
-        action: CallbackAction<'a>,
+        action: impl Into<Ref<'a, CallbackAction<'a>>>,
     ) -> AnswerCallbackQuery<'a, C> {
         self.bot().answer_callback_query(self.id(), action)
     }
@@ -34,17 +38,26 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Opens a URL.
-    fn open_url(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::url(url))
+    fn open_url(
+        &'a self,
+        url: impl Into<value::String<'a>>,
+    ) -> AnswerCallbackQuery<'a, C> {
+        self.answer(CallbackAction::url(url.into()))
     }
 
     /// Shows a notification to the user.
-    fn notify(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::notification(text))
+    fn notify(
+        &'a self,
+        text: impl Into<value::String<'a>>,
+    ) -> AnswerCallbackQuery<'a, C> {
+        self.answer(CallbackAction::notification(text.into()))
     }
 
     /// Shows an alert to the user.
-    fn alert(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::alert(text))
+    fn alert(
+        &'a self,
+        text: impl Into<value::String<'a>>,
+    ) -> AnswerCallbackQuery<'a, C> {
+        self.answer(CallbackAction::alert(text.into()))
     }
 }

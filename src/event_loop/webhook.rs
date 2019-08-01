@@ -1,6 +1,13 @@
 use super::EventLoop;
 use crate::{
-    errors, internal::BoxFuture, prelude::*, types::parameters::Updates, Bot,
+    errors,
+    internal::BoxFuture,
+    prelude::*,
+    types::{
+        parameters::Updates,
+        value::{self, Seq},
+    },
+    Bot,
 };
 use futures::{future::Either, Stream};
 use hyper::{
@@ -26,16 +33,16 @@ pub struct Webhook<'a, C> {
     port: u16,
     request_timeout: Duration,
 
-    url: &'a str,
-    certificate: Option<&'a str>,
+    url: value::String<'a>,
+    certificate: Option<value::String<'a>>,
     max_connections: Option<u8>,
-    allowed_updates: Option<&'a [Updates]>,
+    allowed_updates: Option<Seq<'a, Updates>>,
 }
 
 impl<'a, C> Webhook<'a, C> {
     pub(crate) fn new(
         event_loop: EventLoop<C>,
-        url: &'a str,
+        url: impl Into<value::String<'a>>,
         port: u16,
     ) -> Self {
         Self {
@@ -44,7 +51,7 @@ impl<'a, C> Webhook<'a, C> {
             port,
             request_timeout: Duration::from_secs(60),
 
-            url,
+            url: url.into(),
             certificate: None,
             max_connections: None,
             allowed_updates: None,
@@ -58,8 +65,11 @@ impl<'a, C> Webhook<'a, C> {
     }
 
     /// Configures `certificate`.
-    pub fn certificate(mut self, certificate: &'a str) -> Self {
-        self.certificate = Some(certificate);
+    pub fn certificate(
+        mut self,
+        certificate: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.certificate = Some(certificate.into());
         self
     }
 
@@ -70,8 +80,11 @@ impl<'a, C> Webhook<'a, C> {
     }
 
     /// Configures `allowed_updates`.
-    pub fn allowed_updates(mut self, updates: &'a [Updates]) -> Self {
-        self.allowed_updates = Some(updates);
+    pub fn allowed_updates(
+        mut self,
+        updates: impl Into<Seq<'static, Updates>>,
+    ) -> Self {
+        self.allowed_updates = Some(updates.into());
         self
     }
 

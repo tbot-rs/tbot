@@ -1,3 +1,5 @@
+use crate::types::value;
+
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
 /// Though you can consturct variants directly, there are convenient methods
@@ -8,14 +10,14 @@
 /// [`notification`]: #method.notification
 /// [`alert`]: #method.alert
 /// [`url`]: #method.url
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum CallbackAction<'a> {
     /// No action.
     None,
     /// Show text to the user. The last item configures `show_alert`.
-    Text(&'a str, bool),
+    Text(value::String<'a>, bool),
     /// Open a URL.
-    Url(&'a str),
+    Url(value::String<'a>),
 }
 
 impl<'a> CallbackAction<'a> {
@@ -25,38 +27,17 @@ impl<'a> CallbackAction<'a> {
     }
 
     /// Constructs the `Text` variant that shows a simple notification.
-    pub fn notification(text: &'a str) -> Self {
-        CallbackAction::Text(text, false)
+    pub fn notification(text: impl Into<value::String<'a>>) -> Self {
+        CallbackAction::Text(text.into(), false)
     }
 
     /// Constructs the `Text` variant that shows an alert.
-    pub fn alert(text: &'a str) -> Self {
-        CallbackAction::Text(text, true)
+    pub fn alert(text: impl Into<value::String<'a>>) -> Self {
+        CallbackAction::Text(text.into(), true)
     }
 
     /// Constructs the `Url` variant.
-    pub fn url(url: &'a str) -> Self {
-        CallbackAction::Url(url)
-    }
-
-    pub(crate) fn to_text(self) -> Option<&'a str> {
-        match self {
-            CallbackAction::Text(text, _) => Some(text),
-            _ => None,
-        }
-    }
-
-    pub(crate) fn to_show_alert(self) -> Option<bool> {
-        match self {
-            CallbackAction::Text(_, should_show) => Some(should_show),
-            _ => None,
-        }
-    }
-
-    pub(crate) fn to_url(self) -> Option<&'a str> {
-        match self {
-            CallbackAction::Url(url) => Some(url),
-            _ => None,
-        }
+    pub fn url(url: impl Into<value::String<'a>>) -> Self {
+        CallbackAction::Url(url.into())
     }
 }

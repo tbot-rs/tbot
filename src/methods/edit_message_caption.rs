@@ -6,6 +6,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId, ParseMode, Text},
+        value::{self, Ref},
     },
 };
 
@@ -21,11 +22,11 @@ pub struct EditMessageCaption<'a, C> {
     token: Token,
     chat_id: ChatId<'a>,
     message_id: message::Id,
-    caption: &'a str,
+    caption: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> EditMessageCaption<'a, C> {
@@ -36,22 +37,28 @@ impl<'a, C> EditMessageCaption<'a, C> {
         message_id: message::Id,
         caption: impl Into<Text<'a>>,
     ) -> Self {
-        let caption = caption.into();
+        let Text {
+            text,
+            parse_mode,
+        } = caption.into();
 
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             message_id,
-            caption: caption.text,
-            parse_mode: caption.parse_mode,
+            caption: text,
+            parse_mode,
             reply_markup: None,
         }
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }

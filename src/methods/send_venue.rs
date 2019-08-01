@@ -5,6 +5,7 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::{self, Ref},
     },
 };
 
@@ -21,18 +22,18 @@ pub struct SendVenue<'a, C> {
     chat_id: ChatId<'a>,
     latitude: f64,
     longitude: f64,
-    title: &'a str,
-    address: &'a str,
+    title: value::String<'a>,
+    address: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    foursquare_id: Option<&'a str>,
+    foursquare_id: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    foursquare_type: Option<&'a str>,
+    foursquare_type: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendVenue<'a, C> {
@@ -41,8 +42,8 @@ impl<'a, C> SendVenue<'a, C> {
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
         (latitude, longitude): (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<value::String<'a>>,
+        address: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
@@ -50,8 +51,8 @@ impl<'a, C> SendVenue<'a, C> {
             chat_id: chat_id.into(),
             latitude,
             longitude,
-            title,
-            address,
+            title: title.into(),
+            address: address.into(),
             foursquare_id: None,
             foursquare_type: None,
             disable_notification: None,
@@ -61,14 +62,17 @@ impl<'a, C> SendVenue<'a, C> {
     }
 
     /// Configures `foursquare_id`.
-    pub fn foursquare_id<'b: 'a>(mut self, id: &'b str) -> Self {
-        self.foursquare_id = Some(id);
+    pub fn foursquare_id(mut self, id: impl Into<value::String<'a>>) -> Self {
+        self.foursquare_id = Some(id.into());
         self
     }
 
     /// Configures `foursquare_type`.
-    pub fn foursquare_type<'b: 'a>(mut self, fs_type: &'b str) -> Self {
-        self.foursquare_type = Some(fs_type);
+    pub fn foursquare_type(
+        mut self,
+        fs_type: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.foursquare_type = Some(fs_type.into());
         self
     }
 
@@ -87,7 +91,7 @@ impl<'a, C> SendVenue<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

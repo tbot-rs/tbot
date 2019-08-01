@@ -1,10 +1,10 @@
 //! Types representing a file ID.
 
-use crate::internal::Sealed;
+use crate::{internal::Sealed, types::value::FileId};
 use serde::{Deserialize, Serialize};
 
 /// Represents a file ID.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Id(pub String);
 
@@ -62,19 +62,25 @@ impl Sealed for Ref<'_> {}
 ///
 /// [`file::Id`]: ./struct.Id.html
 #[allow(clippy::module_name_repetitions)] // can't think of a better name
-pub trait AsFileId: Sealed {
+pub trait AsFileId<'a>: Sealed {
     #[doc(hidden)]
-    fn as_file_id(&self) -> Ref<'_>;
+    fn as_file_id(self) -> FileId<'a>;
 }
 
-impl AsFileId for Id {
-    fn as_file_id(&self) -> Ref<'_> {
-        self.as_ref()
+impl<'a> AsFileId<'a> for Id {
+    fn as_file_id(self) -> FileId<'a> {
+        self.into()
     }
 }
 
-impl AsFileId for Ref<'_> {
-    fn as_file_id(&self) -> Ref<'_> {
-        *self
+impl<'a> AsFileId<'a> for Ref<'a> {
+    fn as_file_id(self) -> FileId<'a> {
+        self.into()
+    }
+}
+
+impl<'a> AsFileId<'a> for FileId<'a> {
+    fn as_file_id(self) -> FileId<'a> {
+        self
     }
 }

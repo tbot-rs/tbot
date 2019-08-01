@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::parameters::{ChatId, ImplicitChatId},
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        value,
+    },
 };
 
 /// Represents the [`setChatTitle`][docs] method.
@@ -16,7 +19,7 @@ pub struct SetChatTitle<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    title: &'a str,
+    title: value::String<'a>,
 }
 
 impl<'a, C> SetChatTitle<'a, C> {
@@ -24,13 +27,13 @@ impl<'a, C> SetChatTitle<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        title: &'a str,
+        title: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            title,
+            title: title.into(),
         }
     }
 }

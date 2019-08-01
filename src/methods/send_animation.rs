@@ -1,11 +1,12 @@
 use super::*;
 use crate::{
     errors,
-    internal::{BoxFuture, Client},
+    internal::{AsInnerRef, BoxFuture, Client},
     types::{
         input_file::{Animation, InputFile, Thumb},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::Ref,
     },
 };
 
@@ -18,10 +19,10 @@ pub struct SendAnimation<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    animation: Animation<'a>,
+    animation: Ref<'a, Animation<'a>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendAnimation<'a, C> {
@@ -29,13 +30,13 @@ impl<'a, C> SendAnimation<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        animation: Animation<'a>,
+        animation: impl Into<Ref<'a, Animation<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            animation,
+            animation: animation.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -57,7 +58,7 @@ impl<'a, C> SendAnimation<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -75,25 +76,35 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
+        let animation = self.animation.as_ref();
         let mut multipart = Multipart::new(11)
             .chat_id("chat_id", self.chat_id)
-            .maybe_string("duration", self.animation.duration)
-            .maybe_string("width", self.animation.width)
-            .maybe_string("height", self.animation.height)
-            .maybe_str("caption", self.animation.caption)
-            .maybe_string("parse_mode", self.animation.parse_mode)
-            .maybe_string("disable_notification", self.disable_notification)
-            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_from("duration", animation.duration)
+            .maybe_from("width", animation.width)
+            .maybe_from("height", animation.height)
+            .maybe_str(
+                "caption",
+                match &animation.caption {
+                    Some(caption) => Some(caption.as_str()),
+                    None => None,
+                },
+            )
+            .maybe_json("parse_mode", animation.parse_mode)
+            .maybe_from("disable_notification", self.disable_notification)
+            .maybe_from("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.animation.media {
+        match &animation.media {
             InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("animation", filename, bytes),
-            InputFile::Id(animation) | InputFile::Url(animation) => {
-                multipart = multipart.str("animation", animation);
+            InputFile::Id(id) => {
+                multipart = multipart.str("animation", id.as_ref().0);
+            }
+            InputFile::Url(url) => {
+                multipart = multipart.str("animation", url);
             }
         }
 
@@ -101,7 +112,7 @@ where
             filename,
             bytes,
             ..
-        })) = self.animation.thumb
+        })) = animation.thumb.as_inner_ref()
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

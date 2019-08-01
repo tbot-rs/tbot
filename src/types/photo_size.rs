@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::file::id::AsFileId;
+use crate::types::{file::id::AsFileId, value::FileId};
 
 /// Represents a [`PhotoSize`].
 ///
@@ -18,9 +18,16 @@ pub struct PhotoSize {
 }
 
 impl crate::internal::Sealed for PhotoSize {}
+impl crate::internal::Sealed for &'_ PhotoSize {}
 
-impl AsFileId for PhotoSize {
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+impl<'a> AsFileId<'a> for PhotoSize {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.into()
+    }
+}
+
+impl<'a> AsFileId<'a> for &'a PhotoSize {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.as_ref().into()
     }
 }

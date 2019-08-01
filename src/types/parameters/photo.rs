@@ -1,10 +1,11 @@
+use crate::types::value;
 use serde::Serialize;
 
 /// Represents a photo to be sent as an invoice preview.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Photo<'a> {
     #[serde(rename = "photo_url")]
-    url: &'a str,
+    url: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_size")]
     size: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_width")]
@@ -15,9 +16,9 @@ pub struct Photo<'a> {
 
 impl<'a> Photo<'a> {
     /// Constructs a `Photo`.
-    pub const fn new(url: &'a str) -> Self {
+    pub fn new(url: impl Into<value::String<'a>>) -> Self {
         Self {
-            url,
+            url: url.into(),
             size: None,
             width: None,
             height: None,

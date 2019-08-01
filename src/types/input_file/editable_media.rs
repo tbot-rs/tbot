@@ -1,21 +1,22 @@
 use super::{Animation, Audio, Document, Photo, Video};
+use crate::types::value::Ref;
 use serde::Serialize;
 
 /// Represents media that can be used to edit a message.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 // todo: #[non_exhaustive]
 pub enum EditableMedia<'a> {
     /// An animation that will replace the old media.
-    Animation(Animation<'a>),
+    Animation(Ref<'a, Animation<'a>>),
     /// An audio that will replace the old media.
-    Audio(Audio<'a>),
+    Audio(Ref<'a, Audio<'a>>),
     /// A document that will replace the old media.
-    Document(Document<'a>),
+    Document(Ref<'a, Document<'a>>),
     /// A photo that will replace the old media.
-    Photo(Photo<'a>),
+    Photo(Ref<'a, Photo<'a>>),
     /// A video that will replace the old media.
-    Video(Video<'a>),
+    Video(Ref<'a, Video<'a>>),
 }
 
 impl EditableMedia<'_> {
@@ -71,30 +72,60 @@ impl EditableMedia<'_> {
 
 impl<'a> From<Animation<'a>> for EditableMedia<'a> {
     fn from(animation: Animation<'a>) -> Self {
-        EditableMedia::Animation(animation)
+        EditableMedia::Animation(animation.into())
+    }
+}
+
+impl<'a> From<&'a Animation<'a>> for EditableMedia<'a> {
+    fn from(animation: &'a Animation<'a>) -> Self {
+        EditableMedia::Animation(animation.into())
     }
 }
 
 impl<'a> From<Audio<'a>> for EditableMedia<'a> {
     fn from(audio: Audio<'a>) -> Self {
-        EditableMedia::Audio(audio)
+        EditableMedia::Audio(audio.into())
+    }
+}
+
+impl<'a> From<&'a Audio<'a>> for EditableMedia<'a> {
+    fn from(audio: &'a Audio<'a>) -> Self {
+        EditableMedia::Audio(audio.into())
     }
 }
 
 impl<'a> From<Document<'a>> for EditableMedia<'a> {
     fn from(document: Document<'a>) -> Self {
-        EditableMedia::Document(document)
+        EditableMedia::Document(document.into())
+    }
+}
+
+impl<'a> From<&'a Document<'a>> for EditableMedia<'a> {
+    fn from(document: &'a Document<'a>) -> Self {
+        EditableMedia::Document(document.into())
     }
 }
 
 impl<'a> From<Photo<'a>> for EditableMedia<'a> {
     fn from(photo: Photo<'a>) -> Self {
-        EditableMedia::Photo(photo)
+        EditableMedia::Photo(photo.into())
+    }
+}
+
+impl<'a> From<&'a Photo<'a>> for EditableMedia<'a> {
+    fn from(photo: &'a Photo<'a>) -> Self {
+        EditableMedia::Photo(photo.into())
     }
 }
 
 impl<'a> From<Video<'a>> for EditableMedia<'a> {
     fn from(video: Video<'a>) -> Self {
-        EditableMedia::Video(video)
+        EditableMedia::Video(video.into())
+    }
+}
+
+impl<'a> From<&'a Video<'a>> for EditableMedia<'a> {
+    fn from(video: &'a Video<'a>) -> Self {
+        EditableMedia::Video(video.into())
     }
 }

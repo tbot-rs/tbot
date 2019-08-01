@@ -1,12 +1,15 @@
 use super::*;
-use crate::types::parameters::{ParseMode, Text};
+use crate::types::{
+    parameters::{ParseMode, Text},
+    value::{self, Bytes, FileId},
+};
 use serde::ser::SerializeMap;
 
 /// Represents a photo to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Photo<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) caption: Option<&'a str>,
+    pub(crate) caption: Option<value::String<'a>>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -20,10 +23,10 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Bytes<'a>>) -> Self {
         Self::new(InputFile::File {
-            filename: "photo.jpg",
-            bytes,
+            filename: "photo.jpg".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -32,9 +35,11 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<FileId<'a>>) -> Self {
+        let id = id.into();
+
         assert!(
-            !id.starts_with("attach://"),
+            !id.as_ref().0.starts_with("attach://"),
             "\n[tbot]: Photo's ID cannot start with `attach://`\n",
         );
 
@@ -46,9 +51,11 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<value::String<'a>>) -> Self {
+        let url = url.into();
+
         assert!(
-            !url.starts_with("attach://"),
+            !url.as_str().starts_with("attach://"),
             "\n[tbot]: Photo's URL cannot start with `attach://`\n",
         );
 
@@ -75,10 +82,10 @@ impl<'a> Photo<'a> {
         let mut map = serializer.serialize_map(None)?;
 
         map.serialize_entry("type", "photo")?;
-        map.serialize_entry("media", &self.media.with_name(name))?;
+        map.serialize_entry("media", &self.media.borrow_with_name(name))?;
 
-        if let Some(caption) = self.caption {
-            map.serialize_entry("caption", caption)?;
+        if let Some(caption) = &self.caption {
+            map.serialize_entry("caption", &caption)?;
         }
         if let Some(parse_mode) = self.parse_mode {
             map.serialize_entry("parse_mode", &parse_mode)?;
@@ -88,7 +95,7 @@ impl<'a> Photo<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Photo<'a> {
+impl serde::Serialize for Photo<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

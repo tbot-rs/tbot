@@ -6,6 +6,7 @@ use crate::{
         input_file::{InputFile, Photo},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::Ref,
     },
 };
 
@@ -18,10 +19,10 @@ pub struct SendPhoto<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    photo: Photo<'a>,
+    photo: Ref<'a, Photo<'a>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendPhoto<'a, C> {
@@ -29,13 +30,13 @@ impl<'a, C> SendPhoto<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        photo: Photo<'a>,
+        photo: impl Into<Ref<'a, Photo<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            photo,
+            photo: photo.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -57,7 +58,7 @@ impl<'a, C> SendPhoto<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -75,22 +76,32 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
+        let photo = self.photo.as_ref();
         let mut multipart = Multipart::new(7)
             .chat_id("chat_id", self.chat_id)
-            .maybe_str("caption", self.photo.caption)
-            .maybe_string("parse_mode", self.photo.parse_mode)
-            .maybe_string("disabled_notification", self.disable_notification)
-            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_str(
+                "caption",
+                match &photo.caption {
+                    Some(caption) => Some(caption.as_str()),
+                    None => None,
+                },
+            )
+            .maybe_json("parse_mode", photo.parse_mode)
+            .maybe_from("disabled_notification", self.disable_notification)
+            .maybe_from("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.photo.media {
+        match &photo.media {
             InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("photo", filename, bytes),
-            InputFile::Id(photo) | InputFile::Url(photo) => {
-                multipart = multipart.str("photo", photo);
+            InputFile::Id(id) => {
+                multipart = multipart.str("photo", id.as_ref().0);
+            }
+            InputFile::Url(url) => {
+                multipart = multipart.str("photo", url);
             }
         }
 

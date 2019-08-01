@@ -1,27 +1,30 @@
-use crate::types::LabeledPrice;
+use crate::types::{
+    value::{self, Seq},
+    LabeledPrice,
+};
 use serde::Serialize;
 
 /// Represents a [`ShippingOption`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api/#shippingoption
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Option<'a> {
-    id: &'a str,
-    title: &'a str,
-    prices: &'a [LabeledPrice<'a>],
+    id: value::String<'a>,
+    title: value::String<'a>,
+    prices: Seq<'a, LabeledPrice<'a>>,
 }
 
 impl<'a> Option<'a> {
     /// Constructs a shipping `Option`.
-    pub const fn new(
-        id: &'a str,
-        title: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+    pub fn new(
+        id: impl Into<value::String<'a>>,
+        title: impl Into<value::String<'a>>,
+        prices: impl Into<Seq<'a, LabeledPrice<'a>>>,
     ) -> Self {
         Self {
-            id,
-            title,
-            prices,
+            id: id.into(),
+            title: title.into(),
+            prices: prices.into(),
         }
     }
 }

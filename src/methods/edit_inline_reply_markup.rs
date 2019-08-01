@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::{inline_message_id, keyboard::inline},
+    types::{
+        keyboard::inline,
+        value::{InlineMessageId, Ref},
+    },
 };
 
 /// Represents the [`editMessageReplyMarkup`][docs] method for inline messages.
@@ -15,22 +18,22 @@ pub struct EditInlineReplyMarkup<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_message_id: inline_message_id::Ref<'a>,
-    reply_markup: inline::Keyboard<'a>,
+    inline_message_id: InlineMessageId<'a>,
+    reply_markup: Ref<'a, inline::Keyboard<'a>>,
 }
 
 impl<'a, C> EditInlineReplyMarkup<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: inline_message_id::Ref<'a>,
-        reply_markup: inline::Keyboard<'a>,
+        inline_message_id: impl Into<InlineMessageId<'a>>,
+        reply_markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
-            inline_message_id,
-            reply_markup,
+            inline_message_id: inline_message_id.into(),
+            reply_markup: reply_markup.into(),
         }
     }
 }

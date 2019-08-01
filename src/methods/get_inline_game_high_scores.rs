@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::{game::HighScore, inline_message_id, user},
+    types::{game::HighScore, user, value::InlineMessageId},
 };
 
 /// Represents the [`getGameHighScores`][docs] method for inline messages.
@@ -16,21 +16,21 @@ pub struct GetInlineGameHighScores<'a, C> {
     #[serde(skip)]
     token: Token,
     user_id: user::Id,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
 }
 
 impl<'a, C> GetInlineGameHighScores<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: impl Into<InlineMessageId<'a>>,
         user_id: user::Id,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            inline_message_id,
+            inline_message_id: inline_message_id.into(),
         }
     }
 }

@@ -1,11 +1,12 @@
 use super::*;
 use crate::{
     errors,
-    internal::{BoxFuture, Client},
+    internal::{AsInnerRef, BoxFuture, Client},
     types::{
         input_file::{Document, InputFile, Thumb},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::Ref,
     },
 };
 
@@ -18,10 +19,10 @@ pub struct SendDocument<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    document: Document<'a>,
+    document: Ref<'a, Document<'a>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendDocument<'a, C> {
@@ -29,13 +30,13 @@ impl<'a, C> SendDocument<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        document: Document<'a>,
+        document: impl Into<Ref<'a, Document<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            document,
+            document: document.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -57,7 +58,7 @@ impl<'a, C> SendDocument<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -75,22 +76,32 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
+        let document = self.document.as_ref();
         let mut multipart = Multipart::new(8)
             .chat_id("chat_id", self.chat_id)
-            .maybe_str("caption", self.document.caption)
-            .maybe_string("parse_mode", self.document.parse_mode)
-            .maybe_string("disable_notification", self.disable_notification)
-            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_str(
+                "caption",
+                match &document.caption {
+                    Some(caption) => Some(caption.as_str()),
+                    None => None,
+                },
+            )
+            .maybe_json("parse_mode", document.parse_mode)
+            .maybe_from("disable_notification", self.disable_notification)
+            .maybe_from("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.document.media {
+        match &document.media {
             InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("document", filename, bytes),
-            InputFile::Id(document) | InputFile::Url(document) => {
-                multipart = multipart.str("document", document);
+            InputFile::Id(id) => {
+                multipart = multipart.str("document", id.as_ref().0);
+            }
+            InputFile::Url(url) => {
+                multipart = multipart.str("document", url);
             }
         }
 
@@ -98,7 +109,7 @@ where
             filename,
             bytes,
             ..
-        })) = self.document.thumb
+        })) = document.thumb.as_inner_ref()
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

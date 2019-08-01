@@ -15,15 +15,15 @@ macro_rules! gif_base {
       struct: $struct:ident,
       doc_link_part: $doc_link_part:literal,
     ) => {
-        use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
+        use crate::types::{value::{self, Ref, FileId}, InputMessageContent, parameters::{ParseMode, Text}};
         use serde::Serialize;
 
         /// Represents a non-cached GIF.
-        #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+        #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         pub struct Fresh<'a> {
-            thumb_url: &'a str,
+            thumb_url: value::String<'a>,
             #[serde(rename = concat!($prefix, "_url"))]
-            url: &'a str,
+            url: value::String<'a>,
             #[serde(
                 skip_serializing_if = "Option::is_none",
                 rename = concat!($prefix, "_width")
@@ -41,14 +41,14 @@ macro_rules! gif_base {
             duration: Option<usize>,
         }
 
-        #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+        #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[serde(untagged)]
         enum Kind<'a> {
             Cached {
                 #[serde(rename = concat!($prefix, "_file_id"))]
-                id: &'a str,
+                id: FileId<'a>,
             },
-            Fresh(Fresh<'a>),
+            Fresh(Ref<'a, Fresh<'a>>),
         }
 
         doc! {
@@ -63,27 +63,30 @@ macro_rules! gif_base {
                 "https://core.telegram.org/bots/api#inlinequeryresultcached",
                 $doc_link_part,
             ),
-            #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+            #[derive(Debug, PartialEq, Clone, Serialize)]
             pub struct $struct<'a> {
                 #[serde(flatten)]
                 kind: Kind<'a>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                title: Option<&'a str>,
+                title: Option<value::String<'a>>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                caption: Option<&'a str>,
+                caption: Option<value::String<'a>>,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 parse_mode: Option<ParseMode>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                input_message_content: Option<InputMessageContent<'a>>,
+                input_message_content: Option<Ref<'a, InputMessageContent<'a>>>,
             }
         }
 
         impl<'a> Fresh<'a> {
             /// Constructs a `Fresh` GIF.
-            pub const fn new(thumb_url: &'a str, url: &'a str) -> Self {
+            pub fn new(
+                thumb_url: impl Into<value::String<'a>>,
+                url: impl Into<value::String<'a>>,
+            ) -> Self {
                 Self {
-                    thumb_url,
-                    url,
+                    thumb_url: thumb_url.into(),
+                    url: url.into(),
                     width: None,
                     height: None,
                     duration: None,
@@ -124,9 +127,9 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub fn cached(id: &'a str) -> Self {
+                pub fn cached(id: impl Into<FileId<'a>>) -> Self {
                     Self::new(Kind::Cached {
-                        id,
+                        id: id.into(),
                     })
                 }
             }
@@ -135,14 +138,14 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a fresh `", stringify!($struct), "` result.",
                 ),
-                pub fn fresh(gif: Fresh<'a>) -> Self {
-                    Self::new(Kind::Fresh(gif))
+                pub fn fresh(gif: impl Into<Ref<'a, Fresh<'a>>>) -> Self {
+                    Self::new(Kind::Fresh(gif.into()))
                 }
             }
 
             /// Configures the title of the GIF.
-            pub fn title(mut self, title: &'a str) -> Self {
-                self.title = Some(title);
+            pub fn title(mut self, title: impl Into<value::String<'a>>) -> Self {
+                self.title = Some(title.into());
                 self
             }
 
@@ -158,7 +161,7 @@ macro_rules! gif_base {
             /// Configures the content shown after sending the message.
             pub fn input_message_content(
                 mut self,
-                content: impl Into<InputMessageContent<'a>>,
+                content: impl Into<Ref<'a, InputMessageContent<'a>>>,
             ) -> Self {
                 self.input_message_content = Some(content.into());
                 self

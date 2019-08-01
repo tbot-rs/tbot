@@ -6,6 +6,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
+        value::Ref,
     },
 };
 
@@ -24,7 +25,7 @@ pub struct EditMessageLocation<'a, C> {
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> EditMessageLocation<'a, C> {
@@ -47,8 +48,11 @@ impl<'a, C> EditMessageLocation<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }

@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::user,
+    types::{user, value::Bytes},
 };
 
 /// Represents the [`uploadStickerFile`][docs] method.
@@ -14,21 +14,21 @@ pub struct UploadStickerFile<'a, C> {
     client: &'a Client<C>,
     token: Token,
     user_id: user::Id,
-    png_sticker: &'a [u8],
+    png_sticker: Bytes<'a>,
 }
 
 impl<'a, C> UploadStickerFile<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         user_id: user::Id,
-        png_sticker: &'a [u8],
+        png_sticker: impl Into<Bytes<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            png_sticker,
+            png_sticker: png_sticker.into(),
         }
     }
 }
@@ -45,7 +45,7 @@ where
 
     fn into_future(self) -> Self::Future {
         let (boundary, body) = Multipart::new(2)
-            .string("user_id", &self.user_id)
+            .str("user_id", self.user_id.to_string())
             .file("png_sticker", "sticker.png", self.png_sticker)
             .finish();
 

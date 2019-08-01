@@ -1,6 +1,10 @@
 use crate::{
     methods::AnswerShippingQuery,
-    types::{shipping, User},
+    types::{
+        shipping,
+        value::{self, Ref, Seq},
+        User,
+    },
     Bot,
 };
 use std::sync::Arc;
@@ -44,7 +48,10 @@ impl<C> Shipping<C> {
     /// [`err`]: #method.err
     pub fn answer<'a>(
         &'a self,
-        result: Result<&'a [shipping::Option<'a>], &'a str>,
+        result: Result<
+            Seq<'a, Ref<'a, shipping::Option<'a>>>,
+            value::String<'a>,
+        >,
     ) -> AnswerShippingQuery<'a, C> {
         self.bot.answer_shipping_query(self.id.as_ref(), result)
     }
@@ -52,13 +59,16 @@ impl<C> Shipping<C> {
     /// Reports that shipping is possible and shows possible shipping options.
     pub fn ok<'a>(
         &'a self,
-        options: &'a [shipping::Option<'a>],
+        options: impl Into<Seq<'a, Ref<'a, shipping::Option<'a>>>>,
     ) -> AnswerShippingQuery<'a, C> {
-        self.answer(Ok(options))
+        self.answer(Ok(options.into()))
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(&'a self, err: &'a str) -> AnswerShippingQuery<'a, C> {
-        self.answer(Err(err))
+    pub fn err<'a>(
+        &'a self,
+        err: impl Into<value::String<'a>>,
+    ) -> AnswerShippingQuery<'a, C> {
+        self.answer(Err(err.into()))
     }
 }

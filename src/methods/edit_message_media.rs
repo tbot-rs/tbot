@@ -7,6 +7,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
+        value::{Ref, Value},
     },
 };
 
@@ -20,8 +21,8 @@ pub struct EditMessageMedia<'a, C> {
     token: Token,
     chat_id: ChatId<'a>,
     message_id: message::Id,
-    media: EditableMedia<'a>,
-    reply_markup: Option<inline::Keyboard<'a>>,
+    media: Ref<'a, EditableMedia<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> EditMessageMedia<'a, C> {
@@ -30,7 +31,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
-        media: impl Into<EditableMedia<'a>>,
+        media: impl Into<Ref<'a, EditableMedia<'a>>>,
     ) -> Self {
         Self {
             client,
@@ -43,8 +44,11 @@ impl<'a, C> EditMessageMedia<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }
@@ -62,42 +66,64 @@ where
     fn into_future(self) -> Self::Future {
         let mut multipart = Multipart::new(5)
             .chat_id("chat_id", self.chat_id)
-            .string("message_id", &self.message_id)
+            .from("message_id", &self.message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match &self.media {
-            EditableMedia::Animation(Animation {
+        let media = self.media.as_ref();
+        let name = media.name();
+
+        match media {
+            EditableMedia::Animation(Value::Owned(Animation {
                 media,
                 ..
-            })
-            | EditableMedia::Audio(Audio {
+            }))
+            | EditableMedia::Animation(Value::Borrowed(Animation {
                 media,
                 ..
-            })
-            | EditableMedia::Document(Document {
+            }))
+            | EditableMedia::Audio(Value::Owned(Audio {
                 media,
                 ..
-            })
-            | EditableMedia::Photo(Photo {
+            }))
+            | EditableMedia::Audio(Value::Borrowed(Audio {
                 media,
                 ..
-            })
-            | EditableMedia::Video(Video {
+            }))
+            | EditableMedia::Document(Value::Owned(Document {
                 media,
                 ..
-            }) => {
+            }))
+            | EditableMedia::Document(Value::Borrowed(Document {
+                media,
+                ..
+            }))
+            | EditableMedia::Photo(Value::Owned(Photo {
+                media,
+                ..
+            }))
+            | EditableMedia::Photo(Value::Borrowed(Photo {
+                media,
+                ..
+            }))
+            | EditableMedia::Video(Value::Owned(Video {
+                media,
+                ..
+            }))
+            | EditableMedia::Video(Value::Borrowed(Video {
+                media,
+                ..
+            })) => {
                 if let InputFile::File {
                     filename,
                     bytes,
                 } = media
                 {
-                    multipart =
-                        multipart.file(self.media.name(), filename, bytes);
+                    multipart = multipart.file(name, filename, bytes);
                 }
             }
         }
 
-        let (boundary, body) = multipart.json("media", self.media).finish();
+        let (boundary, body) = multipart.json("media", media).finish();
 
         Box::new(send_method(
             self.client,

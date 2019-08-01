@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::{passport, user},
+    types::{
+        passport, user,
+        value::{Ref, Seq},
+    },
 };
 
 /// Represents the [`setPassportDataErrors`][docs] method.
@@ -16,21 +19,21 @@ pub struct SetPassportDataErrors<'a, C> {
     #[serde(skip)]
     token: Token,
     user_id: user::Id,
-    errors: &'a [passport::element::Error<'a>],
+    errors: Seq<'a, Ref<'a, passport::element::Error<'a>>>,
 }
 
 impl<'a, C> SetPassportDataErrors<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         user_id: user::Id,
-        errors: &'a [passport::element::Error<'a>],
+        errors: impl Into<Seq<'a, Ref<'a, passport::element::Error<'a>>>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            errors,
+            errors: errors.into(),
         }
     }
 }

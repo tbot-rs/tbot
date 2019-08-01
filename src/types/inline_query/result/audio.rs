@@ -4,18 +4,19 @@
 
 use crate::types::{
     parameters::{ParseMode, Text},
+    value::{self, FileId, Ref},
     InputMessageContent,
 };
 use serde::Serialize;
 
 /// Represents a non-cached audio.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Fresh<'a> {
     #[serde(rename = "audio_url")]
-    url: &'a str,
-    title: &'a str,
+    url: value::String<'a>,
+    title: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    performer: Option<&'a str>,
+    performer: Option<value::String<'a>>,
     #[serde(
         rename = "audio_duration",
         skip_serializing_if = "Option::is_none"
@@ -23,46 +24,52 @@ pub struct Fresh<'a> {
     duration: Option<usize>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "audio_file_id")]
-        id: &'a str,
+        id: FileId<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Ref<'a, Fresh<'a>>),
 }
 
 /// Represents an [`InlineQueryResultAudio`]/[`InlineQueryResultCachedAudio`].
 ///
 /// [`InlineQueryResultAudio`]: https://core.telegram.org/bots/api#inlinequeryresultaudio
 /// [`InlineQueryResultCachedAudio`]: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct Audio<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
+    caption: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<Ref<'a, InputMessageContent<'a>>>,
 }
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` audio.
-    pub const fn new(url: &'a str, title: &'a str) -> Self {
+    pub fn new(
+        url: impl Into<value::String<'a>>,
+        title: impl Into<value::String<'a>>,
+    ) -> Self {
         Self {
-            url,
-            title,
+            url: url.into(),
+            title: title.into(),
             performer: None,
             duration: None,
         }
     }
 
     /// Configures the performer of the audio.
-    pub fn performer(mut self, performer: &'a str) -> Self {
-        self.performer = Some(performer);
+    pub fn performer(
+        mut self,
+        performer: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.performer = Some(performer.into());
         self
     }
 
@@ -84,15 +91,15 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs a cached `Audio` result.
-    pub fn cached(id: &'a str) -> Self {
+    pub fn cached(id: impl Into<FileId<'a>>) -> Self {
         Self::new(Kind::Cached {
-            id,
+            id: id.into(),
         })
     }
 
     /// Constructs a fresh `Audio` result.
-    pub fn fresh(audio: Fresh<'a>) -> Self {
-        Self::new(Kind::Fresh(audio))
+    pub fn fresh(audio: impl Into<Ref<'a, Fresh<'a>>>) -> Self {
+        Self::new(Kind::Fresh(audio.into()))
     }
 
     /// Configures the caption of the audio.
@@ -107,7 +114,7 @@ impl<'a> Audio<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<Ref<'a, InputMessageContent<'a>>>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self

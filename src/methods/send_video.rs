@@ -1,11 +1,12 @@
 use super::*;
 use crate::{
     errors,
-    internal::{BoxFuture, Client},
+    internal::{AsInnerRef, BoxFuture, Client},
     types::{
         input_file::{InputFile, Thumb, Video},
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::Ref,
     },
 };
 
@@ -18,10 +19,10 @@ pub struct SendVideo<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    video: Video<'a>,
+    video: Ref<'a, Video<'a>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendVideo<'a, C> {
@@ -29,13 +30,13 @@ impl<'a, C> SendVideo<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        video: Video<'a>,
+        video: impl Into<Ref<'a, Video<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            video,
+            video: video.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -57,7 +58,7 @@ impl<'a, C> SendVideo<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self
@@ -75,26 +76,36 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
+        let video = self.video.as_ref();
         let mut multipart = Multipart::new(12)
             .chat_id("chat_id", self.chat_id)
-            .maybe_string("duration", self.video.duration)
-            .maybe_string("width", self.video.width)
-            .maybe_string("height", self.video.height)
-            .maybe_str("caption", self.video.caption)
-            .maybe_string("parse_mode", self.video.parse_mode)
-            .maybe_string("disable_notification", self.disable_notification)
-            .maybe_string("supports_streaming", self.video.supports_streaming)
-            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_from("duration", video.duration)
+            .maybe_from("width", video.width)
+            .maybe_from("height", video.height)
+            .maybe_str(
+                "caption",
+                match &video.caption {
+                    Some(caption) => Some(caption.as_str()),
+                    None => None,
+                },
+            )
+            .maybe_json("parse_mode", video.parse_mode)
+            .maybe_from("disable_notification", self.disable_notification)
+            .maybe_from("supports_streaming", video.supports_streaming)
+            .maybe_from("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.video.media {
+        match &video.media {
             InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("video", filename, bytes),
-            InputFile::Id(audio) | InputFile::Url(audio) => {
-                multipart = multipart.str("video", audio);
+            InputFile::Id(id) => {
+                multipart = multipart.str("video", id.as_ref().0);
+            }
+            InputFile::Url(url) => {
+                multipart = multipart.str("video", url);
             }
         }
 
@@ -102,7 +113,7 @@ where
             filename,
             bytes,
             ..
-        })) = self.video.thumb
+        })) = video.thumb.as_inner_ref()
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::parameters::Updates,
+    types::{
+        parameters::Updates,
+        value::{self, Seq},
+    },
 };
 
 /// This method isn't meant to be used by users directly.
@@ -11,20 +14,20 @@ use crate::{
 pub(crate) struct SetWebhook<'a, C> {
     client: &'a Client<C>,
     token: Token,
-    url: &'a str,
-    certificate: Option<&'a str>,
+    url: value::String<'a>,
+    certificate: Option<value::String<'a>>,
     max_connections: Option<u8>,
-    allowed_updates: Option<&'a [Updates]>,
+    allowed_updates: Option<Seq<'a, Updates>>,
 }
 
 impl<'a, C> SetWebhook<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
         token: Token,
-        url: &'a str,
-        certificate: Option<&'a str>,
+        url: value::String<'a>,
+        certificate: Option<value::String<'a>>,
         max_connections: Option<u8>,
-        allowed_updates: Option<&'a [Updates]>,
+        allowed_updates: Option<Seq<'a, Updates>>,
     ) -> Self {
         Self {
             client,
@@ -51,7 +54,7 @@ where
         let (boundary, body) = Multipart::new(4)
             .str("url", self.url)
             .maybe_str("certificate", self.certificate)
-            .maybe_string("max_connections", self.max_connections)
+            .maybe_from("max_connections", self.max_connections)
             .maybe_json("allowed_updates", self.allowed_updates)
             .finish();
 

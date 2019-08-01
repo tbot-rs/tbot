@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::{inline_message_id, keyboard::inline},
+    types::{
+        keyboard::inline,
+        value::{InlineMessageId, Ref},
+    },
 };
 
 /// Represents the [`editMessageLiveLocation`][docs] method for inline messages.
@@ -15,24 +18,24 @@ pub struct EditInlineLocation<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> EditInlineLocation<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: impl Into<InlineMessageId<'a>>,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {
             client,
             token,
-            inline_message_id,
+            inline_message_id: inline_message_id.into(),
             latitude,
             longitude,
             reply_markup: None,
@@ -40,8 +43,11 @@ impl<'a, C> EditInlineLocation<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }

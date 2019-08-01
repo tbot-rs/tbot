@@ -5,6 +5,7 @@
 use super::Thumb;
 use crate::types::{
     parameters::{ParseMode, Text},
+    value::{self, FileId, Ref},
     InputMessageContent,
 };
 use serde::Serialize;
@@ -22,42 +23,42 @@ pub enum MimeType {
 }
 
 /// Represents a non-cached document.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Fresh<'a> {
     #[serde(rename = "document_url")]
-    url: &'a str,
+    url: value::String<'a>,
     mime_type: MimeType,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    thumb: Option<Thumb<'a>>,
+    thumb: Option<Ref<'a, Thumb<'a>>>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "document_file_id")]
-        id: &'a str,
+        id: FileId<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Ref<'a, Fresh<'a>>),
 }
 
 /// Represents an [`InlineQueryResultDocument`]/[`InlineQueryResultCachedDocument`].
 ///
 /// [`InlineQueryResultDocument`]: https://core.telegram.org/bots/api#inlinequeryresultdocument
 /// [`InlineQueryResultCachedDocument`]: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct Document<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
-    title: &'a str,
+    title: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
+    caption: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<Ref<'a, InputMessageContent<'a>>>,
 }
 
 impl MimeType {
@@ -74,23 +75,23 @@ impl MimeType {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` document.
-    pub const fn new(url: &'a str, mime_type: MimeType) -> Self {
+    pub fn new(url: impl Into<value::String<'a>>, mime_type: MimeType) -> Self {
         Self {
-            url,
+            url: url.into(),
             mime_type,
             thumb: None,
         }
     }
 
     /// Configures the thumb of the document.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
-        self.thumb = Some(thumb);
+    pub fn thumb(mut self, thumb: impl Into<Ref<'a, Thumb<'a>>>) -> Self {
+        self.thumb = Some(thumb.into());
         self
     }
 }
 
 impl<'a> Document<'a> {
-    const fn new(title: &'a str, kind: Kind<'a>) -> Self {
+    const fn new(title: value::String<'a>, kind: Kind<'a>) -> Self {
         Self {
             kind,
             title,
@@ -102,23 +103,32 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub fn cached(title: &'a str, id: &'a str) -> Self {
+    pub fn cached(
+        title: impl Into<value::String<'a>>,
+        id: impl Into<FileId<'a>>,
+    ) -> Self {
         Self::new(
-            title,
+            title.into(),
             Kind::Cached {
-                id,
+                id: id.into(),
             },
         )
     }
 
     /// Constructs a fresh `Document` result.
-    pub fn fresh(title: &'a str, document: Fresh<'a>) -> Self {
-        Self::new(title, Kind::Fresh(document))
+    pub fn fresh(
+        title: impl Into<value::String<'a>>,
+        document: impl Into<Ref<'a, Fresh<'a>>>,
+    ) -> Self {
+        Self::new(title.into(), Kind::Fresh(document.into()))
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.description = Some(description);
+    pub fn description(
+        mut self,
+        description: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.description = Some(description.into());
         self
     }
 
@@ -134,7 +144,7 @@ impl<'a> Document<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<Ref<'a, InputMessageContent<'a>>>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self

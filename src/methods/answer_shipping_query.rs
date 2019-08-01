@@ -4,7 +4,10 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     prelude::*,
-    types::shipping,
+    types::{
+        shipping,
+        value::{self, Seq, ShippingQueryId},
+    },
     Token,
 };
 use serde::Serialize;
@@ -19,28 +22,37 @@ pub struct AnswerShippingQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    shipping_query_id: shipping::query::id::Ref<'a>,
+    shipping_query_id: ShippingQueryId<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_options: Option<&'a [shipping::Option<'a>]>,
+    shipping_options: Option<Seq<'a, value::Ref<'a, shipping::Option<'a>>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    error_message: Option<&'a str>,
+    error_message: Option<value::String<'a>>,
 }
 
 impl<'a, C> AnswerShippingQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        shipping_query_id: shipping::query::id::Ref<'a>,
-        result: Result<&'a [shipping::Option<'a>], &'a str>,
+        shipping_query_id: impl Into<ShippingQueryId<'a>>,
+        result: Result<
+            Seq<'a, value::Ref<'a, shipping::Option<'a>>>,
+            value::String<'a>,
+        >,
     ) -> Self {
+        let ok = result.is_ok();
+        let (shipping_options, error_message) = match result {
+            Ok(shipping_options) => (Some(shipping_options), None),
+            Err(error_message) => (None, Some(error_message)),
+        };
+
         Self {
             client,
             token,
-            shipping_query_id,
-            ok: result.is_ok(),
-            shipping_options: result.ok(),
-            error_message: result.err(),
+            shipping_query_id: shipping_query_id.into(),
+            ok,
+            shipping_options,
+            error_message,
         }
     }
 }

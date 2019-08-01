@@ -1,5 +1,8 @@
 //! Types representing uploadable media.
 
+use crate::types::value::{self, Bytes, FileId, Ref};
+use serde::{Serialize, Serializer};
+
 mod animation;
 mod audio;
 mod chat_photo;
@@ -20,50 +23,56 @@ pub use {
     video_note::*, voice::*,
 };
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub(crate) enum InputFile<'a> {
     File {
-        filename: &'a str,
-        bytes: &'a [u8],
+        filename: value::String<'a>,
+        bytes: Bytes<'a>,
     },
-    Url(&'a str),
-    Id(&'a str),
+    Url(value::String<'a>),
+    Id(FileId<'a>),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub(crate) struct WithName<'a> {
-    pub(crate) file: InputFile<'a>,
+    pub(crate) file: Ref<'a, InputFile<'a>>,
     pub(crate) name: &'a str,
 }
 
 impl<'a> InputFile<'a> {
     fn serialize<S>(&self, serializer: S, name: &str) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: Serializer,
     {
         match self {
             InputFile::File {
                 ..
             } => serializer.serialize_str(&format!("attach://{}", name)),
-            InputFile::Url(file) | InputFile::Id(file) => {
-                serializer.serialize_str(file)
-            }
+            InputFile::Url(url) => url.serialize(serializer),
+            InputFile::Id(id) => id.serialize(serializer),
         }
     }
 
-    const fn with_name(self, name: &'a str) -> WithName<'a> {
+    fn borrow_with_name(&'a self, name: &'a str) -> WithName<'a> {
         WithName {
-            file: self,
+            file: self.into(),
+            name,
+        }
+    }
+
+    fn own_with_name(self, name: &'a str) -> WithName<'a> {
+        WithName {
+            file: self.into(),
             name,
         }
     }
 }
 
-impl<'a> serde::Serialize for WithName<'a> {
+impl<'a> Serialize for WithName<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: Serializer,
     {
-        self.file.serialize(serializer, self.name)
+        self.file.as_ref().serialize(serializer, self.name)
     }
 }

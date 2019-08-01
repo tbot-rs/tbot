@@ -4,7 +4,10 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     prelude::*,
-    types::inline_query,
+    types::{
+        inline_query,
+        value::{self, InlineQueryId, Seq},
+    },
     Token,
 };
 use serde::Serialize;
@@ -19,32 +22,32 @@ pub struct AnswerInlineQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_query_id: inline_query::id::Ref<'a>,
-    results: &'a [inline_query::Result<'a>],
+    inline_query_id: InlineQueryId<'a>,
+    results: Seq<'a, value::Ref<'a, inline_query::Result<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_personal: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    next_offset: Option<&'a str>,
+    next_offset: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_text: Option<&'a str>,
+    switch_pm_text: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_parameter: Option<&'a str>,
+    switch_pm_parameter: Option<value::String<'a>>,
 }
 
 impl<'a, C> AnswerInlineQuery<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_query_id: inline_query::id::Ref<'a>,
-        results: &'a [inline_query::Result<'a>],
+        inline_query_id: impl Into<InlineQueryId<'a>>,
+        results: impl Into<Seq<'a, value::Ref<'a, inline_query::Result<'a>>>>,
     ) -> Self {
         Self {
             client,
             token,
-            inline_query_id,
-            results,
+            inline_query_id: inline_query_id.into(),
+            results: results.into(),
             cache_time: None,
             is_personal: None,
             next_offset: None,
@@ -66,13 +69,17 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     }
 
     /// Configures `next_offset`.
-    pub fn next_offset(mut self, offset: &'a str) -> Self {
-        self.next_offset = Some(offset);
+    pub fn next_offset(mut self, offset: impl Into<value::String<'a>>) -> Self {
+        self.next_offset = Some(offset.into());
         self
     }
 
     /// Configures `switch_pm_text` and `switch_pm_parameter`.
-    pub fn switch_pm(mut self, text: &'a str, parameter: &'a str) -> Self {
+    pub fn switch_pm(
+        mut self,
+        text: value::String<'a>,
+        parameter: value::String<'a>,
+    ) -> Self {
         self.switch_pm_text = Some(text);
         self.switch_pm_parameter = Some(parameter);
         self

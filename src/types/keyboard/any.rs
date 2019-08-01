@@ -2,7 +2,7 @@ use super::{inline, reply, ForceReply};
 use serde::Serialize;
 
 /// An enum of possible keyboards.
-#[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Serialize, Debug, PartialEq, Eq, Clone, Hash)]
 #[serde(untagged)]
 // todo: #[non_exhaustive]
 pub enum Any<'a> {
@@ -62,6 +62,24 @@ impl<'a> From<inline::Markup<'a>> for Any<'a> {
     }
 }
 
+impl<'a> From<Vec<inline::InnerMarkup<'a>>> for Any<'a> {
+    fn from(keyboard: Vec<inline::InnerMarkup<'a>>) -> Self {
+        Any::Inline(keyboard.into())
+    }
+}
+
+impl<'a> From<&'a Vec<inline::InnerMarkup<'a>>> for Any<'a> {
+    fn from(keyboard: &'a Vec<inline::InnerMarkup<'a>>) -> Self {
+        Any::Inline(keyboard.into())
+    }
+}
+
+impl<'a> From<&'a [inline::InnerMarkup<'a>]> for Any<'a> {
+    fn from(keyboard: &'a [inline::InnerMarkup<'a>]) -> Self {
+        Any::Inline(keyboard.into())
+    }
+}
+
 impl<'a> From<reply::Keyboard<'a>> for Any<'a> {
     fn from(keyboard: reply::Keyboard<'a>) -> Self {
         Any::Reply(keyboard)
@@ -70,6 +88,24 @@ impl<'a> From<reply::Keyboard<'a>> for Any<'a> {
 
 impl<'a> From<reply::Markup<'a>> for Any<'a> {
     fn from(keyboard: reply::Markup<'a>) -> Self {
+        Any::Reply(keyboard.into())
+    }
+}
+
+impl<'a> From<Vec<reply::InnerMarkup<'a>>> for Any<'a> {
+    fn from(keyboard: Vec<reply::InnerMarkup<'a>>) -> Self {
+        Any::Reply(keyboard.into())
+    }
+}
+
+impl<'a> From<&'a Vec<reply::InnerMarkup<'a>>> for Any<'a> {
+    fn from(keyboard: &'a Vec<reply::InnerMarkup<'a>>) -> Self {
+        Any::Reply(keyboard.into())
+    }
+}
+
+impl<'a> From<&'a [reply::InnerMarkup<'a>]> for Any<'a> {
+    fn from(keyboard: &'a [reply::InnerMarkup<'a>]) -> Self {
         Any::Reply(keyboard.into())
     }
 }

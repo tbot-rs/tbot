@@ -6,6 +6,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
+        value::Ref,
     },
 };
 
@@ -22,7 +23,7 @@ pub struct StopMessageLocation<'a, C> {
     chat_id: ChatId<'a>,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> StopMessageLocation<'a, C> {
@@ -42,8 +43,11 @@ impl<'a, C> StopMessageLocation<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }

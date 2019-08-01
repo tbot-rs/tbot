@@ -1,26 +1,27 @@
 use super::*;
+use crate::types::value::Ref;
 use serde::{
     ser::{SerializeSeq, Serializer},
     Serialize,
 };
 
 /// Represents a media that can be sent in a group (aka albums).
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 // todo: #[non_exhaustive]
 pub enum GroupMedia<'a> {
     /// A group's photo.
-    Photo(Photo<'a>),
+    Photo(Ref<'a, Photo<'a>>),
     /// A group's video.
-    Video(Video<'a>),
+    Video(Ref<'a, Video<'a>>),
 }
 
 struct WithIndex<'a> {
-    media: GroupMedia<'a>,
+    media: &'a GroupMedia<'a>,
     index: usize,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub(crate) struct Album<'a>(pub &'a [GroupMedia<'a>]);
+pub(crate) struct Album<'a>(pub &'a [Ref<'a, GroupMedia<'a>>]);
 
 impl GroupMedia<'_> {
     /// Checks if `self` is `Photo`.
@@ -51,13 +52,18 @@ impl GroupMedia<'_> {
             GroupMedia::Photo(photo) => {
                 let name = format!("photo_{}", index);
 
-                photo.serialize(serializer, &name)
+                Photo::serialize(photo.as_ref(), serializer, &name)
             }
             GroupMedia::Video(video) => {
                 let video_name = format!("video_{}", index);
                 let thumb_name = format!("thumb_{}", index);
 
-                video.serialize(serializer, &video_name, &thumb_name)
+                Video::serialize(
+                    video.as_ref(),
+                    serializer,
+                    &video_name,
+                    &thumb_name,
+                )
             }
         }
     }
@@ -65,17 +71,29 @@ impl GroupMedia<'_> {
 
 impl<'a> From<Photo<'a>> for GroupMedia<'a> {
     fn from(photo: Photo<'a>) -> Self {
-        GroupMedia::Photo(photo)
+        GroupMedia::Photo(photo.into())
+    }
+}
+
+impl<'a> From<&'a Photo<'a>> for GroupMedia<'a> {
+    fn from(photo: &'a Photo<'a>) -> Self {
+        GroupMedia::Photo(photo.into())
     }
 }
 
 impl<'a> From<Video<'a>> for GroupMedia<'a> {
     fn from(video: Video<'a>) -> Self {
-        GroupMedia::Video(video)
+        GroupMedia::Video(video.into())
     }
 }
 
-impl<'a> Serialize for Album<'a> {
+impl<'a> From<&'a Video<'a>> for GroupMedia<'a> {
+    fn from(video: &'a Video<'a>) -> Self {
+        GroupMedia::Video(video.into())
+    }
+}
+
+impl Serialize for Album<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -84,7 +102,7 @@ impl<'a> Serialize for Album<'a> {
 
         for (index, media) in self.0.iter().enumerate() {
             let with_index = WithIndex {
-                media: *media,
+                media: media.as_ref(),
                 index,
             };
 
@@ -95,7 +113,7 @@ impl<'a> Serialize for Album<'a> {
     }
 }
 
-impl<'a> Serialize for WithIndex<'a> {
+impl Serialize for WithIndex<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

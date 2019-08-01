@@ -1,11 +1,12 @@
 use super::*;
 use crate::{
     errors,
-    internal::{BoxFuture, Client},
+    internal::{AsInnerRef, BoxFuture, Client},
     types::{
         input_file::*,
         message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::{Ref, Seq, Value},
     },
 };
 
@@ -18,7 +19,7 @@ pub struct SendMediaGroup<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    media: &'a [GroupMedia<'a>],
+    media: Seq<'a, Ref<'a, GroupMedia<'a>>>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
 }
@@ -29,13 +30,13 @@ impl<'a, C> SendMediaGroup<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Seq<'a, Ref<'a, GroupMedia<'a>>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            media,
+            media: media.into(),
             disable_notification: None,
             reply_to_message_id: None,
         }
@@ -65,27 +66,36 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let mut multipart = Multipart::new(4 + self.media.len())
-            .chat_id("chat_id", self.chat_id)
-            .maybe_string("disabled_notification", self.disable_notification)
-            .maybe_string("reply_to_message_id", self.reply_to_message_id);
+        let media = self.media.as_slice();
 
-        for (index, media) in self.media.iter().enumerate() {
-            match media {
-                GroupMedia::Photo(Photo {
+        let mut multipart = Multipart::new(4 + media.len())
+            .chat_id("chat_id", self.chat_id)
+            .maybe_from("disabled_notification", self.disable_notification)
+            .maybe_from("reply_to_message_id", self.reply_to_message_id);
+
+        for (index, media) in media.iter().enumerate() {
+            match media.as_ref() {
+                GroupMedia::Photo(Value::Owned(Photo {
                     media:
                         InputFile::File {
                             filename,
                             bytes,
                         },
                     ..
-                }) => {
+                }))
+                | GroupMedia::Photo(Value::Borrowed(Photo {
+                    media:
+                        InputFile::File {
+                            filename,
+                            bytes,
+                        },
+                    ..
+                })) => {
                     let name = format!("photo_{}", index);
 
-                    multipart =
-                        multipart.file_owned_name(name, filename, bytes);
+                    multipart = multipart.file(name, filename, bytes);
                 }
-                GroupMedia::Video(Video {
+                GroupMedia::Video(Value::Owned(Video {
                     media:
                         InputFile::File {
                             filename,
@@ -93,26 +103,33 @@ where
                         },
                     thumb,
                     ..
-                }) => {
+                }))
+                | GroupMedia::Video(Value::Borrowed(Video {
+                    media:
+                        InputFile::File {
+                            filename,
+                            bytes,
+                        },
+                    thumb,
+                    ..
+                })) => {
                     let name = format!("video_{}", index);
-                    multipart =
-                        multipart.file_owned_name(name, filename, bytes);
+                    multipart = multipart.file(name, filename, bytes);
 
                     if let Some(Thumb(InputFile::File {
                         filename,
                         bytes,
-                    })) = thumb
+                    })) = thumb.as_inner_ref()
                     {
                         let name = format!("thumb_{}", index);
-                        multipart =
-                            multipart.file_owned_name(name, filename, bytes);
+                        multipart = multipart.file(name, filename, bytes);
                     }
                 }
                 _ => (),
             }
         }
 
-        let media = Album(self.media);
+        let media = Album(media);
         let (boundary, body) = multipart.json("media", &media).finish();
 
         Box::new(send_method(

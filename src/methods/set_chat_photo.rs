@@ -5,6 +5,7 @@ use crate::{
     types::{
         input_file::{ChatPhoto, InputFile},
         parameters::{ChatId, ImplicitChatId},
+        value::Ref,
     },
 };
 
@@ -17,7 +18,7 @@ pub struct SetChatPhoto<'a, C> {
     client: &'a Client<C>,
     token: Token,
     chat_id: ChatId<'a>,
-    photo: ChatPhoto<'a>,
+    photo: Ref<'a, ChatPhoto<'a>>,
 }
 
 impl<'a, C> SetChatPhoto<'a, C> {
@@ -25,13 +26,13 @@ impl<'a, C> SetChatPhoto<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        photo: ChatPhoto<'a>,
+        photo: impl Into<Ref<'a, ChatPhoto<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            photo,
+            photo: photo.into(),
         }
     }
 }
@@ -48,17 +49,17 @@ where
 
     fn into_future(self) -> Self::Future {
         let chat_id = match self.chat_id {
-            ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
+            ChatId::Id(id) => id.to_string().into(),
+            ChatId::Username(username) => username,
         };
 
-        let mut multipart = Multipart::new(2).str("chat_id", &chat_id);
+        let mut multipart = Multipart::new(2).str("chat_id", chat_id);
 
         if let InputFile::File {
             filename,
             bytes,
             ..
-        } = self.photo.0.file
+        } = self.photo.as_ref().0.file.as_ref()
         {
             multipart = multipart.file("photo", filename, bytes);
         }

@@ -4,6 +4,7 @@
 
 use crate::types::{
     parameters::{ParseMode, Text},
+    value::{self, FileId, Ref},
     InputMessageContent,
 };
 use serde::Serialize;
@@ -21,12 +22,12 @@ pub enum MimeType {
 }
 
 /// Represents a non-cached video.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Fresh<'a> {
     #[serde(rename = "video_url")]
-    url: &'a str,
+    url: value::String<'a>,
     mime_type: MimeType,
-    thumb_url: &'a str,
+    thumb_url: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "video_width")]
     width: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "video_height")]
@@ -38,31 +39,31 @@ pub struct Fresh<'a> {
     duration: Option<usize>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "video_file_id")]
-        id: &'a str,
+        id: FileId<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Ref<'a, Fresh<'a>>),
 }
 
 /// Represents an [`InlineQueryResultVideo`]/[`InlineQueryResultCachedVideo`].
 ///
 /// [`InlineQueryResultVideo`]: https://core.telegram.org/bots/api#inlinequeryresultvideo
 /// [`InlineQueryResultCachedVideo`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct Video<'a> {
     kind: Kind<'a>,
-    title: &'a str,
+    title: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
+    caption: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<Ref<'a, InputMessageContent<'a>>>,
 }
 
 impl MimeType {
@@ -79,15 +80,15 @@ impl MimeType {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` video.
-    pub const fn new(
-        url: &'a str,
+    pub fn new(
+        url: impl Into<value::String<'a>>,
         mime_type: MimeType,
-        thumb_url: &'a str,
+        thumb_url: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
-            url,
+            url: url.into(),
             mime_type,
-            thumb_url,
+            thumb_url: thumb_url.into(),
             width: None,
             height: None,
             duration: None,
@@ -114,7 +115,7 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Video<'a> {
-    const fn new(title: &'a str, kind: Kind<'a>) -> Self {
+    const fn new(title: value::String<'a>, kind: Kind<'a>) -> Self {
         Self {
             kind,
             title,
@@ -126,23 +127,32 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a cached `Video` result.
-    pub fn cached(title: &'a str, id: &'a str) -> Self {
+    pub fn cached(
+        title: impl Into<value::String<'a>>,
+        id: impl Into<FileId<'a>>,
+    ) -> Self {
         Self::new(
-            title,
+            title.into(),
             Kind::Cached {
-                id,
+                id: id.into(),
             },
         )
     }
 
     /// Constructs a fresh `Video` result.
-    pub fn fresh(title: &'a str, video: Fresh<'a>) -> Self {
-        Self::new(title, Kind::Fresh(video))
+    pub fn fresh(
+        title: impl Into<value::String<'a>>,
+        video: impl Into<Ref<'a, Fresh<'a>>>,
+    ) -> Self {
+        Self::new(title.into(), Kind::Fresh(video.into()))
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.description = Some(description);
+    pub fn description(
+        mut self,
+        description: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.description = Some(description.into());
         self
     }
 
@@ -158,7 +168,7 @@ impl<'a> Video<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<Ref<'a, InputMessageContent<'a>>>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self

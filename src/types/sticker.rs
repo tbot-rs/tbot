@@ -1,7 +1,8 @@
 //! Types related to stickers.
 
-use super::{
+use crate::types::{
     file::{self, id::AsFileId},
+    value::FileId,
     PhotoSize,
 };
 use serde::Deserialize;
@@ -36,9 +37,15 @@ pub struct Sticker {
 }
 
 impl crate::internal::Sealed for Sticker {}
+impl crate::internal::Sealed for &'_ Sticker {}
 
-impl AsFileId for Sticker {
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+impl<'a> AsFileId<'a> for Sticker {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.into()
+    }
+}
+impl<'a> AsFileId<'a> for &'a Sticker {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.as_ref().into()
     }
 }

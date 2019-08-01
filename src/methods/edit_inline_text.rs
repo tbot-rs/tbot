@@ -3,9 +3,9 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
-        inline_message_id,
         keyboard::inline,
         parameters::{ParseMode, Text, WebPagePreviewState},
+        value::{self, InlineMessageId, Ref},
     },
 };
 
@@ -19,31 +19,34 @@ pub struct EditInlineText<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_message_id: inline_message_id::Ref<'a>,
-    text: &'a str,
+    inline_message_id: InlineMessageId<'a>,
+    text: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> EditInlineText<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: impl Into<InlineMessageId<'a>>,
         text: impl Into<Text<'a>>,
     ) -> Self {
-        let text = text.into();
+        let Text {
+            text,
+            parse_mode,
+        } = text.into();
 
         Self {
             client,
             token,
-            inline_message_id,
-            text: text.text,
-            parse_mode: text.parse_mode,
+            inline_message_id: inline_message_id.into(),
+            text,
+            parse_mode,
             disable_web_page_preview: None,
             reply_markup: None,
         }
@@ -56,8 +59,11 @@ impl<'a, C> EditInlineText<'a, C> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
-        self.reply_markup = Some(markup);
+    pub fn reply_markup(
+        mut self,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
+    ) -> Self {
+        self.reply_markup = Some(markup.into());
         self
     }
 }

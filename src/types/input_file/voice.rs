@@ -1,23 +1,26 @@
 use super::{InputFile, WithName};
-use crate::types::parameters::{ParseMode, Text};
+use crate::types::{
+    parameters::{ParseMode, Text},
+    value::{self, Bytes, FileId},
+};
 use serde::Serialize;
 
 /// Represents a voice to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Voice<'a> {
     pub(crate) media: WithName<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) duration: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) caption: Option<&'a str>,
+    pub(crate) caption: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
 impl<'a> Voice<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
-            media: media.with_name("voice"),
+            media: media.own_with_name("voice"),
             duration: None,
             caption: None,
             parse_mode: None,
@@ -25,10 +28,10 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a `Voice` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Bytes<'a>>) -> Self {
         Self::new(InputFile::File {
-            filename: "voice.ogg",
-            bytes,
+            filename: "voice.ogg".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -37,9 +40,10 @@ impl<'a> Voice<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<FileId<'a>>) -> Self {
+        let id = id.into();
         assert!(
-            !id.starts_with("attach://"),
+            !id.as_ref().0.starts_with("attach://"),
             "\n[tbot]: Voice's ID cannot start with `attach://`\n",
         );
 
@@ -51,9 +55,10 @@ impl<'a> Voice<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<value::String<'a>>) -> Self {
+        let url = url.into();
         assert!(
-            !url.starts_with("attach://"),
+            !url.as_str().starts_with("attach://"),
             "\n[tbot]: Voice's URL cannot start with `attach://`\n",
         );
 

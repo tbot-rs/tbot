@@ -1,12 +1,15 @@
-use crate::types::parameters::ChatId;
+use crate::types::{
+    parameters::ChatId,
+    value::{self, Bytes},
+};
 use serde::Serialize;
-use std::{borrow::Cow, collections::HashSet};
+use std::collections::HashSet;
 
 enum Header<'a> {
     Field(&'static str),
     File {
-        name: Cow<'a, str>,
-        filename: &'a str,
+        name: value::String<'a>,
+        filename: value::String<'a>,
     },
 }
 
@@ -17,14 +20,18 @@ impl<'a> Header<'a> {
             Header::File {
                 name,
                 filename,
-            } => format!("name=\"{}\"; filename=\"{}\"", name, filename),
+            } => format!(
+                "name=\"{}\"; filename=\"{}\"",
+                name.as_str(),
+                filename.as_str()
+            ),
         }
     }
 }
 
 struct Part<'a> {
     header: Header<'a>,
-    body: Cow<'a, [u8]>,
+    body: Bytes<'a>,
 }
 
 pub struct Multipart<'a> {
@@ -38,15 +45,24 @@ impl<'a> Multipart<'a> {
         }
     }
 
-    pub fn str(mut self, name: &'static str, value: &'a str) -> Self {
+    pub fn str(
+        mut self,
+        name: &'static str,
+        value: impl Into<value::String<'a>>,
+    ) -> Self {
+        let value: value::String<'a> = value.into();
         self.parts.push(Part {
             header: Header::Field(name),
-            body: Cow::Borrowed(value.as_bytes()),
+            body: value.into_bytes(),
         });
         self
     }
 
-    fn part(mut self, name: &'static str, body: Cow<'a, [u8]>) -> Self {
+    pub fn from(self, name: &'static str, value: &impl ToString) -> Self {
+        self.str(name, value.to_string())
+    }
+
+    fn part(mut self, name: &'static str, body: Bytes<'a>) -> Self {
         self.parts.push(Part {
             header: Header::Field(name),
             body,
@@ -54,30 +70,27 @@ impl<'a> Multipart<'a> {
         self
     }
 
-    pub fn string(self, name: &'static str, value: &impl ToString) -> Self {
-        self.part(name, Cow::Owned(value.to_string().into_bytes()))
-    }
-
     pub fn json(self, name: &'static str, value: impl Serialize) -> Self {
-        self.part(name, Cow::Owned(serde_json::to_vec(&value).unwrap()))
+        self.part(name, serde_json::to_vec(&value).unwrap().into())
     }
 
-    pub fn maybe_str(self, name: &'static str, value: Option<&'a str>) -> Self {
+    pub fn maybe_str(
+        self,
+        name: &'static str,
+        value: Option<impl Into<value::String<'a>>>,
+    ) -> Self {
         match value {
             Some(value) => self.str(name, value),
             None => self,
         }
     }
 
-    pub fn maybe_string(
+    pub fn maybe_from(
         self,
         name: &'static str,
         value: Option<impl ToString>,
     ) -> Self {
-        match value {
-            Some(value) => self.string(name, &value),
-            None => self,
-        }
+        self.maybe_str(name, value.map(|value| value.to_string()))
     }
 
     pub fn maybe_json(
@@ -93,43 +106,25 @@ impl<'a> Multipart<'a> {
 
     pub fn chat_id(self, name: &'static str, id: ChatId<'a>) -> Self {
         match id {
-            ChatId::Id(id) => self.string(name, &id),
+            ChatId::Id(id) => self.str(name, id.to_string()),
             ChatId::Username(username) => self.str(name, username),
         }
     }
 
-    fn file_cow(
+    pub fn file(
         mut self,
-        name: Cow<'a, str>,
-        filename: &'a str,
-        body: &'a [u8],
+        name: impl Into<value::String<'a>>,
+        filename: impl Into<value::String<'a>>,
+        body: impl Into<Bytes<'a>>,
     ) -> Self {
         self.parts.push(Part {
             header: Header::File {
-                name,
-                filename,
+                name: name.into(),
+                filename: filename.into(),
             },
-            body: Cow::Borrowed(body),
+            body: body.into(),
         });
         self
-    }
-
-    pub fn file(
-        self,
-        name: &'a str,
-        filename: &'a str,
-        body: &'a [u8],
-    ) -> Self {
-        self.file_cow(Cow::Borrowed(name), filename, body)
-    }
-
-    pub fn file_owned_name(
-        self,
-        name: String,
-        filename: &'a str,
-        body: &'a [u8],
-    ) -> Self {
-        self.file_cow(Cow::Owned(name), filename, body)
     }
 
     pub fn finish(self) -> (String, Vec<u8>) {
@@ -138,7 +133,7 @@ impl<'a> Multipart<'a> {
         for part in &self.parts {
             let mut current_line_length = 0;
 
-            for line in part.body.split(|byte| *byte == b'\n') {
+            for line in part.body.as_slice().split(|byte| *byte == b'\n') {
                 current_line_length += line.len();
 
                 if line.ends_with(b"\r") {
@@ -174,10 +169,7 @@ impl<'a> Multipart<'a> {
             );
             body.extend_from_slice(b"\r\n\r\n");
 
-            match part.body {
-                Cow::Owned(bytes) => body.extend_from_slice(&bytes[..]),
-                Cow::Borrowed(bytes) => body.extend_from_slice(bytes),
-            }
+            body.extend_from_slice(part.body.as_slice());
             body.extend_from_slice(b"\r\n");
         }
 

@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::{inline_message_id, user},
+    types::{user, value::InlineMessageId},
 };
 
 /// Represents the [`setGameScore`][docs] method for inline messages.
@@ -17,7 +17,7 @@ pub struct SetInlineGameScore<'a, C> {
     token: Token,
     user_id: user::Id,
     score: u32,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,10 +25,10 @@ pub struct SetInlineGameScore<'a, C> {
 }
 
 impl<'a, C> SetInlineGameScore<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: impl Into<InlineMessageId<'a>>,
         user_id: user::Id,
         score: u32,
     ) -> Self {
@@ -37,7 +37,7 @@ impl<'a, C> SetInlineGameScore<'a, C> {
             token,
             user_id,
             score,
-            inline_message_id,
+            inline_message_id: inline_message_id.into(),
             force: None,
             disable_edit_message: None,
         }

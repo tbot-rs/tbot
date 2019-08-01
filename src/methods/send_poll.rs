@@ -5,6 +5,7 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::{self, Ref, Seq},
     },
 };
 
@@ -19,14 +20,14 @@ pub struct SendPoll<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    question: &'a str,
-    options: &'a [&'a str],
+    question: value::String<'a>,
+    options: Seq<'a, value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendPoll<'a, C> {
@@ -34,15 +35,15 @@ impl<'a, C> SendPoll<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        question: &'a str,
-        options: &'a [&'a str],
+        question: impl Into<value::String<'a>>,
+        options: impl Into<Seq<'a, value::String<'a>>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            question,
-            options,
+            question: question.into(),
+            options: options.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -64,7 +65,7 @@ impl<'a, C> SendPoll<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

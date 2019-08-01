@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::sticker,
+    types::{sticker, value},
 };
 
 /// Represents the [`getStickerSet`][docs] method.
@@ -15,19 +15,19 @@ pub struct GetStickerSet<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    name: &'a str,
+    name: value::String<'a>,
 }
 
 impl<'a, C> GetStickerSet<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        name: &'a str,
+        name: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
-            name,
+            name: name.into(),
         }
     }
 }

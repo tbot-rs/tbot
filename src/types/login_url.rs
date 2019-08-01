@@ -1,24 +1,25 @@
 use super::*;
+use crate::types::value;
 
 /// Represents a [`LoginUrl`].
 ///
 /// [`LoginUrl`]: https://core.telegram.org/bots/api#loginurl
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct LoginUrl<'a> {
-    url: &'a str,
+    url: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    forward_text: Option<&'a str>,
+    forward_text: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    bot_username: Option<&'a str>,
+    bot_username: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     request_write_access: Option<bool>,
 }
 
 impl<'a> LoginUrl<'a> {
     /// Constructs a new `LoginUrl`.
-    pub const fn new(url: &'a str) -> Self {
+    pub fn new(url: impl Into<value::String<'a>>) -> Self {
         Self {
-            url,
+            url: url.into(),
             forward_text: None,
             bot_username: None,
             request_write_access: None,
@@ -26,14 +27,17 @@ impl<'a> LoginUrl<'a> {
     }
 
     /// Configures `forward_text`.
-    pub fn forward_text(mut self, text: &'a str) -> Self {
-        self.forward_text = Some(text);
+    pub fn forward_text(mut self, text: impl Into<value::String<'a>>) -> Self {
+        self.forward_text = Some(text.into());
         self
     }
 
     /// Configures `bot_username`.
-    pub fn bot_username(mut self, username: &'a str) -> Self {
-        self.bot_username = Some(username);
+    pub fn bot_username(
+        mut self,
+        username: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.bot_username = Some(username.into());
         self
     }
 

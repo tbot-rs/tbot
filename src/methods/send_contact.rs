@@ -5,6 +5,7 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::{self, Ref},
     },
 };
 
@@ -19,18 +20,18 @@ pub struct SendContact<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    phone_number: &'a str,
-    first_name: &'a str,
+    phone_number: value::String<'a>,
+    first_name: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<&'a str>,
+    last_name: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<&'a str>,
+    vcard: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendContact<'a, C> {
@@ -38,15 +39,15 @@ impl<'a, C> SendContact<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<value::String<'a>>,
+        first_name: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            phone_number,
-            first_name,
+            phone_number: phone_number.into(),
+            first_name: first_name.into(),
             last_name: None,
             vcard: None,
             disable_notification: None,
@@ -56,14 +57,17 @@ impl<'a, C> SendContact<'a, C> {
     }
 
     /// Configures `last_name`.
-    pub fn last_name(mut self, last_name: &'a str) -> Self {
-        self.last_name = Some(last_name);
+    pub fn last_name(
+        mut self,
+        last_name: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.last_name = Some(last_name.into());
         self
     }
 
     /// Configures `vcard`.
-    pub fn vcard(mut self, vcard: &'a str) -> Self {
-        self.vcard = Some(vcard);
+    pub fn vcard(mut self, vcard: impl Into<value::String<'a>>) -> Self {
+        self.vcard = Some(vcard.into());
         self
     }
 
@@ -82,7 +86,7 @@ impl<'a, C> SendContact<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

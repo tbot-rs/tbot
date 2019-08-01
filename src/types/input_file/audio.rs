@@ -1,17 +1,20 @@
 use super::*;
-use crate::types::parameters::{ParseMode, Text};
+use crate::types::{
+    parameters::{ParseMode, Text},
+    value::{self, Bytes, FileId, Ref},
+};
 use serde::ser::SerializeMap;
 
 /// Represents an audio to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Audio<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<Thumb<'a>>,
-    pub(crate) caption: Option<&'a str>,
+    pub(crate) thumb: Option<Ref<'a, Thumb<'a>>>,
+    pub(crate) caption: Option<value::String<'a>>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) duration: Option<u32>,
-    pub(crate) performer: Option<&'a str>,
-    pub(crate) title: Option<&'a str>,
+    pub(crate) performer: Option<value::String<'a>>,
+    pub(crate) title: Option<value::String<'a>>,
 }
 
 impl<'a> Audio<'a> {
@@ -28,10 +31,10 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs an `Audio` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Bytes<'a>>) -> Self {
         Self::new(InputFile::File {
-            filename: "audio.mp3",
-            bytes,
+            filename: "audio.mp3".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -40,9 +43,11 @@ impl<'a> Audio<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<FileId<'a>>) -> Self {
+        let id = id.into();
+
         assert!(
-            !id.starts_with("attach://"),
+            !id.as_ref().0.starts_with("attach://"),
             "\n[tbot] Audio's ID cannot start with `attach://`\n",
         );
 
@@ -54,9 +59,11 @@ impl<'a> Audio<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<value::String<'a>>) -> Self {
+        let url = url.into();
+
         assert!(
-            !url.starts_with("attach://"),
+            !url.as_str().starts_with("attach://"),
             "\n[tbot] Audio's URL cannot start with `attach://`\n",
         );
 
@@ -64,8 +71,8 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
-        self.thumb = Some(thumb);
+    pub fn thumb(mut self, thumb: impl Into<Ref<'a, Thumb<'a>>>) -> Self {
+        self.thumb = Some(thumb.into());
         self
     }
 
@@ -85,30 +92,33 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `performer`.
-    pub fn performer(mut self, performer: &'a str) -> Self {
-        self.performer = Some(performer);
+    pub fn performer(
+        mut self,
+        performer: impl Into<value::String<'a>>,
+    ) -> Self {
+        self.performer = Some(performer.into());
         self
     }
 
     /// Configures `title`.
-    pub fn title(mut self, title: &'a str) -> Self {
-        self.title = Some(title);
+    pub fn title(mut self, title: impl Into<value::String<'a>>) -> Self {
+        self.title = Some(title.into());
         self
     }
 }
 
-impl<'a> serde::Serialize for Audio<'a> {
+impl serde::Serialize for Audio<'_> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(None)?;
 
         map.serialize_entry("type", "audio")?;
-        map.serialize_entry("media", &self.media.with_name("audio"))?;
+        map.serialize_entry("media", &self.media.borrow_with_name("audio"))?;
 
         if let Some(thumb) = &self.thumb {
             map.serialize_entry("thumb", &thumb)?;
         }
-        if let Some(caption) = self.caption {
-            map.serialize_entry("caption", caption)?;
+        if let Some(caption) = &self.caption {
+            map.serialize_entry("caption", &caption)?;
         }
         if let Some(parse_mode) = self.parse_mode {
             map.serialize_entry("parse_mode", &parse_mode)?;
@@ -116,10 +126,10 @@ impl<'a> serde::Serialize for Audio<'a> {
         if let Some(duration) = self.duration {
             map.serialize_entry("duration", &duration)?;
         }
-        if let Some(performer) = self.performer {
+        if let Some(performer) = &self.performer {
             map.serialize_entry("performer", &performer)?;
         }
-        if let Some(title) = self.title {
+        if let Some(title) = &self.title {
             map.serialize_entry("title", &title)?;
         }
 

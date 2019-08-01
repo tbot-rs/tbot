@@ -6,6 +6,7 @@ use crate::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
         user,
+        value::{self, Ref},
     },
 };
 
@@ -18,32 +19,32 @@ pub struct CreateNewStickerSet<'a, C> {
     client: &'a Client<C>,
     token: Token,
     user_id: user::Id,
-    name: &'a str,
-    title: &'a str,
-    png_sticker: PngSticker<'a>,
-    emojis: &'a str,
+    name: value::String<'a>,
+    title: value::String<'a>,
+    png_sticker: Ref<'a, PngSticker<'a>>,
+    emojis: value::String<'a>,
     contains_masks: Option<bool>,
     mask_position: Option<MaskPosition>,
 }
 
 impl<'a, C> CreateNewStickerSet<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         user_id: user::Id,
-        name: &'a str,
-        title: &'a str,
-        png_sticker: PngSticker<'a>,
-        emojis: &'a str,
+        name: impl Into<value::String<'a>>,
+        title: impl Into<value::String<'a>>,
+        png_sticker: impl Into<Ref<'a, PngSticker<'a>>>,
+        emojis: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            name,
-            title,
-            png_sticker,
-            emojis,
+            name: name.into(),
+            title: title.into(),
+            png_sticker: png_sticker.into(),
+            emojis: emojis.into(),
             contains_masks: None,
             mask_position: None,
         }
@@ -74,21 +75,24 @@ where
 
     fn into_future(self) -> Self::Future {
         let mut multipart = Multipart::new(7)
-            .string("user_id", &self.user_id)
+            .str("user_id", self.user_id.to_string())
             .str("name", self.name)
             .str("title", self.title)
             .str("emojis", self.emojis)
-            .maybe_string("contains_masks", self.contains_masks)
+            .maybe_from("contains_masks", self.contains_masks)
             .maybe_json("mask_position", self.mask_position);
 
-        match self.png_sticker.media {
+        match &self.png_sticker.as_ref().media {
             InputFile::File {
                 filename,
                 bytes,
                 ..
             } => multipart = multipart.file("png_sticker", filename, bytes),
-            InputFile::Id(sticker) | InputFile::Url(sticker) => {
-                multipart = multipart.str("png_sticker", sticker);
+            InputFile::Id(id) => {
+                multipart = multipart.str("png_sticker", id.as_ref().0);
+            }
+            InputFile::Url(url) => {
+                multipart = multipart.str("png_sticker", url);
             }
         }
 

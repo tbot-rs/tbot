@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::parameters::{ChatId, ImplicitChatId},
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        value,
+    },
 };
 
 /// Represents the [`setChatStickerSet`][docs] method.
@@ -16,7 +19,7 @@ pub struct SetChatStickerSet<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    sticker_set_name: &'a str,
+    sticker_set_name: value::String<'a>,
 }
 
 impl<'a, C> SetChatStickerSet<'a, C> {
@@ -24,13 +27,13 @@ impl<'a, C> SetChatStickerSet<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        sticker_set_name: &'a str,
+        sticker_set_name: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            sticker_set_name,
+            sticker_set_name: sticker_set_name.into(),
         }
     }
 }

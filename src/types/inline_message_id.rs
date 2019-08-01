@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Represents an inline message ID.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct InlineMessageId(pub String);
 

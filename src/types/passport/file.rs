@@ -1,4 +1,7 @@
-use crate::types::file::{self, id::AsFileId};
+use crate::types::{
+    file::{self, id::AsFileId},
+    value::FileId,
+};
 use serde::Deserialize;
 
 /// Represents a [`PassportFile`][docs].
@@ -16,9 +19,16 @@ pub struct File {
 }
 
 impl crate::internal::Sealed for File {}
+impl crate::internal::Sealed for &'_ File {}
 
-impl AsFileId for File {
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.id.as_ref()
+impl<'a> AsFileId<'a> for File {
+    fn as_file_id(self) -> FileId<'a> {
+        self.id.into()
+    }
+}
+
+impl<'a> AsFileId<'a> for &'a File {
+    fn as_file_id(self) -> FileId<'a> {
+        self.id.as_ref().into()
     }
 }

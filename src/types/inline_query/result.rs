@@ -2,7 +2,10 @@
 //!
 //! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 
-use crate::types::keyboard::inline;
+use crate::types::{
+    keyboard::inline,
+    value::{self, Ref},
+};
 use serde::Serialize;
 
 pub mod article;
@@ -44,46 +47,46 @@ pub use {
 ///
 /// [`InlineQueryResult`]: ./struct.InlineQueryResult.html
 #[allow(clippy::large_enum_variant)]
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 // todo: #[non_exhaustive]
 pub enum Kind<'a> {
     /// An article.
-    Article(Article<'a>),
+    Article(Ref<'a, Article<'a>>),
     /// An audio.
-    Audio(Audio<'a>),
+    Audio(Ref<'a, Audio<'a>>),
     /// A contact.
-    Contact(Contact<'a>),
+    Contact(Ref<'a, Contact<'a>>),
     /// A document.
-    Document(Document<'a>),
+    Document(Ref<'a, Document<'a>>),
     /// A game.
-    Game(Game<'a>),
+    Game(Ref<'a, Game<'a>>),
     /// A GIF.
-    Gif(Gif<'a>),
+    Gif(Ref<'a, Gif<'a>>),
     /// A location.
-    Location(Location<'a>),
+    Location(Ref<'a, Location<'a>>),
     /// A MPEG-4 GIF.
-    Mpeg4Gif(Mpeg4Gif<'a>),
+    Mpeg4Gif(Ref<'a, Mpeg4Gif<'a>>),
     /// A photo.
-    Photo(Photo<'a>),
+    Photo(Ref<'a, Photo<'a>>),
     /// A sticker.
-    Sticker(Sticker<'a>),
+    Sticker(Ref<'a, Sticker<'a>>),
     /// A venue.
-    Venue(Venue<'a>),
+    Venue(Ref<'a, Venue<'a>>),
     /// A video.
-    Video(Video<'a>),
+    Video(Ref<'a, Video<'a>>),
     /// A voice.
-    Voice(Voice<'a>),
+    Voice(Ref<'a, Voice<'a>>),
 }
 
 /// Represents an [`InlineQueryResult`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 pub struct Result<'a> {
-    id: &'a str,
+    id: value::String<'a>,
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Ref<'a, Kind<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -196,9 +199,12 @@ impl Kind<'_> {
 
 impl<'a> Result<'a> {
     /// Constructs an inline query `Result`.
-    pub fn new(id: &'a str, kind: impl Into<Kind<'a>>) -> Self {
+    pub fn new(
+        id: impl Into<value::String<'a>>,
+        kind: impl Into<Ref<'a, Kind<'a>>>,
+    ) -> Self {
         Self {
-            id,
+            id: id.into(),
             kind: kind.into(),
             reply_markup: None,
         }
@@ -213,78 +219,156 @@ impl<'a> Result<'a> {
 
 impl<'a> From<Audio<'a>> for Kind<'a> {
     fn from(audio: Audio<'a>) -> Self {
-        Kind::Audio(audio)
+        Kind::Audio(audio.into())
+    }
+}
+
+impl<'a> From<&'a Audio<'a>> for Kind<'a> {
+    fn from(audio: &'a Audio<'a>) -> Self {
+        Kind::Audio(audio.into())
     }
 }
 
 impl<'a> From<Document<'a>> for Kind<'a> {
     fn from(document: Document<'a>) -> Self {
-        Kind::Document(document)
+        Kind::Document(document.into())
+    }
+}
+
+impl<'a> From<&'a Document<'a>> for Kind<'a> {
+    fn from(document: &'a Document<'a>) -> Self {
+        Kind::Document(document.into())
     }
 }
 
 impl<'a> From<Gif<'a>> for Kind<'a> {
     fn from(gif: Gif<'a>) -> Self {
-        Kind::Gif(gif)
+        Kind::Gif(gif.into())
+    }
+}
+
+impl<'a> From<&'a Gif<'a>> for Kind<'a> {
+    fn from(gif: &'a Gif<'a>) -> Self {
+        Kind::Gif(gif.into())
     }
 }
 
 impl<'a> From<Mpeg4Gif<'a>> for Kind<'a> {
     fn from(gif: Mpeg4Gif<'a>) -> Self {
-        Kind::Mpeg4Gif(gif)
+        Kind::Mpeg4Gif(gif.into())
+    }
+}
+
+impl<'a> From<&'a Mpeg4Gif<'a>> for Kind<'a> {
+    fn from(gif: &'a Mpeg4Gif<'a>) -> Self {
+        Kind::Mpeg4Gif(gif.into())
     }
 }
 
 impl<'a> From<Photo<'a>> for Kind<'a> {
     fn from(photo: Photo<'a>) -> Self {
-        Kind::Photo(photo)
+        Kind::Photo(photo.into())
+    }
+}
+
+impl<'a> From<&'a Photo<'a>> for Kind<'a> {
+    fn from(photo: &'a Photo<'a>) -> Self {
+        Kind::Photo(photo.into())
     }
 }
 
 impl<'a> From<Sticker<'a>> for Kind<'a> {
     fn from(sticker: Sticker<'a>) -> Self {
-        Kind::Sticker(sticker)
+        Kind::Sticker(sticker.into())
+    }
+}
+
+impl<'a> From<&'a Sticker<'a>> for Kind<'a> {
+    fn from(sticker: &'a Sticker<'a>) -> Self {
+        Kind::Sticker(sticker.into())
     }
 }
 
 impl<'a> From<Video<'a>> for Kind<'a> {
     fn from(video: Video<'a>) -> Self {
-        Kind::Video(video)
+        Kind::Video(video.into())
+    }
+}
+
+impl<'a> From<&'a Video<'a>> for Kind<'a> {
+    fn from(video: &'a Video<'a>) -> Self {
+        Kind::Video(video.into())
     }
 }
 
 impl<'a> From<Voice<'a>> for Kind<'a> {
     fn from(voice: Voice<'a>) -> Self {
-        Kind::Voice(voice)
+        Kind::Voice(voice.into())
+    }
+}
+
+impl<'a> From<&'a Voice<'a>> for Kind<'a> {
+    fn from(voice: &'a Voice<'a>) -> Self {
+        Kind::Voice(voice.into())
     }
 }
 
 impl<'a> From<Article<'a>> for Kind<'a> {
     fn from(article: Article<'a>) -> Self {
-        Kind::Article(article)
+        Kind::Article(article.into())
+    }
+}
+
+impl<'a> From<&'a Article<'a>> for Kind<'a> {
+    fn from(article: &'a Article<'a>) -> Self {
+        Kind::Article(article.into())
     }
 }
 
 impl<'a> From<Contact<'a>> for Kind<'a> {
     fn from(contact: Contact<'a>) -> Self {
-        Kind::Contact(contact)
+        Kind::Contact(contact.into())
+    }
+}
+
+impl<'a> From<&'a Contact<'a>> for Kind<'a> {
+    fn from(contact: &'a Contact<'a>) -> Self {
+        Kind::Contact(contact.into())
     }
 }
 
 impl<'a> From<Game<'a>> for Kind<'a> {
     fn from(game: Game<'a>) -> Self {
-        Kind::Game(game)
+        Kind::Game(game.into())
+    }
+}
+
+impl<'a> From<&'a Game<'a>> for Kind<'a> {
+    fn from(game: &'a Game<'a>) -> Self {
+        Kind::Game(game.into())
     }
 }
 
 impl<'a> From<Location<'a>> for Kind<'a> {
     fn from(location: Location<'a>) -> Self {
-        Kind::Location(location)
+        Kind::Location(location.into())
+    }
+}
+
+impl<'a> From<&'a Location<'a>> for Kind<'a> {
+    fn from(location: &'a Location<'a>) -> Self {
+        Kind::Location(location.into())
     }
 }
 
 impl<'a> From<Venue<'a>> for Kind<'a> {
     fn from(venue: Venue<'a>) -> Self {
-        Kind::Venue(venue)
+        Kind::Venue(venue.into())
+    }
+}
+
+impl<'a> From<&'a Venue<'a>> for Kind<'a> {
+    fn from(venue: &'a Venue<'a>) -> Self {
+        Kind::Venue(venue.into())
     }
 }

@@ -8,6 +8,7 @@ use crate::{
         parameters::{
             ChatId, ImplicitChatId, ParseMode, Text, WebPagePreviewState,
         },
+        value,
     },
 };
 
@@ -23,7 +24,7 @@ pub struct EditMessageText<'a, C> {
     token: Token,
     chat_id: ChatId<'a>,
     message_id: message::Id,
-    text: &'a str,
+    text: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40,15 +41,18 @@ impl<'a, C> EditMessageText<'a, C> {
         message_id: message::Id,
         text: impl Into<Text<'a>>,
     ) -> Self {
-        let text = text.into();
+        let Text {
+            text,
+            parse_mode,
+        } = text.into();
 
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             message_id,
-            text: text.text,
-            parse_mode: text.parse_mode,
+            text,
+            parse_mode,
             disable_web_page_preview: None,
             reply_markup: None,
         }

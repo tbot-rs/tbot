@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::{BoxFuture, Client};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::value,
+};
 
 /// Represents the [`deleteStickerFromSet`][docs] method
 ///
@@ -11,19 +14,19 @@ pub struct DeleteStickerFromSet<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    sticker: &'a str,
+    sticker: value::String<'a>,
 }
 
 impl<'a, C> DeleteStickerFromSet<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        sticker: &'a str,
+        sticker: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
-            sticker,
+            sticker: sticker.into(),
         }
     }
 }

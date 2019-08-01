@@ -3,8 +3,10 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
-        keyboard, message,
+        keyboard::inline,
+        message,
         parameters::{ChatId, ImplicitChatId},
+        value::Ref,
     },
 };
 
@@ -21,7 +23,7 @@ pub struct StopPoll<'a, C> {
     chat_id: ChatId<'a>,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, inline::Keyboard<'a>>>,
 }
 
 impl<'a, C> StopPoll<'a, C> {
@@ -43,7 +45,7 @@ impl<'a, C> StopPoll<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

@@ -5,6 +5,7 @@ use crate::{
     types::{
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
+        value::{self, Ref},
     },
 };
 
@@ -19,13 +20,13 @@ pub struct SendGame<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    game_short_name: &'a str,
+    game_short_name: value::String<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<Ref<'a, keyboard::Any<'a>>>,
 }
 
 impl<'a, C> SendGame<'a, C> {
@@ -33,13 +34,13 @@ impl<'a, C> SendGame<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        game_short_name: &'a str,
+        game_short_name: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            game_short_name,
+            game_short_name: game_short_name.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -61,7 +62,7 @@ impl<'a, C> SendGame<'a, C> {
     /// Configures `reply_markup`.
     pub fn reply_markup(
         mut self,
-        markup: impl Into<keyboard::Any<'a>>,
+        markup: impl Into<Ref<'a, keyboard::Any<'a>>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
         self

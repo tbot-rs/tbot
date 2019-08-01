@@ -6,7 +6,9 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ImplicitChatId, Text},
-        user, LabeledPrice,
+        user,
+        value::{self, Ref, Seq},
+        LabeledPrice,
     },
     Bot,
 };
@@ -65,7 +67,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn edit_message_media(
         &'a self,
         message_id: message::Id,
-        media: impl Into<EditableMedia<'a>>,
+        media: impl Into<Ref<'a, EditableMedia<'a>>>,
     ) -> EditMessageMedia<'a, C> {
         self.bot().edit_message_media(self.chat_id(), message_id, media)
     }
@@ -74,7 +76,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn edit_message_reply_markup(
         &'a self,
         message_id: message::Id,
-        reply_markup: inline::Keyboard<'a>,
+        reply_markup: impl Into<Ref<'a, inline::Keyboard<'a>>>,
     ) -> EditMessageReplyMarkup<'a, C> {
         self.bot().edit_message_reply_markup(
             self.chat_id(),
@@ -168,7 +170,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Send an animation to this chat.
     fn send_animation(
         &'a self,
-        animation: Animation<'a>,
+        animation: impl Into<Ref<'a, Animation<'a>>>,
     ) -> SendAnimation<'a, C> {
         self.bot().send_animation(self.chat_id(), animation)
     }
@@ -176,18 +178,24 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an animation in reply to this message.
     fn send_animation_in_reply(
         &'a self,
-        animation: Animation<'a>,
+        animation: impl Into<Ref<'a, Animation<'a>>>,
     ) -> SendAnimation<'a, C> {
         self.send_animation(animation).reply_to_message_id(self.message_id())
     }
 
     /// Sends an audio to this chat.
-    fn send_audio(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
+    fn send_audio(
+        &'a self,
+        audio: impl Into<Ref<'a, Audio<'a>>>,
+    ) -> SendAudio<'a, C> {
         self.bot().send_audio(self.chat_id(), audio)
     }
 
     /// Sends an audio in reply to this message.
-    fn send_audio_in_reply(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
+    fn send_audio_in_reply(
+        &'a self,
+        audio: impl Into<Ref<'a, Audio<'a>>>,
+    ) -> SendAudio<'a, C> {
         self.send_audio(audio).reply_to_message_id(self.message_id())
     }
 
@@ -199,8 +207,8 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends a contact to this group.
     fn send_contact(
         &'a self,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<value::String<'a>>,
+        first_name: impl Into<value::String<'a>>,
     ) -> SendContact<'a, C> {
         self.bot().send_contact(self.chat_id(), phone_number, first_name)
     }
@@ -208,35 +216,41 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends a contact in reply to this message.
     fn send_contact_in_reply(
         &'a self,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<value::String<'a>>,
+        first_name: impl Into<value::String<'a>>,
     ) -> SendContact<'a, C> {
         self.send_contact(phone_number, first_name)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a game to this chat.
-    fn send_game(&'a self, game_short_name: &'a str) -> SendGame<'a, C> {
+    fn send_game(
+        &'a self,
+        game_short_name: impl Into<value::String<'a>>,
+    ) -> SendGame<'a, C> {
         self.bot().send_game(self.chat_id(), game_short_name)
     }
 
     /// Sends a game in reply to this message.
     fn send_game_in_reply(
         &'a self,
-        game_short_name: &'a str,
+        game_short_name: impl Into<value::String<'a>>,
     ) -> SendGame<'a, C> {
         self.send_game(game_short_name).reply_to_message_id(self.message_id())
     }
 
     /// Sends a document to this chat.
-    fn send_document(&'a self, document: Document<'a>) -> SendDocument<'a, C> {
+    fn send_document(
+        &'a self,
+        document: impl Into<Ref<'a, Document<'a>>>,
+    ) -> SendDocument<'a, C> {
         self.bot().send_document(self.chat_id(), document)
     }
 
     /// Sends a document in reply to this message.
     fn send_document_in_reply(
         &'a self,
-        document: Document<'a>,
+        document: impl Into<Ref<'a, Document<'a>>>,
     ) -> SendDocument<'a, C> {
         self.send_document(document).reply_to_message_id(self.message_id())
     }
@@ -245,13 +259,13 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     #[allow(clippy::too_many_arguments)]
     fn send_invoice(
         &'a self,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<value::String<'a>>,
+        description: impl Into<value::String<'a>>,
+        payload: impl Into<value::String<'a>>,
+        provider_token: impl Into<value::String<'a>>,
+        start_parameter: impl Into<value::String<'a>>,
+        currency: impl Into<value::String<'a>>,
+        prices: impl Into<Seq<'a, Ref<'a, LabeledPrice<'a>>>>,
     ) -> SendInvoice<'a, C> {
         self.bot().send_invoice(
             self.chat_id(),
@@ -269,13 +283,13 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     #[allow(clippy::too_many_arguments)]
     fn send_invoice_in_reply(
         &'a self,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<value::String<'a>>,
+        description: impl Into<value::String<'a>>,
+        payload: impl Into<value::String<'a>>,
+        provider_token: impl Into<value::String<'a>>,
+        start_parameter: impl Into<value::String<'a>>,
+        currency: impl Into<value::String<'a>>,
+        prices: impl Into<Seq<'a, Ref<'a, LabeledPrice<'a>>>>,
     ) -> SendInvoice<'a, C> {
         self.send_invoice(
             title,
@@ -305,7 +319,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an album to this chat.
     fn send_media_group(
         &'a self,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Seq<'a, Ref<'a, GroupMedia<'a>>>>,
     ) -> SendMediaGroup<'a, C> {
         self.bot().send_media_group(self.chat_id(), media)
     }
@@ -313,7 +327,7 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends an album in reply to this message.
     fn send_media_group_in_reply(
         &'a self,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Seq<'a, Ref<'a, GroupMedia<'a>>>>,
     ) -> SendMediaGroup<'a, C> {
         self.send_media_group(media).reply_to_message_id(self.message_id())
     }
@@ -332,20 +346,26 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     }
 
     /// Sends a photo to this chat.
-    fn send_photo(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
+    fn send_photo(
+        &'a self,
+        photo: impl Into<Ref<'a, Photo<'a>>>,
+    ) -> SendPhoto<'a, C> {
         self.bot().send_photo(self.chat_id(), photo)
     }
 
     /// Sends a photo in reply to this message.
-    fn send_photo_in_reply(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
+    fn send_photo_in_reply(
+        &'a self,
+        photo: impl Into<Ref<'a, Photo<'a>>>,
+    ) -> SendPhoto<'a, C> {
         self.send_photo(photo).reply_to_message_id(self.message_id())
     }
 
     /// Sends a poll to this chat.
     fn send_poll(
         &'a self,
-        question: &'a str,
-        options: &'a [&'a str],
+        question: impl Into<value::String<'a>>,
+        options: impl Into<Seq<'a, value::String<'a>>>,
     ) -> SendPoll<'a, C> {
         self.bot().send_poll(self.chat_id(), question, options)
     }
@@ -353,21 +373,24 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends a poll in reply to this message.
     fn send_poll_in_reply(
         &'a self,
-        question: &'a str,
-        options: &'a [&'a str],
+        question: impl Into<value::String<'a>>,
+        options: impl Into<Seq<'a, value::String<'a>>>,
     ) -> SendPoll<'a, C> {
         self.send_poll(question, options).reply_to_message_id(self.message_id())
     }
 
     /// Sends a sticker to this chat.
-    fn send_sticker(&'a self, sticker: Sticker<'a>) -> SendSticker<'a, C> {
+    fn send_sticker(
+        &'a self,
+        sticker: impl Into<Ref<'a, Sticker<'a>>>,
+    ) -> SendSticker<'a, C> {
         self.bot().send_sticker(self.chat_id(), sticker)
     }
 
     /// Sends a sticker in reply to this message.
     fn send_sticker_in_reply(
         &'a self,
-        sticker: Sticker<'a>,
+        sticker: impl Into<Ref<'a, Sticker<'a>>>,
     ) -> SendSticker<'a, C> {
         self.send_sticker(sticker).reply_to_message_id(self.message_id())
     }
@@ -376,8 +399,8 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn send_venue(
         &'a self,
         location: (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<value::String<'a>>,
+        address: impl Into<value::String<'a>>,
     ) -> SendVenue<'a, C> {
         self.bot().send_venue(self.chat_id(), location, title, address)
     }
@@ -386,27 +409,33 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn send_venue_in_reply(
         &'a self,
         location: (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<value::String<'a>>,
+        address: impl Into<value::String<'a>>,
     ) -> SendVenue<'a, C> {
         self.send_venue(location, title, address)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a video to this chat.
-    fn send_video(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
+    fn send_video(
+        &'a self,
+        video: impl Into<Ref<'a, Video<'a>>>,
+    ) -> SendVideo<'a, C> {
         self.bot().send_video(self.chat_id(), video)
     }
 
     /// Sends a video in reply to this message.
-    fn send_video_in_reply(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
+    fn send_video_in_reply(
+        &'a self,
+        video: impl Into<Ref<'a, Video<'a>>>,
+    ) -> SendVideo<'a, C> {
         self.send_video(video).reply_to_message_id(self.message_id())
     }
 
     /// Sends a video note to this chat.
     fn send_video_note(
         &'a self,
-        video_note: VideoNote<'a>,
+        video_note: impl Into<Ref<'a, VideoNote<'a>>>,
     ) -> SendVideoNote<'a, C> {
         self.bot().send_video_note(self.chat_id(), video_note)
     }
@@ -414,44 +443,56 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     /// Sends a video note in reply to this message.
     fn send_video_note_in_reply(
         &'a self,
-        video_note: VideoNote<'a>,
+        video_note: impl Into<Ref<'a, VideoNote<'a>>>,
     ) -> SendVideoNote<'a, C> {
         self.send_video_note(video_note).reply_to_message_id(self.message_id())
     }
 
     /// Sends a voice to this chat.
-    fn send_voice(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
+    fn send_voice(
+        &'a self,
+        voice: impl Into<Ref<'a, Voice<'a>>>,
+    ) -> SendVoice<'a, C> {
         self.bot().send_voice(self.chat_id(), voice)
     }
 
     /// Sends a voice in reply to this message.
-    fn send_voice_in_reply(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
+    fn send_voice_in_reply(
+        &'a self,
+        voice: impl Into<Ref<'a, Voice<'a>>>,
+    ) -> SendVoice<'a, C> {
         self.send_voice(voice).reply_to_message_id(self.message_id())
     }
 
     /// Sets a new description of this chat.
     fn set_chat_description(
         &'a self,
-        description: &'a str,
+        description: impl Into<value::String<'a>>,
     ) -> SetChatDescription<'a, C> {
         self.bot().set_chat_description(self.chat_id(), description)
     }
 
     /// Sets a new photo of this chat.
-    fn set_chat_photo(&'a self, photo: ChatPhoto<'a>) -> SetChatPhoto<'a, C> {
+    fn set_chat_photo(
+        &'a self,
+        photo: impl Into<Ref<'a, ChatPhoto<'a>>>,
+    ) -> SetChatPhoto<'a, C> {
         self.bot().set_chat_photo(self.chat_id(), photo)
     }
 
     /// Sets a new sticker set of this chat.
     fn set_chat_sticker_set(
         &'a self,
-        sticker_set_name: &'a str,
+        sticker_set_name: impl Into<value::String<'a>>,
     ) -> SetChatStickerSet<'a, C> {
         self.bot().set_chat_sticker_set(self.chat_id(), sticker_set_name)
     }
 
     /// Sets a new chat title of this chat.
-    fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a, C> {
+    fn set_chat_title(
+        &'a self,
+        title: impl Into<value::String<'a>>,
+    ) -> SetChatTitle<'a, C> {
         self.bot().set_chat_title(self.chat_id(), title)
     }
 

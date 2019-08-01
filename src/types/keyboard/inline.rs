@@ -1,29 +1,34 @@
 //! Types representing inline keyboards.
 
-use crate::types::{callback::Game, LoginUrl};
+use crate::types::{
+    callback::Game,
+    value::{self, Ref, Seq},
+    LoginUrl,
+};
 use serde::{ser::SerializeMap, Serialize};
 
+pub(crate) type InnerMarkup<'a> = Seq<'a, Ref<'a, Button<'a>>>;
 /// A shorthand for inline markup.
-pub type Markup<'a> = &'a [&'a [Button<'a>]];
+pub type Markup<'a> = Seq<'a, InnerMarkup<'a>>;
 
 /// Represents different types an inline button can be.
 ///
 /// Complete descriptions can be found in [Bots API docs][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 // todo: #[non_exhaustive]
 pub enum ButtonKind<'a> {
     /// Represents a URL button.
-    Url(&'a str),
+    Url(value::String<'a>),
     /// Represents a login button.
     LoginUrl(LoginUrl<'a>),
     /// Represents callback data.
-    CallbackData(&'a str),
+    CallbackData(value::String<'a>),
     /// Represents query inserted when switched to inline.
-    SwitchInlineQuery(&'a str),
+    SwitchInlineQuery(value::String<'a>),
     /// Represents query inserted when switched to inline in the curent chat.
-    SwitchInlineQueryCurrentChat(&'a str),
+    SwitchInlineQueryCurrentChat(value::String<'a>),
     /// Represent a description of the game to be laucnhed.
     CallbackGame(Game),
     /// If `true`, a pay button is sent.
@@ -91,26 +96,29 @@ impl ButtonKind<'_> {
 /// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Button<'a> {
-    text: &'a str,
+    text: value::String<'a>,
     kind: ButtonKind<'a>,
 }
 
 /// Represents an [`InlineKeyboardMarkup`].
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Keyboard<'a> {
     inline_keyboard: Markup<'a>,
 }
 
 impl<'a> Button<'a> {
     /// Constructs an inline `Button`.
-    pub const fn new(text: &'a str, kind: ButtonKind<'a>) -> Self {
+    pub fn new(
+        text: impl Into<value::String<'a>>,
+        kind: ButtonKind<'a>,
+    ) -> Self {
         Self {
-            text,
+            text: text.into(),
             kind,
         }
     }
@@ -120,9 +128,9 @@ impl Serialize for Button<'_> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(Some(2))?;
 
-        map.serialize_entry("text", self.text)?;
+        map.serialize_entry("text", &self.text)?;
 
-        match self.kind {
+        match &self.kind {
             ButtonKind::Url(url) => map.serialize_entry("url", url),
             ButtonKind::LoginUrl(login_url) => {
                 map.serialize_entry("login_url", &login_url)
@@ -148,15 +156,18 @@ impl Serialize for Button<'_> {
 
 impl<'a> Keyboard<'a> {
     /// Constructs an inline `Keyboard`.
-    pub const fn new(buttons: Markup<'a>) -> Self {
+    pub fn new(buttons: impl Into<Markup<'a>>) -> Self {
         Self {
-            inline_keyboard: buttons,
+            inline_keyboard: buttons.into(),
         }
     }
 }
 
-impl<'a> From<Markup<'a>> for Keyboard<'a> {
-    fn from(markup: Markup<'a>) -> Self {
-        Self::new(markup)
+impl<'a, T> From<T> for Keyboard<'a>
+where
+    T: Into<Markup<'a>>,
+{
+    fn from(markup: T) -> Self {
+        Self::new(markup.into())
     }
 }

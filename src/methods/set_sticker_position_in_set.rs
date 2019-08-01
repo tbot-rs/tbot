@@ -1,5 +1,8 @@
 use super::*;
-use crate::internal::{BoxFuture, Client};
+use crate::{
+    internal::{BoxFuture, Client},
+    types::value,
+};
 
 /// Represents the [`setStickerPositionInSet`][docs] method.
 ///
@@ -11,21 +14,21 @@ pub struct SetStickerPositionInSet<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    sticker: &'a str,
+    sticker: value::String<'a>,
     position: u32,
 }
 
 impl<'a, C> SetStickerPositionInSet<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        sticker: &'a str,
+        sticker: impl Into<value::String<'a>>,
         position: u32,
     ) -> Self {
         Self {
             client,
             token,
-            sticker,
+            sticker: sticker.into(),
             position,
         }
     }

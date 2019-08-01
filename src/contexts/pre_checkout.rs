@@ -1,6 +1,6 @@
 use crate::{
     methods::AnswerPreCheckoutQuery,
-    types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User},
+    types::{pre_checkout_query, value, OrderInfo, PreCheckoutQuery, User},
     Bot,
 };
 use std::sync::Arc;
@@ -53,7 +53,7 @@ impl<C> PreCheckout<C> {
     /// [`err`]: #method.err
     pub fn answer<'a>(
         &'a self,
-        result: Result<(), &'a str>,
+        result: Result<(), value::String<'a>>,
     ) -> AnswerPreCheckoutQuery<'a, C> {
         self.bot.answer_pre_checkout_query(self.id.as_ref(), result)
     }
@@ -64,7 +64,10 @@ impl<C> PreCheckout<C> {
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(&'a self, err: &'a str) -> AnswerPreCheckoutQuery<'a, C> {
-        self.answer(Err(err))
+    pub fn err<'a>(
+        &'a self,
+        err: impl Into<value::String<'a>>,
+    ) -> AnswerPreCheckoutQuery<'a, C> {
+        self.answer(Err(err.into()))
     }
 }

@@ -1,5 +1,5 @@
 use super::*;
-use crate::types::file::id::AsFileId;
+use crate::types::{file::id::AsFileId, value::FileId};
 
 /// Represents a [`VideoNote`].
 ///
@@ -20,9 +20,16 @@ pub struct VideoNote {
 }
 
 impl crate::internal::Sealed for VideoNote {}
+impl crate::internal::Sealed for &'_ VideoNote {}
 
-impl AsFileId for VideoNote {
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+impl<'a> AsFileId<'a> for VideoNote {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.into()
+    }
+}
+
+impl<'a> AsFileId<'a> for &'a VideoNote {
+    fn as_file_id(self) -> FileId<'a> {
+        self.file_id.as_ref().into()
     }
 }

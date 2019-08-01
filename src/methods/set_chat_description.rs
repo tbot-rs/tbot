@@ -2,7 +2,10 @@ use super::*;
 use crate::{
     errors,
     internal::{BoxFuture, Client},
-    types::parameters::{ChatId, ImplicitChatId},
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        value,
+    },
 };
 
 /// Represents the [`setChatDescription`][docs] method.
@@ -16,7 +19,7 @@ pub struct SetChatDescription<'a, C> {
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    description: &'a str,
+    description: value::String<'a>,
 }
 
 impl<'a, C> SetChatDescription<'a, C> {
@@ -24,13 +27,13 @@ impl<'a, C> SetChatDescription<'a, C> {
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        description: &'a str,
+        description: impl Into<value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            description,
+            description: description.into(),
         }
     }
 }
