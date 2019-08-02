@@ -3,9 +3,7 @@
 
 use crate::{
     internal::AsInnerRef,
-    types::{
-        self, file, inline_message_id,
-    },
+    types::{self, file, inline_message_id},
 };
 use serde::Serialize;
 
