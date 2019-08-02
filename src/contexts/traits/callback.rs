@@ -13,7 +13,7 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
     #[doc(hidden)]
     fn bot(&self) -> &Bot<C>;
     #[doc(hidden)]
-    fn id(&self) -> callback::query::id::Ref<'_>;
+    fn id(&self) -> &callback::query::Id;
 
     /// Answers the callback query.
     ///

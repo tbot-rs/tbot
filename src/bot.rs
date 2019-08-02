@@ -2,18 +2,15 @@ use super::*;
 use crate::{
     event_loop::EventLoop,
     types::{
-        chat,
+        callback, chat,
         file::{id::AsFileId, File},
         inline_query,
         input_file::*,
         keyboard::inline,
         message,
         parameters::{CallbackAction, ImplicitChatId, Text, Updates},
-        passport, shipping, user,
-        value::{
-            self, Bytes, CallbackQueryId, InlineMessageId, InlineQueryId,
-            PreCheckoutQueryId, Ref, Seq, ShippingQueryId,
-        },
+        passport, pre_checkout_query, shipping, user,
+        value::{self, Bytes, InlineMessageId, Ref, Seq},
         LabeledPrice,
     },
 };
@@ -119,7 +116,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerCallbackQuery` inferring your bot's token.
     pub(crate) fn answer_callback_query<'a>(
         &'a self,
-        callback_query_id: impl Into<CallbackQueryId<'a>>,
+        callback_query_id: &'a callback::query::Id,
         action: impl Into<Ref<'a, CallbackAction<'a>>>,
     ) -> methods::AnswerCallbackQuery<'a, C> {
         methods::AnswerCallbackQuery::new(
@@ -133,7 +130,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerInlineQuery` inferring your bot's token.
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: impl Into<InlineQueryId<'a>>,
+        inline_query_id: &'a inline_query::Id,
         results: impl Into<Seq<'a, Ref<'a, inline_query::Result<'a>>>>,
     ) -> methods::AnswerInlineQuery<'a, C> {
         methods::AnswerInlineQuery::new(
@@ -147,7 +144,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerPreCheckoutQuery` inferring your bot's token.
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
-        pre_checkout_query_id: impl Into<PreCheckoutQueryId<'a>>,
+        pre_checkout_query_id: &'a pre_checkout_query::Id,
         result: Result<(), value::String<'a>>,
     ) -> methods::AnswerPreCheckoutQuery<'a, C> {
         methods::AnswerPreCheckoutQuery::new(
@@ -161,7 +158,7 @@ impl<C> Bot<C> {
     /// Constructs a new `AnswerShippingQuery` inferring your bot's token.
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
-        shipping_query_id: impl Into<ShippingQueryId<'a>>,
+        shipping_query_id: &'a shipping::query::Id,
         result: Result<
             Seq<'a, Ref<'a, shipping::Option<'a>>>,
             value::String<'a>,

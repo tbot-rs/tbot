@@ -6,7 +6,7 @@ use crate::{
     prelude::*,
     types::{
         inline_query,
-        value::{self, InlineQueryId, Seq},
+        value::{self, Seq},
     },
     Token,
 };
@@ -22,7 +22,7 @@ pub struct AnswerInlineQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    inline_query_id: InlineQueryId<'a>,
+    inline_query_id: &'a inline_query::Id,
     results: Seq<'a, value::Ref<'a, inline_query::Result<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
@@ -40,13 +40,13 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        inline_query_id: impl Into<InlineQueryId<'a>>,
+        inline_query_id: &'a inline_query::Id,
         results: impl Into<Seq<'a, value::Ref<'a, inline_query::Result<'a>>>>,
     ) -> Self {
         Self {
             client,
             token,
-            inline_query_id: inline_query_id.into(),
+            inline_query_id,
             results: results.into(),
             cache_time: None,
             is_personal: None,

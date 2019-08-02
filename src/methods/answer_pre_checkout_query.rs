@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     prelude::*,
-    types::value::{self, PreCheckoutQueryId},
+    types::{pre_checkout_query, value},
     Token,
 };
 use serde::Serialize;
@@ -19,7 +19,7 @@ pub struct AnswerPreCheckoutQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    pre_checkout_query_id: PreCheckoutQueryId<'a>,
+    pre_checkout_query_id: &'a pre_checkout_query::Id,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     error_message: Option<value::String<'a>>,
@@ -29,13 +29,13 @@ impl<'a, C> AnswerPreCheckoutQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        pre_checkout_query_id: impl Into<PreCheckoutQueryId<'a>>,
+        pre_checkout_query_id: &'a pre_checkout_query::Id,
         result: Result<(), value::String<'a>>,
     ) -> Self {
         Self {
             client,
             token,
-            pre_checkout_query_id: pre_checkout_query_id.into(),
+            pre_checkout_query_id,
             ok: result.is_ok(),
             error_message: result.err(),
         }

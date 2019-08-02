@@ -55,7 +55,7 @@ impl<C> PreCheckout<C> {
         &'a self,
         result: Result<(), value::String<'a>>,
     ) -> AnswerPreCheckoutQuery<'a, C> {
-        self.bot.answer_pre_checkout_query(self.id.as_ref(), result)
+        self.bot.answer_pre_checkout_query(&self.id, result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.

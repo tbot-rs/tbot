@@ -6,7 +6,7 @@ use crate::{
     prelude::*,
     types::{
         shipping,
-        value::{self, Seq, ShippingQueryId},
+        value::{self, Seq},
     },
     Token,
 };
@@ -22,7 +22,7 @@ pub struct AnswerShippingQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    shipping_query_id: ShippingQueryId<'a>,
+    shipping_query_id: &'a shipping::query::Id,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Seq<'a, value::Ref<'a, shipping::Option<'a>>>>,
@@ -34,7 +34,7 @@ impl<'a, C> AnswerShippingQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        shipping_query_id: impl Into<ShippingQueryId<'a>>,
+        shipping_query_id: &'a shipping::query::Id,
         result: Result<
             Seq<'a, value::Ref<'a, shipping::Option<'a>>>,
             value::String<'a>,
@@ -49,7 +49,7 @@ impl<'a, C> AnswerShippingQuery<'a, C> {
         Self {
             client,
             token,
-            shipping_query_id: shipping_query_id.into(),
+            shipping_query_id,
             ok,
             shipping_options,
             error_message,

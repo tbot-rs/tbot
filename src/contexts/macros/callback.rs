@@ -52,8 +52,8 @@ macro_rules! callback {
                 &self.bot
             }
 
-            fn id(&self) -> crate::types::callback::query::id::Ref<'_> {
-                self.id.as_ref()
+            fn id(&self) -> &crate::types::callback::query::Id {
+                &self.id
             }
         }
     }

@@ -2,7 +2,7 @@
 
 use crate::types::{Message, User};
 
-pub mod id;
+mod id;
 
 pub use id::Id;
 

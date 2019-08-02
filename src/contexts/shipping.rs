@@ -53,7 +53,7 @@ impl<C> Shipping<C> {
             value::String<'a>,
         >,
     ) -> AnswerShippingQuery<'a, C> {
-        self.bot.answer_shipping_query(self.id.as_ref(), result)
+        self.bot.answer_shipping_query(&self.id, result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.

@@ -3,8 +3,9 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
+        callback,
         parameters::CallbackAction,
-        value::{self, CallbackQueryId, Ref, Value},
+        value::{self, Ref, Value},
     },
 };
 
@@ -18,7 +19,7 @@ pub struct AnswerCallbackQuery<'a, C> {
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
-    callback_query_id: CallbackQueryId<'a>,
+    callback_query_id: &'a callback::query::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<value::String<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,7 +34,7 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
-        callback_query_id: impl Into<CallbackQueryId<'a>>,
+        callback_query_id: &'a callback::query::Id,
         action: impl Into<Ref<'a, CallbackAction<'a>>>,
     ) -> Self {
         let (text, show_alert, url) = match action.into() {
@@ -54,7 +55,7 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
         Self {
             client,
             token,
-            callback_query_id: callback_query_id.into(),
+            callback_query_id,
             text,
             show_alert,
             url,
