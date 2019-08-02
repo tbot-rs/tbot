@@ -22,7 +22,7 @@ pub enum ButtonKind<'a> {
     /// Represents a URL button.
     Url(value::String<'a>),
     /// Represents a login button.
-    LoginUrl(LoginUrl<'a>),
+    LoginUrl(Ref<'a, LoginUrl<'a>>),
     /// Represents callback data.
     CallbackData(value::String<'a>),
     /// Represents query inserted when switched to inline.
@@ -42,8 +42,8 @@ impl<'a> ButtonKind<'a> {
     }
 
     /// Constructs a 'LoginUrl' button.
-    pub fn login_url(url: LoginUrl<'a>) -> Self {
-        ButtonKind::LoginUrl(url)
+    pub fn login_url(url: impl Into<Ref<'a, LoginUrl<'a>>>) -> Self {
+        ButtonKind::LoginUrl(url.into())
     }
 
     /// Constructs a `CallbackData` button.
