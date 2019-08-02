@@ -35,7 +35,44 @@ pub enum ButtonKind<'a> {
     Pay(bool),
 }
 
-impl ButtonKind<'_> {
+impl<'a> ButtonKind<'a> {
+    /// Constructs a `URL` button.
+    pub fn url(url: impl Into<value::String<'a>>) -> Self {
+        ButtonKind::Url(url.into())
+    }
+
+    /// Constructs a 'LoginUrl' button.
+    pub fn login_url(url: LoginUrl<'a>) -> Self {
+        ButtonKind::LoginUrl(url)
+    }
+
+    /// Constructs a `CallbackData` button.
+    pub fn callback_data(data: impl Into<value::String<'a>>) -> Self {
+        ButtonKind::CallbackData(data.into())
+    }
+
+    /// Constructs a `SwitchInlineQuery` button.
+    pub fn switch_inline_query(query: impl Into<value::String<'a>>) -> Self {
+        ButtonKind::SwitchInlineQuery(query.into())
+    }
+
+    /// Constructs a `SwitchInlineQueryCurrentChat` button.
+    pub fn switch_inline_query_current_chat(
+        query: impl Into<value::String<'a>>,
+    ) -> Self {
+        ButtonKind::SwitchInlineQueryCurrentChat(query.into())
+    }
+
+    /// Constructs a `CallbackGame` button.
+    pub fn callback_game(game: Game) -> Self {
+        ButtonKind::CallbackGame(game)
+    }
+
+    /// Constructs a `Pay` button.
+    pub fn pay() -> Self {
+        ButtonKind::Pay(true)
+    }
+
     /// Checks if `self` is `Url`.
     pub fn is_url(&self) -> bool {
         match self {
@@ -43,6 +80,7 @@ impl ButtonKind<'_> {
             _ => false,
         }
     }
+
     /// Checks if `self` is `LoginUrl`.
     pub fn is_login_url(&self) -> bool {
         match self {
@@ -50,6 +88,7 @@ impl ButtonKind<'_> {
             _ => false,
         }
     }
+
     /// Checks if `self` is `CallbackData`.
     pub fn is_callback_data(&self) -> bool {
         match self {

@@ -11,15 +11,14 @@ const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 fn main() {
     let keyboard: Markup = vec![
         vec![
-            Button::new("Cool!", ButtonKind::CallbackData("cool".into()))
-                .into(),
-            Button::new("Amazing!", ButtonKind::CallbackData("amazing".into()))
+            Button::new("Cool!", ButtonKind::callback_data("cool")).into(),
+            Button::new("Amazing!", ButtonKind::callback_data("amazing"))
                 .into(),
         ]
         .into(),
         vec![Button::new(
             "I wanna get started with it!",
-            ButtonKind::Url(TUTORIAL.into()),
+            ButtonKind::url(TUTORIAL),
         )
         .into()]
         .into(),
