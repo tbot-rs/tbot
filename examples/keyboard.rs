@@ -2,29 +2,32 @@ use tbot::{
     prelude::*,
     types::keyboard::{
         self,
-        inline::{Button, ButtonKind, Markup},
+        inline::{Button, ButtonKind},
     },
 };
 
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 
 fn main() {
-    let keyboard: Markup = vec![
+    // If we created a keyboard of the actual type that `tbot` needs, it would
+    // be less readable. Though `tbot` can convert this vector on its own
+    // (i.e. if you declared it without the final `into`), it would be
+    // ineffecient as it would have to convert it each time the keyboard
+    // is requested. Instead, we convert the keyboard into `keyboard::Any`
+    // once, so when the keyboard is requested, it's already in the appropriate
+    // type.
+    let keyboard: keyboard::Any = vec![
         vec![
-            Button::new("Cool!", ButtonKind::callback_data("cool")).into(),
-            Button::new("Amazing!", ButtonKind::callback_data("amazing"))
-                .into(),
-        ]
-        .into(),
+            Button::new("Cool!", ButtonKind::callback_data("cool")),
+            Button::new("Amazing!", ButtonKind::callback_data("amazing")),
+        ],
         vec![Button::new(
             "I wanna get started with it!",
             ButtonKind::url(TUTORIAL),
-        )
-        .into()]
-        .into(),
+        )],
     ]
     .into();
-    let keyboard: keyboard::Any = keyboard.into();
+
     let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", move |context| {

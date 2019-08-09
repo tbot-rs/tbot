@@ -1,4 +1,5 @@
 use super::{inline, reply, ForceReply};
+use crate::types::value::{Ref, Value};
 use serde::Serialize;
 
 /// An enum of possible keyboards.
@@ -7,9 +8,9 @@ use serde::Serialize;
 // todo: #[non_exhaustive]
 pub enum Any<'a> {
     /// An inline keyboard.
-    Inline(inline::Keyboard<'a>),
+    Inline(Ref<'a, inline::Keyboard<'a>>),
     /// A reply markup.
-    Reply(reply::Keyboard<'a>),
+    Reply(Ref<'a, reply::Keyboard<'a>>),
     /// Removes reply markup.
     RemoveReply(reply::Remove),
     /// Forces reply.
@@ -52,61 +53,91 @@ impl Any<'_> {
 
 impl<'a> From<inline::Keyboard<'a>> for Any<'a> {
     fn from(keyboard: inline::Keyboard<'a>) -> Self {
-        Any::Inline(keyboard)
+        Any::Inline(keyboard.into())
+    }
+}
+
+impl<'a> From<&'a inline::Keyboard<'a>> for Any<'a> {
+    fn from(keyboard: &'a inline::Keyboard<'a>) -> Self {
+        Any::Inline(keyboard.into())
     }
 }
 
 impl<'a> From<inline::Markup<'a>> for Any<'a> {
     fn from(keyboard: inline::Markup<'a>) -> Self {
-        Any::Inline(keyboard.into())
+        Any::Inline(Value::Owned(keyboard.into()))
+    }
+}
+
+impl<'a> From<&'a inline::Markup<'a>> for Any<'a> {
+    fn from(keyboard: &'a inline::Markup<'a>) -> Self {
+        Any::Inline(Value::Owned(keyboard.into()))
     }
 }
 
 impl<'a> From<Vec<inline::InnerMarkup<'a>>> for Any<'a> {
     fn from(keyboard: Vec<inline::InnerMarkup<'a>>) -> Self {
-        Any::Inline(keyboard.into())
+        Any::Inline(Value::Owned(keyboard.into()))
     }
 }
 
 impl<'a> From<&'a Vec<inline::InnerMarkup<'a>>> for Any<'a> {
     fn from(keyboard: &'a Vec<inline::InnerMarkup<'a>>) -> Self {
-        Any::Inline(keyboard.into())
+        Any::Inline(Value::Owned(keyboard.into()))
     }
 }
 
 impl<'a> From<&'a [inline::InnerMarkup<'a>]> for Any<'a> {
     fn from(keyboard: &'a [inline::InnerMarkup<'a>]) -> Self {
-        Any::Inline(keyboard.into())
+        Any::Inline(Value::Owned(keyboard.into()))
+    }
+}
+
+impl<'a> From<Vec<Vec<inline::Button<'a>>>> for Any<'a> {
+    fn from(markup: Vec<Vec<inline::Button<'a>>>) -> Self {
+        Any::Inline(Value::Owned(markup.into()))
     }
 }
 
 impl<'a> From<reply::Keyboard<'a>> for Any<'a> {
     fn from(keyboard: reply::Keyboard<'a>) -> Self {
-        Any::Reply(keyboard)
+        Any::Reply(keyboard.into())
+    }
+}
+
+impl<'a> From<&'a reply::Keyboard<'a>> for Any<'a> {
+    fn from(keyboard: &'a reply::Keyboard<'a>) -> Self {
+        Any::Reply(keyboard.into())
     }
 }
 
 impl<'a> From<reply::Markup<'a>> for Any<'a> {
     fn from(keyboard: reply::Markup<'a>) -> Self {
-        Any::Reply(keyboard.into())
+        Any::Reply(Value::Owned(keyboard.into()))
+    }
+}
+
+impl<'a> From<&'a reply::Markup<'a>> for Any<'a> {
+    fn from(keyboard: &'a reply::Markup<'a>) -> Self {
+        Any::Reply(Value::Owned(keyboard.into()))
     }
 }
 
 impl<'a> From<Vec<reply::InnerMarkup<'a>>> for Any<'a> {
     fn from(keyboard: Vec<reply::InnerMarkup<'a>>) -> Self {
-        Any::Reply(keyboard.into())
+        Any::Reply(Value::Owned(keyboard.into()))
     }
 }
 
 impl<'a> From<&'a Vec<reply::InnerMarkup<'a>>> for Any<'a> {
     fn from(keyboard: &'a Vec<reply::InnerMarkup<'a>>) -> Self {
-        Any::Reply(keyboard.into())
+        Any::Reply(Value::Owned(keyboard.into()))
     }
 }
 
 impl<'a> From<&'a [reply::InnerMarkup<'a>]> for Any<'a> {
     fn from(keyboard: &'a [reply::InnerMarkup<'a>]) -> Self {
-        Any::Reply(keyboard.into())
+        Any::Reply(Value::Owned(keyboard.into()))
     }
 }
 

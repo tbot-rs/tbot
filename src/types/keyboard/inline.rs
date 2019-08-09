@@ -210,3 +210,33 @@ where
         Self::new(markup.into())
     }
 }
+
+impl<'a, T> From<T> for Ref<'a, Keyboard<'a>>
+where
+    T: Into<Markup<'a>>,
+{
+    fn from(markup: T) -> Self {
+        Keyboard::new(markup.into()).into()
+    }
+}
+
+impl<'a> From<Vec<Vec<Button<'a>>>> for Markup<'a> {
+    fn from(markup: Vec<Vec<Button<'a>>>) -> Self {
+        let markup: Vec<InnerMarkup> =
+            markup.into_iter().map(Into::into).collect::<Vec<_>>();
+        markup.into()
+    }
+}
+
+impl<'a> From<&'a Vec<Vec<Button<'a>>>> for Markup<'a> {
+    fn from(markup: &'a Vec<Vec<Button<'a>>>) -> Self {
+        markup
+            .iter()
+            .map(|value| {
+                let value: Seq<'a, Ref<'a, Button<'a>>> = value.into();
+                value
+            })
+            .collect::<Vec<_>>()
+            .into()
+    }
+}

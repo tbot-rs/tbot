@@ -3,7 +3,12 @@
 
 use crate::{
     internal::AsInnerRef,
-    types::{self, file, inline_message_id},
+    types::{
+        self, file, inline_message_id, inline_query,
+        input_file::{self, InputFile},
+        input_message_content, keyboard, parameters, passport, shipping, File,
+        InputMessageContent, LabeledPrice, LoginUrl,
+    },
 };
 use serde::Serialize;
 
@@ -58,16 +63,132 @@ impl<'a, T> AsInnerRef<'a, T> for Option<Ref<'a, T>> {
     }
 }
 
-impl<T> From<T> for Ref<'_, T> {
-    fn from(value: T) -> Self {
-        Value::Owned(value)
+// impl<T> From<T> for Ref<'_, T> {
+//     fn from(value: T) -> Self {
+//         Value::Owned(value)
+//     }
+// }
+
+// impl<'a, T> From<&'a T> for Ref<'a, T> {
+//     fn from(value: &'a T) -> Self {
+//         Value::Borrowed(value)
+//     }
+// }
+
+impl<'a> From<File> for Ref<'a, File> {
+    fn from(file: File) -> Self {
+        Value::Owned(file)
     }
 }
 
-impl<'a, T> From<&'a T> for Ref<'a, T> {
-    fn from(value: &'a T) -> Self {
-        Value::Borrowed(value)
+impl<'a> From<&'a File> for Ref<'a, File> {
+    fn from(file: &'a File) -> Self {
+        Value::Borrowed(file)
     }
+}
+
+macro_rules! from_for_ref {
+    ($lifetime:tt: $($type:ty,)+) => {
+        $(
+            impl<$lifetime> From<$type> for Ref<$lifetime, $type> {
+                fn from(value: $type) -> Self {
+                    Value::Owned(value)
+                }
+            }
+
+            impl<$lifetime> From<&$lifetime $type> for Ref<$lifetime, $type> {
+                fn from(value: &$lifetime $type) -> Self {
+                    Value::Borrowed(value)
+                }
+            }
+        )+
+    }
+}
+
+macro_rules! from_for_enum_ref {
+    (
+        $lifetime:tt, $enum_type:ty:
+            $($variant_name:path: $variant_type:ty,)+
+    ) => {
+        $(
+            impl<$lifetime> From<$variant_type> for Ref<$lifetime, $enum_type> {
+                fn from(value: $variant_type) -> Self {
+                    $variant_name(value.into()).into()
+                }
+            }
+
+            impl<$lifetime> From<&$lifetime $variant_type> for Ref<$lifetime, $enum_type> {
+                fn from(value: &$lifetime $variant_type) -> Self {
+                    $variant_name(value.into()).into()
+                }
+            }
+        )+
+    };
+}
+
+from_for_ref! {
+    'a: keyboard::inline::Button<'a>,
+        keyboard::reply::Button<'a>,
+        keyboard::inline::Keyboard<'a>,
+        keyboard::reply::Keyboard<'a>,
+        keyboard::Any<'a>, //
+        input_file::Animation<'a>,
+        input_file::Audio<'a>,
+        input_file::ChatPhoto<'a>,
+        input_file::Document<'a>,
+        input_file::EditableMedia<'a>,
+        input_file::GroupMedia<'a>,
+        input_file::Photo<'a>,
+        input_file::PngSticker<'a>,
+        input_file::Sticker<'a>,
+        input_file::Thumb<'a>,
+        input_file::Video<'a>,
+        input_file::VideoNote<'a>,
+        input_file::Voice<'a>,
+        InputFile<'a>,
+        input_message_content::Contact<'a>,
+        input_message_content::Location,
+        input_message_content::Text<'a>,
+        input_message_content::Venue<'a>,
+        InputMessageContent<'a>, //
+        inline_query::result::Article<'a>,
+        inline_query::result::Audio<'a>,
+        inline_query::result::Contact<'a>,
+        inline_query::result::Document<'a>,
+        inline_query::result::Game<'a>,
+        inline_query::result::Gif<'a>,
+        inline_query::result::Location<'a>,
+        inline_query::result::Mpeg4Gif<'a>,
+        inline_query::result::Photo<'a>,
+        inline_query::result::Sticker<'a>,
+        inline_query::result::Venue<'a>,
+        inline_query::result::Video<'a>,
+        inline_query::result::Voice<'a>,
+        inline_query::result::Kind<'a>, //
+        inline_query::Result<'a>, //
+        inline_query::result::audio::Fresh<'a>,
+        inline_query::result::document::Fresh<'a>,
+        inline_query::result::gif::Fresh<'a>,
+        inline_query::result::mpeg4_gif::Fresh<'a>,
+        inline_query::result::photo::Fresh<'a>,
+        inline_query::result::video::Fresh<'a>,
+        inline_query::result::voice::Fresh<'a>,
+        parameters::CallbackAction<'a>,
+        parameters::Photo<'a>,
+        LabeledPrice<'a>,
+        LoginUrl<'a>,
+        passport::element::Error<'a>,
+        shipping::Option<'a>,
+}
+
+from_for_enum_ref! {
+    'a, keyboard::Any<'a>:
+        keyboard::Any::Inline: keyboard::inline::Keyboard<'a>,
+        keyboard::Any::Inline: keyboard::inline::Markup<'a>,
+        keyboard::Any::Inline: Vec<Vec<keyboard::inline::Button<'a>>>,
+        keyboard::Any::Reply: keyboard::reply::Keyboard<'a>,
+        // ForceReply: keyboard::ForceReply,
+        // RemoveReply: keyboard::reply::Remove,
 }
 
 impl<'a, T> From<&'a Ref<'a, T>> for Ref<'a, T> {
@@ -230,6 +351,24 @@ impl<'a, T> From<&'a [T]> for Seq<'a, T> {
 impl<'a, T> From<&'a Seq<'a, T>> for Seq<'a, T> {
     fn from(vec: &'a Seq<'a, T>) -> Self {
         Value::Borrowed(vec.as_slice())
+    }
+}
+
+impl<'a, T> From<Vec<T>> for Seq<'a, Ref<'a, T>> {
+    fn from(value: Vec<T>) -> Self {
+        value.into_iter().map(Value::Owned).collect::<Vec<_>>().into()
+    }
+}
+
+impl<'a, T> From<Vec<&'a T>> for Seq<'a, Ref<'a, T>> {
+    fn from(value: Vec<&'a T>) -> Self {
+        value.into_iter().map(Value::Borrowed).collect::<Vec<_>>().into()
+    }
+}
+
+impl<'a, T> From<&'a Vec<T>> for Seq<'a, Ref<'a, T>> {
+    fn from(value: &'a Vec<T>) -> Self {
+        value.iter().map(Value::Borrowed).collect::<Vec<_>>().into()
     }
 }
 
