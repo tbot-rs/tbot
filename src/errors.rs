@@ -1,8 +1,41 @@
 //! Types representing errors.
 
 use crate::types::chat;
-use hyper::StatusCode;
+use hyper::{Chunk, StatusCode};
+use std::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+};
 use tokio::timer::timeout;
+
+/// Represents a parsing error.
+#[derive(Debug)]
+pub struct ParseError {
+    /// The response which failed to parse.
+    pub response: Chunk,
+    /// The error which parsing failed with.
+    pub error: serde_json::Error,
+}
+
+impl Display for ParseError {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        write!(
+            formatter,
+            "Failed to parse a method's response:\n\n\
+
+            Response: {response:?}\n\
+            Parse error: {error:#?}",
+            response = self.response,
+            error = self.error
+        )
+    }
+}
+
+impl Error for ParseError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        Some(&self.error)
+    }
+}
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]
@@ -22,6 +55,8 @@ pub enum MethodCall {
     Network(hyper::Error),
     /// Bots API is likely to be down.
     OutOfService,
+    /// Failed to parse the response.
+    Parse(ParseError),
     /// An error returned in response.
     RequestError {
         /// A human-readable description of the error.

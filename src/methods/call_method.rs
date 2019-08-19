@@ -74,12 +74,10 @@ where
             }
 
             serde_json::from_slice::<Response<T>>(&response[..]).map_err(
-                |err| {
-                    panic!(
-                        "\n[tbot]: Failed to parse Telegram's response. Please \
-                        fill an issue on our GitLab. {:#?}",
-                        err);
-                },
+                |error| errors::MethodCall::Parse(errors::ParseError {
+                    response,
+                    error,
+                }),
             )
         })
         .and_then(|response| {
