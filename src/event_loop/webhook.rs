@@ -158,12 +158,18 @@ where
     if is_request_correct(&request) {
         let body = request.into_body().concat2();
         let handler = body.map(move |body| {
-            let update =
-                serde_json::from_slice(&body[..]).unwrap_or_else(|error| {
-                    panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
-                });
-
-            event_loop.handle_update(bot, update);
+            match serde_json::from_slice(&body[..]) {
+                Ok(update) => event_loop.handle_update(bot, update),
+                Err(error) => {
+                    eprintln!(
+                        "[tbot] Could not parse incoming update:\n\n\
+                         Request (in bytes): {request:?}\n\
+                         Error: {error:#?}",
+                        request = &body[..],
+                        error = error
+                    );
+                }
+            }
 
             Response::new(Body::empty())
         });

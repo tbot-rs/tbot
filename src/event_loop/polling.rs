@@ -48,7 +48,7 @@ impl<C> Polling<C> {
             allowed_updates: None,
             poll_interval: Duration::from_millis(25),
             error_handler: Mutex::new(Box::new(|err| {
-                panic!("\n[tbot] Polling error: {:#?}", err);
+                eprintln!("[tbot] Polling error: {:#?}", err);
             })),
             request_timeout: None,
             offset: None,
