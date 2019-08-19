@@ -141,8 +141,8 @@ where
 
         crate::run(future);
 
-        panic!(
-            "\n[tbot] Polling event loop unexpected returned. \
+        unreachable!(
+            "\n[tbot] The polling event loop unexpectedly returned. \
              An error should be printed above.\n"
         );
     }

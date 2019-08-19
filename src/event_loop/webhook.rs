@@ -95,7 +95,7 @@ where
             eprintln!("\n[tbot] Webhook error: {:#?}", err);
         }));
 
-        panic!(
+        unreachable!(
             "\n[tbot] The webhook server unexpectedly returned. \
              An error should be printed above.\n",
         );
