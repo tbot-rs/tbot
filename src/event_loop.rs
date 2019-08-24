@@ -247,15 +247,14 @@ impl<C> EventLoop<C> {
     ) {
         if let Some(handlers) = self.command_handlers.get(&command) {
             for handler in handlers {
-                match handler.lock() {
-                    Ok(mut handler) => (&mut *handler)(context),
-                    Err(_) => {
-                        eprintln!(
-                            "[tbot] Cannot run a command handler since it \
-                             previously panicked. You should analyze the cause \
-                             and prevent it."
-                        );
-                    }
+                if let Ok(mut handler) = handler.lock() {
+                    (&mut *handler)(context)
+                } else {
+                    eprintln!(
+                        "[tbot] Cannot run a command handler since it \
+                         previously panicked. You should analyze the cause and \
+                         prevent it."
+                    );
                 }
             }
         }
@@ -308,15 +307,14 @@ impl<C> EventLoop<C> {
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(&command) {
             for handler in handlers {
-                match handler.lock() {
-                    Ok(mut handler) => (&mut *handler)(context),
-                    Err(_) => {
-                        eprintln!(
-                            "[tbot] Cannot run an edited command handler since \
-                            it previously panicked. You should analyze the \
-                            cause and prevent it."
-                        );
-                    }
+                if let Ok(mut handler) = handler.lock() {
+                    (&mut *handler)(context)
+                } else {
+                    eprintln!(
+                        "[tbot] Cannot run an edited command handler since it \
+                         previously panicked. You should analyze the cause and \
+                         prevent it."
+                    );
                 }
             }
         }
@@ -678,15 +676,14 @@ impl<C> EventLoop<C> {
         let context = contexts::Unhandled::new(bot, update);
 
         for handler in &self.unhandled_handlers {
-            match handler.lock() {
-                Ok(mut handler) => (&mut *handler)(&context),
-                Err(_) => {
-                    eprintln!(
-                        "[tbot] Cannot run an unhandled handler since it \
-                         previously panicked. You should analyze the cause \
-                         and prevent it."
-                    );
-                }
+            if let Ok(mut handler) = handler.lock() {
+                (&mut *handler)(&context)
+            } else {
+                eprintln!(
+                    "[tbot] Cannot run an unhandled handler since it \
+                     previously panicked. You should analyze the cause and \
+                     prevent it."
+                );
             }
         }
     }
@@ -1282,15 +1279,14 @@ impl<C> EventLoop<C> {
         message: types::Message,
     ) {
         let (data, kind) = message.split();
-        let edit_date = match data.edit_date {
-            Some(date) => date,
-            None => {
-                eprintln!(
-                    "[tbot] Expected `edit_date` to exist on an edited message \
-                    update. Skipping the update.",
-                );
-                return;
-            }
+        let edit_date = if let Some(edit_date) = data.edit_date {
+            edit_date
+        } else {
+            eprintln!(
+                "[tbot] Expected `edit_date` to exist on an edited message \
+                 update. Skipping the update.",
+            );
+            return;
         };
 
         match kind {

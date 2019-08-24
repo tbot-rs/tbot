@@ -167,7 +167,7 @@ impl<'a> Multipart<'a> {
 
         for part in self.parts {
             body.extend_from_slice(b"--");
-            body.extend_from_slice(&boundary);
+            body.extend_from_slice(boundary);
             body.extend_from_slice(b"\r\n");
 
             body.extend_from_slice(b"Content-Disposition: form-data; ");
@@ -184,7 +184,7 @@ impl<'a> Multipart<'a> {
         }
 
         body.extend_from_slice(b"--");
-        body.extend_from_slice(&boundary);
+        body.extend_from_slice(boundary);
         body.extend_from_slice(b"--\r\n");
 
         (boundary_string, body)

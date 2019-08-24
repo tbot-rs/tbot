@@ -220,15 +220,14 @@ where
                 })
                 .timeout(request_timeout)
                 .map_err(move |error| {
-                    match error_handler.lock() {
-                        Ok(mut handler) => (&mut *handler)(error),
-                        Err(_) => {
-                            eprintln!(
-                                "[tbot] Cannot run a polling error handler \
-                                 since it previously panicked. You should \
-                                 analyze the cause and prevent it."
-                            );
-                        }
+                    if let Ok(mut handler) = error_handler.lock() {
+                        (&mut *handler)(error)
+                    } else {
+                        eprintln!(
+                            "[tbot] Cannot run a polling error handler since \
+                             it previously panicked. You should analyze the \
+                             cause and prevent it."
+                        );
                     }
 
                     on_error_schedule.lock().unwrap().schedule_next_tick();
