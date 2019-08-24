@@ -74,10 +74,10 @@ where
             }
 
             serde_json::from_slice::<Response<T>>(&response[..]).map_err(
-                |error| errors::MethodCall::Parse(errors::ParseError {
+                |error| errors::MethodCall::Parse {
                     response,
                     error,
-                }),
+                },
             )
         })
         .and_then(|response| {
