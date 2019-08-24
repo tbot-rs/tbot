@@ -1,5 +1,9 @@
 use crate::types::chat;
 use hyper::Chunk;
+use std::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+};
 
 /// Represents possible errors that may happen during a method call.
 #[derive(Debug)]
@@ -28,6 +32,54 @@ pub enum MethodCall {
         retry_after: Option<u64>,
     },
 }
+
+impl Display for MethodCall {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        match self {
+            MethodCall::Network(error) => write!(
+                formatter,
+                "A method call failed because of a network error: {}",
+                error,
+            ),
+            MethodCall::OutOfService => write!(
+                formatter,
+                "A method call failed because Telegram is out of service.",
+            ),
+            MethodCall::Parse {
+                response,
+                error,
+            } => write!(
+                formatter,
+                "A method call failed because `tbot` failed to parse the \
+                response.\n\n\
+
+                The response was: {response:?}\n\
+                The error was: {error}",
+                response = response,
+                error = error,
+            ),
+            MethodCall::RequestError {
+                description,
+                error_code,
+                migrate_to_chat_id,
+                retry_after,
+            } => write!(
+                formatter,
+                "A method call failed because Telegram responded with an error \
+                {error_code} `{description}`. Additional information:\n\n\
+
+                - migrate_to_chat_id: {chat_id:?}\n\
+                - retry_after: {retry_after:?}",
+                error_code = error_code,
+                description = description,
+                chat_id = migrate_to_chat_id,
+                retry_after = retry_after,
+            ),
+        }
+    }
+}
+
+impl Error for MethodCall {}
 
 impl MethodCall {
     /// Checks if `self` is `Network`.

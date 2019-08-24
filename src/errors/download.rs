@@ -1,4 +1,8 @@
 use hyper::StatusCode;
+use std::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+};
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]
@@ -36,6 +40,30 @@ impl Download {
         }
     }
 }
+
+impl Display for Download {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        match self {
+            Download::NoPath => write!(
+                formatter,
+                "A file could not be downloaded because of missing `path`.",
+            ),
+            Download::Network(error) => write!(
+                formatter,
+                "A file could not be downloaded because of a network error: {}",
+                error,
+            ),
+            Download::InvalidStatusCode(code) => write!(
+                formatter,
+                "A file could not be downloaded because Telegram responded \
+                 with {} instead of 200 OK.",
+                code,
+            ),
+        }
+    }
+}
+
+impl Error for Download {}
 
 impl From<hyper::Error> for Download {
     fn from(error: hyper::Error) -> Self {
