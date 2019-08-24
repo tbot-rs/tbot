@@ -247,7 +247,16 @@ impl<C> EventLoop<C> {
     ) {
         if let Some(handlers) = self.command_handlers.get(&command) {
             for handler in handlers {
-                (&mut *handler.lock().unwrap())(context);
+                match handler.lock() {
+                    Ok(mut handler) => (&mut *handler)(context),
+                    Err(_) => {
+                        eprintln!(
+                            "[tbot] Cannot run a command handler since it \
+                             previously panicked. You should analyze the cause \
+                             and prevent it."
+                        );
+                    }
+                }
             }
         }
     }
@@ -299,7 +308,16 @@ impl<C> EventLoop<C> {
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(&command) {
             for handler in handlers {
-                (&mut *handler.lock().unwrap())(context);
+                match handler.lock() {
+                    Ok(mut handler) => (&mut *handler)(context),
+                    Err(_) => {
+                        eprintln!(
+                            "[tbot] Cannot run an edited command handler since \
+                            it previously panicked. You should analyze the \
+                            cause and prevent it."
+                        );
+                    }
+                }
             }
         }
     }
@@ -660,7 +678,16 @@ impl<C> EventLoop<C> {
         let context = contexts::Unhandled::new(bot, update);
 
         for handler in &self.unhandled_handlers {
-            (&mut *handler.lock().unwrap())(&context);
+            match handler.lock() {
+                Ok(mut handler) => (&mut *handler)(&context),
+                Err(_) => {
+                    eprintln!(
+                        "[tbot] Cannot run an unhandled handler since it \
+                         previously panicked. You should analyze the cause \
+                         and prevent it."
+                    );
+                }
+            }
         }
     }
 
@@ -1255,9 +1282,16 @@ impl<C> EventLoop<C> {
         message: types::Message,
     ) {
         let (data, kind) = message.split();
-        let edit_date = data.edit_date.expect(
-            "\n[tbot] Expected `edit_date` to exist on an edited message\n",
-        );
+        let edit_date = match data.edit_date {
+            Some(date) => date,
+            None => {
+                eprintln!(
+                    "[tbot] Expected `edit_date` to exist on an edited message \
+                    update. Skipping the update.",
+                );
+                return;
+            }
+        };
 
         match kind {
             message::Kind::Animation(animation, caption) => {
@@ -1400,8 +1434,8 @@ impl<C> EventLoop<C> {
                     self.run_unhandled_handlers(bot, update);
                 }
             }
-            message::Kind::Poll(_) => unreachable!(
-                "\n[tbot] Unexpected poll as an edited message update\n"
+            message::Kind::Poll(_) => eprintln!(
+                "[tbot] Did not expect to receive a poll as an edited message. Skipping the update."
             ),
             message::Kind::NewChatMembers(..)
             | message::Kind::LeftChatMember(..)
@@ -1413,8 +1447,8 @@ impl<C> EventLoop<C> {
             | message::Kind::ChannelCreated
             | message::Kind::Pinned(..)
             | message::Kind::MigrateTo(..)
-            | message::Kind::MigrateFrom(..) => unreachable!(
-                "\n[tbot]\nExpected service messages not to be edited\n"
+            | message::Kind::MigrateFrom(..) => eprintln!(
+                "[tbot] Did not expect to receive a service message as an edited message. Skipping the update."
             ),
             _ if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
@@ -1494,8 +1528,11 @@ fn is_command(text: &Text) -> bool {
 
 fn parse_command(text: &Text) -> (&str, Option<&str>) {
     let mut iter =
-        text.value.split_whitespace().next().unwrap()[1..].split('@');
+        // As this function is only run when a message starts with `/`,
+        // the first value will always be yielded.
+        text.value.split_whitespace().nth(0).unwrap()[1..].split('@');
 
+    // `split` always yields the first value.
     let command = iter.next().unwrap();
     let username = iter.next();
 
@@ -1504,6 +1541,8 @@ fn parse_command(text: &Text) -> (&str, Option<&str>) {
 
 fn trim_command(text: Text) -> Text {
     let mut entities = text.entities.into_iter();
+    // As this function is only called when the message is a command, the first
+    // entity will always exist.
     let command_entity = entities.next().unwrap();
     let old_length = text.value.chars().count();
 

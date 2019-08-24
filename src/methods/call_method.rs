@@ -23,7 +23,7 @@ fn create_method_url(token: &Token, method: &'static str) -> hyper::Uri {
         .authority("api.telegram.org")
         .path_and_query(format!("/bot{}/{}", token.as_str(), method).as_str())
         .build()
-        .unwrap()
+        .expect("\n[tbot] Method URL construction failed\n")
 }
 
 #[must_use]

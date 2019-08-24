@@ -22,13 +22,17 @@ pub type Proxy = ProxyConnector<Https>;
 
 /// Constructs a HTTPS connector.
 pub fn https() -> Https {
-    HttpsConnector::new(num_cpus::get()).unwrap()
+    HttpsConnector::new(num_cpus::get()).unwrap_or_else(|error| {
+        panic!("[tbot] Failed to construct an HTTPS connector: {:#?}", error)
+    })
 }
 
 #[cfg(feature = "proxy")]
 /// Constructs a proxy connector.
 pub fn proxy(proxy: proxy::Proxy) -> Proxy {
-    ProxyConnector::from_proxy(https(), proxy).unwrap()
+    ProxyConnector::from_proxy(https(), proxy).unwrap_or_else(|error| {
+        panic!("[tbot] Failed to construct a proxy connector: {:#?}", error)
+    })
 }
 
 pub(crate) fn create_client<C>(connector: C) -> internal::Client<C>
