@@ -46,6 +46,16 @@ impl MethodCall {
         }
     }
 
+    /// Checks if `self` is `Parse`.
+    pub fn is_parse(&self) -> bool {
+        match self {
+            MethodCall::Parse {
+                ..
+            } => true,
+            _ => false,
+        }
+    }
+
     /// Checks if `self` is `RequestError`.
     pub fn is_request_error(&self) -> bool {
         match self {
