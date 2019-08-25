@@ -23,7 +23,7 @@ fn create_method_url(token: &Token, method: &'static str) -> hyper::Uri {
         .authority("api.telegram.org")
         .path_and_query(format!("/bot{}/{}", token.as_str(), method).as_str())
         .build()
-        .unwrap()
+        .expect("\n[tbot] Method URL construction failed\n")
 }
 
 #[must_use]
@@ -74,11 +74,9 @@ where
             }
 
             serde_json::from_slice::<Response<T>>(&response[..]).map_err(
-                |err| {
-                    panic!(
-                        "\n[tbot]: Failed to parse Telegram's response. Please \
-                        fill an issue on our GitLab. {:#?}",
-                        err);
+                |error| errors::MethodCall::Parse {
+                    response,
+                    error,
                 },
             )
         })

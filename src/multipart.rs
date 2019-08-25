@@ -1,6 +1,6 @@
 use crate::types::parameters::ChatId;
 use serde::Serialize;
-use std::{borrow::Cow, collections::HashSet};
+use std::{borrow::Cow, collections::HashSet, iter::repeat};
 
 enum Header<'a> {
     Field(&'static str),
@@ -159,13 +159,15 @@ impl<'a> Multipart<'a> {
             })
             .unwrap();
 
-        let boundary = vec![b'-'; boundary_length];
+        let boundary_string: String =
+            repeat('-').take(boundary_length).collect();
+        let boundary = boundary_string.as_bytes();
 
         let mut body = Vec::new();
 
         for part in self.parts {
             body.extend_from_slice(b"--");
-            body.extend_from_slice(&boundary);
+            body.extend_from_slice(boundary);
             body.extend_from_slice(b"\r\n");
 
             body.extend_from_slice(b"Content-Disposition: form-data; ");
@@ -182,9 +184,9 @@ impl<'a> Multipart<'a> {
         }
 
         body.extend_from_slice(b"--");
-        body.extend_from_slice(&boundary);
+        body.extend_from_slice(boundary);
         body.extend_from_slice(b"--\r\n");
 
-        (String::from_utf8(boundary).unwrap(), body)
+        (boundary_string, body)
     }
 }

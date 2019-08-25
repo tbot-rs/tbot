@@ -48,7 +48,7 @@ impl<C> Polling<C> {
             allowed_updates: None,
             poll_interval: Duration::from_millis(25),
             error_handler: Mutex::new(Box::new(|err| {
-                panic!("\n[tbot] Polling error: {:#?}", err);
+                eprintln!("[tbot] Polling error: {:#?}", err);
             })),
             request_timeout: None,
             offset: None,
@@ -110,7 +110,9 @@ impl<C> Polling<C> {
     ///
     /// Panics if `n` can't be converted to `isize` safely.
     pub fn last_n_updates(mut self, n: NonZeroUsize) -> Self {
-        let n: isize = n.get().try_into().unwrap();
+        let n: isize = n.get().try_into().unwrap_or_else(|_| {
+            panic!("\n[tbot] Cannot convert {} to isize safely\n", n);
+        });
         self.offset = Some(-n);
         self
     }
@@ -141,8 +143,8 @@ where
 
         crate::run(future);
 
-        panic!(
-            "\n[tbot] Polling event loop unexpected returned. \
+        unreachable!(
+            "\n[tbot] The polling event loop unexpectedly returned. \
              An error should be printed above.\n"
         );
     }
@@ -202,14 +204,15 @@ where
                 .get_updates(last_offset, limit, timeout, allowed_updates)
                 .into_future()
                 .map(move |updates| {
-                    let mut schedule = schedule.lock().unwrap();
+                    {
+                        let mut schedule = schedule.lock().unwrap();
 
-                    if let Some(update) = updates.last() {
-                        schedule.last_offset = Some(update.id.0 + 1);
+                        if let Some(update) = updates.last() {
+                            schedule.last_offset = Some(update.id.0 + 1);
+                        }
+
+                        schedule.schedule_next_tick();
                     }
-
-                    schedule.schedule_next_tick();
-                    std::mem::drop(schedule);
 
                     for update in updates {
                         event_loop.handle_update(Arc::clone(&bot), update);
@@ -217,7 +220,15 @@ where
                 })
                 .timeout(request_timeout)
                 .map_err(move |error| {
-                    (&mut *(*error_handler).lock().unwrap())(error);
+                    if let Ok(mut handler) = error_handler.lock() {
+                        (&mut *handler)(error)
+                    } else {
+                        eprintln!(
+                            "[tbot] Cannot run a polling error handler since \
+                             it previously panicked. You should analyze the \
+                             cause and prevent it."
+                        );
+                    }
 
                     on_error_schedule.lock().unwrap().schedule_next_tick();
                 });

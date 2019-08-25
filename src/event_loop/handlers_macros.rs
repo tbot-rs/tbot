@@ -21,7 +21,14 @@ macro_rules! handler {
 
         fn $run_handlers(&self, context: & $context) {
             for handler in &self.$handlers {
-                (&mut *handler.lock().unwrap())(context);
+                if let Ok(mut handler) = handler.lock() {
+                    (&mut *handler)(context)
+                } else {
+                    eprintln!(
+                        "[tbot] Cannot run a handler since it previously \
+                         panicked. You should analyze the cause and prevent it."
+                    );
+                }
             }
         }
     };
