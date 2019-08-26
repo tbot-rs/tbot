@@ -797,10 +797,7 @@ impl<C> EventLoop<C> {
                         self.run_data_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
                         let kind = callback::Kind::Data(data);
-                        let query = callback::Query {
-                            kind,
-                            ..query
-                        };
+                        let query = callback::Query { kind, ..query };
                         let update = update::Kind::CallbackQuery(query);
 
                         self.run_unhandled_handlers(bot, update);
@@ -820,10 +817,7 @@ impl<C> EventLoop<C> {
                         self.run_game_callback_handlers(&context);
                     } else if self.will_handle_unhandled() {
                         let kind = callback::Kind::Game(game);
-                        let query = callback::Query {
-                            kind,
-                            ..query
-                        };
+                        let query = callback::Query { kind, ..query };
                         let update = update::Kind::CallbackQuery(query);
 
                         self.run_unhandled_handlers(bot, update);
@@ -1476,8 +1470,9 @@ where
         let get_me = self.bot.get_me().into_future();
         let me = block_on_all(get_me)?;
 
-        let username =
-            me.username.expect("[tbot] Expected the bot to have a username");
+        let username = me
+            .username
+            .expect("[tbot] Expected the bot to have a username");
         self.username(username);
 
         Ok(())
@@ -1526,8 +1521,5 @@ fn trim_command(text: Text) -> Text {
         })
         .collect();
 
-    Text {
-        value,
-        entities,
-    }
+    Text { value, entities }
 }

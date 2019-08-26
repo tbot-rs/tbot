@@ -76,12 +76,7 @@ impl<'a> Voice<'a> {
 
     /// Constructs a cached `Voice` result.
     pub fn cached(title: &'a str, id: &'a str) -> Self {
-        Self::new(
-            title,
-            Kind::Cached {
-                id,
-            },
-        )
+        Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Voice` result.

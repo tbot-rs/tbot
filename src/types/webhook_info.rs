@@ -87,10 +87,7 @@ impl<'v> Visitor<'v> for WebhookInfoVisitor {
         let pending_update_count = pending_update_count
             .ok_or_else(|| Error::missing_field(PENDING_UPDATE_COUNT))?;
         let last_error = last_error_date.and_then(|date| {
-            last_error_message.map(|message| LastError {
-                date,
-                message,
-            })
+            last_error_message.map(|message| LastError { date, message })
         });
 
         Ok(WebhookInfo {

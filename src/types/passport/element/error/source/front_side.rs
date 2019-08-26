@@ -51,9 +51,6 @@ pub struct FrontSide<'a> {
 impl<'a> FrontSide<'a> {
     /// Constructs a new `FrontSide`.
     pub const fn new(kind: Kind, file_hash: &'a str) -> Self {
-        Self {
-            kind,
-            file_hash,
-        }
+        Self { kind, file_hash }
     }
 }

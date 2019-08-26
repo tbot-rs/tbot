@@ -10,9 +10,12 @@ fn main() {
 
     bot.command("poll", |context| {
         let poll =
-            context.send_poll(QUESTION, OPTIONS).into_future().map_err(|err| {
-                dbg!(err);
-            });
+            context
+                .send_poll(QUESTION, OPTIONS)
+                .into_future()
+                .map_err(|err| {
+                    dbg!(err);
+                });
 
         tbot::spawn(poll);
     });

@@ -73,12 +73,8 @@ where
                 return Err(errors::MethodCall::OutOfService);
             }
 
-            serde_json::from_slice::<Response<T>>(&response[..]).map_err(
-                |error| errors::MethodCall::Parse {
-                    response,
-                    error,
-                },
-            )
+            serde_json::from_slice::<Response<T>>(&response[..])
+                .map_err(|error| errors::MethodCall::Parse { response, error })
         })
         .and_then(|response| {
             if let Some(result) = response.result {

@@ -59,10 +59,7 @@ pub struct File<'a> {
 impl<'a> File<'a> {
     /// Constructs a new `File`.
     pub const fn new(kind: Kind, file_hash: &'a str) -> Self {
-        Self {
-            kind,
-            file_hash,
-        }
+        Self { kind, file_hash }
     }
 }
 
@@ -79,9 +76,6 @@ pub struct Files<'a> {
 impl<'a> Files<'a> {
     /// Constructs neile`.
     pub const fn new(kind: Kind, file_hashes: &'a [&'a str]) -> Self {
-        Self {
-            kind,
-            file_hashes,
-        }
+        Self { kind, file_hashes }
     }
 }

@@ -83,9 +83,7 @@ where
 
         match self.sticker.media {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("sticker", filename, bytes),
             InputFile::Id(sticker) | InputFile::Url(sticker) => {
                 multipart = multipart.str("sticker", sticker);

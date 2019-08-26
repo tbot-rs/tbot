@@ -9,9 +9,7 @@ pub struct PngSticker<'a> {
 
 impl<'a> PngSticker<'a> {
     const fn new(media: InputFile<'a>) -> Self {
-        Self {
-            media,
-        }
+        Self { media }
     }
 
     /// Constructs a `PngSticker` from bytes.

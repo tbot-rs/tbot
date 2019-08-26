@@ -86,9 +86,7 @@ impl<'a> Photo<'a> {
 
     /// Constructs a cached `Photo` result.
     pub fn cached(id: &'a str) -> Self {
-        Self::new(Kind::Cached {
-            id,
-        })
+        Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Photo` result.

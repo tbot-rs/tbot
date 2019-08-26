@@ -9,9 +9,7 @@ pub struct Sticker<'a> {
 
 impl<'a> Sticker<'a> {
     const fn new(media: InputFile<'a>) -> Self {
-        Self {
-            media,
-        }
+        Self { media }
     }
 
     /// Constructs a `Sticker` from bytes.

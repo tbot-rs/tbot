@@ -55,9 +55,7 @@ where
         let mut multipart = Multipart::new(2).str("chat_id", &chat_id);
 
         if let InputFile::File {
-            filename,
-            bytes,
-            ..
+            filename, bytes, ..
         } = self.photo.0.file
         {
             multipart = multipart.file("photo", filename, bytes);

@@ -73,11 +73,7 @@ where
         for (index, media) in self.media.iter().enumerate() {
             match media {
                 GroupMedia::Photo(Photo {
-                    media:
-                        InputFile::File {
-                            filename,
-                            bytes,
-                        },
+                    media: InputFile::File { filename, bytes },
                     ..
                 }) => {
                     let name = format!("photo_{}", index);
@@ -86,11 +82,7 @@ where
                         multipart.file_owned_name(name, filename, bytes);
                 }
                 GroupMedia::Video(Video {
-                    media:
-                        InputFile::File {
-                            filename,
-                            bytes,
-                        },
+                    media: InputFile::File { filename, bytes },
                     thumb,
                     ..
                 }) => {
@@ -98,10 +90,8 @@ where
                     multipart =
                         multipart.file_owned_name(name, filename, bytes);
 
-                    if let Some(Thumb(InputFile::File {
-                        filename,
-                        bytes,
-                    })) = thumb
+                    if let Some(Thumb(InputFile::File { filename, bytes })) =
+                        thumb
                     {
                         let name = format!("thumb_{}", index);
                         multipart =

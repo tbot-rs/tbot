@@ -105,9 +105,7 @@ impl<'a> From<Markup<'a>> for Keyboard<'a> {
 impl Remove {
     /// Constructs a `reply::Remove`.
     pub const fn new() -> Self {
-        Self {
-            selective: None,
-        }
+        Self { selective: None }
     }
 
     /// Configures `selective`.
@@ -119,11 +117,7 @@ impl Remove {
 
 impl serde::Serialize for Remove {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let len = if self.selective.is_some() {
-            2
-        } else {
-            1
-        };
+        let len = if self.selective.is_some() { 2 } else { 1 };
 
         let mut map = s.serialize_map(Some(len))?;
 

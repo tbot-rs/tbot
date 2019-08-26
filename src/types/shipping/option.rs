@@ -18,10 +18,6 @@ impl<'a> Option<'a> {
         title: &'a str,
         prices: &'a [LabeledPrice<'a>],
     ) -> Self {
-        Self {
-            id,
-            title,
-            prices,
-        }
+        Self { id, title, prices }
     }
 }

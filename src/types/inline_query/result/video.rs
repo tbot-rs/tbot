@@ -127,12 +127,7 @@ impl<'a> Video<'a> {
 
     /// Constructs a cached `Video` result.
     pub fn cached(title: &'a str, id: &'a str) -> Self {
-        Self::new(
-            title,
-            Kind::Cached {
-                id,
-            },
-        )
+        Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Video` result.

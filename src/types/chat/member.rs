@@ -82,9 +82,7 @@ impl Status {
     /// Checks if `self` is `Administrator`.
     pub fn is_administator(&self) -> bool {
         match self {
-            Status::Administator {
-                ..
-            } => true,
+            Status::Administator { .. } => true,
             _ => false,
         }
     }
@@ -97,9 +95,7 @@ impl Status {
     /// Checks if `self` is `Restricted`.
     pub fn is_restricted(&self) -> bool {
         match self {
-            Status::Restricted {
-                ..
-            } => true,
+            Status::Restricted { .. } => true,
             _ => false,
         }
     }
@@ -112,9 +108,7 @@ impl Status {
     /// Checks if `self` is `Kicked`.
     pub fn is_kicked(&self) -> bool {
         match self {
-            Status::Kicked {
-                ..
-            } => true,
+            Status::Kicked { .. } => true,
             _ => false,
         }
     }
@@ -259,9 +253,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
                     })?,
             },
             Some(LEFT) => Status::Left,
-            Some(KICKED) => Status::Kicked {
-                until_date,
-            },
+            Some(KICKED) => Status::Kicked { until_date },
             Some(unknown_status) => {
                 return Err(Error::unknown_variant(
                     unknown_status,

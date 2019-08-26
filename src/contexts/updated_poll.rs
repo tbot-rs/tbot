@@ -13,9 +13,6 @@ common! {
 
 impl<C> UpdatedPoll<C> {
     pub(crate) const fn new(bot: Arc<Bot<C>>, poll: Poll) -> Self {
-        Self {
-            bot,
-            poll,
-        }
+        Self { bot, poll }
     }
 }

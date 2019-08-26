@@ -23,7 +23,10 @@ pub type Proxy = ProxyConnector<Https>;
 /// Constructs a HTTPS connector.
 pub fn https() -> Https {
     HttpsConnector::new(num_cpus::get()).unwrap_or_else(|error| {
-        panic!("[tbot] Failed to construct an HTTPS connector: {:#?}", error)
+        panic!(
+            "[tbot] Failed to construct an HTTPS connector: {:#?}",
+            error,
+        )
     })
 }
 
@@ -41,7 +44,9 @@ where
     C::Transport: 'static,
     C::Future: 'static,
 {
-    Client::builder().keep_alive(false).build::<C, Body>(connector)
+    Client::builder()
+        .keep_alive(false)
+        .build::<C, Body>(connector)
 }
 
 pub(crate) fn default() -> internal::Client<Https> {

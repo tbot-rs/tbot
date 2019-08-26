@@ -85,9 +85,7 @@ where
 
         match self.document.media {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("document", filename, bytes),
             InputFile::Id(document) | InputFile::Url(document) => {
                 multipart = multipart.str("document", document);
@@ -95,9 +93,7 @@ where
         }
 
         if let Some(Thumb(InputFile::File {
-            filename,
-            bytes,
-            ..
+            filename, bytes, ..
         })) = self.document.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);

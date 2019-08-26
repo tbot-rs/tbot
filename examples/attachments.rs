@@ -22,9 +22,12 @@ fn main() {
     bot.command("animation", |context| {
         let animation = Animation::bytes(GIF);
         let message =
-            context.send_animation(animation).into_future().map_err(|err| {
-                dbg!(err);
-            });
+            context
+                .send_animation(animation)
+                .into_future()
+                .map_err(|err| {
+                    dbg!(err);
+                });
 
         tbot::spawn(message);
     });
@@ -32,9 +35,12 @@ fn main() {
     bot.command("document", |context| {
         let document = Document::bytes("tutorial.rs", TUTORIAL);
         let message =
-            context.send_document(document).into_future().map_err(|err| {
-                dbg!(err);
-            });
+            context
+                .send_document(document)
+                .into_future()
+                .map_err(|err| {
+                    dbg!(err);
+                });
 
         tbot::spawn(message);
     });
@@ -55,9 +61,12 @@ fn main() {
     bot.command("album", |context| {
         let album = &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
         let message =
-            context.send_media_group(album).into_future().map_err(|err| {
-                dbg!(err);
-            });
+            context
+                .send_media_group(album)
+                .into_future()
+                .map_err(|err| {
+                    dbg!(err);
+                });
 
         tbot::spawn(message);
     });
