@@ -150,75 +150,69 @@ const SHIPPING_QUERY: &str = "shipping_query";
 const PRE_CHECKOUT_QUERY: &str = "pre_checkout_query";
 const POLL: &str = "poll";
 
+struct UpdateVisitor;
+
+impl<'v> Visitor<'v> for UpdateVisitor {
+    type Value = Update;
+
+    fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
+        write!(fmt, "struct Update")
+    }
+
+    fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
+    where
+        V: MapAccess<'v>,
+    {
+        let mut id = None;
+        let mut kind = None;
+
+        while let Some(key) = map.next_key()? {
+            match key {
+                UPDATE_ID => id = Some(map.next_value()?),
+                MESSAGE => kind = Some(Kind::Message(map.next_value()?)),
+                EDITED_MESSAGE => {
+                    kind = Some(Kind::EditedMessage(map.next_value()?))
+                }
+                CHANNEL_POST => {
+                    kind = Some(Kind::ChannelPost(map.next_value()?))
+                }
+                EDITED_CHANNEL_POST => {
+                    kind = Some(Kind::EditedChannelPost(map.next_value()?))
+                }
+                INLINE_QUERY => {
+                    kind = Some(Kind::InlineQuery(map.next_value()?))
+                }
+                CALLBACK_QUERY => {
+                    kind = Some(Kind::CallbackQuery(map.next_value()?))
+                }
+                CHOSEN_INLINE_RESULT => {
+                    kind = Some(Kind::ChosenInlineResult(map.next_value()?))
+                }
+                SHIPPING_QUERY => {
+                    kind = Some(Kind::ShippingQuery(map.next_value()?))
+                }
+                PRE_CHECKOUT_QUERY => {
+                    kind = Some(Kind::PreCheckoutQuery(map.next_value()?))
+                }
+                POLL => kind = Some(Kind::Poll(map.next_value()?)),
+                _ => {
+                    let _ = map.next_value::<IgnoredAny>()?;
+                }
+            }
+        }
+
+        Ok(Update {
+            id: id.ok_or_else(|| Error::missing_field(UPDATE_ID))?,
+            kind: kind.unwrap_or(Kind::Unknown),
+        })
+    }
+}
+
 impl<'de> Deserialize<'de> for Update {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        struct UpdateVisitor;
-
-        impl<'v> Visitor<'v> for UpdateVisitor {
-            type Value = Update;
-
-            fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
-                write!(fmt, "struct Update")
-            }
-
-            fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
-            where
-                V: MapAccess<'v>,
-            {
-                let mut id = None;
-                let mut kind = None;
-
-                while let Some(key) = map.next_key()? {
-                    match key {
-                        UPDATE_ID => id = Some(map.next_value()?),
-                        MESSAGE => {
-                            kind = Some(Kind::Message(map.next_value()?))
-                        }
-                        EDITED_MESSAGE => {
-                            kind = Some(Kind::EditedMessage(map.next_value()?))
-                        }
-                        CHANNEL_POST => {
-                            kind = Some(Kind::ChannelPost(map.next_value()?))
-                        }
-                        EDITED_CHANNEL_POST => {
-                            kind =
-                                Some(Kind::EditedChannelPost(map.next_value()?))
-                        }
-                        INLINE_QUERY => {
-                            kind = Some(Kind::InlineQuery(map.next_value()?))
-                        }
-                        CALLBACK_QUERY => {
-                            kind = Some(Kind::CallbackQuery(map.next_value()?))
-                        }
-                        CHOSEN_INLINE_RESULT => {
-                            kind = Some(Kind::ChosenInlineResult(
-                                map.next_value()?,
-                            ))
-                        }
-                        SHIPPING_QUERY => {
-                            kind = Some(Kind::ShippingQuery(map.next_value()?))
-                        }
-                        PRE_CHECKOUT_QUERY => {
-                            kind =
-                                Some(Kind::PreCheckoutQuery(map.next_value()?))
-                        }
-                        POLL => kind = Some(Kind::Poll(map.next_value()?)),
-                        _ => {
-                            let _ = map.next_value::<IgnoredAny>()?;
-                        }
-                    }
-                }
-
-                Ok(Update {
-                    id: id.ok_or_else(|| Error::missing_field(UPDATE_ID))?,
-                    kind: kind.unwrap_or(Kind::Unknown),
-                })
-            }
-        }
-
         deserializer.deserialize_struct(
             "Update",
             &[
