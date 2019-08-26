@@ -87,9 +87,7 @@ where
 
         match self.audio.media {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("audio", filename, bytes),
             InputFile::Id(audio) | InputFile::Url(audio) => {
                 multipart = multipart.str("audio", audio);
@@ -97,9 +95,7 @@ where
         }
 
         if let Some(Thumb(InputFile::File {
-            filename,
-            bytes,
-            ..
+            filename, bytes, ..
         })) = self.audio.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);

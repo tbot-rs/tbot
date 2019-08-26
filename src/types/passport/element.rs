@@ -174,10 +174,7 @@ impl<'v> Visitor<'v> for ElementVisitor {
             }
         };
 
-        Ok(Element {
-            kind,
-            hash,
-        })
+        Ok(Element { kind, hash })
     }
 }
 

@@ -38,9 +38,6 @@ pub struct ReverseSide<'a> {
 impl<'a> ReverseSide<'a> {
     /// Constructs a new `ReverseSide`.
     pub const fn new(kind: Kind, file_hash: &'a str) -> Self {
-        Self {
-            kind,
-            file_hash,
-        }
+        Self { kind, file_hash }
     }
 }

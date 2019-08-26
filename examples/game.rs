@@ -61,8 +61,7 @@ fn main() {
             .into_future()
             .map_err(|err| match err {
                 errors::MethodCall::RequestError {
-                    ref description,
-                    ..
+                    ref description, ..
                 } if description == SCORE_NOT_MODIFIED => (),
                 err => {
                     dbg!(err);

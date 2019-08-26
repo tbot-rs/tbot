@@ -85,9 +85,7 @@ impl<'a> Audio<'a> {
 
     /// Constructs a cached `Audio` result.
     pub fn cached(id: &'a str) -> Self {
-        Self::new(Kind::Cached {
-            id,
-        })
+        Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Audio` result.

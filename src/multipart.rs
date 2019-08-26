@@ -14,10 +14,9 @@ impl<'a> Header<'a> {
     pub fn content_disposition(&self) -> String {
         match self {
             Header::Field(name) => format!("name=\"{}\"", name),
-            Header::File {
-                name,
-                filename,
-            } => format!("name=\"{}\"; filename=\"{}\"", name, filename),
+            Header::File { name, filename } => {
+                format!("name=\"{}\"; filename=\"{}\"", name, filename)
+            }
         }
     }
 }
@@ -105,10 +104,7 @@ impl<'a> Multipart<'a> {
         body: &'a [u8],
     ) -> Self {
         self.parts.push(Part {
-            header: Header::File {
-                name,
-                filename,
-            },
+            header: Header::File { name, filename },
             body: Cow::Borrowed(body),
         });
         self

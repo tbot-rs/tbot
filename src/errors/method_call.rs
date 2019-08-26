@@ -45,10 +45,7 @@ impl Display for MethodCall {
                 formatter,
                 "A method call failed because Telegram is out of service.",
             ),
-            MethodCall::Parse {
-                response,
-                error,
-            } => write!(
+            MethodCall::Parse { response, error } => write!(
                 formatter,
                 "A method call failed because `tbot` failed to parse the \
                 response.\n\n\
@@ -101,9 +98,7 @@ impl MethodCall {
     /// Checks if `self` is `Parse`.
     pub fn is_parse(&self) -> bool {
         match self {
-            MethodCall::Parse {
-                ..
-            } => true,
+            MethodCall::Parse { .. } => true,
             _ => false,
         }
     }
@@ -111,9 +106,7 @@ impl MethodCall {
     /// Checks if `self` is `RequestError`.
     pub fn is_request_error(&self) -> bool {
         match self {
-            MethodCall::RequestError {
-                ..
-            } => true,
+            MethodCall::RequestError { .. } => true,
             _ => false,
         }
     }

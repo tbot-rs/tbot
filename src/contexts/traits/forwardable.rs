@@ -8,6 +8,7 @@ pub trait Forwardable<'a, C: 'static>: ChatMethods<'a, C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> ForwardMessage<'a, C> {
-        self.bot().forward_message(chat_id, self.chat_id(), self.message_id())
+        self.bot()
+            .forward_message(chat_id, self.chat_id(), self.message_id())
     }
 }

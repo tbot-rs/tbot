@@ -120,9 +120,7 @@ impl Kind {
     /// Checks if `self` is `Passport`.
     pub fn is_passport(&self) -> bool {
         match self {
-            Kind::Passport {
-                ..
-            } => true,
+            Kind::Passport { .. } => true,
             _ => false,
         }
     }
@@ -130,9 +128,7 @@ impl Kind {
     /// Checks if `self` is `DriverLicense`.
     pub fn is_driver_license(&self) -> bool {
         match self {
-            Kind::DriverLicense {
-                ..
-            } => true,
+            Kind::DriverLicense { .. } => true,
             _ => false,
         }
     }
@@ -140,9 +136,7 @@ impl Kind {
     /// Checks if `self` is `IdentityCard`.
     pub fn is_identity_card(&self) -> bool {
         match self {
-            Kind::IdentityCard {
-                ..
-            } => true,
+            Kind::IdentityCard { .. } => true,
             _ => false,
         }
     }
@@ -150,9 +144,7 @@ impl Kind {
     /// Checks if `self` is `InternalPassport`.
     pub fn is_internal_passport(&self) -> bool {
         match self {
-            Kind::InternalPassport {
-                ..
-            } => true,
+            Kind::InternalPassport { .. } => true,
             _ => false,
         }
     }
@@ -168,9 +160,7 @@ impl Kind {
     /// Checks if `self` is `UtilityBill`.
     pub fn is_utility_bill(&self) -> bool {
         match self {
-            Kind::UtilityBill {
-                ..
-            } => true,
+            Kind::UtilityBill { .. } => true,
             _ => false,
         }
     }
@@ -178,9 +168,7 @@ impl Kind {
     /// Checks if `self` is `BankStatement`.
     pub fn is_bank_statement(&self) -> bool {
         match self {
-            Kind::BankStatement {
-                ..
-            } => true,
+            Kind::BankStatement { .. } => true,
             _ => false,
         }
     }
@@ -188,9 +176,7 @@ impl Kind {
     /// Checks if `self` is `RentalAgreement`.
     pub fn is_rental_agreement(&self) -> bool {
         match self {
-            Kind::RentalAgreement {
-                ..
-            } => true,
+            Kind::RentalAgreement { .. } => true,
             _ => false,
         }
     }
@@ -198,9 +184,7 @@ impl Kind {
     /// Checks if `self` is `PassportRegistration`.
     pub fn is_passport_registration(&self) -> bool {
         match self {
-            Kind::PassportRegistration {
-                ..
-            } => true,
+            Kind::PassportRegistration { .. } => true,
             _ => false,
         }
     }
@@ -208,9 +192,7 @@ impl Kind {
     /// Checks if `self` is `TemporaryRegistration`.
     pub fn is_temporary_registration(&self) -> bool {
         match self {
-            Kind::TemporaryRegistration {
-                ..
-            } => true,
+            Kind::TemporaryRegistration { .. } => true,
             _ => false,
         }
     }

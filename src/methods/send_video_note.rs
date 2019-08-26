@@ -85,9 +85,7 @@ where
 
         match self.video_note.media.file {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("video_note", filename, bytes),
             InputFile::Id(video_note) | InputFile::Url(video_note) => {
                 multipart = multipart.str("video_note", video_note);
@@ -95,9 +93,7 @@ where
         }
 
         if let Some(Thumb(InputFile::File {
-            filename,
-            bytes,
-            ..
+            filename, bytes, ..
         })) = self.video_note.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);

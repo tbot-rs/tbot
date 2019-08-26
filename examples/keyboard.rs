@@ -9,7 +9,10 @@ const KEYBOARD: &[&[Button]] = &[
         Button::new("Cool!", ButtonKind::CallbackData("cool")),
         Button::new("Amazing!", ButtonKind::CallbackData("amazing")),
     ],
-    &[Button::new("I wanna get started with it!", ButtonKind::Url(TUTORIAL))],
+    &[Button::new(
+        "I wanna get started with it!",
+        ButtonKind::Url(TUTORIAL),
+    )],
 ];
 
 fn main() {

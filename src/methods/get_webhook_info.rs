@@ -13,10 +13,7 @@ pub struct GetWebhookInfo<'a, C> {
 
 impl<'a, C> GetWebhookInfo<'a, C> {
     pub(crate) const fn new(client: &'a Client<C>, token: Token) -> Self {
-        Self {
-            client,
-            token,
-        }
+        Self { client, token }
     }
 }
 

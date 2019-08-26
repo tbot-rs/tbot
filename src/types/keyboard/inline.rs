@@ -109,10 +109,7 @@ pub struct Keyboard<'a> {
 impl<'a> Button<'a> {
     /// Constructs an inline `Button`.
     pub const fn new(text: &'a str, kind: ButtonKind<'a>) -> Self {
-        Self {
-            text,
-            kind,
-        }
+        Self { text, kind }
     }
 }
 

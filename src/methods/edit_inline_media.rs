@@ -57,31 +57,12 @@ where
             .maybe_json("reply_markup", self.reply_markup);
 
         match &self.media {
-            EditableMedia::Animation(Animation {
-                media,
-                ..
-            })
-            | EditableMedia::Audio(Audio {
-                media,
-                ..
-            })
-            | EditableMedia::Document(Document {
-                media,
-                ..
-            })
-            | EditableMedia::Photo(Photo {
-                media,
-                ..
-            })
-            | EditableMedia::Video(Video {
-                media,
-                ..
-            }) => {
-                if let InputFile::File {
-                    filename,
-                    bytes,
-                } = media
-                {
+            EditableMedia::Animation(Animation { media, .. })
+            | EditableMedia::Audio(Audio { media, .. })
+            | EditableMedia::Document(Document { media, .. })
+            | EditableMedia::Photo(Photo { media, .. })
+            | EditableMedia::Video(Video { media, .. }) => {
+                if let InputFile::File { filename, bytes } = media {
                     multipart =
                         multipart.file(self.media.name(), filename, bytes);
                 }

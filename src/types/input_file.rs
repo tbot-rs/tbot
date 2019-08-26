@@ -22,10 +22,7 @@ pub use {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub(crate) enum InputFile<'a> {
-    File {
-        filename: &'a str,
-        bytes: &'a [u8],
-    },
+    File { filename: &'a str, bytes: &'a [u8] },
     Url(&'a str),
     Id(&'a str),
 }
@@ -42,9 +39,9 @@ impl<'a> InputFile<'a> {
         S: serde::Serializer,
     {
         match self {
-            InputFile::File {
-                ..
-            } => serializer.serialize_str(&format!("attach://{}", name)),
+            InputFile::File { .. } => {
+                serializer.serialize_str(&format!("attach://{}", name))
+            }
             InputFile::Url(file) | InputFile::Id(file) => {
                 serializer.serialize_str(file)
             }
@@ -52,10 +49,7 @@ impl<'a> InputFile<'a> {
     }
 
     const fn with_name(self, name: &'a str) -> WithName<'a> {
-        WithName {
-            file: self,
-            name,
-        }
+        WithName { file: self, name }
     }
 }
 

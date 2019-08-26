@@ -11,8 +11,6 @@ pub struct Game<'a> {
 impl<'a> Game<'a> {
     /// Constructs a `Game`.
     pub const fn new(game_short_name: &'a str) -> Self {
-        Self {
-            game_short_name,
-        }
+        Self { game_short_name }
     }
 }

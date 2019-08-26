@@ -62,9 +62,7 @@ impl Kind {
     /// Checks if `self` is `Private`.
     pub fn is_private(&self) -> bool {
         match self {
-            Kind::Private {
-                ..
-            } => true,
+            Kind::Private { .. } => true,
             _ => false,
         }
     }
@@ -72,9 +70,7 @@ impl Kind {
     /// Checks if `self` is `Group`.
     pub fn is_group(&self) -> bool {
         match self {
-            Kind::Group {
-                ..
-            } => true,
+            Kind::Group { .. } => true,
             _ => false,
         }
     }
@@ -82,9 +78,7 @@ impl Kind {
     /// Checks if `self` is `Supergroup`.
     pub fn is_supergroup(&self) -> bool {
         match self {
-            Kind::Supergroup {
-                ..
-            } => true,
+            Kind::Supergroup { .. } => true,
             _ => false,
         }
     }
@@ -92,9 +86,7 @@ impl Kind {
     /// Checks if `self` is `Channel`.
     pub fn is_channel(&self) -> bool {
         match self {
-            Kind::Channel {
-                ..
-            } => true,
+            Kind::Channel { .. } => true,
             _ => false,
         }
     }

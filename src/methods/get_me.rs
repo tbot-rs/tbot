@@ -13,10 +13,7 @@ pub struct GetMe<'a, C> {
 
 impl<'a, C> GetMe<'a, C> {
     pub(crate) const fn new(client: &'a Client<C>, token: Token) -> Self {
-        Self {
-            client,
-            token,
-        }
+        Self { client, token }
     }
 }
 

@@ -13,9 +13,7 @@ pub struct ForceReply {
 impl ForceReply {
     /// Constructs a new `ForceReply`.
     pub const fn new() -> Self {
-        Self {
-            selective: None,
-        }
+        Self { selective: None }
     }
 
     /// Configure `selective`.
@@ -27,11 +25,7 @@ impl ForceReply {
 
 impl serde::Serialize for ForceReply {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let len = if self.selective.is_some() {
-            2
-        } else {
-            1
-        };
+        let len = if self.selective.is_some() { 2 } else { 1 };
 
         let mut map = s.serialize_map(Some(len))?;
 

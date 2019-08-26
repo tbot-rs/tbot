@@ -86,9 +86,7 @@ where
 
         match self.voice.media.file {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("voice", filename, bytes),
             InputFile::Id(voice) | InputFile::Url(voice) => {
                 multipart = multipart.str("voice", voice);

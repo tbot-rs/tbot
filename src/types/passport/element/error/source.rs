@@ -47,9 +47,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `Data`.
     pub fn is_data(self) -> bool {
         match self {
-            Source::Data {
-                ..
-            } => true,
+            Source::Data { .. } => true,
             _ => false,
         }
     }
@@ -57,9 +55,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `FrontSide`.
     pub fn is_front_side(self) -> bool {
         match self {
-            Source::FrontSide {
-                ..
-            } => true,
+            Source::FrontSide { .. } => true,
             _ => false,
         }
     }
@@ -67,9 +63,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `ReverseSide`.
     pub fn is_reverse_side(self) -> bool {
         match self {
-            Source::ReverseSide {
-                ..
-            } => true,
+            Source::ReverseSide { .. } => true,
             _ => false,
         }
     }
@@ -77,9 +71,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `Selfie`.
     pub fn is_selfie(self) -> bool {
         match self {
-            Source::Selfie {
-                ..
-            } => true,
+            Source::Selfie { .. } => true,
             _ => false,
         }
     }
@@ -87,9 +79,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `File`.
     pub fn is_file(self) -> bool {
         match self {
-            Source::File {
-                ..
-            } => true,
+            Source::File { .. } => true,
             _ => false,
         }
     }
@@ -97,9 +87,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `Files`.
     pub fn is_files(self) -> bool {
         match self {
-            Source::Files {
-                ..
-            } => true,
+            Source::Files { .. } => true,
             _ => false,
         }
     }
@@ -107,9 +95,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `TranslationFile`.
     pub fn is_translation_file(self) -> bool {
         match self {
-            Source::TranslationFile {
-                ..
-            } => true,
+            Source::TranslationFile { .. } => true,
             _ => false,
         }
     }
@@ -117,9 +103,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `TranslationFiles`.
     pub fn is_translation_files(self) -> bool {
         match self {
-            Source::TranslationFiles {
-                ..
-            } => true,
+            Source::TranslationFiles { .. } => true,
             _ => false,
         }
     }
@@ -127,9 +111,7 @@ impl<'a> Source<'a> {
     /// Checks if `self` is `Unspecified`.
     pub fn is_unspecified(self) -> bool {
         match self {
-            Source::Unspecified {
-                ..
-            } => true,
+            Source::Unspecified { .. } => true,
             _ => false,
         }
     }

@@ -85,9 +85,7 @@ where
 
         match self.photo.media {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("photo", filename, bytes),
             InputFile::Id(photo) | InputFile::Url(photo) => {
                 multipart = multipart.str("photo", photo);

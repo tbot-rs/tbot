@@ -88,9 +88,7 @@ where
 
         match self.animation.media {
             InputFile::File {
-                filename,
-                bytes,
-                ..
+                filename, bytes, ..
             } => multipart = multipart.file("animation", filename, bytes),
             InputFile::Id(animation) | InputFile::Url(animation) => {
                 multipart = multipart.str("animation", animation);
@@ -98,9 +96,7 @@ where
         }
 
         if let Some(Thumb(InputFile::File {
-            filename,
-            bytes,
-            ..
+            filename, bytes, ..
         })) = self.animation.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);

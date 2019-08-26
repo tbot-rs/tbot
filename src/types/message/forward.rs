@@ -53,9 +53,7 @@ impl From {
     /// Checks if `self` is `Channel`.
     pub fn is_channel(&self) -> bool {
         match self {
-            From::Channel {
-                ..
-            } => true,
+            From::Channel { .. } => true,
             _ => false,
         }
     }
