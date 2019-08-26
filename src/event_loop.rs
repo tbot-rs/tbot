@@ -1,7 +1,7 @@
 //! The event loop for handling bot updates.
 
 use crate::{
-    contexts,
+    contexts, errors,
     prelude::*,
     types::{
         self, callback,
@@ -18,6 +18,7 @@ use std::{
     collections::HashMap,
     sync::{Arc, Mutex},
 };
+use tokio::runtime::current_thread::block_on_all;
 
 #[macro_use]
 mod handlers_macros;
@@ -98,7 +99,7 @@ type VoiceHandler<C> = Handler<contexts::Voice<C>>;
 /// [`text`]: #method.text
 pub struct EventLoop<C> {
     bot: Bot<C>,
-    username: Option<&'static str>,
+    username: Option<String>,
 
     command_handlers: Map<TextHandler<C>>,
     edited_command_handlers: Map<EditedTextHandler<C>>,
@@ -206,7 +207,7 @@ impl<C> EventLoop<C> {
     ///
     /// The username is used when checking if a command such as
     /// `/command@username` was directed to the bot.
-    pub fn username(&mut self, username: &'static str) {
+    pub fn username(&mut self, username: String) {
         self.username = Some(username);
     }
 
@@ -1457,7 +1458,7 @@ impl<C> EventLoop<C> {
 
     fn is_for_this_bot(&self, username: Option<&str>) -> bool {
         if let Some(username) = username {
-            self.username.as_ref().map(|x| x == &username) == Some(true)
+            self.username.as_ref().map(|x| x == username) == Some(true)
         } else {
             true
         }
@@ -1471,48 +1472,15 @@ where
     C::Future: 'static,
 {
     /// Fetches the bot's username.
-    ///
-    /// # Panics
-    ///
-    /// This method panics if there was an error during calling the `getMe`
-    /// method.
-    pub fn fetch_username(&mut self) {
-        let result = Arc::new(Mutex::new(None));
-        let on_ok = Arc::clone(&result);
-        let on_err = Arc::clone(&result);
+    pub fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
+        let get_me = self.bot.get_me().into_future();
+        let me = block_on_all(get_me)?;
 
-        let get_me = self
-            .bot
-            .get_me()
-            .into_future()
-            .map_err(move |error| {
-                *on_err.lock().unwrap() = Some(Err(error));
-            })
-            .map(move |me| {
-                *on_ok.lock().unwrap() = Some(Ok(me));
-            });
+        let username =
+            me.username.expect("[tbot] Expected the bot to have a username");
+        self.username(username);
 
-        crate::run(get_me);
-
-        let result = Arc::try_unwrap(result).unwrap().into_inner().unwrap();
-
-        if let Some(result) = result {
-            // will always run
-            match result {
-                Ok(me) => {
-                    let username: String = me.username.expect(
-                        "\n[tbot] Expected the bot to have a username\n",
-                    );
-                    let username = Box::leak(Box::new(username));
-
-                    self.username(username);
-                }
-                Err(error) => panic!(
-                    "\n[tbot] Error during fetching username: {:#?}\n",
-                    error
-                ),
-            }
-        }
+        Ok(())
     }
 }
 
