@@ -99,7 +99,7 @@ type VoiceHandler<C> = Handler<contexts::Voice<C>>;
 /// [`text`]: #method.text
 pub struct EventLoop<C> {
     bot: Bot<C>,
-    username: Option<&'static str>,
+    username: Option<String>,
 
     command_handlers: Map<TextHandler<C>>,
     edited_command_handlers: Map<EditedTextHandler<C>>,
@@ -207,7 +207,7 @@ impl<C> EventLoop<C> {
     ///
     /// The username is used when checking if a command such as
     /// `/command@username` was directed to the bot.
-    pub fn username(&mut self, username: &'static str) {
+    pub fn username(&mut self, username: String) {
         self.username = Some(username);
     }
 
@@ -1458,7 +1458,7 @@ impl<C> EventLoop<C> {
 
     fn is_for_this_bot(&self, username: Option<&str>) -> bool {
         if let Some(username) = username {
-            self.username.as_ref().map(|x| x == &username) == Some(true)
+            self.username.as_ref().map(|x| x == username) == Some(true)
         } else {
             true
         }
@@ -1478,7 +1478,6 @@ where
 
         let username =
             me.username.expect("[tbot] Expected the bot to have a username");
-        let username = Box::leak(Box::new(username));
         self.username(username);
 
         Ok(())
