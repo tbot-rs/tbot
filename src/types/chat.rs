@@ -6,9 +6,10 @@ mod action;
 mod id;
 mod kind;
 pub mod member;
+mod permissions;
 mod photo;
 
-pub use {action::*, id::*, kind::*, member::*, photo::*};
+pub use {action::*, id::*, kind::*, member::*, permissions::*, photo::*};
 
 /// Represents a [`Chat`].
 ///
