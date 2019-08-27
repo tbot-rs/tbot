@@ -44,7 +44,7 @@ Add `tbot` to your Cargo.toml:
 
 ```toml
 [dependencies]
-tbot = "0.1"
+tbot = "0.2"
 ```
 
 ## Documentation
