@@ -48,8 +48,16 @@ pub enum Status {
         can_send_media_messages: bool,
         /// `true` if the user can send other messages, such as games.
         can_send_other_messages: bool,
-        /// `true` if the user can semd messages with link previews.
+        /// `true` if the user can send messages with link previews.
         can_add_web_page_previews: bool,
+        /// `true` if the user can send polls.
+        can_send_polls: bool,
+        /// `true` if the user can change the group's info.
+        can_change_info: bool,
+        /// `true` if the user can invite users.
+        can_invite_users: bool,
+        /// `true` if the user can pin messages.
+        can_pin_messages: bool,
     },
     /// The user left the chat.
     Left,
@@ -130,6 +138,7 @@ const IS_MEMBER: &str = "is_member";
 const CAN_SEND_MESSAGES: &str = "can_send_messages";
 const CAN_SEND_MEDIA_MESSAGES: &str = "can_send_media_messages";
 const CAN_SEND_OTHER_MESSAGES: &str = "can_send_other_messages";
+const CAN_SEND_POLLS: &str = "can_send_polls";
 const CAN_ADD_WEB_PAGE_PREVIEWS: &str = "can_add_web_page_previews";
 
 const CREATOR: &str = "creator";
@@ -168,6 +177,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
         let mut can_send_messages = None;
         let mut can_send_media_messages = None;
         let mut can_send_other_messages = None;
+        let mut can_send_polls = None;
         let mut can_add_web_page_previews = None;
 
         while let Some(key) = map.next_key()? {
@@ -204,6 +214,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 CAN_SEND_OTHER_MESSAGES => {
                     can_send_other_messages = Some(map.next_value()?)
                 }
+                CAN_SEND_POLLS => can_send_polls = Some(map.next_value()?),
                 CAN_ADD_WEB_PAGE_PREVIEWS => {
                     can_add_web_page_previews = Some(map.next_value()?)
                 }
@@ -247,10 +258,18 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 can_send_other_messages: can_send_other_messages.ok_or_else(
                     || Error::missing_field(CAN_SEND_OTHER_MESSAGES),
                 )?,
+                can_send_polls: can_send_polls
+                    .ok_or_else(|| Error::missing_field(CAN_SEND_POLLS))?,
                 can_add_web_page_previews: can_add_web_page_previews
                     .ok_or_else(|| {
                         Error::missing_field(CAN_ADD_WEB_PAGE_PREVIEWS)
                     })?,
+                can_change_info: can_change_info
+                    .ok_or_else(|| Error::missing_field(CAN_CHANGE_INFO))?,
+                can_invite_users: can_invite_users
+                    .ok_or_else(|| Error::missing_field(CAN_INVITE_USERS))?,
+                can_pin_messages: can_pin_messages
+                    .ok_or_else(|| Error::missing_field(CAN_PIN_MESSAGES))?,
             },
             Some(LEFT) => Status::Left,
             Some(KICKED) => Status::Kicked { until_date },
