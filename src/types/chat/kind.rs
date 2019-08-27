@@ -19,6 +19,10 @@ pub enum Kind {
     Group {
         /// The title of the group.
         title: String,
+        /// The description of the group.
+        description: Option<String>,
+        /// The invite link of the group.
+        invite_link: Option<String>,
         /// The pinned message of the group.
         pinned_message: Option<Box<Message>>,
         /// Default member permissions of the group. Returned only
