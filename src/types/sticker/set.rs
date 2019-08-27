@@ -1,3 +1,5 @@
+//! Types related to sticker sets.
+
 use super::Sticker;
 use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
 use std::fmt::{self, Formatter};
