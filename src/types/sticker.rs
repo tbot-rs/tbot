@@ -4,73 +4,72 @@ use super::{
     file::{self, id::AsFileId},
     PhotoSize,
 };
-use serde::Deserialize;
+use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
+use std::fmt::{self, Formatter};
 
 pub mod mask_position;
 mod set;
 
 pub use {mask_position::MaskPosition, set::*};
 
-macro_rules! sticker_base {
-    (
-        $(#[doc = $struct_doc:literal])+
-        struct $name:ident {
-            $(#[doc = $field_doc:literal] $field:ident: $type:ty,)*
-        }
-    ) => {
-        $(#[doc = $struct_doc])+
-        #[derive(Debug, PartialEq, Clone, Deserialize)]
-        // todo: #[non_exhaustive]
-        pub struct $name {
-            /// The file ID of the sticker.
-            pub file_id: file::Id,
-            /// The width of the sticker.
-            pub width: u32,
-            /// The height of the sticker.
-            pub height: u32,
-            /// The thumb of the sticker.
-            pub thumb: Option<PhotoSize>,
-            /// The emoji of the sticker.
-            pub emoji: Option<String>,
-            /// The sticker set name which contains the sticker.
-            pub set_name: Option<String>,
-            /// The file size of the sticker.
-            pub file_size: Option<u32>,
-            $(#[doc = $field_doc] $field: $type,)*
-        }
-
-        impl crate::internal::Sealed for $name {}
-
-        impl AsFileId for $name {
-            fn as_file_id(&self) -> file::id::Ref<'_> {
-                self.file_id.as_ref()
-            }
-        }
-    };
+/// Represents different kinds of a [`Sticker`].
+///
+/// [`Sticker`]: ./struct.Sticker.html
+///
+/// # Non-exhaustiveness
+///
+/// Users should not match this enum exhaustively (but you can match the tuple
+/// on the `Mask` variant). New variants added to it are _not_ considered
+/// a breaking change per `tbot`'s [breaking change policy].
+///
+/// [breaking change policy]: https://gitlab.com/SnejUgal/tbot/wikis/
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum Kind {
+    /// The sticker is neither animated nor a mask.
+    Plain,
+    /// The sticker is animated.
+    Animated,
+    /// The sticker is a mask.
+    Mask(MaskPosition),
 }
 
-sticker_base! {
-    /// Represents a [`Sticker`].
-    ///
-    /// [`Sticker`]: https://core.telegram.org/bots/api#sticker
-    struct Sticker {
-        /// The position of the sticker if it's a mask.
-        mask_position: Option<MaskPosition>,
+/// Represents a [`Sticker`].
+///
+/// [`Sticker`]: https://core.telegram.org/bots/api#sticker
+///
+/// # Non-exhaustiveness
+///
+/// Users should not match this struct exhaustively. New fields added to it
+/// are _not_ considered a breaking change per `tbot`'s
+/// [breaking change policy].
+///
+/// [breaking change policy]: https://gitlab.com/SnejUgal/tbot/wikis/
+#[derive(Debug, PartialEq, Clone)]
+pub struct Sticker {
+    /// The file ID of the sticker.
+    pub file_id: file::Id,
+    /// The width of the sticker.
+    pub width: u32,
+    /// The height of the sticker.
+    pub height: u32,
+    /// The thumb of the sticker.
+    pub thumb: Option<PhotoSize>,
+    /// The emoji of the sticker.
+    pub emoji: Option<String>,
+    /// The sticker set name which contains the sticker.
+    pub set_name: Option<String>,
+    /// The file size of the sticker.
+    pub file_size: Option<u32>,
+    /// The kind of the sticker.
+    pub kind: Kind,
+}
+
+impl crate::internal::Sealed for Sticker {}
+
+impl AsFileId for Sticker {
+    fn as_file_id(&self) -> file::id::Ref<'_> {
+        self.file_id.as_ref()
     }
-}
-
-sticker_base! {
-    /// Represents an animated [`Sticker`].
-    ///
-    /// `tbot` chooses this struct when `Sticker.is_animated` is `true`.
-    ///
-    /// [`Sticker`]: https://core.telegram.org/bots/api#sticker
-    struct Animated {}
-}
-
-pub(crate) enum Any {
-    Sticker(Sticker),
-    Animated(Animated),
 }
 
 const FILE_ID: &str = "file_id";
@@ -83,18 +82,18 @@ const SET_NAME: &str = "set_name";
 const MASK_POSITION: &str = "mask_position";
 const FILE_SIZE: &str = "file_size";
 
-struct AnyVisitor;
+struct StickerVisitor;
 
-impl<'v> serde::de::Visitor<'v> for AnyVisitor {
-    type Value = Any;
+impl<'v> Visitor<'v> for StickerVisitor {
+    type Value = Sticker;
 
-    fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(fmt, "struct Sticker")
+    fn expecting(&self, formatter: &mut Formatter) -> fmt::Result {
+        write!(formatter, "struct Sticker")
     }
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
-        V: serde::de::MapAccess<'v>,
+        V: MapAccess<'v>,
     {
         let mut file_id = None;
         let mut width = None;
@@ -118,51 +117,39 @@ impl<'v> serde::de::Visitor<'v> for AnyVisitor {
                 MASK_POSITION => mask_position = Some(map.next_value()?),
                 FILE_SIZE => file_size = Some(map.next_value()?),
                 _ => {
-                    let _ = map.next_value::<serde_json::Value>();
+                    let _ = map.next_value::<IgnoredAny>()?;
                 }
             }
         }
 
-        let file_id =
-            file_id.ok_or_else(|| serde::de::Error::missing_field(FILE_ID))?;
-        let width =
-            width.ok_or_else(|| serde::de::Error::missing_field(WIDTH))?;
-        let height =
-            height.ok_or_else(|| serde::de::Error::missing_field(HEIGHT))?;
-        let is_animated = is_animated
-            .ok_or_else(|| serde::de::Error::missing_field(IS_ANIMATED))?;
-
-        let sticker = if is_animated {
-            Any::Animated(Animated {
-                file_id,
-                width,
-                height,
-                thumb,
-                emoji,
-                set_name,
-                file_size,
-            })
+        let kind = if let Some(mask_position) = mask_position {
+            Kind::Mask(mask_position)
+        } else if is_animated == Some(true) {
+            Kind::Animated
         } else {
-            Any::Sticker(Sticker {
-                file_id,
-                width,
-                height,
-                thumb,
-                emoji,
-                set_name,
-                file_size,
-                mask_position,
-            })
+            Kind::Plain
         };
 
-        Ok(sticker)
+        Ok(Sticker {
+            file_id: file_id
+                .ok_or_else(|| serde::de::Error::missing_field(FILE_ID))?,
+            width: width
+                .ok_or_else(|| serde::de::Error::missing_field(WIDTH))?,
+            height: height
+                .ok_or_else(|| serde::de::Error::missing_field(HEIGHT))?,
+            thumb,
+            emoji,
+            set_name,
+            file_size,
+            kind,
+        })
     }
 }
 
-impl<'de> serde::Deserialize<'de> for Any {
+impl<'de> Deserialize<'de> for Sticker {
     fn deserialize<D>(d: D) -> Result<Self, D::Error>
     where
-        D: serde::de::Deserializer<'de>,
+        D: Deserializer<'de>,
     {
         d.deserialize_struct(
             "Sticker",
@@ -177,7 +164,7 @@ impl<'de> serde::Deserialize<'de> for Any {
                 MASK_POSITION,
                 FILE_SIZE,
             ],
-            AnyVisitor,
+            StickerVisitor,
         )
     }
 }
