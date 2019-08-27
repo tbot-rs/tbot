@@ -3,6 +3,7 @@ use crate::{
     errors,
     internal::{BoxFuture, Client},
     types::{
+        chat,
         parameters::{ChatId, ImplicitChatId},
         user,
     },
@@ -20,16 +21,9 @@ pub struct RestrictChatMember<'a, C> {
     token: Token,
     chat_id: ChatId<'a>,
     user_id: user::Id,
+    permissions: chat::Permissions,
     #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_send_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_send_media_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_send_other_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_add_web_page_previews: Option<bool>,
 }
 
 impl<'a, C> RestrictChatMember<'a, C> {
@@ -38,47 +32,21 @@ impl<'a, C> RestrictChatMember<'a, C> {
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
+        permissions: chat::Permissions,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             user_id,
+            permissions,
             until_date: None,
-            can_send_messages: None,
-            can_send_media_messages: None,
-            can_send_other_messages: None,
-            can_add_web_page_previews: None,
         }
     }
 
     /// Configures `until_date`.
     pub fn until_date(mut self, date: i64) -> Self {
         self.until_date = Some(date);
-        self
-    }
-
-    /// Configures `can_send_messages`.
-    pub fn can_send_messages(mut self, can_send: bool) -> Self {
-        self.can_send_messages = Some(can_send);
-        self
-    }
-
-    /// Configures `can_send_media_messages`.
-    pub fn can_send_media_messages(mut self, can_send: bool) -> Self {
-        self.can_send_media_messages = Some(can_send);
-        self
-    }
-
-    /// Configures `can_send_other_messages`.
-    pub fn can_send_other_messages(mut self, can_send: bool) -> Self {
-        self.can_send_other_messages = Some(can_send);
-        self
-    }
-
-    /// Configures `can_add_web_page_previews`.
-    pub fn can_add_web_page_previews(mut self, can_add: bool) -> Self {
-        self.can_add_web_page_previews = Some(can_add);
         self
     }
 }

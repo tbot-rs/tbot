@@ -166,8 +166,10 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn restrict_chat_member(
         &'a self,
         user_id: user::Id,
+        permissions: chat::Permissions,
     ) -> RestrictChatMember<'a, C> {
-        self.bot().restrict_chat_member(self.chat_id(), user_id)
+        self.bot()
+            .restrict_chat_member(self.chat_id(), user_id, permissions)
     }
 
     /// Send an animation to this chat.

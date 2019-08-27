@@ -601,12 +601,14 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
+        permissions: chat::Permissions,
     ) -> methods::RestrictChatMember<'a, C> {
         methods::RestrictChatMember::new(
             &self.client,
             self.token.clone(),
             chat_id,
             user_id,
+            permissions,
         )
     }
 
