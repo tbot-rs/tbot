@@ -601,12 +601,14 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
+        permissions: chat::Permissions,
     ) -> methods::RestrictChatMember<'a, C> {
         methods::RestrictChatMember::new(
             &self.client,
             self.token.clone(),
             chat_id,
             user_id,
+            permissions,
         )
     }
 
@@ -880,6 +882,20 @@ impl<C> Bot<C> {
             self.token.clone(),
             chat_id,
             description,
+        )
+    }
+
+    /// Constructs a new `SetChatPermissions` inferring your bot's token.
+    pub fn set_chat_permissions<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+        permissions: chat::Permissions,
+    ) -> methods::SetChatPermissions<'a, C> {
+        methods::SetChatPermissions::new(
+            &self.client,
+            self.token.clone(),
+            chat_id,
+            permissions,
         )
     }
 

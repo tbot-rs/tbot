@@ -15,7 +15,7 @@ pub enum From {
     // todo: #[non_exhaustive]
     Channel {
         /// Information about the channel.
-        chat: Chat,
+        chat: Box<Chat>,
         /// The ID of the original message.
         message_id: Id,
         /// The author's signature.

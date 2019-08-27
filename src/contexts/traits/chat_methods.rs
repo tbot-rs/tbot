@@ -166,8 +166,10 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
     fn restrict_chat_member(
         &'a self,
         user_id: user::Id,
+        permissions: chat::Permissions,
     ) -> RestrictChatMember<'a, C> {
-        self.bot().restrict_chat_member(self.chat_id(), user_id)
+        self.bot()
+            .restrict_chat_member(self.chat_id(), user_id, permissions)
     }
 
     /// Send an animation to this chat.
@@ -455,6 +457,14 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
         description: &'a str,
     ) -> SetChatDescription<'a, C> {
         self.bot().set_chat_description(self.chat_id(), description)
+    }
+
+    /// Sets new permissions of this chat.
+    fn set_chat_permissions(
+        &'a self,
+        permissions: chat::Permissions,
+    ) -> SetChatPermissions<'a, C> {
+        self.bot().set_chat_permissions(self.chat_id(), permissions)
     }
 
     /// Sets a new photo of this chat.

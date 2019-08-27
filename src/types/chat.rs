@@ -6,9 +6,10 @@ mod action;
 mod id;
 mod kind;
 pub mod member;
+mod permissions;
 mod photo;
 
-pub use {action::*, id::*, kind::*, member::*, photo::*};
+pub use {action::*, id::*, kind::*, member::*, permissions::*, photo::*};
 
 /// Represents a [`Chat`].
 ///
@@ -30,7 +31,7 @@ const TITLE: &str = "title";
 const USERNAME: &str = "username";
 const FIRST_NAME: &str = "first_name";
 const LAST_NAME: &str = "last_name";
-const ALL_MEMBERS_ARE_ADMINISTRATORS: &str = "all_members_are_administrators";
+const PERMISSIONS: &str = "permissions";
 const PHOTO: &str = "photo";
 const DESCRIPTION: &str = "description";
 const INIVITE_LINK: &str = "invite_link";
@@ -62,7 +63,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
         let mut username = None;
         let mut first_name = None;
         let mut last_name = None;
-        let mut all_members_are_administrators = None;
+        let mut permissions = None;
         let mut photo = None;
         let mut description = None;
         let mut invite_link = None;
@@ -78,9 +79,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 USERNAME => username = Some(map.next_value()?),
                 FIRST_NAME => first_name = Some(map.next_value()?),
                 LAST_NAME => last_name = Some(map.next_value()?),
-                ALL_MEMBERS_ARE_ADMINISTRATORS => {
-                    all_members_are_administrators = Some(map.next_value()?)
-                }
+                PERMISSIONS => permissions = Some(map.next_value()?),
                 PHOTO => photo = Some(map.next_value()?),
                 DESCRIPTION => description = Some(map.next_value()?),
                 INIVITE_LINK => invite_link = Some(map.next_value()?),
@@ -106,13 +105,8 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
             Some(GROUP) => Kind::Group {
                 title: title
                     .ok_or_else(|| serde::de::Error::missing_field(TITLE))?,
-                all_members_are_administrators: all_members_are_administrators
-                    .ok_or_else(|| {
-                        serde::de::Error::missing_field(
-                            ALL_MEMBERS_ARE_ADMINISTRATORS,
-                        )
-                    })?,
                 pinned_message,
+                permissions,
             },
             Some(SUPERGROUP) => Kind::Supergroup {
                 title: title
@@ -123,6 +117,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 pinned_message,
                 sticker_set_name,
                 can_set_sticker_set,
+                permissions,
             },
             Some(CHANNEL) => Kind::Channel {
                 title: title
@@ -163,7 +158,7 @@ impl<'de> Deserialize<'de> for Chat {
                 USERNAME,
                 FIRST_NAME,
                 LAST_NAME,
-                ALL_MEMBERS_ARE_ADMINISTRATORS,
+                PERMISSIONS,
                 PHOTO,
                 DESCRIPTION,
                 INIVITE_LINK,

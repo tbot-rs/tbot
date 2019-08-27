@@ -5,53 +5,40 @@ use crate::{
     types::{
         chat,
         parameters::{ChatId, ImplicitChatId},
-        user,
     },
 };
 
-/// Represents the [`restrictChatMember`][docs] method.
+/// Represents the [`setChatPermissions`][docs] method.
 ///
-/// [docs]: https://core.telegram.org/bots/api#restrictchatmember
+/// [docs]: https://core.telegram.org/bots/api#setchatpermissions
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct RestrictChatMember<'a, C> {
+pub struct SetChatPermissions<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
     token: Token,
     chat_id: ChatId<'a>,
-    user_id: user::Id,
     permissions: chat::Permissions,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    until_date: Option<i64>,
 }
 
-impl<'a, C> RestrictChatMember<'a, C> {
+impl<'a, C> SetChatPermissions<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
         chat_id: impl ImplicitChatId<'a>,
-        user_id: user::Id,
         permissions: chat::Permissions,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            user_id,
             permissions,
-            until_date: None,
         }
-    }
-
-    /// Configures `until_date`.
-    pub fn until_date(mut self, date: i64) -> Self {
-        self.until_date = Some(date);
-        self
     }
 }
 
-impl<C> IntoFuture for RestrictChatMember<'_, C>
+impl<C> IntoFuture for SetChatPermissions<'_, C>
 where
     C: hyper::client::connect::Connect + Sync + 'static,
     C::Transport: 'static,
@@ -66,7 +53,7 @@ where
             send_method::<bool, C>(
                 self.client,
                 &self.token,
-                "restrictChatMember",
+                "setChatPermissions",
                 None,
                 serde_json::to_vec(&self).unwrap(),
             )
