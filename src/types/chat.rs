@@ -105,6 +105,8 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
             Some(GROUP) => Kind::Group {
                 title: title
                     .ok_or_else(|| serde::de::Error::missing_field(TITLE))?,
+                description,
+                invite_link,
                 pinned_message,
                 permissions,
             },
