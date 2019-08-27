@@ -48,3 +48,59 @@ pub struct Permissions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
 }
+
+impl Permissions {
+    /// Constructs `Permissions` with all fields set to `None`.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Configures if the user can send messages.
+    pub fn can_send_messages(mut self, can_send: bool) -> Self {
+        self.can_send_messages = Some(can_send);
+        self
+    }
+
+    /// Configures if the user can send media messages.
+    pub fn can_send_media_messages(mut self, can_send: bool) -> Self {
+        self.can_send_media_messages = Some(can_send);
+        self
+    }
+
+    /// Configures if the user can send polls.
+    pub fn can_send_polls(mut self, can_send: bool) -> Self {
+        self.can_send_polls = Some(can_send);
+        self
+    }
+
+    /// Configures if the user can send other messages not covered by other
+    /// permissions.
+    pub fn can_send_other_messages(mut self, can_send: bool) -> Self {
+        self.can_send_other_messages = Some(can_send);
+        self
+    }
+
+    /// Configures if the user can add webpage previews.
+    pub fn can_add_web_page_previews(mut self, can_add: bool) -> Self {
+        self.can_add_web_page_previews = Some(can_add);
+        self
+    }
+
+    /// Configures if the user can change chat information.
+    pub fn can_change_info(mut self, can_change: bool) -> Self {
+        self.can_change_info = Some(can_change);
+        self
+    }
+
+    /// Configures if the user can invite new users to the chat.
+    pub fn can_invite_users(mut self, can_invite: bool) -> Self {
+        self.can_change_info = Some(can_invite);
+        self
+    }
+
+    /// Configures if the user can pin messages.
+    pub fn can_pin_messages(mut self, can_pin: bool) -> Self {
+        self.can_change_info = Some(can_pin);
+        self
+    }
+}
