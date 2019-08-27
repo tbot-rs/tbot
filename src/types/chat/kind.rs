@@ -1,4 +1,4 @@
-use crate::types::Message;
+use crate::types::{chat, Message};
 
 /// Represents the kind of a chat.
 #[derive(Debug, PartialEq, Clone)]
@@ -19,10 +19,13 @@ pub enum Kind {
     Group {
         /// The title of the group.
         title: String,
-        /// `true` if all membmers of this group have admin rights.
-        all_members_are_administrators: bool,
         /// The pinned message of the group.
         pinned_message: Option<Box<Message>>,
+        /// Default member permissions of the group. Returned only
+        /// in [`GetChat`].
+        ///
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        permissions: Option<chat::Permissions>,
     },
     /// The chat is a supergroup.
     // todo: #[non_exhaustive]
@@ -41,6 +44,11 @@ pub enum Kind {
         sticker_set_name: Option<String>,
         /// `true` if the bot can set the sticker set of the supergroup.
         can_set_sticker_set: Option<bool>,
+        /// Default member permissions of the supergroup. Returned only
+        /// in [`GetChat`].
+        ///
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        permissions: Option<chat::Permissions>,
     },
     /// The chat is a channel.
     // todo: #[non_exhaustive]
