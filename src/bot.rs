@@ -885,6 +885,20 @@ impl<C> Bot<C> {
         )
     }
 
+    /// Constructs a new `SetChatPermissions` inferring your bot's token.
+    pub fn set_chat_permissions<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+        permissions: chat::Permissions,
+    ) -> methods::SetChatPermissions<'a, C> {
+        methods::SetChatPermissions::new(
+            &self.client,
+            self.token.clone(),
+            chat_id,
+            permissions,
+        )
+    }
+
     /// Constructs a new `SetChatPhoto` inferring your bot's token.
     pub fn set_chat_photo<'a>(
         &'a self,

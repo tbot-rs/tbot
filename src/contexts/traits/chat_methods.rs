@@ -459,6 +459,14 @@ pub trait ChatMethods<'a, C: 'static>: crate::internal::Sealed {
         self.bot().set_chat_description(self.chat_id(), description)
     }
 
+    /// Sets new permissions of this chat.
+    fn set_chat_permissions(
+        &'a self,
+        permissions: chat::Permissions,
+    ) -> SetChatPermissions<'a, C> {
+        self.bot().set_chat_permissions(self.chat_id(), permissions)
+    }
+
     /// Sets a new photo of this chat.
     fn set_chat_photo(&'a self, photo: ChatPhoto<'a>) -> SetChatPhoto<'a, C> {
         self.bot().set_chat_photo(self.chat_id(), photo)
