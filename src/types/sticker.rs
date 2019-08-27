@@ -8,9 +8,9 @@ use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
 use std::fmt::{self, Formatter};
 
 pub mod mask_position;
-mod set;
+pub mod set;
 
-pub use {mask_position::MaskPosition, set::*};
+pub use {mask_position::MaskPosition, set::Set};
 
 /// Represents different kinds of a [`Sticker`].
 ///
