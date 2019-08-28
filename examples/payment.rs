@@ -29,7 +29,7 @@ fn main() {
     let provider_token: &str = option_env!("PROVIDER_TOKEN").unwrap();
     let start_message =
         format!("Send `/start {}` to get started", START_PARAMETER);
-    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
+    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.start(move |context| {
         let reply = if context.text.value == START_PARAMETER {

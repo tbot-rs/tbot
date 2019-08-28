@@ -9,7 +9,7 @@ fn main() {
     let proxy = Proxy::new(Intercept::All, PROXY.parse().unwrap());
     let connector = tbot::connectors::proxy(proxy);
 
-    let mut bot = tbot::bot!("BOT_TOKEN", connector).event_loop();
+    let mut bot = tbot::from_env!("BOT_TOKEN", connector).event_loop();
 
     bot.text(|context| {
         let reply = context

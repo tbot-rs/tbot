@@ -16,7 +16,7 @@ const KEYBOARD: &[&[Button]] = &[
 ];
 
 fn main() {
-    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
+    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", |context| {
         let message = context

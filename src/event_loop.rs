@@ -83,7 +83,7 @@ type VoiceHandler<C> = Handler<contexts::Voice<C>>;
 /// via either [polling] or [webhook].
 ///
 /// ```no_run
-/// let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
+/// let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 ///
 /// bot.text(|_| println!("Got a text message"));
 ///
