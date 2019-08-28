@@ -11,7 +11,7 @@ const STICKERS: [(&[u8], &str); 2] = [
 ];
 
 fn main() {
-    let bot = tbot::bot!("BOT_TOKEN");
+    let bot = tbot::from_env!("BOT_TOKEN");
 
     let mut stickers = STICKERS.iter();
     let first_sticker = stickers.next().unwrap();

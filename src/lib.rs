@@ -3,7 +3,7 @@
 //! ```no_run
 //! use tbot::prelude::*;
 //!
-//! let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
+//! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
 //! bot.text(|context| {
 //!     let reply = context

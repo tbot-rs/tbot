@@ -1,7 +1,7 @@
 use tbot::prelude::*;
 
 fn main() {
-    let bot = tbot::bot!("BOT_TOKEN");
+    let bot = tbot::from_env!("BOT_TOKEN");
 
     let get_me = bot
         .get_me()

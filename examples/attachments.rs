@@ -8,7 +8,7 @@ const GIF: &[u8] = include_bytes!("./assets/gif.mp4");
 const TUTORIAL: &[u8] = include_bytes!("./tutorial.rs");
 
 fn main() {
-    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
+    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("photo", |context| {
         let photo = Photo::bytes(PHOTO);

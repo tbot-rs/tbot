@@ -21,7 +21,7 @@ use std::sync::Arc;
 /// ```no_run
 /// use tbot::prelude::*;
 ///
-/// let bot = tbot::bot!("BOT_TOKEN");
+/// let bot = tbot::from_env!("BOT_TOKEN");
 ///
 /// let me = bot
 ///     .get_me()
@@ -59,9 +59,9 @@ impl Bot<connectors::Https> {
     /// Constructs a new `Bot`, extracting the token from the environment at
     /// _runtime_.
     ///
-    /// If you need to extract the token at _compile time_, use [`bot!`].
+    /// If you need to extract the token at _compile time_, use [`from_env!`].
     ///
-    /// [`bot!`]: ./macro.bot.html
+    /// [`from_env!`]: ./macro.bot.html
     ///
     /// # Example
     ///
@@ -1138,7 +1138,7 @@ where
 /// _compile time_.
 ///
 /// You can provide a connector as the second parameter,
-/// e.g. `bot!("...", connector)`.
+/// e.g. `from_env!("...", connector)`.
 ///
 /// If you need to extract the token at _runtime_, use [`Bot::from_env`].
 ///
@@ -1150,7 +1150,7 @@ where
 /// ```no_run
 /// use tbot::prelude::*;
 ///
-/// let mut bot = tbot::bot!("BOT_TOKEN");
+/// let mut bot = tbot::from_env!("BOT_TOKEN");
 ///
 /// let me = bot
 ///     .get_me()
@@ -1165,29 +1165,29 @@ where
 /// tbot::run(me);
 /// ```
 #[macro_export]
-macro_rules! bot {
+macro_rules! from_env {
     ($var:literal) => {{
         let token = env!($var).to_string();
         $crate::Bot::new($crate::Token::new(token))
     }};
     ($var:literal,) => {
-        $crate::bot!($var)
+        $crate::from_env!($var)
     };
     ($var:literal, $connector:expr) => {{
         let token = env!($var).to_string();
         $crate::Bot::with_connector($crate::Token::new(token), $connector)
     }};
     ($var:literal, $connector:expr,) => {
-        $crate::bot!($var, $connector)
+        $crate::from_env!($var, $connector)
     };
     () => {
         compile_error!(
-            "the macro must be invoked as `bot!(\"<VAR_NAME>\")` or \
-             `bot!(\"<VAR_NAME>\", connector)`"
+            "the macro must be invoked as `from_env!(\"<VAR_NAME>\")` or \
+             `from_env!(\"<VAR_NAME>\", connector)`"
         )
     };
     ($($x:tt)+) => {
-        $crate::bot!()
+        $crate::from_env!()
     };
 }
 

@@ -26,7 +26,7 @@
 //! const CHAT: chat::Id = chat::Id(0);
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
 //!
-//! let bot = tbot::bot!("BOT_TOKEN");
+//! let bot = tbot::from_env!("BOT_TOKEN");
 //!
 //! let request = bot.send_message(CHAT, Text::markdown(MESSAGE))
 //!     .into_future()

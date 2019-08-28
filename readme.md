@@ -6,7 +6,7 @@ Make cool Telegram bots with Rust easily. For example, here's a simple echo bot:
 use tbot::prelude::*;
 
 fn main() {
-    let mut bot = tbot::bot!("BOT_TOKEN").event_loop();
+    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.text(|context| {
         let reply = context
@@ -31,12 +31,12 @@ fill an issue on either our [GitLab] or [GitHub] repository.
 
 ## Features
 
-- Full Bots API support, including media upload/download and recent API
-  updates;
-- Support for both polling and [webhooks];
-- Type-safe API;
-- Based on futures and `tokio`;
-- Easy to use, while scalable and configurable.
+-   Full Bots API support, including media upload/download and recent API
+    updates;
+-   Support for both polling and [webhooks];
+-   Type-safe API;
+-   Based on futures and `tokio`;
+-   Easy to use, while scalable and configurable.
 
 ## Installing
 
@@ -52,7 +52,7 @@ tbot = "0.2"
 There are many examples in the [`examples`] directory to see `tbot` in action.
 If you want to get started with `tbot`, go through the [tutorial]. When you
 start making your bot, our [How-to guides][how-to] may help you. And you can
-always refer to our API docs on [*docs.rs*][api-docs] (docs for `master` are
+always refer to our API docs on [_docs.rs_][api-docs] (docs for `master` are
 also available [here][master-docs]).
 
 ## Contribution
@@ -65,8 +65,8 @@ create your pull/merge request there if you can. We accept pull requests on
 [webhooks]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
 [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
-[GitLab]: https://gitlab.com/SnejUgal/tbot
-[GitHub]: https://github.com/SnejUgal/tbot
+[gitlab]: https://gitlab.com/SnejUgal/tbot
+[github]: https://github.com/SnejUgal/tbot
 [`examples`]: ./examples/
 [api-docs]: https://docs.rs/tbot
 [master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
