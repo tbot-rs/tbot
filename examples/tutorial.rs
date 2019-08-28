@@ -1,3 +1,4 @@
+use std::sync::Mutex;
 use tbot::{
     prelude::*,
     types::{
@@ -26,8 +27,7 @@ fn main() {
         tbot::spawn(reply);
     });
 
-    let mut id: u32 = 0;
-
+    let id = Mutex::new(0_u32);
     bot.inline(move |context| {
         let (title, message) = match meval::eval_str(&context.query) {
             Ok(result) => (
@@ -40,9 +40,11 @@ fn main() {
             ),
         };
 
-        id += 1;
-
-        let id = id.to_string();
+        let id = {
+            let mut id = id.lock().unwrap();
+            *id += 1;
+            id.to_string()
+        };
         let content = Text::new(ParseMode::markdown(&message));
         let article = Article::new(&title, content).description(&message);
         let result = inline_query::Result::new(&id, article);
