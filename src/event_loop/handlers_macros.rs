@@ -10,9 +10,9 @@ macro_rules! handler {
         #[doc = $doc]
         pub fn $name(
             &mut self,
-            handler: impl FnMut(& $context) + Send + Sync + 'static,
+            handler: impl Fn(& $context) + Send + Sync + 'static,
         ) {
-            self.$handlers.push(Mutex::new(Box::new(handler)))
+            self.$handlers.push(Box::new(handler))
         }
 
         $(fn $will_handle(&self) -> bool {
@@ -21,14 +21,7 @@ macro_rules! handler {
 
         fn $run_handlers(&self, context: & $context) {
             for handler in &self.$handlers {
-                if let Ok(mut handler) = handler.lock() {
-                    (&mut *handler)(context)
-                } else {
-                    eprintln!(
-                        "[tbot] Cannot run a handler since it previously \
-                         panicked. You should analyze the cause and prevent it."
-                    );
-                }
+                handler(context);
             }
         }
     };

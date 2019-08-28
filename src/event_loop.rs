@@ -14,10 +14,7 @@ use crate::{
     },
     Bot,
 };
-use std::{
-    collections::HashMap,
-    sync::{Arc, Mutex},
-};
+use std::{collections::HashMap, sync::Arc};
 use tokio::runtime::current_thread::block_on_all;
 
 #[macro_use]
@@ -28,11 +25,11 @@ mod webhook;
 
 pub use {polling::*, webhook::*};
 
-type Handlers<T> = Vec<Mutex<Box<T>>>;
+type Handlers<T> = Vec<Box<T>>;
 type Map<T> = HashMap<&'static str, Handlers<T>>;
 
 // Wish trait alises came out soon
-type Handler<T> = dyn FnMut(&T) + Send + Sync;
+type Handler<T> = dyn Fn(&T) + Send + Sync;
 
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
@@ -226,12 +223,12 @@ impl<C> EventLoop<C> {
     pub fn command(
         &mut self,
         command: &'static str,
-        handler: impl FnMut(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
     ) {
         self.command_handlers
             .entry(command)
             .or_insert_with(Vec::new)
-            .push(Mutex::new(Box::new(handler)));
+            .push(Box::new(handler));
     }
 
     fn will_handle_command(&self, command: &'static str) -> bool {
@@ -245,15 +242,7 @@ impl<C> EventLoop<C> {
     ) {
         if let Some(handlers) = self.command_handlers.get(&command) {
             for handler in handlers {
-                if let Ok(mut handler) = handler.lock() {
-                    (&mut *handler)(context)
-                } else {
-                    eprintln!(
-                        "[tbot] Cannot run a command handler since it \
-                         previously panicked. You should analyze the cause and \
-                         prevent it."
-                    );
-                }
+                handler(context);
             }
         }
     }
@@ -261,7 +250,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/start` command.
     pub fn start(
         &mut self,
-        handler: impl FnMut(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
     ) {
         self.command("start", handler);
     }
@@ -269,7 +258,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/settings` command.
     pub fn settings(
         &mut self,
-        handler: impl FnMut(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
     ) {
         self.command("settings", handler);
     }
@@ -277,7 +266,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/help` command.
     pub fn help(
         &mut self,
-        handler: impl FnMut(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
     ) {
         self.command("help", handler);
     }
@@ -286,12 +275,12 @@ impl<C> EventLoop<C> {
     pub fn edited_command(
         &mut self,
         command: &'static str,
-        handler: impl FnMut(&contexts::EditedText<C>) + Send + Sync + 'static,
+        handler: impl Fn(&contexts::EditedText<C>) + Send + Sync + 'static,
     ) {
         self.edited_command_handlers
             .entry(command)
             .or_insert_with(Vec::new)
-            .push(Mutex::new(Box::new(handler)));
+            .push(Box::new(handler));
     }
 
     fn will_handle_edited_command(&self, command: &'static str) -> bool {
@@ -305,15 +294,7 @@ impl<C> EventLoop<C> {
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(&command) {
             for handler in handlers {
-                if let Ok(mut handler) = handler.lock() {
-                    (&mut *handler)(context)
-                } else {
-                    eprintln!(
-                        "[tbot] Cannot run an edited command handler since it \
-                         previously panicked. You should analyze the cause and \
-                         prevent it."
-                    );
-                }
+                handler(context);
             }
         }
     }
@@ -652,9 +633,9 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for unhandled updates.
     pub fn unhandled(
         &mut self,
-        handler: impl FnMut(&contexts::Unhandled<C>) + Send + Sync + 'static,
+        handler: impl Fn(&contexts::Unhandled<C>) + Send + Sync + 'static,
     ) {
-        self.unhandled_handlers.push(Mutex::new(Box::new(handler)))
+        self.unhandled_handlers.push(Box::new(handler))
     }
 
     fn will_handle_unhandled(&self) -> bool {
@@ -665,15 +646,7 @@ impl<C> EventLoop<C> {
         let context = contexts::Unhandled::new(bot, update);
 
         for handler in &self.unhandled_handlers {
-            if let Ok(mut handler) = handler.lock() {
-                (&mut *handler)(&context)
-            } else {
-                eprintln!(
-                    "[tbot] Cannot run an unhandled handler since it \
-                     previously panicked. You should analyze the cause and \
-                     prevent it."
-                );
-            }
+            handler(&context);
         }
     }
 
