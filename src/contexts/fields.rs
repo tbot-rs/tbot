@@ -4,7 +4,7 @@
 //! one. You would like to abstract this as much as possible, like this:
 //!
 //! ```
-//! # fn process_photo<T>(_: T) { }
+//! # fn process_photo<T>(_: &T) { }
 //! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //! bot.photo(process_photo);
 //! bot.edited_photo(process_photo);
@@ -18,7 +18,7 @@
 //! ```
 //! use tbot::{contexts, connectors::Https};
 //! fn process_photo(context: &contexts::Photo<Https>) {
-//!     let photo = context.photo;
+//!     let photo = &context.photo;
 //!     // ..
 //! }
 //! ```
