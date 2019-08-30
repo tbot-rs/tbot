@@ -54,7 +54,7 @@ macro_rules! edited_message {
             }
 
             fn author_signature(&self) -> Option<&str> {
-                self.author_signature.as_ref().map(|x| x.as_str())
+                self.author_signature.as_ref().map(String::as_str)
             }
 
             fn reply_markup(
