@@ -38,6 +38,7 @@
 //! [`contexts::EditedPhoto`]: ../struct.EditedPhoto.html
 //! [`fields::Photo`]: ./trait.Photo.html
 
+mod album;
 mod attachments;
 mod callback;
 mod context;
@@ -45,6 +46,7 @@ mod messages;
 mod texts;
 
 pub use {
+    album::Album,
     attachments::{Animation, Audio, Document, Location, Photo, Video},
     callback::Callback,
     context::Context,

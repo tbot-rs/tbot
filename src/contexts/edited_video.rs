@@ -1,5 +1,5 @@
 use crate::{
-    contexts::fields::{self, AnyText, Caption},
+    contexts::fields::{self, Album, AnyText, Caption},
     types::{message::Text, Video},
 };
 
@@ -36,5 +36,11 @@ impl<C> Caption<C> for EditedVideo<C> {
 impl<C> AnyText<C> for EditedVideo<C> {
     fn text(&self) -> &Text {
         &self.caption
+    }
+}
+
+impl<C> Album<C> for EditedVideo<C> {
+    fn media_group_id(&self) -> Option<&str> {
+        self.media_group_id.as_ref().map(String::as_ref)
     }
 }
