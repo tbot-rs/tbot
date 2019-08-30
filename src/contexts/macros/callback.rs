@@ -56,5 +56,23 @@ macro_rules! callback {
                 self.id.as_ref()
             }
         }
+
+        impl<C> crate::contexts::fields::Callback<C> for $name<C> {
+            fn id(&self) -> &crate::types::callback::query::Id {
+                &self.id
+            }
+
+            fn from(&self) -> &crate::types::User {
+                &self.from
+            }
+
+            fn origin(&self) -> &crate::types::callback::Origin {
+                &self.origin
+            }
+
+            fn chat_instance(&self) -> &str {
+                &self.chat_instance
+            }
+        }
     }
 }
