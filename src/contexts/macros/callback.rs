@@ -47,13 +47,21 @@ macro_rules! callback {
             }
         }
 
-        impl<'a, C: 'static> super::traits::Callback<'a, C> for $name<C> {
-            fn bot(&self) -> &crate::Bot<C> {
-                &self.bot
+        impl<C> crate::contexts::fields::Callback<C> for $name<C> {
+            fn id(&self) -> &crate::types::callback::query::Id {
+                &self.id
             }
 
-            fn id(&self) -> crate::types::callback::query::id::Ref<'_> {
-                self.id.as_ref()
+            fn from(&self) -> &crate::types::User {
+                &self.from
+            }
+
+            fn origin(&self) -> &crate::types::callback::Origin {
+                &self.origin
+            }
+
+            fn chat_instance(&self) -> &str {
+                &self.chat_instance
             }
         }
     }

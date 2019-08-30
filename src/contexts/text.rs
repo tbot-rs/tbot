@@ -1,4 +1,7 @@
-use crate::types::message;
+use crate::{
+    contexts::fields::{self, AnyText},
+    types::message,
+};
 
 media_message! {
     struct Text {
@@ -8,5 +11,17 @@ media_message! {
 
     fn new() -> Self {
         Self { }
+    }
+}
+
+impl<C> fields::Text<C> for Text<C> {
+    fn text(&self) -> &message::Text {
+        &self.text
+    }
+}
+
+impl<C> AnyText<C> for Text<C> {
+    fn text(&self) -> &message::Text {
+        &self.text
     }
 }

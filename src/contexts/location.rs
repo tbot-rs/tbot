@@ -1,4 +1,4 @@
-use crate::types;
+use crate::{contexts::fields, types};
 
 media_message! {
     struct Location {
@@ -8,5 +8,11 @@ media_message! {
 
     fn new() -> Self {
         Self { }
+    }
+}
+
+impl<C> fields::Location<C> for Location<C> {
+    fn location(&self) -> &types::Location {
+        &self.location
     }
 }

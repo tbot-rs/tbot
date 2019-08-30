@@ -1,4 +1,7 @@
-use crate::types::{message::Text, PhotoSize};
+use crate::{
+    contexts::fields::{self, Album, AnyText, Caption},
+    types::{message::Text, PhotoSize},
+};
 
 media_message! {
     struct Photo {
@@ -15,5 +18,29 @@ media_message! {
             caption: caption,
             media_group_id: media_group_id,
         }
+    }
+}
+
+impl<C> fields::Photo<C> for Photo<C> {
+    fn photo(&self) -> &[PhotoSize] {
+        &self.photo[..]
+    }
+}
+
+impl<C> Caption<C> for Photo<C> {
+    fn caption(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> AnyText<C> for Photo<C> {
+    fn text(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> Album<C> for Photo<C> {
+    fn media_group_id(&self) -> Option<&str> {
+        self.media_group_id.as_ref().map(String::as_ref)
     }
 }

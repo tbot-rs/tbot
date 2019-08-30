@@ -54,17 +54,21 @@ macro_rules! message_base {
             }
         }
 
-        impl<'a, C: 'static> super::traits::ChatMethods<'a, C> for $name<C> {
-            fn bot(&self) -> &crate::Bot<C> {
-                &self.bot
-            }
-
-            fn chat_id(&self) -> crate::types::chat::Id {
-                self.chat.id
-            }
-
+        impl<C> crate::contexts::fields::Message<C> for $name<C> {
             fn message_id(&self) -> crate::types::message::Id {
                 self.message_id
+            }
+
+            fn from(&self) -> Option<&crate::types::User> {
+                self.from.as_ref()
+            }
+
+            fn date(&self) -> i64 {
+                self.date
+            }
+
+            fn chat(&self) -> &crate::types::Chat {
+                &self.chat
             }
         }
     }

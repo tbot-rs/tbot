@@ -1,4 +1,7 @@
-use crate::types::{self, message::Text};
+use crate::{
+    contexts::fields::{self, Album, AnyText, Caption},
+    types::{self, message::Text},
+};
 
 media_message! {
     struct Video {
@@ -15,5 +18,29 @@ media_message! {
             caption: caption,
             media_group_id: media_group_id,
         }
+    }
+}
+
+impl<C> fields::Video<C> for Video<C> {
+    fn video(&self) -> &types::Video {
+        &self.video
+    }
+}
+
+impl<C> Caption<C> for Video<C> {
+    fn caption(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> AnyText<C> for Video<C> {
+    fn text(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> Album<C> for Video<C> {
+    fn media_group_id(&self) -> Option<&str> {
+        self.media_group_id.as_ref().map(String::as_ref)
     }
 }

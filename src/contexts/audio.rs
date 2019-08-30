@@ -1,4 +1,7 @@
-use crate::types::{self, message::Text};
+use crate::{
+    contexts::fields::{self, AnyText, Caption},
+    types::{self, message::Text},
+};
 
 media_message! {
     struct Audio {
@@ -12,5 +15,23 @@ media_message! {
         Self {
             caption: caption,
         }
+    }
+}
+
+impl<C> fields::Audio<C> for Audio<C> {
+    fn audio(&self) -> &types::Audio {
+        &self.audio
+    }
+}
+
+impl<C> Caption<C> for Audio<C> {
+    fn caption(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> AnyText<C> for Audio<C> {
+    fn text(&self) -> &Text {
+        &self.caption
     }
 }

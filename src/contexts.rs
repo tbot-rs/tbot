@@ -110,6 +110,7 @@ mod video;
 mod video_note;
 mod voice;
 
+pub mod fields;
 pub mod traits;
 
 pub use {

@@ -1,4 +1,7 @@
-use crate::types::{message::Text, Document};
+use crate::{
+    contexts::fields::{self, AnyText, Caption},
+    types::{message::Text, Document},
+};
 
 edited_message! {
     struct EditedDocument {
@@ -12,5 +15,23 @@ edited_message! {
         Self {
             caption: caption,
         }
+    }
+}
+
+impl<C> fields::Document<C> for EditedDocument<C> {
+    fn document(&self) -> &Document {
+        &self.document
+    }
+}
+
+impl<C> Caption<C> for EditedDocument<C> {
+    fn caption(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> AnyText<C> for EditedDocument<C> {
+    fn text(&self) -> &Text {
+        &self.caption
     }
 }
