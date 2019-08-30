@@ -1,4 +1,7 @@
-use crate::{contexts::fields::{self, AnyText}, types::message::Text};
+use crate::{
+    contexts::fields::{self, AnyText},
+    types::message::Text,
+};
 
 edited_message! {
     struct EditedText {
@@ -22,4 +25,3 @@ impl<C> AnyText<C> for EditedText<C> {
         &self.text
     }
 }
-
