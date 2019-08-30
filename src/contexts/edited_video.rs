@@ -1,4 +1,7 @@
-use crate::{contexts::fields::{Caption, AnyText}, types::{message::Text, Video}};
+use crate::{
+    contexts::fields::{self, AnyText, Caption},
+    types::{message::Text, Video},
+};
 
 edited_message! {
     struct EditedVideo {
@@ -15,6 +18,12 @@ edited_message! {
             caption: caption,
             media_group_id: media_group_id,
         }
+    }
+}
+
+impl<C> fields::Video<C> for EditedVideo<C> {
+    fn video(&self) -> &Video {
+        &self.video
     }
 }
 

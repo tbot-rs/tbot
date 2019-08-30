@@ -1,4 +1,7 @@
-use crate::{contexts::fields::{AnyText, Caption}, types::{self, message::Text}};
+use crate::{
+    contexts::fields::{self, AnyText, Caption},
+    types::{self, message::Text},
+};
 
 media_message! {
     struct Document {
@@ -15,6 +18,12 @@ media_message! {
     }
 }
 
+impl<C> fields::Document<C> for Document<C> {
+    fn document(&self) -> &types::Document {
+        &self.document
+    }
+}
+
 impl<C> Caption<C> for Document<C> {
     fn caption(&self) -> &Text {
         &self.caption
@@ -26,4 +35,3 @@ impl<C> AnyText<C> for Document<C> {
         &self.caption
     }
 }
-

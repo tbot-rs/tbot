@@ -1,4 +1,7 @@
-use crate::{contexts::fields::{Caption, AnyText}, types::{message::Text, PhotoSize}};
+use crate::{
+    contexts::fields::{self, AnyText, Caption},
+    types::{message::Text, PhotoSize},
+};
 
 media_message! {
     struct Photo {
@@ -18,6 +21,11 @@ media_message! {
     }
 }
 
+impl<C> fields::Photo<C> for Photo<C> {
+    fn photo(&self) -> &[PhotoSize] {
+        &self.photo[..]
+    }
+}
 
 impl<C> Caption<C> for Photo<C> {
     fn caption(&self) -> &Text {

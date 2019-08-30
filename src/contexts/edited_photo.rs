@@ -1,5 +1,5 @@
 use crate::{
-    contexts::fields::{AnyText, Caption},
+    contexts::fields::{self, AnyText, Caption},
     types::{message::Text, PhotoSize},
 };
 
@@ -18,6 +18,12 @@ edited_message! {
             caption: caption,
             media_group_id: media_group_id,
         }
+    }
+}
+
+impl<C> fields::Photo<C> for EditedPhoto<C> {
+    fn photo(&self) -> &[PhotoSize] {
+        &self.photo[..]
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::{
-    contexts::fields::{AnyText, Caption},
+    contexts::fields::{self, AnyText, Caption},
     types::{self, message::Text},
 };
 
@@ -15,6 +15,12 @@ media_message! {
         Self {
             caption: caption,
         }
+    }
+}
+
+impl<C> fields::Animation<C> for Animation<C> {
+    fn animation(&self) -> &types::Animation {
+        &self.animation
     }
 }
 

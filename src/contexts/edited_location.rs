@@ -1,4 +1,4 @@
-use crate::types::Location;
+use crate::{contexts::fields, types::Location};
 
 edited_message! {
     struct EditedLocation {
@@ -8,5 +8,11 @@ edited_message! {
 
     fn new() -> Self {
         Self { }
+    }
+}
+
+impl<C> fields::Location<C> for EditedLocation<C> {
+    fn location(&self) -> &Location {
+        &self.location
     }
 }

@@ -36,17 +36,18 @@
 //!
 //! [`contexts::Photo`]: ../struct.Photo.html
 //! [`contexts::EditedPhoto`]: ../struct.EditedPhoto.html
-//! [`fields::Photo`]: ./struct.Photo.html
+//! [`fields::Photo`]: ./trait.Photo.html
 
+mod attachments;
 mod callback;
 mod context;
-mod edited_message;
-mod forward;
-mod media_message;
-mod message;
+mod messages;
 mod texts;
 
 pub use {
-    callback::Callback, context::Context, edited_message::EditedMessage,
-    forward::Forward, media_message::MediaMessage, message::Message, texts::{Text, Caption, AnyText}
+    attachments::{Animation, Audio, Document, Location, Photo, Video},
+    callback::Callback,
+    context::Context,
+    messages::{EditedMessage, Forward, MediaMessage, Message},
+    texts::{AnyText, Caption, Text},
 };
