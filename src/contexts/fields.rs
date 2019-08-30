@@ -44,8 +44,9 @@ mod edited_message;
 mod forward;
 mod media_message;
 mod message;
+mod texts;
 
 pub use {
     callback::Callback, context::Context, edited_message::EditedMessage,
-    forward::Forward, media_message::MediaMessage, message::Message,
+    forward::Forward, media_message::MediaMessage, message::Message, texts::{Text, Caption, AnyText}
 };

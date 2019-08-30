@@ -1,4 +1,4 @@
-use crate::types::{message::Text, Animation};
+use crate::{contexts::fields::{AnyText, Caption}, types::{message::Text, Animation}};
 
 edited_message! {
     struct EditedAnimation {
@@ -14,3 +14,16 @@ edited_message! {
         }
     }
 }
+
+impl<C> Caption<C> for EditedAnimation<C> {
+    fn caption(&self) -> &Text {
+        &self.caption
+    }
+}
+
+impl<C> AnyText<C> for EditedAnimation<C> {
+    fn text(&self) -> &Text {
+        &self.caption
+    }
+}
+
