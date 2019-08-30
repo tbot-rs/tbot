@@ -15,5 +15,11 @@ macro_rules! common {
         }
 
         impl<C> crate::internal::Sealed for $name<C> { }
+
+        impl<C> crate::contexts::fields::Context<C> for $name<C> {
+            fn bot(&self) -> &crate::Bot<C> {
+                &self.bot
+            }
+        }
     }
 }
