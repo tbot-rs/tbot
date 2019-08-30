@@ -39,5 +39,12 @@
 //! [`fields::Photo`]: ./struct.Photo.html
 
 mod context;
+mod edited_message;
+mod forward;
+mod media_message;
+mod message;
 
-pub use context::Context;
+pub use {
+    context::Context, edited_message::EditedMessage, forward::Forward,
+    media_message::MediaMessage, message::Message,
+};

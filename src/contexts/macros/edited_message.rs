@@ -47,5 +47,27 @@ macro_rules! edited_message {
 
         impl<'a, C: 'static> super::traits::Forwardable<'a, C> for $name<C> {}
         impl<'a, C: 'static> super::traits::Pinnable<'a, C> for $name<C> {}
+
+        impl<C> crate::contexts::fields::MediaMessage<C> for $name<C> {
+            fn reply_to(&self) -> Option<&crate::types::Message> {
+                self.reply_to.as_ref()
+            }
+
+            fn author_signature(&self) -> Option<&str> {
+                self.author_signature.as_ref().map(|x| x.as_str())
+            }
+
+            fn reply_markup(
+                &self
+            ) -> Option<&crate::types::message::inline_markup::Keyboard> {
+                self.reply_markup.as_ref()
+            }
+        }
+
+        impl<C> crate::contexts::fields::EditedMessage<C> for $name<C> {
+            fn edit_date(&self) -> i64 {
+                self.edit_date
+            }
+        }
     };
 }

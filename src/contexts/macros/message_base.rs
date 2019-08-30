@@ -67,5 +67,23 @@ macro_rules! message_base {
                 self.message_id
             }
         }
+
+        impl<C> crate::contexts::fields::Message<C> for $name<C> {
+            fn message_id(&self) -> crate::types::message::Id {
+                self.message_id
+            }
+
+            fn from(&self) -> Option<&crate::types::User> {
+                self.from.as_ref()
+            }
+
+            fn date(&self) -> i64 {
+                self.date
+            }
+
+            fn chat(&self) -> &crate::types::Chat {
+                &self.chat
+            }
+        }
     }
 }
