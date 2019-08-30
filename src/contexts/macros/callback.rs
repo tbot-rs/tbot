@@ -47,16 +47,6 @@ macro_rules! callback {
             }
         }
 
-        impl<'a, C: 'static> super::traits::Callback<'a, C> for $name<C> {
-            fn bot(&self) -> &crate::Bot<C> {
-                &self.bot
-            }
-
-            fn id(&self) -> crate::types::callback::query::id::Ref<'_> {
-                self.id.as_ref()
-            }
-        }
-
         impl<C> crate::contexts::fields::Callback<C> for $name<C> {
             fn id(&self) -> &crate::types::callback::query::Id {
                 &self.id

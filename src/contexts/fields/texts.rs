@@ -15,8 +15,8 @@ pub trait Caption<C>: MediaMessage<C> {
 
 /// Unites [`Text`] and [`Caption`].
 ///
-/// [`Text`]: ./struct.Text.html
-/// [`Caption`]: ./struct.Caption.html
+/// [`Text`]: ./trait.Text.html
+/// [`Caption`]: ./trait.Caption.html
 pub trait AnyText<C>: MediaMessage<C> {
     /// The text or the caption of the message.
     fn text(&self) -> &message::Text;

@@ -1,16 +1,10 @@
 use crate::{
-    methods::AnswerCallbackQuery,
-    types::{callback, parameters::CallbackAction},
-    Bot,
+    contexts::fields, methods::AnswerCallbackQuery,
+    types::parameters::CallbackAction,
 };
 
 /// Provides methods appliable to callback queries.
-pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
-    #[doc(hidden)]
-    fn bot(&self) -> &Bot<C>;
-    #[doc(hidden)]
-    fn id(&self) -> callback::query::id::Ref<'_>;
-
+pub trait Callback<'a, C: 'static>: fields::Callback<C> {
     /// Answers the callback query.
     ///
     /// If you don't need to choose the action dynamically, using dedicated
@@ -25,7 +19,7 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
         &'a self,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a, C> {
-        self.bot().answer_callback_query(self.id(), action)
+        self.bot().answer_callback_query(self.id().as_ref(), action)
     }
 
     /// Answers the query without any action.
@@ -48,3 +42,5 @@ pub trait Callback<'a, C: 'static>: crate::internal::Sealed {
         self.answer(CallbackAction::alert(text))
     }
 }
+
+impl<'a, C: 'static, T: fields::Callback<C>> Callback<'a, C> for T {}

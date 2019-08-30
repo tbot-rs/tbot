@@ -54,20 +54,6 @@ macro_rules! message_base {
             }
         }
 
-        impl<'a, C: 'static> super::traits::ChatMethods<'a, C> for $name<C> {
-            fn bot(&self) -> &crate::Bot<C> {
-                &self.bot
-            }
-
-            fn chat_id(&self) -> crate::types::chat::Id {
-                self.chat.id
-            }
-
-            fn message_id(&self) -> crate::types::message::Id {
-                self.message_id
-            }
-        }
-
         impl<C> crate::contexts::fields::Message<C> for $name<C> {
             fn message_id(&self) -> crate::types::message::Id {
                 self.message_id
