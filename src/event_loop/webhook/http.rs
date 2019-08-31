@@ -1,3 +1,4 @@
+use super::handle;
 use crate::{
     errors,
     event_loop::{EventLoop, Webhook},
@@ -102,48 +103,4 @@ where
             handle(Arc::clone(&bot), Arc::clone(&event_loop), request)
         })
     })
-}
-
-fn is_request_correct(request: &Request<Body>) -> bool {
-    let content_type = request.headers().get("Content-Type");
-
-    request.method() == Method::POST
-        && request.uri() == "/"
-        && content_type.map(|x| x == "application/json") == Some(true)
-}
-
-fn handle<C>(
-    bot: Arc<Bot<C>>,
-    event_loop: Arc<EventLoop<C>>,
-    request: Request<Body>,
-) -> impl Future<Item = Response<Body>, Error = hyper::Error>
-where
-    C: Send + Sync + 'static,
-{
-    if is_request_correct(&request) {
-        let body = request.into_body().concat2();
-        let handler = body.map(move |body| {
-            match serde_json::from_slice(&body[..]) {
-                Ok(update) => event_loop.handle_update(bot, update),
-                Err(error) => {
-                    eprintln!(
-                        "[tbot] Could not parse incoming update:\n\n\
-                         Request (in bytes): {request:?}\n\
-                         Error: {error:#?}",
-                        request = &body[..],
-                        error = error
-                    );
-                }
-            }
-
-            Response::new(Body::empty())
-        });
-
-        Either::A(handler)
-    } else {
-        let response = Response::new(Body::empty());
-        let future = futures::future::ok(response);
-
-        Either::B(future)
-    }
 }

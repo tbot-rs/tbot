@@ -1,20 +1,20 @@
+//! Types related to the webhook event loop.
+
 use super::EventLoop;
-use crate::{
-    errors, internal::BoxFuture, prelude::*, types::parameters::Updates, Bot,
-};
+use crate::{prelude::*, types::parameters::Updates, Bot};
 use futures::{future::Either, Stream};
-use hyper::{
-    client::connect::Connect, service::service_fn, Body, Method, Request,
-    Response, Server,
-};
+use hyper::{Body, Method, Request, Response};
 use std::{
-    net::{IpAddr, Ipv4Addr, SocketAddr},
+    net::{IpAddr, Ipv4Addr},
     sync::Arc,
     time::Duration,
 };
-use tokio::util::FutureExt;
 
 mod http;
+pub mod https;
+
+pub use http::Http;
+pub use https::Https;
 
 /// Configures webhook and starts a server.
 ///
@@ -90,5 +90,57 @@ impl<'a, C> Webhook<'a, C> {
     /// [`https`]: #method.https
     pub fn http(self) -> http::Http<'a, C> {
         http::Http::new(self)
+    }
+
+    /// Configures a webhook server over HTTPS. For HTTP, see the [`http`]
+    /// method.
+    ///
+    /// [`http`]: #method.http    
+    pub const fn https(self, identity: https::Identity) -> Https<'a, C> {
+        Https::new(self, identity)
+    }
+}
+
+fn is_request_correct(request: &Request<Body>) -> bool {
+    let content_type = request.headers().get("Content-Type");
+
+    request.method() == Method::POST
+        && request.uri() == "/"
+        && content_type.map(|x| x == "application/json") == Some(true)
+}
+
+fn handle<C>(
+    bot: Arc<Bot<C>>,
+    event_loop: Arc<EventLoop<C>>,
+    request: Request<Body>,
+) -> impl Future<Item = Response<Body>, Error = hyper::Error>
+where
+    C: Send + Sync + 'static,
+{
+    if is_request_correct(&request) {
+        let body = request.into_body().concat2();
+        let handler = body.map(move |body| {
+            match serde_json::from_slice(&body[..]) {
+                Ok(update) => event_loop.handle_update(bot, update),
+                Err(error) => {
+                    eprintln!(
+                        "[tbot] Could not parse incoming update:\n\n\
+                         Request (in bytes): {request:?}\n\
+                         Error: {error:#?}",
+                        request = &body[..],
+                        error = error
+                    );
+                }
+            }
+
+            Response::new(Body::empty())
+        });
+
+        Either::A(handler)
+    } else {
+        let response = Response::new(Body::empty());
+        let future = futures::future::ok(response);
+
+        Either::B(future)
     }
 }

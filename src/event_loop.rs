@@ -21,9 +21,9 @@ use tokio::runtime::current_thread::block_on_all;
 mod handlers_macros;
 
 mod polling;
-mod webhook;
+pub mod webhook;
 
-pub use {polling::*, webhook::*};
+pub use {polling::*, webhook::Webhook};
 
 type Handlers<T> = Vec<Box<T>>;
 type Map<T> = HashMap<&'static str, Handlers<T>>;
