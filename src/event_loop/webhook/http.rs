@@ -16,6 +16,7 @@ use std::{
 };
 use tokio::util::FutureExt;
 
+/// Configures the HTTP webhook server.
 pub struct Http<'a, C> {
     webhook: Webhook<'a, C>,
 }
