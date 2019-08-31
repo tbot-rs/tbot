@@ -88,8 +88,8 @@ impl<'a, C> Webhook<'a, C> {
     /// method.
     ///
     /// [`https`]: #method.https
-    pub fn http(self) -> http::Http<'a, C> {
-        http::Http::new(self)
+    pub const fn http(self) -> Http<'a, C> {
+        Http::new(self)
     }
 
     /// Configures a webhook server over HTTPS. For HTTP, see the [`http`]

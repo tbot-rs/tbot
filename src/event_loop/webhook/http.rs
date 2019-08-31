@@ -3,13 +3,9 @@ use crate::{
     errors,
     event_loop::{EventLoop, Webhook},
     internal::BoxFuture,
-    Bot,
 };
-use futures::{future::Either, Future, IntoFuture, Stream};
-use hyper::{
-    client::connect::Connect, service::service_fn, Body, Method, Request,
-    Response, Server,
-};
+use futures::{Future, IntoFuture};
+use hyper::{client::connect::Connect, service::service_fn, Server};
 use std::{
     net::{IpAddr, SocketAddr},
     sync::Arc,
@@ -22,7 +18,7 @@ pub struct Http<'a, C> {
 }
 
 impl<'a, C> Http<'a, C> {
-    pub(crate) fn new(webhook: Webhook<'a, C>) -> Self {
+    pub(crate) const fn new(webhook: Webhook<'a, C>) -> Self {
         Self { webhook }
     }
 }
