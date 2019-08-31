@@ -1,7 +1,7 @@
 //! Types representing errors.
 
 mod download;
+mod http_webhook;
 mod method_call;
-mod webhook;
 
-pub use {download::*, method_call::*, webhook::*};
+pub use {download::*, http_webhook::*, method_call::*};
