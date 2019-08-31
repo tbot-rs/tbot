@@ -17,5 +17,5 @@ fn main() {
         tbot::spawn(reply);
     });
 
-    bot.webhook(URL, PORT).start();
+    bot.webhook(URL, PORT).http().start();
 }
