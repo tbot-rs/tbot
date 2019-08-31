@@ -48,12 +48,20 @@ where
     type Error = errors::MethodCall;
 
     fn into_future(self) -> Self::Future {
-        let (boundary, body) = Multipart::new(4)
+        let mut multipart = Multipart::new(4)
             .str("url", self.url)
-            .maybe_str("certificate", self.certificate)
             .maybe_string("max_connections", self.max_connections)
-            .maybe_json("allowed_updates", self.allowed_updates)
-            .finish();
+            .maybe_json("allowed_updates", self.allowed_updates);
+
+        if let Some(certificate) = self.certificate {
+            multipart = multipart.file(
+                "certificate",
+                "certificate.pem",
+                certificate.as_bytes(),
+            );
+        }
+
+        let (boundary, body) = multipart.finish();
 
         Box::new(
             send_method::<bool, C>(
