@@ -147,6 +147,14 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
         self.bot().leave_chat(self.chat().id)
     }
 
+    /// Pins a message in this chat.
+    fn pin_chat_message(
+        &'a self,
+        message_id: message::Id,
+    ) -> PinChatMessage<'a, C> {
+        self.bot().pin_chat_message(self.chat().id, message_id)
+    }
+
     /// Promotes a member of this chat.
     fn promote_chat_member(
         &'a self,
