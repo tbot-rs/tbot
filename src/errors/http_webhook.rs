@@ -9,23 +9,23 @@ type Timeout = timeout::Error<MethodCall>;
 
 /// Represents possible errors that a webhook server may return.
 #[derive(Debug)]
-pub enum Webhook {
+pub enum HttpWebhook {
     /// An error during setting the webhook.
     SetWebhook(Timeout),
     /// An error while running the server.
     Server(hyper::Error),
 }
 
-impl Display for Webhook {
+impl Display for HttpWebhook {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Webhook::SetWebhook(timeout) => write!(
+            HttpWebhook::SetWebhook(timeout) => write!(
                 formatter,
                 "The webhook event loop failed because a call to `setWebhook` \
                  failed with an error: {}",
                 timeout,
             ),
-            Webhook::Server(error) => write!(
+            HttpWebhook::Server(error) => write!(
                 formatter,
                 "The webhook event loop failed because the server returned \
                  with an error: {}",
@@ -35,13 +35,13 @@ impl Display for Webhook {
     }
 }
 
-impl Error for Webhook {}
+impl Error for HttpWebhook {}
 
-impl Webhook {
+impl HttpWebhook {
     /// Checks if `self` is `SetWebhook`.
     pub fn is_set_webhook(&self) -> bool {
         match self {
-            Webhook::SetWebhook(..) => true,
+            HttpWebhook::SetWebhook(..) => true,
             _ => false,
         }
     }
@@ -49,20 +49,20 @@ impl Webhook {
     /// Checks if `self` is `Server`.
     pub fn is_server(&self) -> bool {
         match self {
-            Webhook::Server(..) => true,
+            HttpWebhook::Server(..) => true,
             _ => false,
         }
     }
 }
 
-impl From<Timeout> for Webhook {
+impl From<Timeout> for HttpWebhook {
     fn from(error: Timeout) -> Self {
-        Webhook::SetWebhook(error)
+        HttpWebhook::SetWebhook(error)
     }
 }
 
-impl From<hyper::Error> for Webhook {
+impl From<hyper::Error> for HttpWebhook {
     fn from(error: hyper::Error) -> Self {
-        Webhook::Server(error)
+        HttpWebhook::Server(error)
     }
 }

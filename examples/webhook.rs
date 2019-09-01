@@ -17,5 +17,7 @@ fn main() {
         tbot::spawn(reply);
     });
 
-    bot.webhook(URL, PORT).start();
+    // For HTTPS, see this wiki:
+    //     https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
+    bot.webhook(URL, PORT).http().start();
 }

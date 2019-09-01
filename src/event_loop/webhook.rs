@@ -1,18 +1,20 @@
+//! Types related to the webhook event loop.
+
 use super::EventLoop;
-use crate::{
-    errors, internal::BoxFuture, prelude::*, types::parameters::Updates, Bot,
-};
+use crate::{prelude::*, types::parameters::Updates, Bot};
 use futures::{future::Either, Stream};
-use hyper::{
-    client::connect::Connect, service::service_fn, Body, Method, Request,
-    Response, Server,
-};
+use hyper::{Body, Method, Request, Response};
 use std::{
-    net::{IpAddr, Ipv4Addr, SocketAddr},
+    net::{IpAddr, Ipv4Addr},
     sync::Arc,
     time::Duration,
 };
-use tokio::util::FutureExt;
+
+mod http;
+pub mod https;
+
+pub use http::Http;
+pub use https::Https;
 
 /// Configures webhook and starts a server.
 ///
@@ -81,61 +83,21 @@ impl<'a, C> Webhook<'a, C> {
         self.request_timeout = timeout;
         self
     }
-}
 
-impl<'a, C> Webhook<'a, C>
-where
-    C: Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
-    /// Starts the server.
-    pub fn start(self) -> ! {
-        crate::run(self.into_future().map_err(|err| {
-            eprintln!("\n[tbot] Webhook error: {:#?}", err);
-        }));
-
-        unreachable!(
-            "\n[tbot] The webhook server unexpectedly returned. \
-             An error should be printed above.\n",
-        );
+    /// Configures a webhook server over HTTP. For HTTPS, see the [`https`]
+    /// method.
+    ///
+    /// [`https`]: #method.https
+    pub const fn http(self) -> Http<'a, C> {
+        Http::new(self)
     }
-}
 
-impl<'a, C> IntoFuture for Webhook<'a, C>
-where
-    C: Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::Webhook;
-
-    fn into_future(self) -> Self::Future {
-        let set_webhook = self
-            .event_loop
-            .bot
-            .set_webhook(
-                self.url,
-                self.certificate,
-                self.max_connections,
-                self.allowed_updates,
-            )
-            .into_future()
-            .timeout(self.request_timeout)
-            .map_err(errors::Webhook::SetWebhook);
-
-        let Self {
-            event_loop,
-            ip,
-            port,
-            ..
-        } = self;
-
-        Box::new(set_webhook.and_then(move |_| {
-            init_server(event_loop, ip, port).map_err(errors::Webhook::Server)
-        }))
+    /// Configures a webhook server over HTTPS. For HTTP, see the [`http`]
+    /// method.
+    ///
+    /// [`http`]: #method.http    
+    pub const fn https(self, identity: https::Identity) -> Https<'a, C> {
+        Https::new(self, identity)
     }
 }
 
@@ -181,25 +143,4 @@ where
 
         Either::B(future)
     }
-}
-
-fn init_server<C>(
-    event_loop: EventLoop<C>,
-    ip: IpAddr,
-    port: u16,
-) -> impl Future<Item = (), Error = hyper::Error>
-where
-    C: Clone + Send + Sync + 'static,
-{
-    let bot = Arc::new(event_loop.bot.clone());
-    let event_loop = Arc::new(event_loop);
-    let addr = SocketAddr::new(ip, port);
-
-    Server::bind(&addr).serve(move || {
-        let bot = Arc::clone(&bot);
-        let event_loop = Arc::clone(&event_loop);
-        service_fn(move |request| {
-            handle(Arc::clone(&bot), Arc::clone(&event_loop), request)
-        })
-    })
 }
