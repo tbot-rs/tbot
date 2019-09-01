@@ -31,7 +31,10 @@ pub struct Https<'a, C> {
 }
 
 impl<'a, C> Https<'a, C> {
-    pub(crate) const fn new(webhook: Webhook<'a, C>, identity: Identity) -> Self {
+    pub(crate) const fn new(
+        webhook: Webhook<'a, C>,
+        identity: Identity,
+    ) -> Self {
         Self { webhook, identity }
     }
 }
@@ -152,10 +155,7 @@ where
         )
         .map_err(errors::HttpsWebhook::Server)
         .for_each(|conn| {
-            crate::spawn(
-                conn.and_then(|c| c.map_err(|e| panic!("Hyper error {}", e)))
-                    .map_err(|e| eprintln!("Connection error {}", e)),
-            );
+            crate::spawn(conn.map_err(|_| ()));
             Ok(())
         });
 
