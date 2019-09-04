@@ -40,7 +40,7 @@ pub struct SendInvoice<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     need_name: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    need_photo_number: Option<bool>,
+    need_phone_number: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     need_email: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -87,7 +87,7 @@ impl<'a, C> SendInvoice<'a, C> {
             provider_data: None,
             photo: None,
             need_name: None,
-            need_photo_number: None,
+            need_phone_number: None,
             need_email: None,
             need_shipping_address: None,
             send_phone_number_to_provider: None,
@@ -117,9 +117,9 @@ impl<'a, C> SendInvoice<'a, C> {
         self
     }
 
-    /// Configures `need_photo_number`.
-    pub fn photo_number(mut self, is_needed: Requirement) -> Self {
-        self.need_photo_number = Some(is_needed.is_required());
+    /// Configures `need_phone_number`.
+    pub fn phone_number(mut self, is_needed: Requirement) -> Self {
+        self.need_phone_number = Some(is_needed.is_required());
         self
     }
 
