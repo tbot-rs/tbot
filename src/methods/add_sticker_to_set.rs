@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`addStickerToSet`][docs] method.
+/// Adds a new sticker to an existing sticker set.
+///
+/// Reflects the [`addStickerToSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#addstickertoset
 #[derive(Debug, Clone)]
@@ -44,7 +46,7 @@ impl<'a, C> AddStickerToSet<'a, C> {
         }
     }
 
-    /// Configures `mask_position`.
+    /// Sets the mask's position. Reflects the `mask_position` parameter.
     pub fn mask_position(mut self, mask_position: MaskPosition) -> Self {
         self.mask_position = Some(mask_position);
         self

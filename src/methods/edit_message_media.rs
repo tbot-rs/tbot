@@ -10,7 +10,9 @@ use crate::{
     },
 };
 
-/// Represents the [`editMessageMedia`][docs] method for chat messages.
+/// Edits the media of a message sent by the bot itself.
+///
+/// Reflects the [`editMessageMedia`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[derive(Debug, Clone)]
@@ -42,7 +44,8 @@ impl<'a, C> EditMessageMedia<'a, C> {
         }
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

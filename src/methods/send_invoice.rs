@@ -15,7 +15,9 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Represents the [`sendInvoice`][docs] method.
+/// Sends an invoice.
+///
+/// Reflects the [`sendInvoice`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendinvoice
 #[derive(Debug, Clone, Serialize)]
@@ -99,43 +101,50 @@ impl<'a, C> SendInvoice<'a, C> {
         }
     }
 
-    /// Configures `provider_data`.
+    /// Configures data for your payment provider.
+    /// Reflects the `provider_data` parameter.
     pub fn provider_data(mut self, provider_data: &'a str) -> Self {
         self.provider_data = Some(provider_data);
         self
     }
 
-    /// Configures `photo_url`, `photo_width` and `photo_height`.
+    /// Configures a photo for the invoice.
+    /// Reflects the `photo_url`, `photo_width` and `photo_height` parameters.
     pub fn photo(mut self, photo: Photo<'a>) -> Self {
         self.photo = Some(photo);
         self
     }
 
-    /// Configures `need_name`.
+    /// Configures if the user must specify their name.
+    /// Reflects the `need_name` parameters.
     pub fn name(mut self, is_needed: Requirement) -> Self {
         self.need_name = Some(is_needed.is_required());
         self
     }
 
-    /// Configures `need_phone_number`.
+    /// Configures if the user must specify their phone number.
+    /// Reflects the `need_phone_number` parameter.
     pub fn phone_number(mut self, is_needed: Requirement) -> Self {
         self.need_phone_number = Some(is_needed.is_required());
         self
     }
 
-    /// Configures `need_email`.
+    /// Configures if the user must specify their email.
+    /// Reflects the `need_email` parameter.
     pub fn email(mut self, is_needed: Requirement) -> Self {
         self.need_email = Some(is_needed.is_required());
         self
     }
 
-    /// Configures `need_shipping_address`.
+    /// Configures if the user must specify their shipping address.
+    /// Reflects the `need_shipping_address` parameter.
     pub fn shipping_address(mut self, is_needed: Requirement) -> Self {
         self.need_shipping_address = Some(is_needed.is_required());
         self
     }
 
-    /// Configures `send_phone_number_to_provider`.
+    /// Configures if the user's phone must be sent to your payment provider.
+    /// Reflects the `send_phone_number_to_provider` parameter.
     pub fn should_share_phone(
         mut self,
         should_send: SendToProviderState,
@@ -144,7 +153,8 @@ impl<'a, C> SendInvoice<'a, C> {
         self
     }
 
-    /// Configures `send_email_to_provider`.
+    /// Configures if the user's email must be sent to your payment provider.
+    /// Reflects the `send_email_to_provider` parameter.
     pub fn should_share_email(
         mut self,
         should_send: SendToProviderState,
@@ -153,25 +163,29 @@ impl<'a, C> SendInvoice<'a, C> {
         self
     }
 
-    /// Configures `is_flexible`.
+    /// Configures if the final price depends on the shipping method.
+    /// Reflects the `is_flexible` parameter.
     pub fn flexibility(mut self, flexibility: Flexibility) -> Self {
         self.is_flexible = Some(flexibility.is_flexible());
         self
     }
 
-    /// Configures `disable_notification`.
+    /// Configures if the message will be sent silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self
     }
 
-    /// Configures `reply_to_message_id`.
+    /// Configures which message this invoice is sent in reply to.
+    /// Reflects the `reply_to_message_id` parameter.
     pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
-    /// Configures `reply_markup`.
+    /// Configures a keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

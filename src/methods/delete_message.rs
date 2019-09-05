@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`deleteMessage`][docs] method.
+/// Deletes a message from a chat.
+///
+/// Reflects the [`deleteMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#deletemessage
 #[derive(Serialize, Debug, Clone)]

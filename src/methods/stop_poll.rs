@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`stopPoll`][docs] method.
+/// Stops a poll.
+///
+/// Reflects the [`stopPoll`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stoppoll
 #[derive(Serialize, Debug, Clone)]
@@ -41,7 +43,8 @@ impl<'a, C> StopPoll<'a, C> {
         }
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

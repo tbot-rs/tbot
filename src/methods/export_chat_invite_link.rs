@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`exportChatInviteLink`][docs] method.
+/// Exports a chat's invite link.
+///
+/// Reflects the [`exportChatInviteLink`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#exportchatinvitelink
 #[derive(Serialize, Debug, Clone)]

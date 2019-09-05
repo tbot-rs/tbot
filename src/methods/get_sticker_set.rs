@@ -5,7 +5,9 @@ use crate::{
     types::sticker,
 };
 
-/// Represents the [`getStickerSet`][docs] method.
+/// Gets a sticker set by its name.
+///
+/// Reflects the [`getStickerSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getstickerset
 #[derive(Serialize, Debug, Clone)]

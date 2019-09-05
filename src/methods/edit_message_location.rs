@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`editMessageLiveLocation`][docs] method for chat messages.
+/// Edits a live location sent by the bot itself.
+///
+/// Reflects the [`editMessageLiveLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagelivelocation
 #[derive(Serialize, Debug, Clone)]
@@ -46,7 +48,8 @@ impl<'a, C> EditMessageLocation<'a, C> {
         }
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

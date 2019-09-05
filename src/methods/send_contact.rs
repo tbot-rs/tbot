@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`sendContact`][docs] method.
+/// Sends a contact.
+///
+/// Reflects the [`sendContact`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendcontact
 #[derive(Serialize, Debug, Clone)]
@@ -55,31 +57,35 @@ impl<'a, C> SendContact<'a, C> {
         }
     }
 
-    /// Configures `last_name`.
+    /// Configures the last name of the contact.
+    /// Reflects the `last_name` parameter.
     pub fn last_name(mut self, last_name: &'a str) -> Self {
         self.last_name = Some(last_name);
         self
     }
 
-    /// Configures `vcard`.
+    /// Configures a VCard for the contact. Reflects the `vcard` parameter.
     pub fn vcard(mut self, vcard: &'a str) -> Self {
         self.vcard = Some(vcard);
         self
     }
 
-    /// Configures `disable_notification`.
+    /// Configures if the message will be sent silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self
     }
 
-    /// Configures `reply_to_message_id`.
+    /// Configures which message this contact is sent in reply to.
+    /// Reflects the `reply_to_message_id` parameter.
     pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
-    /// Configures `reply_markup`.
+    /// Configures a keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(
         mut self,
         markup: impl Into<keyboard::Any<'a>>,

@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`deleteChatStickerSet`][docs] method.
+/// Deletes a chat's sticker set.
+///
+/// Reflects the [`deleteChatStickerSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#deletechatstickerset
 #[derive(Serialize, Debug, Clone)]

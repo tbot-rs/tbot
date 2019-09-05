@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`stopMessageLiveLocation`][docs] method for chat messages.
+/// Stops a live location sent by the bot itself.
+///
+/// Reflects the [`stopMessageLiveLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize, Debug, Clone)]
@@ -41,7 +43,8 @@ impl<'a, C> StopMessageLocation<'a, C> {
         }
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

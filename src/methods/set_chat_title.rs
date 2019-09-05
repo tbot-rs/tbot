@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`setChatTitle`][docs] method.
+/// Sets a group's title.
+///
+/// Reflects the [`setChatTitle`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchattitle
 #[derive(Serialize, Debug, Clone)]

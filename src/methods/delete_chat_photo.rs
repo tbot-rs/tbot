@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`deleteChatPhoto`][docs] method.
+/// Deletes a chat's photo.
+///
+/// Reflects the [`deleteChatPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#deletechatphoto
 #[derive(Serialize, Debug, Clone)]

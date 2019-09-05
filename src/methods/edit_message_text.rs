@@ -11,7 +11,9 @@ use crate::{
     },
 };
 
-/// Represents the [`editMessageText`][docs] method for chat messages.
+/// Edits the text of a message sent by the bot itself.
+///
+/// Reflects the [`editMessageText`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagetext
 #[derive(Serialize, Debug, Clone)]
@@ -54,13 +56,15 @@ impl<'a, C> EditMessageText<'a, C> {
         }
     }
 
-    /// Configures `disable_web_page_preview`.
+    /// Configures if a preview for the first link in the message should be
+    /// shown. Reflects the `disable_web_page_preview` parameter.
     pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
         self.disable_web_page_preview = Some(state.is_disabled());
         self
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

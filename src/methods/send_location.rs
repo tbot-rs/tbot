@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`sendLocation`][docs] method.
+/// Sends a location.
+///
+/// Reflects the [`sendLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendlocation
 #[derive(Serialize, Debug, Clone)]
@@ -51,25 +53,29 @@ impl<'a, C> SendLocation<'a, C> {
         }
     }
 
-    /// Confgiures `live_period`.
+    /// Confgiures for how long this location will be live and may be edited.
+    /// Reflects the `live_period` parameter.
     pub fn live_period(mut self, duration: u32) -> Self {
         self.live_period = Some(duration);
         self
     }
 
-    /// Confgiures `disable_notification`.
+    /// Configures if the message will be sent silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self
     }
 
-    /// Confgiures `reply_to_message_id`.
+    /// Configures which message this location is sent in reply to.
+    /// Reflects the `reply_to_message_id` parameter.
     pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
-    /// Confgiures `reply_markup`.
+    /// Configures a keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(
         mut self,
         markup: impl Into<keyboard::Any<'a>>,

@@ -5,7 +5,9 @@ use crate::{
     types::{inline_message_id, keyboard::inline},
 };
 
-/// Represents the [`stopMessageLiveLocation`][docs] method for inline messages.
+/// Stops a live location sent via the inline mode.
+///
+/// Reflects the [`stopMessageLiveLocation`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#stopmessagelivelocation
 #[derive(Serialize, Debug, Clone)]
@@ -34,7 +36,8 @@ impl<'a, C> StopInlineLocation<'a, C> {
         }
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

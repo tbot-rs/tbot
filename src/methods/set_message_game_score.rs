@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`setGameScore`][docs] method for chat messages.
+/// Sets a user's new high score in a game sent by the bot itself.
+///
+/// Reflects the [`setGameScore`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
 #[derive(Serialize, Debug, Clone)]
@@ -50,13 +52,14 @@ impl<'a, C> SetMessageGameScore<'a, C> {
         }
     }
 
-    /// Configures `force`.
+    /// Configures if the score may go down. Reflects the `force` parameter.
     pub fn force(mut self, is_forced: bool) -> Self {
         self.force = Some(is_forced);
         self
     }
 
-    /// Configures `disable_edit_message`.
+    /// Configures if the message should not be edited immediately.
+    /// Reflects the `disable_edit_message` parameter.
     pub fn disable_edit_message(mut self, is_disabled: bool) -> Self {
         self.disable_edit_message = Some(is_disabled);
         self

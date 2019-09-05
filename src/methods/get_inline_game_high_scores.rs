@@ -5,7 +5,10 @@ use crate::{
     types::{game::HighScore, inline_message_id, user},
 };
 
-/// Represents the [`getGameHighScores`][docs] method for inline messages.
+/// Gets an excerpt from the high score table of a game sent via the inline
+/// mode.
+///
+/// Reflects the [`getGameHighScores`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getgamehighscores
 #[derive(Serialize, Debug, Clone)]

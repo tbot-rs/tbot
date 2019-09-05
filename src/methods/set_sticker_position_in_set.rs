@@ -1,7 +1,9 @@
 use super::*;
 use crate::internal::{BoxFuture, Client};
 
-/// Represents the [`setStickerPositionInSet`][docs] method.
+/// Changes a sticker's position in a sticker set.
+///
+/// Reflects the [`setStickerPositionInSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setstickerpositioninset
 #[derive(Serialize, Debug, Clone)]

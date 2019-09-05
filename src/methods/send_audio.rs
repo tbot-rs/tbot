@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`sendAudio`][docs] method.
+/// Sends an audio.
+///
+/// Reflects the [`sendAudio`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendaudio
 #[derive(Debug, Clone)]
@@ -41,19 +43,23 @@ impl<'a, C> SendAudio<'a, C> {
             reply_markup: None,
         }
     }
-    /// Configures `disable_notification`.
+
+    /// Configures if the message will be sent silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self
     }
 
-    /// Configures `reply_to_message_id`.
+    /// Configures which message this audio is sent in reply to.
+    /// Reflects the `reply_to_message_id` parameter.
     pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
-    /// Configures `reply_markup`.
+    /// Configures a keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(
         mut self,
         markup: impl Into<keyboard::Any<'a>>,

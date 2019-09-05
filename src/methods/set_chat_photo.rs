@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`setChatPhoto`][docs] method.
+/// Sets a chat's photo.
+///
+/// Reflects the [`setChatPhoto`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
 #[derive(Debug, Clone)]

@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`pinChatMessage`][docs] method.
+/// Pins a message in a chat.
+///
+/// Reflects the [`pinChatMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#pinchatmessage
 #[derive(Serialize, Debug, Clone)]
@@ -40,7 +42,8 @@ impl<'a, C> PinChatMessage<'a, C> {
         }
     }
 
-    /// Configures `disable_notification`.
+    /// Configures if the message will be pinned silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self

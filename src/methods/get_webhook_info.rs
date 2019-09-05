@@ -1,7 +1,9 @@
 use super::*;
 use crate::internal::{BoxFuture, Client};
 
-/// Represents the [`getWebhookInfo`][docs] method.
+/// Gets information about the bot's webhook.
+///
+/// Reflects the [`getWebhookInfo`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getwebhookinfo
 #[derive(Debug, Clone)]

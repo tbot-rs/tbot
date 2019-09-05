@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`setChatDescription`][docs] method.
+/// Sets a chat's description.
+///
+/// Reflects the [`setChatDescription`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchatdescription
 #[derive(Serialize, Debug, Clone)]
