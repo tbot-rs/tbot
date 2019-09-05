@@ -1,7 +1,9 @@
 use super::*;
 use crate::internal::{BoxFuture, Client};
 
-/// Represents the [`deleteStickerFromSet`][docs] method
+/// Deletes a sticker from a sticker set.
+///
+/// Reflects the [`deleteStickerFromSet`][docs] method
 ///
 /// [docs]: https://core.telegram.org/bots/api#deletestickerfromset
 #[derive(Serialize, Debug, Clone)]

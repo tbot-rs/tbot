@@ -5,7 +5,9 @@ use crate::{
     types::{inline_message_id, keyboard::inline},
 };
 
-/// Represents the [`editMessageReplyMarkup`][docs] method for inline messages.
+/// Edits the inline keyboard of a message sent via the inline mode.
+///
+/// Reflects the [`editMessageReplyMarkup`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagereplymarkup
 #[derive(Serialize, Debug, Clone)]

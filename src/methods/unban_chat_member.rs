@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`unbanChatMember`][docs] method.
+/// Lifts all restrictions from a group's member.
+///
+/// Reflects the [`unbanChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#unbanchatmember
 #[derive(Serialize, Debug, Clone)]

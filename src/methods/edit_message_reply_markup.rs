@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`editMessageReplyMarkup`][docs] method for chat messsages.
+/// Edits the inline keyboard of a message sent by the bot itself.
+///
+/// Reflects the [`editMessageReplyMarkup`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagereplymarkup
 #[derive(Serialize, Debug, Clone)]

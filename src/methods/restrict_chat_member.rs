@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`restrictChatMember`][docs] method.
+/// Restricts a chat member.
+///
+/// Reflects the [`restrictChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#restrictchatmember
 #[derive(Serialize, Debug, Clone)]
@@ -44,7 +46,8 @@ impl<'a, C> RestrictChatMember<'a, C> {
         }
     }
 
-    /// Configures `until_date`.
+    /// Configures when the restrictions will be lifted.
+    /// Reflects the `until_date` parameter.
     pub fn until_date(mut self, date: i64) -> Self {
         self.until_date = Some(date);
         self

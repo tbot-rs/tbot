@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`createNewStickerSet`][docs] method.
+/// Creates a new sticker set.
+///
+/// Reflects the [`createNewStickerSet`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#createnewstickerset
 #[derive(Debug, Clone)]
@@ -49,13 +51,15 @@ impl<'a, C> CreateNewStickerSet<'a, C> {
         }
     }
 
-    /// Configures `contains_masks`.
+    /// Configures if the sticker set is going to contain masks.
+    /// Reflects the `contains_masks` parameter.
     pub fn contains_masks(mut self, contains_masks: bool) -> Self {
         self.contains_masks = Some(contains_masks);
         self
     }
 
-    /// Configures `mask_position`.
+    /// Configures the mask position of the first sticker.
+    /// Reflects the `mask_position` parameter.
     pub fn mask_position(mut self, mask_position: MaskPosition) -> Self {
         self.mask_position = Some(mask_position);
         self

@@ -5,7 +5,9 @@ use crate::{
     types::user,
 };
 
-/// Represents the [`uploadStickerFile`][docs] method.
+/// Uploads a sticker file.
+///
+/// Reflects the [`uploadStickerFile`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#uploadstickerfile
 #[derive(Debug, Clone)]

@@ -9,7 +9,9 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Represents the [`answerInlineQuery`][docs] method.
+/// Answers an inline query.
+///
+/// Reflects the [`answerInlineQuery`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#answerinlinequery
 #[derive(Debug, Clone, Serialize)]
@@ -53,25 +55,30 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
         }
     }
 
-    /// Configures `cache_time`.
+    /// Configures the amount of time (in seconds) for which the answer may be
+    /// cached. Reflects the `cache_time` parameter.
     pub fn cache_time(mut self, time: u64) -> Self {
         self.cache_time = Some(time);
         self
     }
 
-    /// Configures `is_personal`
+    /// Configures whether the result may be cached only for the user who sent
+    /// the query. Reflects the `is_personal` parameter.
     pub fn personal(mut self, is_personal: bool) -> Self {
         self.is_personal = Some(is_personal);
         self
     }
 
-    /// Configures `next_offset`.
+    /// Configures the offset to be sent in the next query.
+    /// Reflects the `next_offset` parameter.
     pub fn next_offset(mut self, offset: &'a str) -> Self {
         self.next_offset = Some(offset);
         self
     }
 
-    /// Configures `switch_pm_text` and `switch_pm_parameter`.
+    /// Configures a button that switches the user to the private chat
+    /// with your bot. Reflects the `switch_pm_text` and `switch_pm_parameter`
+    /// parameters respectively.
     pub fn switch_pm(mut self, text: &'a str, parameter: &'a str) -> Self {
         self.switch_pm_text = Some(text);
         self.switch_pm_parameter = Some(parameter);

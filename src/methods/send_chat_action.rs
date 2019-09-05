@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`sendChatAction`][docs] method.
+/// Sends a chat action.
+///
+/// Reflects the [`sendChatAction`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendchataction
 #[derive(Serialize, Debug, Clone)]

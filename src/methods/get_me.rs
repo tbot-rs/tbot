@@ -1,6 +1,8 @@
 use super::*;
 use crate::internal::{BoxFuture, Client};
 
+/// Gets information about the bot.
+///
 /// Represents the [`getMe`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getme

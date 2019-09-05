@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`setChatPermissions`][docs] method.
+/// Sets a group's global permissions.
+///
+/// Reflects the [`setChatPermissions`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setchatpermissions
 #[derive(Serialize, Debug, Clone)]

@@ -9,7 +9,9 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Represents the [`answerPreCheckoutQuery`][docs] method.
+/// Answers a pre-checkout query.
+///
+/// Reflects the [`answerPreCheckoutQuery`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#answerprecheckoutquery
 #[derive(Debug, Clone, Serialize)]

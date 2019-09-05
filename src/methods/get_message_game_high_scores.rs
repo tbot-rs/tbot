@@ -10,7 +10,9 @@ use crate::{
     },
 };
 
-/// Represents the [`getGameHighScores`][docs] method for chat messages.
+/// Gets an excerpt from the high score table of a game sent by the bot itself.
+///
+/// Reflects the [`getGameHighScores`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getgamehighscores
 #[derive(Serialize, Debug, Clone)]

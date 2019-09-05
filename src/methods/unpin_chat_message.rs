@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`unpinChatMessage`][docs] method.
+/// Unpins a chat message.
+///
+/// Reflects the [`unpinChatMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#unpinchatmessage
 #[derive(Serialize, Debug, Clone)]

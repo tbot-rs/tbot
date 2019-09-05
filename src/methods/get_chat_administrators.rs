@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`getChatAdministrators`][docs] method.
+/// Gets information about a chat's admins.
+///
+/// Reflects the [`getChatAdministrators`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getchatadministrators
 #[derive(Serialize, Debug, Clone)]

@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`promoteChatMember`][docs] method.
+/// Promotes a chat member to an admin.
+///
+/// Reflects the [`promoteChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#promotechatmember
 #[derive(Serialize, Debug, Clone)]
@@ -61,49 +63,57 @@ impl<'a, C> PromoteChatMember<'a, C> {
         }
     }
 
-    /// Configures `can_change_info`.
+    /// Configures if the user will be able to change the group's information.
+    /// Reflects the `can_change_info` parameter.
     pub fn can_change_info(mut self, can_change: bool) -> Self {
         self.can_change_info = Some(can_change);
         self
     }
 
-    /// Configures `can_post_messages`.
+    /// Configures if the user will be able to post messages, if the chat is
+    /// a channel. Reflects the `can_post_messages` parameter.
     pub fn can_post_messages(mut self, can_post: bool) -> Self {
         self.can_post_messages = Some(can_post);
         self
     }
 
-    /// Configures `can_edit_messages`.
+    /// Configures if the user will be able to edit messages, if the chat is
+    /// a channel. Reflects the `can_edit_messages` parameter.
     pub fn can_edit_messages(mut self, can_edit: bool) -> Self {
         self.can_edit_messages = Some(can_edit);
         self
     }
 
-    /// Configures `can_delete_messages`.
+    /// Configures if the user will be able to delete messages.
+    /// Reflects the `can_delete_messages` parameter.
     pub fn can_delete_messages(mut self, can_delete: bool) -> Self {
         self.can_delete_messages = Some(can_delete);
         self
     }
 
-    /// Configures `can_invite_users`.
+    /// Configures if the user will be able to invite new users.
+    /// Reflects the `can_invite_users` parameter.
     pub fn can_invite_users(mut self, can_invite: bool) -> Self {
         self.can_invite_users = Some(can_invite);
         self
     }
 
-    /// Configures `can_restrict_members`.
+    /// Configures if the user will be able to restrict members.
+    /// Reflects the `can_restrict_members` parameter.
     pub fn can_restrict_members(mut self, can_restrict: bool) -> Self {
         self.can_restrict_members = Some(can_restrict);
         self
     }
 
-    /// Configures `can_pin_messages`.
+    /// Configures if the user will be able to pin messages.
+    /// Reflects the `can_pin_messages` parameter.
     pub fn can_pin_messages(mut self, can_pin: bool) -> Self {
         self.can_pin_messages = Some(can_pin);
         self
     }
 
-    /// Configures `can_promote_members`.
+    /// Configures if the user will be able to promote other members.
+    /// Reflects the `can_promote_members` parameter.
     pub fn can_promote_members(mut self, can_promote: bool) -> Self {
         self.can_promote_members = Some(can_promote);
         self

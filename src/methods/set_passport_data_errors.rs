@@ -5,7 +5,9 @@ use crate::{
     types::{passport, user},
 };
 
-/// Represents the [`setPassportDataErrors`][docs] method.
+/// Reports passport errors to the user.
+///
+/// Reflects the [`setPassportDataErrors`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#setpassportdataerrors
 #[derive(Serialize, Debug, Clone)]

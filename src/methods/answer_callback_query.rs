@@ -5,7 +5,9 @@ use crate::{
     types::{callback, parameters::CallbackAction},
 };
 
-/// Represents the [`answerCallbackQuery`][docs] method.
+/// Answers a callback query.
+///
+/// Reflects the [`answerCallbackQuery`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#answercallbackquery
 #[derive(Serialize, Debug, Clone)]
@@ -44,7 +46,8 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
         }
     }
 
-    /// Configures `cache_time`.
+    /// Configures the amount of time (in seconds) for which the answer may be
+    /// cached. Reflects the `cache_time` parameter.
     pub fn cache_time(mut self, time: u64) -> Self {
         self.cache_time = Some(time);
         self

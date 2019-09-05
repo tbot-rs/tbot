@@ -5,7 +5,9 @@ use crate::{
     types::file::{self, id::AsFileId, File},
 };
 
-/// Represents the [`getfile`][docs] method.
+/// Gets information about a file.
+///
+/// Reflects the [`getfile`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getfile
 #[derive(Serialize, Debug, Clone)]

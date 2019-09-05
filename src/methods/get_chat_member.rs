@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`getChatMember`][docs] method.
+/// Gets information about a chat's member.
+///
+/// Reflects the [`getChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getchatmember
 #[derive(Serialize, Debug, Clone)]

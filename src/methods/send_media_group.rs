@@ -9,7 +9,9 @@ use crate::{
     },
 };
 
-/// Represents the [`sendMediaGroup`][docs] method.
+/// Sends an album.
+///
+/// Reflects the [`sendMediaGroup`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
 #[derive(Debug, Clone)]
@@ -24,7 +26,6 @@ pub struct SendMediaGroup<'a, C> {
 }
 
 impl<'a, C> SendMediaGroup<'a, C> {
-    /// Contructs a new `SendMediaGroup`.
     pub(crate) fn new(
         client: &'a Client<C>,
         token: Token,
@@ -41,13 +42,15 @@ impl<'a, C> SendMediaGroup<'a, C> {
         }
     }
 
-    /// Configures `disable_notification`.
+    /// Configures if the album will be sent silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self
     }
 
-    /// Configures `reply_to_message_id`.
+    /// Configures which message this album is sent in reply to.
+    /// Reflects the `reply_to_message_id` parameter.
     pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self

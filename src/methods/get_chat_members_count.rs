@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`getChatMembersCount`][docs] method.
+/// Gets a chat's member count.
+///
+/// Reflects the [`getChatMembersCount`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#getchatmemberscount
 #[derive(Serialize, Debug, Clone)]

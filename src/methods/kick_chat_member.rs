@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`kickChatMember`][docs] method.
+/// Kicks a member out of a chat.
+///
+/// Reflects the [`kickChatMember`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#kickchatmember
 #[derive(Serialize, Debug, Clone)]
@@ -40,7 +42,8 @@ impl<'a, C> KickChatMember<'a, C> {
         }
     }
 
-    /// Configures `until_date`.
+    /// Configures when the user regains the ability to return to the chat.
+    /// Reflects the `until_date` parameter.
     pub fn until_date(mut self, date: i64) -> Self {
         self.until_date = Some(date);
         self

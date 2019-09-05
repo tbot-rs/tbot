@@ -9,7 +9,9 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Represents the [`answerShippingQuery`][docs] method.
+/// Answers a shipping query.
+///
+/// Reflects the [`answerShippingQuery`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#answershippingquery
 #[derive(Debug, Clone, Serialize)]

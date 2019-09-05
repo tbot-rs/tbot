@@ -8,7 +8,9 @@ use crate::{
     },
 };
 
-/// Represents the [`forwardMessage`][docs] method.
+/// Forwards a message.
+///
+/// Reflects the [`forwardMessage`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#forwardmessage
 #[derive(Serialize, Debug, Clone)]
@@ -43,7 +45,8 @@ impl<'a, C> ForwardMessage<'a, C> {
         }
     }
 
-    /// Configures `disable_notification`.
+    /// Configures if the message will be sent silently.
+    /// Reflects the `disable_notification` parameter.
     pub fn notification(mut self, state: NotificationState) -> Self {
         self.disable_notification = Some(state.is_disabled());
         self

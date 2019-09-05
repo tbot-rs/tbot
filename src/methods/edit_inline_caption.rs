@@ -8,7 +8,10 @@ use crate::{
         parameters::{ParseMode, Text},
     },
 };
-/// Represents the [`editMessageCaption`][docs] method for inline messages.
+
+/// Edits the caption of a media message sent via the inline mode.
+///
+/// Reflects the [`editMessageCaption`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#editmessagecaption
 #[derive(Serialize, Debug, Clone)]
@@ -45,7 +48,8 @@ impl<'a, C> EditInlineCaption<'a, C> {
         }
     }
 
-    /// Configures `reply_markup`.
+    /// Configures an inline keyboard for the message.
+    /// Reflects the `reply_markup` parameter.
     pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self

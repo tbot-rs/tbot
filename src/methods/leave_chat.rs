@@ -5,7 +5,9 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 
-/// Represents the [`leaveChat`][docs] method.
+/// Leaves a chat.
+///
+/// Reflects the [`leaveChat`][docs] method.
 ///
 /// [docs]: https://core.telegram.org/bots/api#leavechat
 #[derive(Serialize, Debug, Clone)]
