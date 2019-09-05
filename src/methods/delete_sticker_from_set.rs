@@ -1,7 +1,7 @@
 use super::*;
 use crate::internal::{BoxFuture, Client};
 
-/// Deletes a sticker from a sticker pack.
+/// Deletes a sticker from a sticker set.
 ///
 /// Reflects the [`deleteStickerFromSet`][docs] method
 ///

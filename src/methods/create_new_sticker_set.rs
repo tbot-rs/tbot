@@ -51,7 +51,7 @@ impl<'a, C> CreateNewStickerSet<'a, C> {
         }
     }
 
-    /// Configures if the sticker pack is going to contain masks.
+    /// Configures if the sticker set is going to contain masks.
     /// Reflects the `contains_masks` parameter.
     pub fn contains_masks(mut self, contains_masks: bool) -> Self {
         self.contains_masks = Some(contains_masks);
