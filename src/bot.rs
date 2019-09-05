@@ -93,7 +93,7 @@ impl<C> Bot<C> {
         EventLoop::new(self)
     }
 
-    /// Constructs a new `AddStickerToSet` inferring your bot's token.
+    /// Adds a new sticker to an existing sticker set.
     pub fn add_sticker_to_set<'a>(
         &'a self,
         user_id: user::Id,
@@ -111,7 +111,6 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `AnswerCallbackQuery` inferring your bot's token.
     pub(crate) fn answer_callback_query<'a>(
         &'a self,
         callback_query_id: callback::query::id::Ref<'a>,
@@ -125,7 +124,6 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `AnswerInlineQuery` inferring your bot's token.
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
         inline_query_id: inline_query::id::Ref<'a>,
@@ -139,7 +137,6 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `AnswerPreCheckoutQuery` inferring your bot's token.
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
         pre_checkout_query_id: pre_checkout_query::id::Ref<'a>,
@@ -153,7 +150,6 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `AnswerShippingQuery` inferring your bot's token.
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
         shipping_query_id: shipping::query::id::Ref<'a>,
@@ -167,7 +163,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `CreateNewStickerSet` inferring your bot's token.
+    /// Creates a new sticker set.
     pub fn create_new_sticker_set<'a>(
         &'a self,
         user_id: user::Id,
@@ -187,7 +183,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `DeleteChatPhoto` inferring your bot's token.
+    /// Deletes a chat's photo.
     pub fn delete_chat_photo<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -195,7 +191,7 @@ impl<C> Bot<C> {
         methods::DeleteChatPhoto::new(&self.client, self.token.clone(), chat_id)
     }
 
-    /// Constructs a new `DeleteChatStickerSet` inferring your bot's token.
+    /// Deletes a chat's sticker set.
     pub fn delete_chat_sticker_set<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -207,7 +203,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `DeleteMessage` inferring your bot's token.
+    /// Deletes a message from a chat.
     pub fn delete_message<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -221,7 +217,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `DeleteStickerFromSet` inferring your bot's token.
+    /// Deletes a sticker from a sticker set.
     pub fn delete_sticker_from_set<'a>(
         &'a self,
         sticker: &'a str,
@@ -237,7 +233,7 @@ impl<C> Bot<C> {
         methods::DeleteWebhook::new(&self.client, self.token.clone())
     }
 
-    /// Constructs a new `EditInlineCaption` inferring your bot's token.
+    /// Edits the caption of a media message sent via the inline mode.
     pub fn edit_inline_caption<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -251,7 +247,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditInlineLocation` inferring your bot's token.
+    /// Edits a live location sent via the inline mode.
     pub fn edit_inline_location<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -265,7 +261,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditInlineMedia` inferring your bot's token.
+    /// Edits the media of a message sent via the inline mode.
     pub fn edit_inline_media<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -279,7 +275,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditInlineReplyMarkup` inferring your bot's token.
+    /// Edits the inline keyboard of a message sent via the inline mode.
     pub fn edit_inline_reply_markup<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -293,7 +289,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditInlineText` inferring your bot's token.
+    /// Edits the text of a message sent via the inline mode.
     pub fn edit_inline_text<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -307,7 +303,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditMessageCaption` inferring your bot's token.
+    /// Edits the caption of a media message sent by the bot itself.
     pub fn edit_message_caption<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -323,7 +319,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditMessageLocation` inferring your bot's token.
+    /// Edits a live location sent by the bot itself.
     pub fn edit_message_location<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -339,7 +335,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditMessageMedia` inferring your bot's token.
+    /// Edits a live location sent by the bot itself.
     pub fn edit_message_media<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -355,7 +351,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditMessageReplyMarkup` inferring your bot's token.
+    /// Edits the inline keyboard of a message sent by the bot itself.
     pub fn edit_message_reply_markup<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -371,7 +367,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `EditMessageText` inferring your bot's token.
+    /// Edits the text of a message sent by the bot itself.
     pub fn edit_message_text<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -387,7 +383,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `ExportChatInviteLink` inferring your bot's token.
+    /// Exports a chat's invite link.
     pub fn export_chat_invite_link<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -399,7 +395,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `ForwardMessage` inferring your bot's token.
+    /// Forwards a message.
     pub fn forward_message<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -415,7 +411,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetChat` inferring your bot's token.
+    /// Gets information about a chat.
     pub fn get_chat<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -423,7 +419,7 @@ impl<C> Bot<C> {
         methods::GetChat::new(&self.client, self.token.clone(), chat_id)
     }
 
-    /// Constructs a new `GetFile` inferring your bot's token.
+    /// Gets information about a file.
     pub fn get_file<'a>(
         &'a self,
         file_id: &'a impl AsFileId,
@@ -431,7 +427,8 @@ impl<C> Bot<C> {
         methods::GetFile::new(&self.client, self.token.clone(), file_id)
     }
 
-    /// Constructs a new `GetInlineGameHighScores` inferring your bot's token.
+    /// Gets an excerpt from the high score table of a game sent via the inline
+    /// mode.
     pub fn get_inline_game_high_scores<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -445,7 +442,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetChatAdministrators` inferring your bot's token.
+    /// Gets information about a chat's admins.
     pub fn get_chat_administrators<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -457,7 +454,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetChatMember` inferring your bot's token.
+    /// Gets information about a chat's member.
     pub fn get_chat_member<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -471,7 +468,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetChatMembersCount` inferring your bot's token.
+    /// Gets a chat's member count.
     pub fn get_chat_members_count<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -483,7 +480,8 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetMessageGameHighScores` inferring your bot's token.
+    /// Gets an excerpt from the high score table of a game sent by the bot
+    /// itself.
     pub fn get_message_game_high_scores<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -499,12 +497,12 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetMe` inferring your bot's token.
+    /// Gets information about the bot.
     pub fn get_me(&self) -> methods::GetMe<'_, C> {
         methods::GetMe::new(&self.client, self.token.clone())
     }
 
-    /// Constructs a new `GetStickerSet` inferring your bot's token.
+    /// Gets a sticker set by its name.
     pub fn get_sticker_set<'a>(
         &'a self,
         name: &'a str,
@@ -529,7 +527,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetUserProfilePhotos` inferring your bot's token.
+    /// Gets a user's profile photos.
     pub fn get_user_profile_photos(
         &self,
         user_id: user::Id,
@@ -541,12 +539,12 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `GetWebhookInfo` inferring your bot's token.
+    /// Gets information about the bot's webhook.
     pub fn get_webhook_info(&self) -> methods::GetWebhookInfo<'_, C> {
         methods::GetWebhookInfo::new(&self.client, self.token.clone())
     }
 
-    /// Constructs a new `KickChatMember` inferring your bot's token.
+    /// Kicks a member out of a chat.
     pub fn kick_chat_member<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -560,7 +558,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `LeaveChat` inferring your bot's token.
+    /// Leaves a chat.
     pub fn leave_chat<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -568,7 +566,7 @@ impl<C> Bot<C> {
         methods::LeaveChat::new(&self.client, self.token.clone(), chat_id)
     }
 
-    /// Constructs a new `PinChatMessage` inferring your bot's token.
+    /// Pins a message in a chat.
     pub fn pin_chat_message<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -582,7 +580,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `PromoteChatMember` inferring your bot's token.
+    /// Promotes a chat member to an admin.
     pub fn promote_chat_member<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -596,7 +594,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `RestrictChatMember` inferring your bot's token.
+    /// Restricts a chat member.
     pub fn restrict_chat_member<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -612,7 +610,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendAnimation` inferring your bot's token.
+    /// Sends an animation.
     pub fn send_animation<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -626,7 +624,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendAudio` inferring your bot's token.
+    /// Sends an audio.
     pub fn send_audio<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -640,7 +638,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendChatAction` inferring your bot's token.
+    /// Sends a chat action.
     pub fn send_chat_action<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -654,7 +652,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendContact` inferring your bot's token.
+    /// Sends a contact.
     pub fn send_contact<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -670,7 +668,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendGame` inferring your bot's token.
+    /// Sends a game.
     pub fn send_game<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -684,7 +682,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendDocument` inferring your bot's token.
+    /// Sends a document.
     pub fn send_document<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -698,7 +696,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new` SendInvoice` inerring your bot's token.
+    /// Sends an invoice.
     #[allow(clippy::too_many_arguments)]
     pub fn send_invoice<'a>(
         &'a self,
@@ -725,7 +723,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendLocation` inferring your bot's token.
+    /// Sends a location.
     pub fn send_location<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -739,7 +737,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendMediaGroup` inferring your bot's token.
+    /// Sends an album.
     pub fn send_media_group<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -753,7 +751,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendMessage` inferring your bot's token.
+    /// Sends a text message.
     pub fn send_message<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -767,7 +765,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendPhoto` inferring your bot's token.
+    /// Sends a photo.
     pub fn send_photo<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -781,7 +779,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendPoll` inferring your bot's token.
+    /// Sends a poll.
     pub fn send_poll<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -797,7 +795,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendSticker` inferring your bot's token.
+    /// Sends a sticker.
     pub fn send_sticker<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -811,7 +809,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendVenue` inferring your bot's token.
+    /// Sends a venue.
     pub fn send_venue<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -829,7 +827,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendVideoNote` inferring your bot's token.
+    /// Sends a video note.
     pub fn send_video_note<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -843,7 +841,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendVideo` inferring your bot's token.
+    /// Sends a video.
     pub fn send_video<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -857,7 +855,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SendVoice` inferring your bot's token.
+    /// Sends a voice.
     pub fn send_voice<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -871,7 +869,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetChatDescription` inferring your bot's token.
+    /// Sets a chat's description.
     pub fn set_chat_description<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -885,7 +883,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetChatPermissions` inferring your bot's token.
+    /// Sets a group's global permissions.
     pub fn set_chat_permissions<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -899,7 +897,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetChatPhoto` inferring your bot's token.
+    /// Sets a chat's photo.
     pub fn set_chat_photo<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -913,7 +911,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetChatStickerSet` inferring your bot's token.
+    /// Sets a group's sticker set.
     pub fn set_chat_sticker_set<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -927,7 +925,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetChatTitle` inferring your bot's token.
+    /// Sets a group's title.
     pub fn set_chat_title<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -941,7 +939,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetInlineGameScore` inferring your bot's token.
+    /// Sets a user's new high score in a game sent via the inline mode.
     pub fn set_inline_game_score<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -957,7 +955,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetMessageGameScore` inferring your bot's token.
+    /// Sets a user's new high score in a game sent by the bot itself.
     pub fn set_message_game_score<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -975,7 +973,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetPassportDataErrors` inferring your bot's token.
+    /// Reports passport errors to the user.
     pub fn set_passport_data_errors<'a>(
         &'a self,
         user_id: user::Id,
@@ -989,7 +987,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `SetStickerPositionInSet` inferring your bot's token.
+    /// Changes a sticker's position in a sticker set.
     pub fn set_sticker_position_in_set<'a>(
         &'a self,
         sticker: &'a str,
@@ -1020,7 +1018,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `StopInlineLocation` inferring your bot's token.
+    /// Stops a live location sent via the inline mode.
     pub fn stop_inline_location<'a>(
         &'a self,
         inline_message_id: inline_message_id::Ref<'a>,
@@ -1032,7 +1030,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `StopMessageLocation` inferring your bot's token.
+    /// Stops a live location sent by the bot itself.
     pub fn stop_message_location<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -1046,7 +1044,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `StopPoll` inferring your bot's token.
+    /// Stops a poll.
     pub fn stop_poll<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -1060,7 +1058,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `UnbanChatMember` inferring your bot's token.
+    /// Lifts all restrictions from a group's member.
     pub fn unban_chat_member<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -1074,7 +1072,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `UnpinChatMessage` inferring your bot's token.
+    /// Unpins a chat message.
     pub fn unpin_chat_message<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
@@ -1086,7 +1084,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Constructs a new `UploadStickerFile` inferring your bot's token.
+    /// Uploads a sticker file.
     pub fn upload_sticker_file<'a>(
         &'a self,
         user_id: user::Id,
