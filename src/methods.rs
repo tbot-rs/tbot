@@ -8,9 +8,7 @@
 //!
 //! All the methods have a common pattern:
 //!
-//! - Methods are constructed using their `new` method. This methods accepts
-//!   required parameters for this method;
-//! - Methods provide the builder pattern for optional parameters;
+//! - Methods provide the builder API for optional parameters;
 //! - Methods implement the `IntoFuture` trait, so you need to turn a method
 //!   into a future before actually calling the method.
 //!
@@ -47,7 +45,7 @@
 //! `inline_message_id`, and their return type depends on the chosen
 //! parameters. For such methods, `tbot` provides two structs, e.g. for
 //! [`editMessageText`][tg-doc] there are [`EditMessageText`] which resolves to
-//! `()` and [`EditInlineText`] which resolves to [`types::Message`]. This
+//! [`types::Message`] and [`EditInlineText`] which resolves to `()`. This
 //! brings a more straightforward API wrapper, unlike if we only had one method
 //! which would resolve to `(() | types::Message)`.
 //!
