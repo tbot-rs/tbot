@@ -11,7 +11,11 @@ macro_rules! doc {
 #[rustfmt::skip] // it messes up multiline attributes
 macro_rules! gif_base {
     (
-      prefix: $prefix:literal,
+      url: $url:literal,
+      width: $width:literal,
+      height: $height:literal,
+      duration: $duration:literal,
+      file_id: $file_id:literal,
       struct: $struct:ident,
       doc_link_part: $doc_link_part:literal,
     ) => {
@@ -22,21 +26,21 @@ macro_rules! gif_base {
         #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
         pub struct Fresh<'a> {
             thumb_url: &'a str,
-            #[serde(rename = concat!($prefix, "_url"))]
+            #[serde(rename = $url)]
             url: &'a str,
             #[serde(
                 skip_serializing_if = "Option::is_none",
-                rename = concat!($prefix, "_width")
+                rename = $width
             )]
             width: Option<usize>,
             #[serde(
                 skip_serializing_if = "Option::is_none",
-                rename = concat!($prefix, "_height")
+                rename = $height
             )]
             height: Option<usize>,
             #[serde(
                 skip_serializing_if = "Option::is_none",
-                rename = concat!($prefix, "_duration")
+                rename = $duration
             )]
             duration: Option<usize>,
         }
@@ -45,7 +49,7 @@ macro_rules! gif_base {
         #[serde(untagged)]
         enum Kind<'a> {
             Cached {
-                #[serde(rename = concat!($prefix, "_file_id"))]
+                #[serde(rename = $file_id)]
                 id: &'a str,
             },
             Fresh(Fresh<'a>),
@@ -173,7 +177,11 @@ pub mod gif {
     //! [docs]: ../enum.InlineQueryResult.html#variant.Gif
 
     gif_base! {
-        prefix: "gif",
+        url: "gif_url",
+        width: "gif_width",
+        height: "gif_height",
+        duration: "gif_duration",
+        file_id: "gif_file_id",
         struct: Gif,
         doc_link_part: "gif",
     }
@@ -185,7 +193,11 @@ pub mod mpeg4 {
     //! [docs]: ../enum.InlineQueryResult.html#variant.Mpeg4Gif
 
     gif_base! {
-        prefix: "mpeg4",
+        url: "mpeg4_url",
+        width: "mpeg4_width",
+        height: "mpeg4_height",
+        duration: "mpeg4_duration",
+        file_id: "mpeg4_file_id",
         struct: Mpeg4Gif,
         doc_link_part: "mpeg4gif",
     }
