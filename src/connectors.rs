@@ -38,12 +38,7 @@ pub fn proxy(proxy: proxy::Proxy) -> Proxy {
     })
 }
 
-pub(crate) fn create_client<C>(connector: C) -> internal::Client<C>
-where
-    C: Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+pub(crate) fn create_client<C: Connector>(connector: C) -> internal::Client<C> {
     Client::builder()
         .keep_alive(false)
         .build::<C, Body>(connector)

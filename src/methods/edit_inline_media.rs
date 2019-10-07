@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::{inline_message_id, input_file::*, keyboard::inline},
@@ -44,12 +45,7 @@ impl<'a, C> EditInlineMedia<'a, C> {
     }
 }
 
-impl<C> IntoFuture for EditInlineMedia<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for EditInlineMedia<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = errors::MethodCall;

@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::{
@@ -57,12 +58,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
     }
 }
 
-impl<C> IntoFuture for SendMediaGroup<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for SendMediaGroup<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = Vec<types::Message>;
     type Error = errors::MethodCall;

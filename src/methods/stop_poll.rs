@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::{
@@ -51,12 +52,7 @@ impl<'a, C> StopPoll<'a, C> {
     }
 }
 
-impl<C> IntoFuture for StopPoll<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for StopPoll<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Poll;
     type Error = errors::MethodCall;

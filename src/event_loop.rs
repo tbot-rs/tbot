@@ -1,6 +1,7 @@
 //! The event loop for handling bot updates.
 
 use crate::{
+    connectors::Connector,
     contexts, errors,
     prelude::*,
     types::{
@@ -1406,12 +1407,7 @@ impl<C> EventLoop<C> {
     }
 }
 
-impl<C> EventLoop<C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> EventLoop<C> {
     /// Fetches the bot's username.
     pub fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
         let get_me = self.bot.get_me().into_future();

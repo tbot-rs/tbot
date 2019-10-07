@@ -1,11 +1,12 @@
 use super::handle;
 use crate::{
+    connectors::Connector,
     errors,
     event_loop::{EventLoop, Webhook},
     internal::BoxFuture,
 };
 use futures::{Future, IntoFuture};
-use hyper::{client::connect::Connect, service::service_fn, Server};
+use hyper::{service::service_fn, Server};
 use std::{
     net::{IpAddr, SocketAddr},
     sync::Arc,
@@ -23,12 +24,7 @@ impl<'a, C> Http<'a, C> {
     }
 }
 
-impl<'a, C> Http<'a, C>
-where
-    C: Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<'a, C: Connector + Clone> Http<'a, C> {
     /// Starts the server.
     pub fn start(self) -> ! {
         crate::run(self.into_future().map_err(|err| {
@@ -42,12 +38,7 @@ where
     }
 }
 
-impl<'a, C> IntoFuture for Http<'a, C>
-where
-    C: Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<'a, C: Connector + Clone> IntoFuture for Http<'a, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = errors::HttpWebhook;

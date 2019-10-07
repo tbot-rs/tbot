@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::{game::HighScore, inline_message_id, user},
@@ -38,12 +39,7 @@ impl<'a, C> GetInlineGameHighScores<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetInlineGameHighScores<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetInlineGameHighScores<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = Vec<HighScore>;
     type Error = errors::MethodCall;
