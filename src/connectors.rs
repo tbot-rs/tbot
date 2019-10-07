@@ -52,3 +52,19 @@ where
 pub(crate) fn default() -> internal::Client<Https> {
     create_client(https())
 }
+
+/// An alias for a connector usable by `hyper`.
+pub trait Connector: Connect + Sync + 'static
+where
+    <Self as Connect>::Transport: 'static,
+    <Self as Connect>::Future: 'static,
+{
+}
+
+impl<T> Connector for T
+where
+    T: Connect + Sync + 'static,
+    T::Transport: 'static,
+    T::Future: 'static,
+{
+}
