@@ -2,6 +2,7 @@
 
 use super::handle;
 use crate::{
+    connectors::Connector,
     errors,
     event_loop::{EventLoop, Webhook},
     internal::BoxFuture,
@@ -10,9 +11,7 @@ use futures::{
     future::{self, Either},
     Future, IntoFuture, Stream,
 };
-use hyper::{
-    client::connect::Connect, server::conn::Http, service::service_fn,
-};
+use hyper::{server::conn::Http, service::service_fn};
 use native_tls::TlsAcceptor;
 use std::{
     error::Error,
@@ -39,12 +38,7 @@ impl<'a, C> Https<'a, C> {
     }
 }
 
-impl<'a, C> Https<'a, C>
-where
-    C: Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<'a, C: Connector + Clone> Https<'a, C> {
     /// Starts the server.
     pub fn start(self) -> ! {
         crate::run(self.into_future().map_err(|err| {
@@ -58,12 +52,7 @@ where
     }
 }
 
-impl<'a, C> IntoFuture for Https<'a, C>
-where
-    C: Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<'a, C: Connector + Clone> IntoFuture for Https<'a, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = errors::HttpsWebhook;

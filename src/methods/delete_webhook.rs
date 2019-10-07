@@ -1,5 +1,11 @@
-use super::*;
-use crate::internal::{BoxFuture, Client};
+use super::send_method;
+use crate::{
+    connectors::Connector,
+    errors,
+    internal::{BoxFuture, Client},
+    prelude::{Future, IntoFuture},
+    Token,
+};
 
 #[derive(Debug, Clone)]
 #[must_use]
@@ -14,12 +20,7 @@ impl<'a, C> DeleteWebhook<'a, C> {
     }
 }
 
-impl<C> IntoFuture for DeleteWebhook<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for DeleteWebhook<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = errors::MethodCall;

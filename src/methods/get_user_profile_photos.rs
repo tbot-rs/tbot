@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::user,
@@ -54,12 +55,7 @@ impl<'a, C> GetUserProfilePhotos<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetUserProfilePhotos<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetUserProfilePhotos<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = user::ProfilePhotos;
     type Error = errors::MethodCall;

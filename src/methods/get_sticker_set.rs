@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::sticker,
@@ -34,12 +35,7 @@ impl<'a, C> GetStickerSet<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetStickerSet<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetStickerSet<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = sticker::Set;
     type Error = errors::MethodCall;

@@ -1,5 +1,11 @@
-use super::*;
-use crate::internal::{BoxFuture, Client};
+use super::send_method;
+use crate::{
+    connectors::Connector,
+    errors,
+    internal::{BoxFuture, Client},
+    prelude::IntoFuture,
+    types, Token,
+};
 
 /// Gets information about the bot.
 ///
@@ -19,12 +25,7 @@ impl<'a, C> GetMe<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetMe<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetMe<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::User;
     type Error = errors::MethodCall;

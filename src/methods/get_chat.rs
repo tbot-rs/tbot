@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::parameters::{ChatId, ImplicitChatId},
@@ -34,12 +35,7 @@ impl<'a, C> GetChat<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetChat<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetChat<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = types::Chat;
     type Error = errors::MethodCall;

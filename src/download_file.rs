@@ -1,20 +1,18 @@
-use crate::{errors, internal::Client, prelude::*, types::File, Token};
+use crate::{
+    connectors::Connector, errors, internal::Client, prelude::*, types::File,
+    Token,
+};
 use futures::{
     future::{err, Either},
     Stream,
 };
 use hyper::{StatusCode, Uri};
 
-pub fn download_file<C>(
+pub fn download_file<C: Connector>(
     client: &Client<C>,
     token: &Token,
     file: &File,
-) -> impl Future<Item = Vec<u8>, Error = errors::Download>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+) -> impl Future<Item = Vec<u8>, Error = errors::Download> {
     let path = match &file.path {
         Some(path) => path,
         None => return Either::A(err(errors::Download::NoPath)),

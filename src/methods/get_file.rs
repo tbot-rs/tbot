@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::file::{self, id::AsFileId, File},
@@ -34,12 +35,7 @@ impl<'a, C> GetFile<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetFile<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetFile<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = File;
     type Error = errors::MethodCall;

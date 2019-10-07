@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     errors,
     internal::{BoxFuture, Client},
     types::parameters::Updates,
@@ -42,12 +43,7 @@ impl<'a, C> GetUpdates<'a, C> {
     }
 }
 
-impl<C> IntoFuture for GetUpdates<'_, C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> IntoFuture for GetUpdates<'_, C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = Vec<types::Update>;
     type Error = errors::MethodCall;

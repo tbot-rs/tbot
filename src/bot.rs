@@ -1,5 +1,6 @@
 use super::*;
 use crate::{
+    connectors::Connector,
     event_loop::EventLoop,
     types::{
         callback, chat,
@@ -1099,12 +1100,7 @@ impl<C> Bot<C> {
     }
 }
 
-impl<C> Bot<C>
-where
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector> Bot<C> {
     /// Constructs a `Bot` with a custom connector.
     pub fn with_connector(token: Token, connector: C) -> Self {
         Self {

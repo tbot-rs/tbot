@@ -1,7 +1,8 @@
 // use super::*;
 use super::EventLoop;
 use crate::{
-    errors, internal::BoxFuture, prelude::*, types::parameters::Updates,
+    connectors::Connector, errors, internal::BoxFuture, prelude::*,
+    types::parameters::Updates,
 };
 use futures::Stream;
 use std::{
@@ -118,12 +119,7 @@ impl<C> Polling<C> {
     }
 }
 
-impl<C> Polling<C>
-where
-    C: hyper::client::connect::Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector + Clone> Polling<C> {
     /// Starts the event loop.
     pub fn start(self) -> ! {
         let future = self
@@ -163,12 +159,7 @@ where
     }
 }
 
-impl<C> IntoFuture for Polling<C>
-where
-    C: hyper::client::connect::Connect + Clone + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
-{
+impl<C: Connector + Clone> IntoFuture for Polling<C> {
     type Future = BoxFuture<Self::Item, Self::Error>;
     type Item = ();
     type Error = timer::Error;

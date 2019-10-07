@@ -1,5 +1,5 @@
 use super::*;
-use crate::{errors, internal::Client};
+use crate::{connectors::Connector, errors, internal::Client};
 use futures::Stream;
 
 #[derive(Deserialize)]
@@ -110,9 +110,7 @@ pub fn send_method<T, C>(
 ) -> impl Future<Item = T, Error = errors::MethodCall>
 where
     T: serde::de::DeserializeOwned,
-    C: hyper::client::connect::Connect + Sync + 'static,
-    C::Transport: 'static,
-    C::Future: 'static,
+    C: Connector,
 {
     let request = create_request(token, method, boundary, body);
 
