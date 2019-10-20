@@ -1,8 +1,7 @@
 //! Types related to the webhook event loop.
 
 use super::EventLoop;
-use crate::{prelude::*, types::parameters::Updates, Bot};
-use futures::{future::Either, Stream};
+use crate::{types::parameters::Updates, Bot};
 use hyper::{Body, Method, Request, Response};
 use std::{
     net::{IpAddr, Ipv4Addr},
@@ -95,7 +94,7 @@ impl<'a, C> Webhook<'a, C> {
     /// Configures a webhook server over HTTPS. For HTTP, see the [`http`]
     /// method.
     ///
-    /// [`http`]: #method.http    
+    /// [`http`]: #method.http
     pub const fn https(self, identity: https::Identity) -> Https<'a, C> {
         Https::new(self, identity)
     }
@@ -109,38 +108,34 @@ fn is_request_correct(request: &Request<Body>) -> bool {
         && content_type.map(|x| x == "application/json") == Some(true)
 }
 
-fn handle<C>(
+async fn handle<C>(
     bot: Arc<Bot<C>>,
     event_loop: Arc<EventLoop<C>>,
     request: Request<Body>,
-) -> impl Future<Item = Response<Body>, Error = hyper::Error>
+) -> Result<Response<Body>, hyper::Error>
 where
     C: Send + Sync + 'static,
 {
     if is_request_correct(&request) {
-        let body = request.into_body().concat2();
-        let handler = body.map(move |body| {
-            match serde_json::from_slice(&body[..]) {
-                Ok(update) => event_loop.handle_update(bot, update),
-                Err(error) => {
-                    eprintln!(
-                        "[tbot] Could not parse incoming update:\n\n\
-                         Request (in bytes): {request:?}\n\
-                         Error: {error:#?}",
-                        request = &body[..],
-                        error = error
-                    );
-                }
-            }
+        let (parts, mut body) = request.into_parts();
+        let mut request = parts
+            .headers
+            .get("Content-Length")
+            .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
+            .map(Vec::with_capacity)
+            .unwrap_or_else(Vec::new);
 
-            Response::new(Body::empty())
-        });
+        while let Some(chunk) = body.next().await {
+            request.extend(chunk?);
+        }
 
-        Either::A(handler)
-    } else {
-        let response = Response::new(Body::empty());
-        let future = futures::future::ok(response);
+        let update =
+            serde_json::from_slice(&request[..]).unwrap_or_else(|error| {
+                panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
+            });
 
-        Either::B(future)
+        event_loop.handle_update(bot, update);
     }
+
+    Ok(Response::new(Body::empty()))
 }

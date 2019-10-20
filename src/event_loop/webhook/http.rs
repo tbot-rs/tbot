@@ -1,17 +1,11 @@
 use super::handle;
-use crate::{
-    connectors::Connector,
-    errors,
-    event_loop::{EventLoop, Webhook},
-    internal::BoxFuture,
+use crate::{connectors::Connector, errors, event_loop::Webhook};
+use hyper::{
+    service::{make_service_fn, service_fn},
+    Server,
 };
-use futures::{Future, IntoFuture};
-use hyper::{service::service_fn, Server};
-use std::{
-    net::{IpAddr, SocketAddr},
-    sync::Arc,
-};
-use tokio::util::FutureExt;
+use std::{convert::Infallible, net::SocketAddr, sync::Arc};
+use tokio::timer::Timeout;
 
 /// Configures the HTTP webhook server.
 pub struct Http<'a, C> {
@@ -26,69 +20,48 @@ impl<'a, C> Http<'a, C> {
 
 impl<'a, C: Connector + Clone> Http<'a, C> {
     /// Starts the server.
-    pub fn start(self) -> ! {
-        crate::run(self.into_future().map_err(|err| {
-            eprintln!("\n[tbot] Webhook error: {:#?}", err);
-        }));
-
-        unreachable!(
-            "\n[tbot] The webhook server unexpectedly returned. \
-             An error should be printed above.\n",
-        );
-    }
-}
-
-impl<'a, C: Connector + Clone> IntoFuture for Http<'a, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::HttpWebhook;
-
-    fn into_future(self) -> Self::Future {
-        let set_webhook = self
-            .webhook
-            .event_loop
-            .bot
-            .set_webhook(
-                self.webhook.url,
-                self.webhook.certificate,
-                self.webhook.max_connections,
-                self.webhook.allowed_updates,
-            )
-            .into_future()
-            .timeout(self.webhook.request_timeout)
-            .map_err(errors::HttpWebhook::SetWebhook);
-
+    pub async fn start(self) -> Result<Infallible, errors::HttpWebhook> {
         let Webhook {
             event_loop,
             ip,
             port,
-            ..
+            url,
+            certificate,
+            max_connections,
+            allowed_updates,
+            request_timeout,
         } = self.webhook;
 
-        Box::new(set_webhook.and_then(move |_| {
-            init_server(event_loop, ip, port)
-                .map_err(errors::HttpWebhook::Server)
-        }))
+        let set_webhook = event_loop
+            .bot
+            .set_webhook(url, certificate, max_connections, allowed_updates)
+            .call();
+
+        Timeout::new(set_webhook, request_timeout).await??;
+
+        let bot = Arc::new(event_loop.bot.clone());
+        let event_loop = Arc::new(event_loop);
+        let addr = SocketAddr::new(ip, port);
+
+        Server::bind(&addr)
+            .serve(make_service_fn(move |_| {
+                let bot = Arc::clone(&bot);
+                let event_loop = Arc::clone(&event_loop);
+
+                async {
+                    let service = service_fn(move |request| {
+                        handle(
+                            Arc::clone(&bot),
+                            Arc::clone(&event_loop),
+                            request,
+                        )
+                    });
+
+                    Ok::<_, hyper::Error>(service)
+                }
+            }))
+            .await?;
+
+        unreachable!("[tbot] The webhook server unexpectedly returned.");
     }
-}
-
-fn init_server<C>(
-    event_loop: EventLoop<C>,
-    ip: IpAddr,
-    port: u16,
-) -> impl Future<Item = (), Error = hyper::Error>
-where
-    C: Clone + Send + Sync + 'static,
-{
-    let bot = Arc::new(event_loop.bot.clone());
-    let event_loop = Arc::new(event_loop);
-    let addr = SocketAddr::new(ip, port);
-
-    Server::bind(&addr).serve(move || {
-        let bot = Arc::clone(&bot);
-        let event_loop = Arc::clone(&event_loop);
-        service_fn(move |request| {
-            handle(Arc::clone(&bot), Arc::clone(&event_loop), request)
-        })
-    })
 }
