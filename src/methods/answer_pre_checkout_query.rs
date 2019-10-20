@@ -1,11 +1,7 @@
 // use super::*;
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    prelude::*,
-    types::pre_checkout_query,
+    connectors::Connector, errors, internal::Client, types::pre_checkout_query,
     Token,
 };
 use serde::Serialize;
@@ -45,21 +41,18 @@ impl<'a, C> AnswerPreCheckoutQuery<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for AnswerPreCheckoutQuery<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "answerPreCheckoutQuery",
-                None,
-                serde_json::to_vec(&self).unwrap(),
-            )
-            .map(|_| ()), // Only `true` is returned on success
+impl<C: Connector> AnswerPreCheckoutQuery<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "answerPreCheckoutQuery",
+            None,
+            serde_json::to_vec(&self).unwrap(),
         )
+        .await?;
+
+        Ok(())
     }
 }

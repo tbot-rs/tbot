@@ -1,11 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    prelude::{Future, IntoFuture},
-    Token,
-};
+use crate::{connectors::Connector, errors, internal::Client, Token};
 use serde::Serialize;
 
 /// Changes a sticker's position in a sticker set.
@@ -40,21 +34,18 @@ impl<'a, C> SetStickerPositionInSet<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for SetStickerPositionInSet<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "setStickerPositionInSet",
-                None,
-                serde_json::to_vec(&self).unwrap(),
-            )
-            .map(|_| ()),
+impl<C: Connector> SetStickerPositionInSet<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "setStickerPositionInSet",
+            None,
+            serde_json::to_vec(&self).unwrap(),
         )
+        .await?;
+
+        Ok(())
     }
 }

@@ -1,11 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    prelude::IntoFuture,
-    types, Token,
-};
+use crate::{connectors::Connector, errors, internal::Client, types, Token};
 
 /// Gets information about the bot's webhook.
 ///
@@ -25,18 +19,16 @@ impl<'a, C> GetWebhookInfo<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetWebhookInfo<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::WebhookInfo;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetWebhookInfo<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::WebhookInfo, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getWebhookInfo",
             None,
             Vec::new(),
-        ))
+        )
+        .await
     }
 }

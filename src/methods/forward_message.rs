@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
@@ -54,18 +54,16 @@ impl<'a, C> ForwardMessage<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for ForwardMessage<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::Message;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> ForwardMessage<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "forwardMessage",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

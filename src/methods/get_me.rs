@@ -1,11 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    prelude::IntoFuture,
-    types, Token,
-};
+use crate::{connectors::Connector, errors, internal::Client, types, Token};
 
 /// Gets information about the bot.
 ///
@@ -25,18 +19,9 @@ impl<'a, C> GetMe<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetMe<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::User;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
-            self.client,
-            &self.token,
-            "getMe",
-            None,
-            Vec::new(),
-        ))
+impl<C: Connector> GetMe<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::User, errors::MethodCall> {
+        send_method(self.client, &self.token, "getMe", None, Vec::new()).await
     }
 }

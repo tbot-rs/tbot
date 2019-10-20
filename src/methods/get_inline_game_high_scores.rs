@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{game::HighScore, inline_message_id, user},
 };
 
@@ -39,18 +39,16 @@ impl<'a, C> GetInlineGameHighScores<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetInlineGameHighScores<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = Vec<HighScore>;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetInlineGameHighScores<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<Vec<HighScore>, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

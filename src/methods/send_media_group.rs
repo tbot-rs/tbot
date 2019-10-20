@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         input_file::*,
         message,
@@ -58,12 +58,9 @@ impl<'a, C> SendMediaGroup<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for SendMediaGroup<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = Vec<types::Message>;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> SendMediaGroup<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<Vec<types::Message>, errors::MethodCall> {
         let mut multipart = Multipart::new(4 + self.media.len())
             .chat_id("chat_id", self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
@@ -104,12 +101,13 @@ impl<C: Connector> IntoFuture for SendMediaGroup<'_, C> {
         let media = Album(self.media);
         let (boundary, body) = multipart.json("media", &media).finish();
 
-        Box::new(send_method(
+        send_method(
             self.client,
             &self.token,
             "sendMediaGroup",
             Some(boundary),
             body,
-        ))
+        )
+        .await
     }
 }

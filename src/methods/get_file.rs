@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::file::{self, id::AsFileId, File},
 };
 
@@ -35,18 +35,16 @@ impl<'a, C> GetFile<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetFile<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = File;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetFile<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<File, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getFile",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

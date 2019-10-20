@@ -1,11 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    prelude::{Future, IntoFuture},
-    Token,
-};
+use crate::{connectors::Connector, errors, internal::Client, Token};
 
 #[derive(Debug, Clone)]
 #[must_use]
@@ -20,21 +14,18 @@ impl<'a, C> DeleteWebhook<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for DeleteWebhook<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "deleteWebhook",
-                None,
-                Vec::new(),
-            )
-            .map(|_| ()),
+impl<C: Connector> DeleteWebhook<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "deleteWebhook",
+            None,
+            Vec::new(),
         )
+        .await?;
+
+        Ok(())
     }
 }
