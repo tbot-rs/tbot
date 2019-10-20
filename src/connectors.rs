@@ -7,21 +7,18 @@ use hyper::{
 };
 use hyper_tls::HttpsConnector;
 
-
 /// The default HTTPS connector.
 pub type Https = HttpsConnector<HttpConnector>;
 
-
 /// Constructs a HTTPS connector.
 pub fn https() -> Https {
-    HttpsConnector::new(num_cpus::get()).unwrap_or_else(|error| {
+    HttpsConnector::new().unwrap_or_else(|error| {
         panic!(
             "[tbot] Failed to construct an HTTPS connector: {:#?}",
             error,
         )
     })
 }
-
 
 pub(crate) fn create_client<C: Connector>(connector: C) -> internal::Client<C> {
     Client::builder()
