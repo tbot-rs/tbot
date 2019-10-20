@@ -55,6 +55,7 @@ impl<'v> Visitor<'v> for ElementVisitor {
         write!(fmt, "struct Element")
     }
 
+    #[allow(clippy::too_many_lines)]
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
         V: MapAccess<'v>,

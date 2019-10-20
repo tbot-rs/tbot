@@ -157,6 +157,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
         write!(fmt, "struct Member")
     }
 
+    #[allow(clippy::too_many_lines)] // nothing to split
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
         V: MapAccess<'v>,

@@ -37,8 +37,7 @@ where
         .headers
         .get("Content-Length")
         .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
-        .map(Vec::with_capacity)
-        .unwrap_or_else(Vec::new);
+        .map_or_else(Vec::new, Vec::with_capacity);
 
     while let Some(chunk) = body.next().await {
         response.extend(chunk?);

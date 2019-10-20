@@ -148,6 +148,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
     }
 
     #[allow(clippy::cognitive_complexity)] // can't do much
+    #[allow(clippy::too_many_lines)]
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
         V: serde::de::MapAccess<'v>,

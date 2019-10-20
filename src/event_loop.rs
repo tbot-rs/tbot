@@ -815,6 +815,7 @@ impl<C> EventLoop<C> {
     }
 
     #[allow(clippy::cognitive_complexity)]
+    #[allow(clippy::too_many_lines)] // can't split the huge match
     fn handle_message_update(&self, bot: Arc<Bot<C>>, message: types::Message) {
         let (data, kind) = message.split();
 
@@ -1214,6 +1215,7 @@ impl<C> EventLoop<C> {
         }
     }
 
+    #[allow(clippy::too_many_lines)] // can't split the huge match
     fn handle_message_edit_update(
         &self,
         bot: Arc<Bot<C>>,
