@@ -1120,11 +1120,11 @@ impl<C: Connector> Bot<C> {
     }
 
     /// Downloads a file.
-    pub fn download_file(
+    pub async fn download_file(
         &self,
         file: &File,
-    ) -> impl Future<Item = Vec<u8>, Error = errors::Download> {
-        download_file(&self.client, &self.token, file)
+    ) -> Result<Vec<u8>, errors::Download> {
+        download_file(&self.client, &self.token, file).await
     }
 }
 
