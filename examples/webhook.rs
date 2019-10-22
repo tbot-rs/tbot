@@ -11,9 +11,11 @@ async fn main() {
         let context = context.clone();
         tokio::spawn(async move {
             context
-            .send_message_in_reply(&context.text.value)
-                .call().await.unwrap();
-            });
+                .send_message_in_reply(&context.text.value)
+                .call()
+                .await
+                .unwrap();
+        });
     });
 
     // For HTTPS, see this wiki:
