@@ -1,10 +1,5 @@
 use super::*;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    types::sticker,
-};
+use crate::{connectors::Connector, errors, internal::Client, types::sticker};
 
 /// Gets a sticker set by its name.
 ///
@@ -35,18 +30,16 @@ impl<'a, C> GetStickerSet<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetStickerSet<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = sticker::Set;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetStickerSet<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<sticker::Set, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getStickerSet",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

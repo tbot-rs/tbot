@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         input_file::{InputFile, Photo},
         keyboard, message,
@@ -70,12 +70,9 @@ impl<'a, C> SendPhoto<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for SendPhoto<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::Message;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> SendPhoto<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
         let mut multipart = Multipart::new(7)
             .chat_id("chat_id", self.chat_id)
             .maybe_str("caption", self.photo.caption)
@@ -95,12 +92,7 @@ impl<C: Connector> IntoFuture for SendPhoto<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        Box::new(send_method(
-            self.client,
-            &self.token,
-            "sendPhoto",
-            Some(boundary),
-            body,
-        ))
+        send_method(self.client, &self.token, "sendPhoto", Some(boundary), body)
+            .await
     }
 }

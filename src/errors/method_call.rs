@@ -1,5 +1,4 @@
 use crate::types::chat;
-use hyper::Chunk;
 use std::{
     error::Error,
     fmt::{self, Display, Formatter},
@@ -15,7 +14,7 @@ pub enum MethodCall {
     /// Failed to parse the response.
     Parse {
         /// The response which failed to parse.
-        response: Chunk,
+        response: Vec<u8>,
         /// The error which parsing failed with.
         error: serde_json::Error,
     },

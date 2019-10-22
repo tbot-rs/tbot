@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{callback, parameters::CallbackAction},
 };
 
@@ -55,21 +55,18 @@ impl<'a, C> AnswerCallbackQuery<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for AnswerCallbackQuery<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "answerCallbackQuery",
-                None,
-                serde_json::to_vec(&self).unwrap(),
-            )
-            .map(|_| ()), // Only `true` is returned on success
+impl<C: Connector> AnswerCallbackQuery<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "answerCallbackQuery",
+            None,
+            serde_json::to_vec(&self).unwrap(),
         )
+        .await?;
+
+        Ok(())
     }
 }

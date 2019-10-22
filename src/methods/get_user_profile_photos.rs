@@ -1,10 +1,5 @@
 use super::*;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    types::user,
-};
+use crate::{connectors::Connector, errors, internal::Client, types::user};
 
 /// Gets a user's profile photos.
 ///
@@ -55,18 +50,16 @@ impl<'a, C> GetUserProfilePhotos<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetUserProfilePhotos<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = user::ProfilePhotos;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetUserProfilePhotos<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<user::ProfilePhotos, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getUserProfilePhotos",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

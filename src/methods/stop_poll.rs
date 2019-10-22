@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         keyboard::inline,
         message,
@@ -52,18 +52,16 @@ impl<'a, C> StopPoll<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for StopPoll<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::Poll;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> StopPoll<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::Poll, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "stopPoll",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

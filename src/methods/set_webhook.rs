@@ -1,9 +1,6 @@
 use super::*;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    types::parameters::Updates,
+    connectors::Connector, errors, internal::Client, types::parameters::Updates,
 };
 
 /// This method isn't meant to be used by users directly.
@@ -38,12 +35,9 @@ impl<'a, C> SetWebhook<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for SetWebhook<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> SetWebhook<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(4)
             .str("url", self.url)
             .maybe_string("max_connections", self.max_connections)
@@ -59,15 +53,15 @@ impl<C: Connector> IntoFuture for SetWebhook<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "setWebhook",
-                Some(boundary),
-                body,
-            )
-            .map(|_| ()),
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "setWebhook",
+            Some(boundary),
+            body,
         )
+        .await?;
+
+        Ok(())
     }
 }

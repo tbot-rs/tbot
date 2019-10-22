@@ -1,12 +1,7 @@
 // use super::*;
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    prelude::*,
-    types::inline_query,
-    Token,
+    connectors::Connector, errors, internal::Client, types::inline_query, Token,
 };
 use serde::Serialize;
 
@@ -87,21 +82,18 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for AnswerInlineQuery<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "answerInlineQuery",
-                None,
-                serde_json::to_vec(&self).unwrap(),
-            )
-            .map(|_| ()), // Only `true` is returned on success
+impl<C: Connector> AnswerInlineQuery<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "answerInlineQuery",
+            None,
+            serde_json::to_vec(&self).unwrap(),
         )
+        .await?;
+
+        Ok(())
     }
 }

@@ -3,20 +3,19 @@
 //! ```no_run
 //! use tbot::prelude::*;
 //!
-//! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+//! #[tbot::main]
+//! async fn main() {
+//!     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
-//! bot.text(|context| {
-//!     let reply = context
-//!         .send_message(&context.text.value)
-//!         .into_future()
-//!         .map_err(|err| {
-//!             dbg!(err);
+//!     bot.text(|context| {
+//!         let context = context.clone();
+//!         tokio::spawn(async move {
+//!             context.send_message(&context.text.value).call().await.unwrap();
 //!         });
+//!     });
 //!
-//!     tbot::spawn(reply);
-//! });
-//!
-//! bot.polling().start();
+//!     bot.polling().start().await.unwrap();
+//! }
 //! ```
 //!
 //! If you're new to `tbot`, we recommend you go through the [tutorial] first.
@@ -42,6 +41,7 @@
     clippy::cargo
 )]
 #![allow(clippy::multiple_crate_versions)] // can't do much
+#![allow(clippy::use_self)] // temporary
 
 mod bot;
 mod download_file;
@@ -57,40 +57,12 @@ pub mod methods;
 pub mod types;
 
 use serde::{Deserialize, Serialize};
+use {download_file::download_file, multipart::*};
+
+pub use tokio::main;
 pub use {bot::*, event_loop::EventLoop, token::*};
-use {download_file::download_file, multipart::*, prelude::*};
-
-/// A wrapper around `tokio::run` without `F::Item: ()`.
-///
-/// When calling an API method, you'll most likely throw away its result.
-/// However, `tokio` requires that `F::Item` be `()`. `tbot` provides
-/// a thin wrapper around `tokio::run` that maps `F::Item` to `()`.
-/// On the other hand, `tbot` still requires that you handle possible errors
-/// properly before running a future.
-pub fn run<F>(future: F)
-where
-    F: futures::Future<Error = ()> + Send + 'static,
-{
-    tokio::run(future.map(|_| ()));
-}
-
-/// A wrapper around `tokio::spawn` without `F::Item: ()`.
-///
-/// When calling an API method, you'll most likely throw away its result.
-/// However, `tokio` requires that `F::Item` be `()`. `tbot` provides
-/// a thin wrapper around `tokio::spawn` that maps `F::Item` to `()`.
-/// On the other hand, `tbot` still requires that you handle possible errors
-/// properly before running a future.
-pub fn spawn<F>(future: F) -> tokio::executor::Spawn
-where
-    F: futures::Future<Error = ()> + Send + 'static,
-{
-    tokio::spawn(future.map(|_| ()))
-}
 
 pub mod prelude {
     //! Traits needed when working with `tbot`.
     pub use super::contexts::traits::*;
-    pub use futures::Future;
-    pub use futures::IntoFuture;
 }

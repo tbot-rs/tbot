@@ -1,9 +1,6 @@
 use super::*;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    types::parameters::Updates,
+    connectors::Connector, errors, internal::Client, types::parameters::Updates,
 };
 
 #[derive(Serialize, Debug, Clone)]
@@ -43,18 +40,16 @@ impl<'a, C> GetUpdates<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetUpdates<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = Vec<types::Update>;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetUpdates<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<Vec<types::Update>, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getUpdates",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

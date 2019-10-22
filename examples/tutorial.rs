@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 use tbot::{
     prelude::*,
     types::{
@@ -8,52 +8,56 @@ use tbot::{
     },
 };
 
-fn main() {
+#[tbot::main]
+async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.text(|context| {
-        let message = match meval::eval_str(&context.text.value) {
-            Ok(result) => format!("= `{}`", result),
-            Err(_) => "Whops, I couldn't evaluate your expression :(".into(),
-        };
+        let context = context.clone();
+        tokio::spawn(async move {
+            let message = match meval::eval_str(&context.text.value) {
+                Ok(result) => format!("= `{}`", result),
+                Err(_) => {
+                    "Whops, I couldn't evaluate your expression :(".into()
+                }
+            };
 
-        let reply = context
-            .send_message_in_reply(ParseMode::markdown(&message))
-            .into_future()
-            .map_err(|err| {
-                dbg!(err);
-            });
-
-        tbot::spawn(reply);
-    });
-
-    let id = Mutex::new(0_u32);
-    bot.inline(move |context| {
-        let (title, message) = match meval::eval_str(&context.query) {
-            Ok(result) => (
-                result.to_string(),
-                format!("`{} = {}`", context.query, result),
-            ),
-            Err(_) => (
-                "Whops...".into(),
-                "I couldn't evaluate your expression :(".into(),
-            ),
-        };
-
-        let id = {
-            let mut id = id.lock().unwrap();
-            *id += 1;
-            id.to_string()
-        };
-        let content = Text::new(ParseMode::markdown(&message));
-        let article = Article::new(&title, content).description(&message);
-        let result = inline_query::Result::new(&id, article);
-        let answer = context.answer(&[result]).into_future().map_err(|err| {
-            dbg!(err);
+            context
+                .send_message_in_reply(ParseMode::markdown(&message))
+                .call()
+                .await
+                .unwrap();
         });
-
-        tbot::spawn(answer);
     });
 
-    bot.polling().start();
+    let id = Arc::new(Mutex::new(0_u32));
+    bot.inline(move |context| {
+        let context = context.clone();
+        let id = Arc::clone(&id);
+        tokio::spawn(async move {
+            let (title, message) = match meval::eval_str(&context.query) {
+                Ok(result) => (
+                    result.to_string(),
+                    format!("`{} = {}`", context.query, result),
+                ),
+                Err(_) => (
+                    "Whops...".into(),
+                    "I couldn't evaluate your expression :(".into(),
+                ),
+            };
+
+            let id = {
+                let mut id = std::sync::Mutex::lock(&id).unwrap();
+                *id += 1;
+                id.to_string()
+            };
+            let content = Text::new(ParseMode::markdown(&message));
+            let article = Article::new(&title, content).description(&message);
+            let result = inline_query::Result::new(&id, article);
+
+            context.answer(&[result]).call().await.unwrap();
+        });
+    });
+
+    bot.polling().start().await.unwrap();
 }

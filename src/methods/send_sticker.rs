@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         input_file::{InputFile, Sticker},
         keyboard, message,
@@ -70,12 +70,9 @@ impl<'a, C> SendSticker<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for SendSticker<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::Message;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> SendSticker<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
         let mut multipart = Multipart::new(5)
             .chat_id("chat_id", self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
@@ -93,12 +90,13 @@ impl<C: Connector> IntoFuture for SendSticker<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        Box::new(send_method(
+        send_method(
             self.client,
             &self.token,
             "sendSticker",
             Some(boundary),
             body,
-        ))
+        )
+        .await
     }
 }

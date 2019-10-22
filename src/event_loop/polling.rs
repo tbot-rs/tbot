@@ -1,27 +1,14 @@
-// use super::*;
 use super::EventLoop;
-use crate::{
-    connectors::Connector, errors, internal::BoxFuture, prelude::*,
-    types::parameters::Updates,
-};
-use futures::Stream;
+use crate::{connectors::Connector, errors, types::parameters::Updates};
 use std::{
-    convert::TryInto,
+    convert::{Infallible, TryInto},
     num::NonZeroUsize,
     sync::{Arc, Mutex},
     time::Duration,
 };
-use tokio::{
-    timer::{self, timeout},
-    util::FutureExt,
-};
+use tokio::timer::{delay_for, Timeout};
 
-mod schedule;
-
-use schedule::Schedule;
-
-type Error = timeout::Error<errors::MethodCall>;
-type ErrorHandler = dyn FnMut(Error) + Send + Sync;
+type ErrorHandler = dyn FnMut(errors::Polling) + Send + Sync;
 
 /// Configures and starts polling.
 ///
@@ -80,7 +67,7 @@ impl<C> Polling<C> {
     /// Adds a handler for errors ocurred while polling.
     pub fn error_handler(
         mut self,
-        handler: impl FnMut(Error) + Send + Sync + 'static,
+        handler: impl FnMut(errors::Polling) + Send + Sync + 'static,
     ) -> Self {
         self.error_handler = Mutex::new(Box::new(handler));
         self
@@ -121,50 +108,7 @@ impl<C> Polling<C> {
 
 impl<C: Connector + Clone> Polling<C> {
     /// Starts the event loop.
-    pub fn start(self) -> ! {
-        let future = self
-            .delete_webhook()
-            .map_err(|err| {
-                eprintln!(
-                    "[tbot] Error while deleting previous webhook. \
-                     Starting polling anyway. {:#?}",
-                    err,
-                );
-            })
-            .then(|_| {
-                self.into_future().map_err(|err| {
-                    eprintln!("[tbot] Poll schedule error: {:#?}", err);
-                })
-            });
-
-        crate::run(future);
-
-        unreachable!(
-            "\n[tbot] The polling event loop unexpectedly returned. \
-             An error should be printed above.\n"
-        );
-    }
-
-    /// Deleted the webhook of this bot.
-    pub fn delete_webhook(&self) -> impl Future<Item = (), Error = Error> {
-        let request_timeout = self.request_timeout.unwrap_or_else(|| {
-            Duration::from_secs(self.timeout.unwrap_or(0) + 60)
-        });
-
-        self.event_loop
-            .bot
-            .delete_webhook()
-            .into_future()
-            .timeout(request_timeout)
-    }
-}
-
-impl<C: Connector + Clone> IntoFuture for Polling<C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = timer::Error;
-
-    fn into_future(self) -> Self::Future {
+    pub async fn start(self) -> Result<Infallible, errors::PollingSetup> {
         let Self {
             event_loop,
             poll_interval,
@@ -173,62 +117,40 @@ impl<C: Connector + Clone> IntoFuture for Polling<C> {
             allowed_updates,
             error_handler,
             request_timeout,
-            offset,
+            mut offset,
         } = self;
 
         let request_timeout = request_timeout
             .unwrap_or_else(|| Duration::from_secs(timeout.unwrap_or(0) + 60));
 
+        let delete_webhook = event_loop.bot.delete_webhook().call();
+        Timeout::new(delete_webhook, request_timeout).await??;
+
         let bot = Arc::new(event_loop.bot.clone());
-        let event_loop = Arc::new(event_loop);
-        let error_handler = Arc::new(error_handler);
+        let error_handler = &mut *error_handler.lock().unwrap();
 
-        let stream = Schedule::new(offset, poll_interval).into_stream();
+        loop {
+            let next_tick = delay_for(poll_interval);
 
-        let stream = stream.for_each(move |(last_offset, schedule)| {
-            let bot = Arc::clone(&bot);
-            let event_loop = Arc::clone(&event_loop);
-            let error_handler = Arc::clone(&error_handler);
-            let on_error_schedule = Arc::clone(&schedule);
+            let get_updates = bot
+                .get_updates(offset, limit, timeout, allowed_updates)
+                .call();
 
-            let handler = bot
-                .get_updates(last_offset, limit, timeout, allowed_updates)
-                .into_future()
-                .map(move |updates| {
-                    {
-                        let mut schedule = schedule.lock().unwrap();
-
-                        if let Some(update) = updates.last() {
-                            schedule.last_offset = Some(update.id.0 + 1);
-                        }
-
-                        schedule.schedule_next_tick();
+            match Timeout::new(get_updates, request_timeout).await {
+                Ok(Ok(updates)) => {
+                    if let Some(update) = updates.last() {
+                        offset = Some(update.id.0 + 1);
                     }
 
                     for update in updates {
                         event_loop.handle_update(Arc::clone(&bot), update);
                     }
-                })
-                .timeout(request_timeout)
-                .map_err(move |error| {
-                    if let Ok(mut handler) = error_handler.lock() {
-                        (&mut *handler)(error)
-                    } else {
-                        eprintln!(
-                            "[tbot] Cannot run a polling error handler since \
-                             it previously panicked. You should analyze the \
-                             cause and prevent it."
-                        );
-                    }
+                }
+                Ok(Err(error)) => error_handler(error.into()),
+                Err(error) => error_handler(error.into()),
+            }
 
-                    on_error_schedule.lock().unwrap().schedule_next_tick();
-                });
-
-            crate::spawn(handler);
-
-            Ok(())
-        });
-
-        Box::new(stream)
+            next_tick.await
+        }
     }
 }

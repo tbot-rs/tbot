@@ -1,21 +1,19 @@
 use crate::{
-    connectors::Connector, errors, internal::Client, prelude::*, types::File,
-    Token,
-};
-use futures::{
-    future::{err, Either},
-    Stream,
+    connectors::Connector, errors, internal::Client, types::File, Token,
 };
 use hyper::{StatusCode, Uri};
 
-pub fn download_file<C: Connector>(
+pub async fn download_file<C>(
     client: &Client<C>,
     token: &Token,
     file: &File,
-) -> impl Future<Item = Vec<u8>, Error = errors::Download> {
+) -> Result<Vec<u8>, errors::Download>
+where
+    C: Connector,
+{
     let path = match &file.path {
         Some(path) => path,
-        None => return Either::A(err(errors::Download::NoPath)),
+        None => return Err(errors::Download::NoPath),
     };
 
     let url = Uri::builder()
@@ -29,24 +27,21 @@ pub fn download_file<C: Connector>(
             panic!("\n[tbot] Download URL construction failed: {:#?}\n", err);
         });
 
-    Either::B(
-        client
-            .get(url)
-            .map_err(errors::Download::Network)
-            .and_then(|response| {
-                let status = response.status();
+    let (parts, mut body) = client.get(url).await?.into_parts();
 
-                if status == StatusCode::OK {
-                    Either::A(
-                        response
-                            .into_body()
-                            .concat2()
-                            .map_err(errors::Download::Network),
-                    )
-                } else {
-                    Either::B(err(errors::Download::InvalidStatusCode(status)))
-                }
-            })
-            .map(|response| response[..].to_vec()),
-    )
+    if parts.status != StatusCode::OK {
+        return Err(errors::Download::InvalidStatusCode(parts.status));
+    }
+
+    let mut response = parts
+        .headers
+        .get("Content-Length")
+        .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
+        .map_or_else(Vec::new, Vec::with_capacity);
+
+    while let Some(chunk) = body.next().await {
+        response.extend(chunk?);
+    }
+
+    Ok(response)
 }

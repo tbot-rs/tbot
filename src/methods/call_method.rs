@@ -1,6 +1,6 @@
 use super::*;
 use crate::{connectors::Connector, errors, internal::Client};
-use futures::Stream;
+use hyper::{header::HeaderValue, Body, Method, Request, Uri};
 
 #[derive(Deserialize)]
 struct ResponseParameters {
@@ -17,102 +17,80 @@ struct Response<T> {
 }
 
 #[must_use]
-fn create_method_url(token: &Token, method: &'static str) -> hyper::Uri {
-    hyper::Uri::builder()
-        .scheme("https")
-        .authority("api.telegram.org")
-        .path_and_query(format!("/bot{}/{}", token.as_str(), method).as_str())
-        .build()
-        .expect("\n[tbot] Method URL construction failed\n")
-}
-
-#[must_use]
-fn create_request(
-    token: &Token,
+pub async fn send_method<'a, T, C>(
+    client: &'a Client<C>,
+    token: &'a Token,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
-) -> hyper::Request<hyper::Body> {
-    let mut request = hyper::Request::new(hyper::Body::from(body));
-    *request.method_mut() = hyper::Method::POST;
-    *request.uri_mut() = create_method_url(token, method);
-
-    if let Some(boundary) = boundary {
-        let content_type =
-            format!("multipart/form-data; boundary={}", boundary);
-
-        request.headers_mut().insert(
-            hyper::header::CONTENT_TYPE,
-            // disallowed characters shouldn't appear
-            hyper::header::HeaderValue::from_str(&content_type).unwrap(),
-        );
-    } else {
-        request.headers_mut().insert(
-            hyper::header::CONTENT_TYPE,
-            hyper::header::HeaderValue::from_static("application/json"),
-        );
-    }
-
-    request
-}
-
-#[must_use]
-fn process_response<T>(
-    request: hyper::client::ResponseFuture,
-) -> impl Future<Item = T, Error = errors::MethodCall>
-where
-    T: serde::de::DeserializeOwned,
-{
-    request
-        .and_then(|response| response.into_body().concat2())
-        .map_err(errors::MethodCall::Network)
-        .and_then(|response| {
-            if response.starts_with(b"<") {
-                // If so, then Bots API is down and returns an HTML. Handling
-                // this case specially.
-                return Err(errors::MethodCall::OutOfService);
-            }
-
-            serde_json::from_slice::<Response<T>>(&response[..])
-                .map_err(|error| errors::MethodCall::Parse { response, error })
-        })
-        .and_then(|response| {
-            if let Some(result) = response.result {
-                return Ok(result);
-            }
-
-            let (migrate_to_chat_id, retry_after) = match response.parameters {
-                Some(parameters) => {
-                    (parameters.migrate_to_chat_id, parameters.retry_after)
-                }
-                None => (None, None),
-            };
-
-            // If result is empty, then it's a error. In this case, description
-            // and error_code are guaranteed to be specified in the response,
-            // so we can unwrap it.
-            Err(errors::MethodCall::RequestError {
-                description: response.description.unwrap(),
-                error_code: response.error_code.unwrap(),
-                migrate_to_chat_id,
-                retry_after,
-            })
-        })
-}
-
-#[must_use]
-pub fn send_method<T, C>(
-    client: &Client<C>,
-    token: &Token,
-    method: &'static str,
-    boundary: Option<String>,
-    body: Vec<u8>,
-) -> impl Future<Item = T, Error = errors::MethodCall>
+) -> Result<T, errors::MethodCall>
 where
     T: serde::de::DeserializeOwned,
     C: Connector,
 {
-    let request = create_request(token, method, boundary, body);
+    let url = Uri::builder()
+        .scheme("https")
+        .authority("api.telegram.org")
+        .path_and_query(format!("/bot{}/{}", token.as_str(), method).as_str())
+        .build()
+        .expect("[tbot] Method URL construction failed");
 
-    process_response(client.request(request))
+    let mut request = Request::new(Body::from(body));
+    *request.method_mut() = Method::POST;
+    *request.uri_mut() = url;
+
+    let content_type = if let Some(boundary) = boundary {
+        let value = format!("multipart/form-data; boundary={}", boundary);
+
+        // disallowed characters shouldn't appear
+        HeaderValue::from_str(&value).unwrap()
+    } else {
+        HeaderValue::from_static("application/json")
+    };
+
+    request
+        .headers_mut()
+        .insert(hyper::header::CONTENT_TYPE, content_type);
+
+    let (parts, mut body) = client.request(request).await?.into_parts();
+
+    let mut response = parts
+        .headers
+        .get("Content-Length")
+        .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
+        .map_or_else(Vec::new, Vec::with_capacity);
+
+    while let Some(chunk) = body.next().await {
+        response.extend(chunk?);
+    }
+
+    if response.starts_with(b"<") {
+        // If so, then Bots API is down and returns an HTML.
+        // Handling this case specially.
+        return Err(errors::MethodCall::OutOfService);
+    }
+
+    let response: Response<T> = serde_json::from_slice(&response[..])
+        .map_err(|error| errors::MethodCall::Parse { response, error })?;
+
+    if let Some(result) = response.result {
+        return Ok(result);
+    }
+
+    let (migrate_to_chat_id, retry_after) = match response.parameters {
+        Some(parameters) => {
+            (parameters.migrate_to_chat_id, parameters.retry_after)
+        }
+        None => (None, None),
+    };
+
+    // If result is empty, then it's a error. In this case, description and
+    // error_code are guaranteed to be specified in the response, so we can
+    // unwrap it.
+    Err(errors::MethodCall::RequestError {
+        description: response.description.unwrap(),
+        error_code: response.error_code.unwrap(),
+        migrate_to_chat_id,
+        retry_after,
+    })
 }

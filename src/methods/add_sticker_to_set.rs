@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
@@ -54,12 +54,9 @@ impl<'a, C> AddStickerToSet<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for AddStickerToSet<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = ();
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> AddStickerToSet<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(5)
             .string("user_id", &self.user_id)
             .str("name", self.name)
@@ -77,15 +74,15 @@ impl<C: Connector> IntoFuture for AddStickerToSet<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        Box::new(
-            send_method::<bool, C>(
-                self.client,
-                &self.token,
-                "addStickerToSet",
-                Some(boundary),
-                body,
-            )
-            .map(|_| ()), // Only `true` is returned on success
+        send_method::<bool, _>(
+            self.client,
+            &self.token,
+            "addStickerToSet",
+            Some(boundary),
+            body,
         )
+        .await?;
+
+        Ok(())
     }
 }

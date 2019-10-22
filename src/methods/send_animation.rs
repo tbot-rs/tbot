@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         input_file::{Animation, InputFile, Thumb},
         keyboard, message,
@@ -70,12 +70,9 @@ impl<'a, C> SendAnimation<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for SendAnimation<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::Message;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> SendAnimation<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
         let mut multipart = Multipart::new(11)
             .chat_id("chat_id", self.chat_id)
             .maybe_string("duration", self.animation.duration)
@@ -105,12 +102,13 @@ impl<C: Connector> IntoFuture for SendAnimation<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        Box::new(send_method(
+        send_method(
             self.client,
             &self.token,
             "sendAnimation",
             Some(boundary),
             body,
-        ))
+        )
+        .await
     }
 }

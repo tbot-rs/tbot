@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         input_file::*,
         keyboard::inline,
@@ -53,12 +53,9 @@ impl<'a, C> EditMessageMedia<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for EditMessageMedia<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::Message;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> EditMessageMedia<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
         let mut multipart = Multipart::new(5)
             .chat_id("chat_id", self.chat_id)
             .string("message_id", &self.message_id)
@@ -79,12 +76,13 @@ impl<C: Connector> IntoFuture for EditMessageMedia<'_, C> {
 
         let (boundary, body) = multipart.json("media", self.media).finish();
 
-        Box::new(send_method(
+        send_method(
             self.client,
             &self.token,
             "editMessageMedia",
             Some(boundary),
             body,
-        ))
+        )
+        .await
     }
 }

@@ -2,7 +2,7 @@ use super::*;
 use crate::{
     connectors::Connector,
     errors,
-    internal::{BoxFuture, Client},
+    internal::Client,
     types::{
         chat,
         parameters::{ChatId, ImplicitChatId},
@@ -42,18 +42,16 @@ impl<'a, C> GetChatMember<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for GetChatMember<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = chat::Member;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
-        Box::new(send_method(
+impl<C: Connector> GetChatMember<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<chat::Member, errors::MethodCall> {
+        send_method(
             self.client,
             &self.token,
             "getChatMember",
             None,
             serde_json::to_vec(&self).unwrap(),
-        ))
+        )
+        .await
     }
 }

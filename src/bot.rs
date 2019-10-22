@@ -20,21 +20,11 @@ use std::sync::Arc;
 /// A `Bot` lets you call methods from the [`methods`] module.
 ///
 /// ```no_run
-/// use tbot::prelude::*;
-///
+/// # async fn foo() {
 /// let bot = tbot::from_env!("BOT_TOKEN");
-///
-/// let me = bot
-///     .get_me()
-///     .into_future()
-///     .map(|me| {
-///         dbg!(me);
-///     })
-///     .map_err(|err| {
-///         dbg!(err);
-///     });
-///
-/// tbot::run(me);
+/// let me = bot.get_me().call().await.unwrap();
+/// dbg!(me);
+/// # }
 /// ```
 ///
 /// Besides, a `Bot` is used to construct an [`EventLoop`] — a struct
@@ -67,21 +57,11 @@ impl Bot<connectors::Https> {
     /// # Example
     ///
     /// ```no_run
-    /// use tbot::{Bot, prelude::*};
-    ///
-    /// let mut bot = Bot::from_env("BOT_TOKEN");
-    ///
-    /// let me = bot
-    ///     .get_me()
-    ///     .into_future()
-    ///     .map(|me| {
-    ///         dbg!(me);
-    ///     })
-    ///     .map_err(|err| {
-    ///         dbg!(err);
-    ///     });
-    ///
-    /// tbot::run(me);
+    /// # async fn foo() {
+    /// let bot = tbot::Bot::from_env("BOT_TOKEN");
+    /// let me = bot.get_me().call().await.unwrap();
+    /// dbg!(me);
+    /// # }
     /// ```
     pub fn from_env(env_var: &'static str) -> Self {
         Self::new(extract_token(env_var))
@@ -1120,11 +1100,11 @@ impl<C: Connector> Bot<C> {
     }
 
     /// Downloads a file.
-    pub fn download_file(
+    pub async fn download_file(
         &self,
         file: &File,
-    ) -> impl Future<Item = Vec<u8>, Error = errors::Download> {
-        download_file(&self.client, &self.token, file)
+    ) -> Result<Vec<u8>, errors::Download> {
+        download_file(&self.client, &self.token, file).await
     }
 }
 
@@ -1142,21 +1122,11 @@ impl<C: Connector> Bot<C> {
 /// # Example
 ///
 /// ```no_run
-/// use tbot::prelude::*;
-///
+/// # async fn foo() {
 /// let mut bot = tbot::from_env!("BOT_TOKEN");
-///
-/// let me = bot
-///     .get_me()
-///     .into_future()
-///     .map(|me| {
-///         dbg!(me);
-///     })
-///     .map_err(|err| {
-///         dbg!(err);
-///     });
-///
-/// tbot::run(me);
+/// let me = bot.get_me().call().await.unwrap();
+/// dbg!(me);
+/// # }
 /// ```
 #[macro_export]
 macro_rules! from_env {

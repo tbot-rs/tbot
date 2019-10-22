@@ -1,10 +1,5 @@
 use super::*;
-use crate::{
-    connectors::Connector,
-    errors,
-    internal::{BoxFuture, Client},
-    types::user,
-};
+use crate::{connectors::Connector, errors, internal::Client, types::user};
 
 /// Uploads a sticker file.
 ///
@@ -36,23 +31,21 @@ impl<'a, C> UploadStickerFile<'a, C> {
     }
 }
 
-impl<C: Connector> IntoFuture for UploadStickerFile<'_, C> {
-    type Future = BoxFuture<Self::Item, Self::Error>;
-    type Item = types::File;
-    type Error = errors::MethodCall;
-
-    fn into_future(self) -> Self::Future {
+impl<C: Connector> UploadStickerFile<'_, C> {
+    /// Calls the method.
+    pub async fn call(self) -> Result<types::File, errors::MethodCall> {
         let (boundary, body) = Multipart::new(2)
             .string("user_id", &self.user_id)
             .file("png_sticker", "sticker.png", self.png_sticker)
             .finish();
 
-        Box::new(send_method(
+        send_method(
             self.client,
             &self.token,
             "uploadStickerFile",
             Some(boundary),
             body,
-        ))
+        )
+        .await
     }
 }

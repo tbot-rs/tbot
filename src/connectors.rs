@@ -1,8 +1,5 @@
 //! A few common connectors for making requests.
 
-#[cfg(feature = "proxy")]
-pub use hyper_proxy as proxy;
-
 use crate::internal;
 use hyper::{
     client::{connect::Connect, HttpConnector},
@@ -10,31 +7,16 @@ use hyper::{
 };
 use hyper_tls::HttpsConnector;
 
-#[cfg(feature = "proxy")]
-use proxy::ProxyConnector;
-
 /// The default HTTPS connector.
 pub type Https = HttpsConnector<HttpConnector>;
 
-#[cfg(feature = "proxy")]
-/// The default proxy connector.
-pub type Proxy = ProxyConnector<Https>;
-
 /// Constructs a HTTPS connector.
 pub fn https() -> Https {
-    HttpsConnector::new(num_cpus::get()).unwrap_or_else(|error| {
+    HttpsConnector::new().unwrap_or_else(|error| {
         panic!(
             "[tbot] Failed to construct an HTTPS connector: {:#?}",
             error,
         )
-    })
-}
-
-#[cfg(feature = "proxy")]
-/// Constructs a proxy connector.
-pub fn proxy(proxy: proxy::Proxy) -> Proxy {
-    ProxyConnector::from_proxy(https(), proxy).unwrap_or_else(|error| {
-        panic!("[tbot] Failed to construct a proxy connector: {:#?}", error)
     })
 }
 

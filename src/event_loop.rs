@@ -3,7 +3,6 @@
 use crate::{
     connectors::Connector,
     contexts, errors,
-    prelude::*,
     types::{
         self, callback,
         message::{
@@ -16,7 +15,6 @@ use crate::{
     Bot,
 };
 use std::{collections::HashMap, sync::Arc};
-use tokio::runtime::current_thread::block_on_all;
 
 #[macro_use]
 mod handlers_macros;
@@ -817,6 +815,7 @@ impl<C> EventLoop<C> {
     }
 
     #[allow(clippy::cognitive_complexity)]
+    #[allow(clippy::too_many_lines)] // can't split the huge match
     fn handle_message_update(&self, bot: Arc<Bot<C>>, message: types::Message) {
         let (data, kind) = message.split();
 
@@ -1216,6 +1215,7 @@ impl<C> EventLoop<C> {
         }
     }
 
+    #[allow(clippy::too_many_lines)] // can't split the huge match
     fn handle_message_edit_update(
         &self,
         bot: Arc<Bot<C>>,
@@ -1409,9 +1409,8 @@ impl<C> EventLoop<C> {
 
 impl<C: Connector> EventLoop<C> {
     /// Fetches the bot's username.
-    pub fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
-        let get_me = self.bot.get_me().into_future();
-        let me = block_on_all(get_me)?;
+    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
+        let me = self.bot.get_me().call().await?;
 
         let username = me
             .username
