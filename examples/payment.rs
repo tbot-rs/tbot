@@ -1,4 +1,3 @@
-use futures::future::Either;
 use tbot::{
     prelude::*,
     types::{
@@ -23,66 +22,63 @@ const DELIVERY: &[shipping::Option] = &[shipping::Option::new(
 )];
 const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
-fn main() {
+#[tbot::main]
+async fn main() {
     // I don't want everyone to set up another environment variable
     // so they don't see constant errors from RLS or `cargo test`.
     let provider_token: &str = option_env!("PROVIDER_TOKEN").unwrap();
-    let start_message =
-        format!("Send `/start {}` to get started", START_PARAMETER);
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.start(move |context| {
-        let reply = if context.text.value == START_PARAMETER {
-            let invoice = context
-                .bot
-                .send_invoice(
-                    context.chat.id,
-                    TITLE,
-                    DESCRIPTION,
-                    PAYLOAD,
-                    provider_token,
-                    START_PARAMETER,
-                    CURRENCY,
-                    PRICE,
-                )
-                .photo(PHOTO)
-                .flexibility(Flexible);
-
-            Either::A(invoice.into_future())
-        } else {
-            let reply = context.send_message(Text::markdown(&start_message));
-            Either::B(reply.into_future())
-        };
-
-        tbot::spawn(reply.map_err(|err| {
-            dbg!(err);
-        }));
+        let context = context.clone();
+        let start_message =
+            format!("Send `/start {}` to get started", START_PARAMETER);
+        tokio::spawn(async move {
+            if context.text.value == START_PARAMETER {
+                context
+                    .bot
+                    .send_invoice(
+                        context.chat.id,
+                        TITLE,
+                        DESCRIPTION,
+                        PAYLOAD,
+                        provider_token,
+                        START_PARAMETER,
+                        CURRENCY,
+                        PRICE,
+                    )
+                    .photo(PHOTO)
+                    .flexibility(Flexible)
+                    .call()
+                    .await
+                    .unwrap();
+            } else {
+                let text = Text::markdown(&start_message);
+                context.send_message(text).call().await.unwrap();
+            };
+        });
     });
 
     bot.shipping(|context| {
-        let report = context.ok(DELIVERY).into_future().map_err(|err| {
-            dbg!(err);
+        let context = context.clone();
+        tokio::spawn(async move {
+            context.ok(DELIVERY).call().await.unwrap();
         });
-
-        tbot::spawn(report);
     });
 
     bot.pre_checkout(|context| {
-        let report = context.ok().into_future().map_err(|err| {
-            dbg!(err);
+        let context = context.clone();
+        tokio::spawn(async move {
+            context.ok().call().await.unwrap();
         });
-
-        tbot::spawn(report);
     });
 
     bot.payment(|context| {
-        let message =
-            context.send_message(SUCCESS).into_future().map_err(|err| {
-                dbg!(err);
-            });
-
-        tbot::spawn(message);
+        let context = context.clone();
+        tokio::spawn(async move {
+            context.send_message(SUCCESS).call().await.unwrap();
+        });
     });
 
-    bot.polling().start();
+    bot.polling().start().await.unwrap();
 }

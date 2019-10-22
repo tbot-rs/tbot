@@ -15,34 +15,34 @@ const KEYBOARD: &[&[Button]] = &[
     )],
 ];
 
-fn main() {
+#[tbot::main]
+async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", |context| {
-        let message = context
-            .send_message("This is a keyboard done with tbot!")
-            .reply_markup(KEYBOARD)
-            .into_future()
-            .map_err(|err| {
-                dbg!(err);
-            });
-
-        tbot::spawn(message);
+        let context = context.clone();
+        tokio::spawn(async move {
+            context
+                .send_message("This is a keyboard done with tbot!")
+                .reply_markup(KEYBOARD)
+                .call()
+                .await
+                .unwrap();
+        });
     });
 
     bot.data_callback(|context| {
-        let message = match context.data.as_str() {
-            "cool" => "You're cool too!",
-            "amazing" => "Thanks, I'm trying!",
-            _ => "Are you trying to hack me?",
-        };
+        let context = context.clone();
+        tokio::spawn(async move {
+            let message = match context.data.as_str() {
+                "cool" => "You're cool too!",
+                "amazing" => "Thanks, I'm trying!",
+                _ => "Are you trying to hack me?",
+            };
 
-        let answer = context.notify(message).into_future().map_err(|err| {
-            dbg!(err);
+            context.notify(message).call().await.unwrap();
         });
-
-        tbot::spawn(answer);
     });
 
-    bot.polling().start();
+    bot.polling().start().await.unwrap();
 }
