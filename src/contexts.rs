@@ -5,21 +5,19 @@
 //! For example:
 //!
 //! ```no_run
+//! # async fn foo() {
 //! use tbot::prelude::*;
 //!
 //! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
 //! bot.text(|context| {
-//!     let reversed: String = context.text.value.chars().rev().collect();
-//!     let reply = context
-//!         .send_message_in_reply(&reversed)
-//!         .into_future()
-//!         .map_err(|err| {
-//!             dbg!(err);
-//!         });
-//!
-//!     tbot::spawn(reply);
+//!     let context = context.clone();
+//!     tokio::spawn(async move {
+//!         let reversed: String = context.text.value.chars().rev().collect();
+//!         context.send_message_in_reply(&reversed).call().await.unwrap();
+//!     });
 //! });
+//! # }
 //! ```
 //!
 //! Here, we set a [`text`][text-handler] handler for our bot. Whenever we get
@@ -34,6 +32,7 @@
 //! call any API method you can call using a [`Bot`]:
 //!
 //! ```no_run
+//! # async fn foo() {
 //! # use tbot::prelude::*;
 //! # let mut bot = tbot::Bot::new(tbot::Token::new(String::new()))
 //! #     .event_loop();
@@ -41,16 +40,17 @@
 //! const ADMIN_CHAT: chat::Id = chat::Id(0);
 //!
 //! bot.text(|context| {
-//!     let notification = context
-//!         .bot
-//!         .send_message(ADMIN_CHAT, "New message!")
-//!         .into_future()
-//!         .map_err(|err| {
-//!             dbg!(err);
-//!         });
-//!
-//!     tbot::spawn(notification);
+//!     let context = context.clone();
+//!     tokio::spawn(async move {
+//!         context
+//!             .bot
+//!             .send_message(ADMIN_CHAT, "New message!")
+//!             .call()
+//!             .await
+//!             .unwrap();
+//!     });
 //! });
+//! # }
 //! ```
 //!
 //! Most contexts implement certain traits, such as [`ChatMethods`]

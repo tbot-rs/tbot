@@ -9,12 +9,13 @@
 //! All the methods have a common pattern:
 //!
 //! - Methods provide the builder API for optional parameters;
-//! - Methods implement the `IntoFuture` trait, so you need to turn a method
-//!   into a future before actually calling the method.
+//! - Methods have the `call` method, which returns a `Future` that makes
+//!   the request and resolves with the call's result.
 //!
 //! For example, here's how to call [`SendMessage`]:
 //!
 //! ```no_run
+//! # async fn foo() {
 //! use tbot::{
 //!     prelude::*,
 //!     types::{chat, parameters::Text},
@@ -26,19 +27,14 @@
 //!
 //! let bot = tbot::from_env!("BOT_TOKEN");
 //!
-//! let request = bot.send_message(CHAT, Text::markdown(MESSAGE))
-//!     .into_future()
-//!     .map_err(|err| {
-//!         dbg!(err);
-//!     });
-//!
-//! tbot::run(request);
+//! bot.send_message(CHAT, Text::markdown(MESSAGE)).call().await.unwrap();
+//! # }
 //! ```
 //!
-//! You may see that we use [`tbot::run`]. It is a thin wrapper around
-//! `tokio::run` which doesn't require a `Future::Item` to be `()`.
-//! In addition, we also have [`tbot::spawn`] with the same mitigations.
-//!
+//! Each method resolves with a `Result` that may be `Ok` if the call
+//! was successful or `Err` if an error happened. Here, we simply `unwrap`
+//! the result, but you should handle error properly.
+
 //! # Inline/message methods
 //!
 //! Several API methods accept either (`chat_id` and `message_id`) or
@@ -52,8 +48,6 @@
 //! [`Bot`]: ../struct.Bot.html
 //! [contexts]: ../contexts/
 //! [`SendMessage`]: ./struct.SendMessage.html
-//! [`tbot::run`]: ../fn.run.html
-//! [`tbot::spawn`]: ../fn.spawn.html
 //! [tg-doc]: https://core.telegram.org/bots/api#editmessagetext
 //! [`EditMessageText`]: ./struct.EditMessageText.html
 //! [`EditInlineText`]: ./struct.EditInlineText.html

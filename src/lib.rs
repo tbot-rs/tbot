@@ -3,20 +3,19 @@
 //! ```no_run
 //! use tbot::prelude::*;
 //!
-//! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+//! #[tbot::main]
+//! async fn main() {
+//!     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
-//! bot.text(|context| {
-//!     let reply = context
-//!         .send_message(&context.text.value)
-//!         .into_future()
-//!         .map_err(|err| {
-//!             dbg!(err);
+//!     bot.text(|context| {
+//!         let context = context.clone();
+//!         tokio::spawn(async move {
+//!             context.send_message(&context.text.value).call().await.unwrap();
 //!         });
+//!     });
 //!
-//!     tbot::spawn(reply);
-//! });
-//!
-//! bot.polling().start();
+//!     bot.polling().start().await.unwrap();
+//! }
 //! ```
 //!
 //! If you're new to `tbot`, we recommend you go through the [tutorial] first.
