@@ -30,7 +30,6 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.start(move |context| {
-        let context = context.clone();
         let start_message =
             format!("Send `/start {}` to get started", START_PARAMETER);
         tokio::spawn(async move {
@@ -60,21 +59,18 @@ async fn main() {
     });
 
     bot.shipping(|context| {
-        let context = context.clone();
         tokio::spawn(async move {
             context.ok(DELIVERY).call().await.unwrap();
         });
     });
 
     bot.pre_checkout(|context| {
-        let context = context.clone();
         tokio::spawn(async move {
             context.ok().call().await.unwrap();
         });
     });
 
     bot.payment(|context| {
-        let context = context.clone();
         tokio::spawn(async move {
             context.send_message(SUCCESS).call().await.unwrap();
         });

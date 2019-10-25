@@ -28,7 +28,7 @@ type Handlers<T> = Vec<Box<T>>;
 type Map<T> = HashMap<&'static str, Handlers<T>>;
 
 // Wish trait alises came out soon
-type Handler<T> = dyn Fn(&T) + Send + Sync;
+type Handler<T> = dyn Fn(Arc<T>) + Send + Sync;
 
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
@@ -222,7 +222,7 @@ impl<C> EventLoop<C> {
     pub fn command(
         &mut self,
         command: &'static str,
-        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
     ) {
         self.command_handlers
             .entry(command)
@@ -237,11 +237,11 @@ impl<C> EventLoop<C> {
     fn run_command_handlers(
         &self,
         command: &'static str,
-        context: &contexts::Text<C>,
+        context: Arc<contexts::Text<C>>,
     ) {
         if let Some(handlers) = self.command_handlers.get(&command) {
             for handler in handlers {
-                handler(context);
+                handler(context.clone());
             }
         }
     }
@@ -249,7 +249,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/start` command.
     pub fn start(
         &mut self,
-        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
     ) {
         self.command("start", handler);
     }
@@ -257,7 +257,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/settings` command.
     pub fn settings(
         &mut self,
-        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
     ) {
         self.command("settings", handler);
     }
@@ -265,7 +265,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/help` command.
     pub fn help(
         &mut self,
-        handler: impl Fn(&contexts::Text<C>) + Send + Sync + 'static,
+        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
     ) {
         self.command("help", handler);
     }
@@ -274,7 +274,7 @@ impl<C> EventLoop<C> {
     pub fn edited_command(
         &mut self,
         command: &'static str,
-        handler: impl Fn(&contexts::EditedText<C>) + Send + Sync + 'static,
+        handler: impl Fn(Arc<contexts::EditedText<C>>) + Send + Sync + 'static,
     ) {
         self.edited_command_handlers
             .entry(command)
@@ -289,11 +289,11 @@ impl<C> EventLoop<C> {
     fn run_edited_command_handlers(
         &self,
         command: &'static str,
-        context: &contexts::EditedText<C>,
+        context: Arc<contexts::EditedText<C>>,
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(&command) {
             for handler in handlers {
-                handler(context);
+                handler(context.clone());
             }
         }
     }
@@ -632,7 +632,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for unhandled updates.
     pub fn unhandled(
         &mut self,
-        handler: impl Fn(&contexts::Unhandled<C>) + Send + Sync + 'static,
+        handler: impl Fn(Arc<contexts::Unhandled<C>>) + Send + Sync + 'static,
     ) {
         self.unhandled_handlers.push(Box::new(handler))
     }
@@ -642,10 +642,10 @@ impl<C> EventLoop<C> {
     }
 
     fn run_unhandled_handlers(&self, bot: Arc<Bot<C>>, update: update::Kind) {
-        let context = contexts::Unhandled::new(bot, update);
+        let context = Arc::new(contexts::Unhandled::new(bot, update));
 
         for handler in &self.unhandled_handlers {
-            handler(&context);
+            handler(context.clone());
         }
     }
 
@@ -695,9 +695,10 @@ impl<C> EventLoop<C> {
     }
 
     fn handle_update(&self, bot: Arc<Bot<C>>, update: types::Update) {
-        let update_context = contexts::Update::new(Arc::clone(&bot), update.id);
+        let update_context =
+            Arc::new(contexts::Update::new(Arc::clone(&bot), update.id));
 
-        self.run_before_update_handlers(&update_context);
+        self.run_before_update_handlers(update_context.clone());
 
         match update.kind {
             update::Kind::Message(message)
@@ -713,7 +714,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::UpdatedPoll::new(Arc::clone(&bot), poll);
 
-                    self.run_updated_poll_handlers(&context);
+                    self.run_updated_poll_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let update = update::Kind::Poll(poll);
 
@@ -724,7 +725,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_inline() {
                     let context = contexts::Inline::new(bot, query);
 
-                    self.run_inline_handlers(&context);
+                    self.run_inline_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let update = update::Kind::InlineQuery(query);
 
@@ -735,7 +736,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_chosen_inline() {
                     let context = contexts::ChosenInline::new(bot, result);
 
-                    self.run_chosen_inline_handlers(&context);
+                    self.run_chosen_inline_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let update = update::Kind::ChosenInlineResult(result);
 
@@ -754,7 +755,7 @@ impl<C> EventLoop<C> {
                             data,
                         );
 
-                        self.run_data_callback_handlers(&context);
+                        self.run_data_callback_handlers(Arc::new(context));
                     } else if self.will_handle_unhandled() {
                         let kind = callback::Kind::Data(data);
                         let query = callback::Query { kind, ..query };
@@ -774,7 +775,7 @@ impl<C> EventLoop<C> {
                             game,
                         );
 
-                        self.run_game_callback_handlers(&context);
+                        self.run_game_callback_handlers(Arc::new(context));
                     } else if self.will_handle_unhandled() {
                         let kind = callback::Kind::Game(game);
                         let query = callback::Query { kind, ..query };
@@ -788,7 +789,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_shipping() {
                     let context = contexts::Shipping::new(bot, query);
 
-                    self.run_shipping_handlers(&context);
+                    self.run_shipping_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let update = update::Kind::ShippingQuery(query);
 
@@ -799,7 +800,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_pre_checkout() {
                     let context = contexts::PreCheckout::new(bot, query);
 
-                    self.run_pre_checkout_handlers(&context);
+                    self.run_pre_checkout_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let update = update::Kind::PreCheckoutQuery(query);
 
@@ -811,7 +812,7 @@ impl<C> EventLoop<C> {
             }
         }
 
-        self.run_after_update_handlers(&update_context);
+        self.run_after_update_handlers(update_context);
     }
 
     #[allow(clippy::cognitive_complexity)]
@@ -835,7 +836,7 @@ impl<C> EventLoop<C> {
 
                         let context = contexts::Text::new(bot, data, text);
 
-                        self.run_command_handlers(command, &context);
+                        self.run_command_handlers(command, Arc::new(context));
                     } else if self.will_handle_unhandled() {
                         let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
@@ -846,7 +847,7 @@ impl<C> EventLoop<C> {
                 } else if self.will_handle_text() {
                     let context = contexts::Text::new(bot, data, text);
 
-                    self.run_text_handlers(&context);
+                    self.run_text_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
@@ -859,7 +860,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_poll() {
                     let context = contexts::Poll::new(bot, data, poll);
 
-                    self.run_poll_handlers(&context);
+                    self.run_poll_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Poll(poll);
                     let message = Message::new(data, kind);
@@ -878,7 +879,7 @@ impl<C> EventLoop<C> {
                         media_group_id,
                     );
 
-                    self.run_photo_handlers(&context);
+                    self.run_photo_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind =
                         message::Kind::Photo(photo, caption, media_group_id);
@@ -893,7 +894,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::PinnedMessage::new(bot, data, *message);
 
-                    self.run_pinned_message_handlers(&context);
+                    self.run_pinned_message_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Pinned(message);
                     let message = Message::new(data, kind);
@@ -906,7 +907,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_sticker() {
                     let context = contexts::Sticker::new(bot, data, sticker);
 
-                    self.run_sticker_handlers(&context);
+                    self.run_sticker_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Sticker(sticker);
                     let message = Message::new(data, kind);
@@ -919,7 +920,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_venue() {
                     let context = contexts::Venue::new(bot, data, venue);
 
-                    self.run_venue_handlers(&context);
+                    self.run_venue_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Venue(venue);
                     let message = Message::new(data, kind);
@@ -938,7 +939,7 @@ impl<C> EventLoop<C> {
                         media_group_id,
                     );
 
-                    self.run_video_handlers(&context);
+                    self.run_video_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind =
                         message::Kind::Video(video, caption, media_group_id);
@@ -953,7 +954,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::VideoNote::new(bot, data, video_note);
 
-                    self.run_video_note_handlers(&context);
+                    self.run_video_note_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::VideoNote(video_note);
                     let message = Message::new(data, kind);
@@ -967,7 +968,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::Voice::new(bot, data, voice, caption);
 
-                    self.run_voice_handlers(&context);
+                    self.run_voice_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Voice(voice, caption);
                     let message = Message::new(data, kind);
@@ -981,7 +982,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::Audio::new(bot, data, audio, caption);
 
-                    self.run_audio_handlers(&context);
+                    self.run_audio_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Audio(audio, caption);
                     let message = Message::new(data, kind);
@@ -995,7 +996,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::Animation::new(bot, data, animation, caption);
 
-                    self.run_animation_handlers(&context);
+                    self.run_animation_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Animation(animation, caption);
                     let message = Message::new(data, kind);
@@ -1008,7 +1009,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_deleted_chat_photo() {
                     let context = contexts::DeletedChatPhoto::new(bot, data);
 
-                    self.run_deleted_chat_photo_handlers(&context);
+                    self.run_deleted_chat_photo_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
@@ -1021,7 +1022,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::Document::new(bot, data, document, caption);
 
-                    self.run_document_handlers(&context);
+                    self.run_document_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Document(document, caption);
                     let message = Message::new(data, kind);
@@ -1034,7 +1035,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_game() {
                     let context = contexts::Game::new(bot, data, game);
 
-                    self.run_game_handlers(&context);
+                    self.run_game_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Game(game);
                     let message = Message::new(data, kind);
@@ -1047,7 +1048,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_invoice() {
                     let context = contexts::Invoice::new(bot, data, invoice);
 
-                    self.run_invoice_handlers(&context);
+                    self.run_invoice_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Invoice(invoice);
                     let message = Message::new(data, kind);
@@ -1060,7 +1061,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_left_member() {
                     let context = contexts::LeftMember::new(bot, data, member);
 
-                    self.run_left_member_handlers(&context);
+                    self.run_left_member_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::LeftChatMember(member);
                     let message = Message::new(data, kind);
@@ -1073,7 +1074,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_location() {
                     let context = contexts::Location::new(bot, data, location);
 
-                    self.run_location_handlers(&context);
+                    self.run_location_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Location(location);
                     let message = Message::new(data, kind);
@@ -1087,7 +1088,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_migration() {
                     let context = contexts::Migration::new(bot, data, old_id);
 
-                    self.run_migration_handlers(&context);
+                    self.run_migration_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::MigrateFrom(old_id);
                     let message = Message::new(data, kind);
@@ -1100,7 +1101,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_new_chat_photo() {
                     let context = contexts::NewChatPhoto::new(bot, data, photo);
 
-                    self.run_new_chat_photo_handlers(&context);
+                    self.run_new_chat_photo_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatPhoto(photo);
                     let message = Message::new(data, kind);
@@ -1113,7 +1114,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_new_chat_title() {
                     let context = contexts::NewChatTitle::new(bot, data, title);
 
-                    self.run_new_chat_title_handlers(&context);
+                    self.run_new_chat_title_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatTitle(title);
                     let message = Message::new(data, kind);
@@ -1126,7 +1127,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_new_members() {
                     let context = contexts::NewMembers::new(bot, data, members);
 
-                    self.run_new_members_handlers(&context);
+                    self.run_new_members_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::NewChatMembers(members);
                     let message = Message::new(data, kind);
@@ -1140,7 +1141,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::Passport::new(bot, data, passport_data);
 
-                    self.run_passport_handlers(&context);
+                    self.run_passport_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::PassportData(passport_data);
                     let message = Message::new(data, kind);
@@ -1153,7 +1154,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_contact() {
                     let context = contexts::Contact::new(bot, data, contact);
 
-                    self.run_contact_handlers(&context);
+                    self.run_contact_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Contact(contact);
                     let message = Message::new(data, kind);
@@ -1166,7 +1167,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_created_group() {
                     let context = contexts::CreatedGroup::new(bot, data);
 
-                    self.run_created_group_handlers(&context);
+                    self.run_created_group_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
@@ -1178,7 +1179,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_payment() {
                     let context = contexts::Payment::new(bot, data, payment);
 
-                    self.run_payment_handlers(&context);
+                    self.run_payment_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::SuccessfulPayment(payment);
                     let message = Message::new(data, kind);
@@ -1197,7 +1198,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::ConnectedWebsite::new(bot, data, website);
 
-                    self.run_connected_website_handlers(&context);
+                    self.run_connected_website_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::ConnectedWebsite(website);
                     let message = Message::new(data, kind);
@@ -1239,7 +1240,7 @@ impl<C> EventLoop<C> {
                         bot, data, edit_date, animation, caption,
                     );
 
-                    self.run_edited_animation_handlers(&context);
+                    self.run_edited_animation_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Animation(animation, caption);
                     let message = Message::new(data, kind);
@@ -1254,7 +1255,7 @@ impl<C> EventLoop<C> {
                         bot, data, edit_date, audio, caption,
                     );
 
-                    self.run_edited_audio_handlers(&context);
+                    self.run_edited_audio_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Audio(audio, caption);
                     let message = Message::new(data, kind);
@@ -1269,7 +1270,7 @@ impl<C> EventLoop<C> {
                         bot, data, edit_date, document, caption,
                     );
 
-                    self.run_edited_document_handlers(&context);
+                    self.run_edited_document_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Document(document, caption);
                     let message = Message::new(data, kind);
@@ -1284,7 +1285,7 @@ impl<C> EventLoop<C> {
                         bot, data, edit_date, location,
                     );
 
-                    self.run_edited_location_handlers(&context);
+                    self.run_edited_location_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Location(location);
                     let message = Message::new(data, kind);
@@ -1304,7 +1305,7 @@ impl<C> EventLoop<C> {
                         media_group_id,
                     );
 
-                    self.run_edited_photo_handlers(&context);
+                    self.run_edited_photo_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind =
                         message::Kind::Photo(photo, caption, media_group_id);
@@ -1331,7 +1332,7 @@ impl<C> EventLoop<C> {
                             bot, data, edit_date, text,
                         );
 
-                        self.run_edited_command_handlers(command, &context);
+                        self.run_edited_command_handlers(command, Arc::new(context));
                     } else if self.will_handle_unhandled() {
                         let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
@@ -1343,7 +1344,7 @@ impl<C> EventLoop<C> {
                     let context =
                         contexts::EditedText::new(bot, data, edit_date, text);
 
-                    self.run_edited_text_handlers(&context);
+                    self.run_edited_text_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
@@ -1363,7 +1364,7 @@ impl<C> EventLoop<C> {
                         media_group_id,
                     );
 
-                    self.run_edited_video_handlers(&context);
+                    self.run_edited_video_handlers(Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind =
                         message::Kind::Video(video, caption, media_group_id);

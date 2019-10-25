@@ -10,7 +10,7 @@ macro_rules! handler {
         #[doc = $doc]
         pub fn $name(
             &mut self,
-            handler: impl Fn(& $context) + Send + Sync + 'static,
+            handler: impl Fn(std::sync::Arc<$context>) + Send + Sync + 'static,
         ) {
             self.$handlers.push(Box::new(handler))
         }
@@ -19,9 +19,9 @@ macro_rules! handler {
             !self.$handlers.is_empty()
         })?
 
-        fn $run_handlers(&self, context: & $context) {
+        fn $run_handlers(&self, context: std::sync::Arc<$context>) {
             for handler in &self.$handlers {
-                handler(context);
+                handler(context.clone());
             }
         }
     };

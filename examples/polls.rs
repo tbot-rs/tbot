@@ -9,14 +9,12 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("poll", |context| {
-        let context = context.clone();
         tokio::spawn(async move {
             context.send_poll(QUESTION, OPTIONS).call().await.unwrap();
         });
     });
 
     bot.command("close", |context| {
-        let context = context.clone();
         tokio::spawn(async move {
             if let Some(message) = &context.reply_to {
                 context

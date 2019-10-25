@@ -18,7 +18,6 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("location", |context| {
-        let context = context.clone();
         tokio::spawn(async move {
             let mut places = PLACES.iter().cycle();
 
