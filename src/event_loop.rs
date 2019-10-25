@@ -239,7 +239,7 @@ impl<C> EventLoop<C> {
     fn run_command_handlers(
         &self,
         command: &'static str,
-        context: Arc<contexts::Text<C>>,
+        context: &Arc<contexts::Text<C>>,
     ) {
         if let Some(handlers) = self.command_handlers.get(&command) {
             for handler in handlers {
@@ -296,7 +296,7 @@ impl<C> EventLoop<C> {
     fn run_edited_command_handlers(
         &self,
         command: &'static str,
-        context: Arc<contexts::EditedText<C>>,
+        context: &Arc<contexts::EditedText<C>>,
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(&command) {
             for handler in handlers {
@@ -704,6 +704,7 @@ impl<C> EventLoop<C> {
         will_handle_voice,
     }
 
+    #[allow(clippy::too_many_lines)]
     fn handle_update(&self, bot: Arc<Bot<C>>, update: types::Update) {
         let update_context =
             Arc::new(contexts::Update::new(Arc::clone(&bot), update.id));
@@ -846,7 +847,7 @@ impl<C> EventLoop<C> {
 
                         let context = contexts::Text::new(bot, data, text);
 
-                        self.run_command_handlers(command, Arc::new(context));
+                        self.run_command_handlers(command, &Arc::new(context));
                     } else if self.will_handle_unhandled() {
                         let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
@@ -1342,7 +1343,7 @@ impl<C> EventLoop<C> {
                             bot, data, edit_date, text,
                         );
 
-                        self.run_edited_command_handlers(command, Arc::new(context));
+                        self.run_edited_command_handlers(command, &Arc::new(context));
                     } else if self.will_handle_unhandled() {
                         let kind = message::Kind::Text(text);
                         let message = Message::new(data, kind);
