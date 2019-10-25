@@ -23,15 +23,15 @@ async fn main() {
 
     bot.command("game", move |context| {
         let chats = Arc::clone(&game_chats_ref);
-        tokio::spawn(async move {
+        async move {
             let message = context.send_game(GAME).call().await.unwrap();
             chats.lock().unwrap().insert(message.chat.id, message.id);
-        });
+        }
     });
 
     bot.text(move |context| {
         let chats = Arc::clone(&chats);
-        tokio::spawn(async move {
+        async move {
             let message_id = {
                 let chats = chats.lock().unwrap();
 
@@ -72,7 +72,7 @@ async fn main() {
                     dbg!(err);
                 }
             }
-        });
+        }
     });
 
     bot.polling().start().await.unwrap();

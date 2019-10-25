@@ -7,10 +7,8 @@
 //! async fn main() {
 //!     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
-//!     bot.text(|context| {
-//!         tokio::spawn(async move {
-//!             context.send_message(&context.text.value).call().await.unwrap();
-//!         });
+//!     bot.text(|context| async move {
+//!         context.send_message(&context.text.value).call().await.unwrap();
 //!     });
 //!
 //!     bot.polling().start().await.unwrap();

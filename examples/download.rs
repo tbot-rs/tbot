@@ -3,7 +3,7 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.document(|context| {
-        tokio::spawn(async move {
+        async move {
             let file = context
                 .bot
                 .get_file(&context.document)
@@ -18,7 +18,7 @@ async fn main() {
                     dbg!(err);
                 }
             }
-        });
+        }
     });
 
     bot.polling().start().await.unwrap();

@@ -14,7 +14,7 @@ use crate::{
     },
     Bot,
 };
-use std::{collections::HashMap, sync::Arc};
+use std::{collections::HashMap, future::Future, sync::Arc};
 
 #[macro_use]
 mod handlers_macros;
@@ -81,7 +81,7 @@ type VoiceHandler<C> = Handler<contexts::Voice<C>>;
 /// ```no_run
 /// let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 ///
-/// bot.text(|_| println!("Got a text message"));
+/// bot.text(|_| async { println!("Got a text message") });
 ///
 /// bot.polling().start();
 /// ```
@@ -219,15 +219,17 @@ impl<C> EventLoop<C> {
     }
 
     /// Adds a new handler for a command.
-    pub fn command(
-        &mut self,
-        command: &'static str,
-        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
-    ) {
+    pub fn command<H, F>(&mut self, command: &'static str, handler: H)
+    where
+        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
         self.command_handlers
             .entry(command)
             .or_insert_with(Vec::new)
-            .push(Box::new(handler));
+            .push(Box::new(move |context| {
+                tokio::spawn(handler(context));
+            }));
     }
 
     fn will_handle_command(&self, command: &'static str) -> bool {
@@ -247,39 +249,44 @@ impl<C> EventLoop<C> {
     }
 
     /// Adds a new handler for the `/start` command.
-    pub fn start(
-        &mut self,
-        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
-    ) {
+    pub fn start<H, F>(&mut self, handler: H)
+    where
+        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
         self.command("start", handler);
     }
 
     /// Adds a new handler for the `/settings` command.
-    pub fn settings(
-        &mut self,
-        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
-    ) {
+    pub fn settings<H, F>(&mut self, handler: H)
+    where
+        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
         self.command("settings", handler);
     }
 
     /// Adds a new handler for the `/help` command.
-    pub fn help(
-        &mut self,
-        handler: impl Fn(Arc<contexts::Text<C>>) + Send + Sync + 'static,
-    ) {
+    pub fn help<H, F>(&mut self, handler: H)
+    where
+        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
         self.command("help", handler);
     }
 
     /// Adds a new handler for an edited command.
-    pub fn edited_command(
-        &mut self,
-        command: &'static str,
-        handler: impl Fn(Arc<contexts::EditedText<C>>) + Send + Sync + 'static,
-    ) {
+    pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
+    where
+        H: (Fn(Arc<contexts::EditedText<C>>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
         self.edited_command_handlers
             .entry(command)
             .or_insert_with(Vec::new)
-            .push(Box::new(handler));
+            .push(Box::new(move |context| {
+                tokio::spawn(handler(context));
+            }));
     }
 
     fn will_handle_edited_command(&self, command: &'static str) -> bool {
@@ -630,11 +637,14 @@ impl<C> EventLoop<C> {
     }
 
     /// Adds a new handler for unhandled updates.
-    pub fn unhandled(
-        &mut self,
-        handler: impl Fn(Arc<contexts::Unhandled<C>>) + Send + Sync + 'static,
-    ) {
-        self.unhandled_handlers.push(Box::new(handler))
+    pub fn unhandled<H, F>(&mut self, handler: H)
+    where
+        H: (Fn(Arc<contexts::Unhandled<C>>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.unhandled_handlers.push(Box::new(move |context| {
+            tokio::spawn(handler(context));
+        }))
     }
 
     fn will_handle_unhandled(&self) -> bool {

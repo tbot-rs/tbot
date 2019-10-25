@@ -8,11 +8,14 @@ macro_rules! handler {
         $($will_handle:ident,)?
     ) => {
         #[doc = $doc]
-        pub fn $name(
-            &mut self,
-            handler: impl Fn(std::sync::Arc<$context>) + Send + Sync + 'static,
-        ) {
-            self.$handlers.push(Box::new(handler))
+        pub fn $name<H, F>(&mut self, handler: H)
+        where
+            H: (Fn(std::sync::Arc<$context>) -> F) + Send + Sync + 'static,
+            F: std::future::Future<Output = ()> + Send + 'static,
+        {
+            self.$handlers.push(Box::new(move |context| {
+                tokio::spawn(handler(context));
+            }))
         }
 
         $(fn $will_handle(&self) -> bool {

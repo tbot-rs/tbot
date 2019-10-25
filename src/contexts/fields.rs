@@ -4,7 +4,7 @@
 //! one. You would like to abstract this as much as possible, like this:
 //!
 //! ```
-//! # fn process_photo<T>(_: std::sync::Arc<T>) { }
+//! # async fn process_photo<T>(_: std::sync::Arc<T>) { }
 //! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //! bot.photo(process_photo);
 //! bot.edited_photo(process_photo);
@@ -18,7 +18,7 @@
 //! ```
 //! use std::sync::Arc;
 //! use tbot::{contexts, connectors::Https};
-//! fn process_photo(context: Arc<contexts::Photo<Https>>) {
+//! async fn process_photo(context: Arc<contexts::Photo<Https>>) {
 //!     let photo = &context.photo;
 //!     // ..
 //! }
@@ -30,7 +30,7 @@
 //! ```
 //! use std::sync::Arc;
 //! use tbot::{contexts::fields::Photo, connectors::Https};
-//! fn process_photo(context: Arc<impl Photo<Https>>) {
+//! async fn process_photo(context: Arc<impl Photo<Https>>) {
 //!     let photo = context.photo();
 //!     // ..
 //! }

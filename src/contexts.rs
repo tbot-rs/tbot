@@ -11,10 +11,10 @@
 //! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
 //! bot.text(|context| {
-//!     tokio::spawn(async move {
+//!     async move {
 //!         let reversed: String = context.text.value.chars().rev().collect();
 //!         context.send_message_in_reply(&reversed).call().await.unwrap();
-//!     });
+//!     }
 //! });
 //! # }
 //! ```
@@ -39,14 +39,14 @@
 //! const ADMIN_CHAT: chat::Id = chat::Id(0);
 //!
 //! bot.text(|context| {
-//!     tokio::spawn(async move {
+//!     async move {
 //!         context
 //!             .bot
 //!             .send_message(ADMIN_CHAT, "New message!")
 //!             .call()
 //!             .await
 //!             .unwrap();
-//!     });
+//!     }
 //! });
 //! # }
 //! ```

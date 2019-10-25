@@ -18,7 +18,7 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("location", |context| {
-        tokio::spawn(async move {
+        async move {
             let mut places = PLACES.iter().cycle();
 
             let location = context
@@ -40,7 +40,7 @@ async fn main() {
                     break;
                 }
             }
-        });
+        }
     });
 
     bot.polling().start().await.unwrap();
