@@ -1121,8 +1121,36 @@ impl<C> EventLoop<C> {
                 self.run_edited_video_handlers(Arc::new(context));
             }
 
+            message::Kind::Contact(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited contact. \
+                Skipping the update."
+            ),
+            message::Kind::Game(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited game. \
+                Skipping the update."
+            ),
+            message::Kind::Invoice(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited invoice. \
+                Skipping the update."
+            ),
             message::Kind::Poll(..) => eprintln!(
                 "[tbot] Did not expect to receive a poll as an edited message. \
+                Skipping the update."
+            ),
+            message::Kind::Sticker(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited sticker. \
+                Skipping the update."
+            ),
+            message::Kind::Venue(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited venue. \
+                Skipping the update."
+            ),
+            message::Kind::VideoNote(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited video note. \
+                Skipping the update."
+            ),
+            message::Kind::Voice(..) => eprintln!(
+                "[tbot] Did not expect to receive an edited voice. \
                 Skipping the update."
             ),
             message::Kind::NewChatMembers(..)
@@ -1135,7 +1163,11 @@ impl<C> EventLoop<C> {
             | message::Kind::ChannelCreated
             | message::Kind::Pinned(..)
             | message::Kind::MigrateTo(..)
-            | message::Kind::MigrateFrom(..) => eprintln!(
+            | message::Kind::MigrateFrom(..)
+            | message::Kind::ConnectedWebsite(..)
+            | message::Kind::SuccessfulPayment(..)
+            | message::Kind::PassportData(..)
+            => eprintln!(
                 "[tbot] Did not expect to receive a service message as an \
                  edited message. Skipping the update."
             ),
