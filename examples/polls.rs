@@ -9,15 +9,13 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("poll", |context| {
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             context.send_poll(QUESTION, OPTIONS).call().await.unwrap();
-        });
+        }
     });
 
     bot.command("close", |context| {
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             if let Some(message) = &context.reply_to {
                 context
                     .bot
@@ -32,15 +30,19 @@ async fn main() {
                     .await
                     .unwrap();
             }
-        });
+        }
     });
 
     bot.poll(|context| {
-        println!("Someone sent a poll: {:#?}", context.poll);
+        async move {
+            println!("Someone sent a poll: {:#?}", context.poll);
+        }
     });
 
     bot.updated_poll(|context| {
-        println!("New update on my poll: {:#?}", context.poll);
+        async move {
+            println!("New update on my poll: {:#?}", context.poll);
+        }
     });
 
     bot.polling().start().await.unwrap();

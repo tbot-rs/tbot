@@ -13,8 +13,7 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.text(|context| {
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             let message = match meval::eval_str(&context.text.value) {
                 Ok(result) => format!("= `{}`", result),
                 Err(_) => {
@@ -27,14 +26,13 @@ async fn main() {
                 .call()
                 .await
                 .unwrap();
-        });
+        }
     });
 
     let id = Arc::new(Mutex::new(0_u32));
     bot.inline(move |context| {
-        let context = context.clone();
         let id = Arc::clone(&id);
-        tokio::spawn(async move {
+        async move {
             let (title, message) = match meval::eval_str(&context.query) {
                 Ok(result) => (
                     result.to_string(),
@@ -56,7 +54,7 @@ async fn main() {
             let result = inline_query::Result::new(&id, article);
 
             context.answer(&[result]).call().await.unwrap();
-        });
+        }
     });
 
     bot.polling().start().await.unwrap();

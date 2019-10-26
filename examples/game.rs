@@ -22,18 +22,16 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("game", move |context| {
-        let context = context.clone();
         let chats = Arc::clone(&game_chats_ref);
-        tokio::spawn(async move {
+        async move {
             let message = context.send_game(GAME).call().await.unwrap();
             chats.lock().unwrap().insert(message.chat.id, message.id);
-        });
+        }
     });
 
     bot.text(move |context| {
         let chats = Arc::clone(&chats);
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             let message_id = {
                 let chats = chats.lock().unwrap();
 
@@ -74,7 +72,7 @@ async fn main() {
                     dbg!(err);
                 }
             }
-        });
+        }
     });
 
     bot.polling().start().await.unwrap();

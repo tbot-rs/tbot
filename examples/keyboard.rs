@@ -20,20 +20,18 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", |context| {
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             context
                 .send_message("This is a keyboard done with tbot!")
                 .reply_markup(KEYBOARD)
                 .call()
                 .await
                 .unwrap();
-        });
+        }
     });
 
     bot.data_callback(|context| {
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             let message = match context.data.as_str() {
                 "cool" => "You're cool too!",
                 "amazing" => "Thanks, I'm trying!",
@@ -41,7 +39,7 @@ async fn main() {
             };
 
             context.notify(message).call().await.unwrap();
-        });
+        }
     });
 
     bot.polling().start().await.unwrap();

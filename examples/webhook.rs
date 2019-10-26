@@ -8,14 +8,13 @@ async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.text(|context| {
-        let context = context.clone();
-        tokio::spawn(async move {
+        async move {
             context
                 .send_message_in_reply(&context.text.value)
                 .call()
                 .await
                 .unwrap();
-        });
+        }
     });
 
     // For HTTPS, see this wiki:
