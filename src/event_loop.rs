@@ -711,28 +711,6 @@ impl<C> EventLoop<C> {
         self.run_before_update_handlers(update_context.clone());
 
         match update.kind {
-            update::Kind::Message(message)
-            | update::Kind::ChannelPost(message) => {
-                self.handle_message_update(bot, message);
-            }
-            update::Kind::EditedMessage(message)
-            | update::Kind::EditedChannelPost(message) => {
-                self.handle_message_edit_update(bot, message);
-            }
-            update::Kind::Poll(poll) if self.will_handle_updated_poll() => {
-                let context = contexts::UpdatedPoll::new(bot, poll);
-                self.run_updated_poll_handlers(Arc::new(context));
-            }
-            update::Kind::InlineQuery(query) if self.will_handle_inline() => {
-                let context = contexts::Inline::new(bot, query);
-                self.run_inline_handlers(Arc::new(context));
-            }
-            update::Kind::ChosenInlineResult(result)
-                if self.will_handle_chosen_inline() =>
-            {
-                let context = contexts::ChosenInline::new(bot, result);
-                self.run_chosen_inline_handlers(Arc::new(context));
-            }
             update::Kind::CallbackQuery(query) => match query.kind {
                 callback::Kind::Data(data)
                     if self.will_handle_data_callback() =>
@@ -766,11 +744,23 @@ impl<C> EventLoop<C> {
                 }
                 callback::Kind::Data(..) | callback::Kind::Game(..) => (),
             },
-            update::Kind::ShippingQuery(query)
-                if self.will_handle_shipping() =>
+            update::Kind::ChosenInlineResult(result)
+                if self.will_handle_chosen_inline() =>
             {
-                let context = contexts::Shipping::new(bot, query);
-                self.run_shipping_handlers(Arc::new(context));
+                let context = contexts::ChosenInline::new(bot, result);
+                self.run_chosen_inline_handlers(Arc::new(context));
+            }
+            update::Kind::EditedMessage(message)
+            | update::Kind::EditedChannelPost(message) => {
+                self.handle_message_edit_update(bot, message);
+            }
+            update::Kind::InlineQuery(query) if self.will_handle_inline() => {
+                let context = contexts::Inline::new(bot, query);
+                self.run_inline_handlers(Arc::new(context));
+            }
+            update::Kind::Message(message)
+            | update::Kind::ChannelPost(message) => {
+                self.handle_message_update(bot, message);
             }
             update::Kind::PreCheckoutQuery(query)
                 if self.will_handle_pre_checkout() =>
@@ -778,14 +768,24 @@ impl<C> EventLoop<C> {
                 let context = contexts::PreCheckout::new(bot, query);
                 self.run_pre_checkout_handlers(Arc::new(context));
             }
+            update::Kind::Poll(poll) if self.will_handle_updated_poll() => {
+                let context = contexts::UpdatedPoll::new(bot, poll);
+                self.run_updated_poll_handlers(Arc::new(context));
+            }
+            update::Kind::ShippingQuery(query)
+                if self.will_handle_shipping() =>
+            {
+                let context = contexts::Shipping::new(bot, query);
+                self.run_shipping_handlers(Arc::new(context));
+            }
             update if self.will_handle_unhandled() => {
                 self.run_unhandled_handlers(bot, update);
             }
-            update::Kind::Poll(..)
+            update::Kind::ChosenInlineResult(..)
             | update::Kind::InlineQuery(..)
-            | update::Kind::ChosenInlineResult(..)
-            | update::Kind::ShippingQuery(..)
+            | update::Kind::Poll(..)
             | update::Kind::PreCheckoutQuery(..)
+            | update::Kind::ShippingQuery(..)
             | update::Kind::Unknown => (),
         }
 
@@ -798,6 +798,130 @@ impl<C> EventLoop<C> {
         let (data, kind) = message.split();
 
         match kind {
+            message::Kind::Animation(animation, caption)
+                if self.will_handle_animation() =>
+            {
+                let context =
+                    contexts::Animation::new(bot, data, animation, caption);
+                self.run_animation_handlers(Arc::new(context));
+            }
+            message::Kind::Audio(audio, caption)
+                if self.will_handle_audio() =>
+            {
+                let context = contexts::Audio::new(bot, data, audio, caption);
+                self.run_audio_handlers(Arc::new(context));
+            }
+            message::Kind::ChatPhotoDeleted
+                if self.will_handle_deleted_chat_photo() =>
+            {
+                let context = contexts::DeletedChatPhoto::new(bot, data);
+                self.run_deleted_chat_photo_handlers(Arc::new(context));
+            }
+            message::Kind::ConnectedWebsite(website)
+                if self.will_handle_connected_website() =>
+            {
+                let context =
+                    contexts::ConnectedWebsite::new(bot, data, website);
+                self.run_connected_website_handlers(Arc::new(context));
+            }
+            message::Kind::Contact(contact) if self.will_handle_contact() => {
+                let context = contexts::Contact::new(bot, data, contact);
+                self.run_contact_handlers(Arc::new(context));
+            }
+            message::Kind::Document(document, caption)
+                if self.will_handle_document() =>
+            {
+                let context =
+                    contexts::Document::new(bot, data, document, caption);
+                self.run_document_handlers(Arc::new(context));
+            }
+            message::Kind::Game(game) if self.will_handle_game() => {
+                let context = contexts::Game::new(bot, data, game);
+                self.run_game_handlers(Arc::new(context));
+            }
+            message::Kind::GroupCreated if self.will_handle_created_group() => {
+                let context = contexts::CreatedGroup::new(bot, data);
+                self.run_created_group_handlers(Arc::new(context));
+            }
+            message::Kind::Invoice(invoice) if self.will_handle_invoice() => {
+                let context = contexts::Invoice::new(bot, data, invoice);
+                self.run_invoice_handlers(Arc::new(context));
+            }
+            message::Kind::LeftChatMember(member)
+                if self.will_handle_left_member() =>
+            {
+                let context = contexts::LeftMember::new(bot, data, member);
+                self.run_left_member_handlers(Arc::new(context));
+            }
+            message::Kind::Location(location)
+                if self.will_handle_location() =>
+            {
+                let context = contexts::Location::new(bot, data, location);
+                self.run_location_handlers(Arc::new(context));
+            }
+            message::Kind::MigrateFrom(old_id)
+                if self.will_handle_migration() =>
+            {
+                let context = contexts::Migration::new(bot, data, old_id);
+                self.run_migration_handlers(Arc::new(context));
+            }
+            message::Kind::MigrateTo(..) => (), // ignored on purpose
+            message::Kind::NewChatMembers(members)
+                if self.will_handle_new_members() =>
+            {
+                let context = contexts::NewMembers::new(bot, data, members);
+                self.run_new_members_handlers(Arc::new(context));
+            }
+            message::Kind::NewChatPhoto(photo)
+                if self.will_handle_new_chat_photo() =>
+            {
+                let context = contexts::NewChatPhoto::new(bot, data, photo);
+                self.run_new_chat_photo_handlers(Arc::new(context));
+            }
+            message::Kind::NewChatTitle(title)
+                if self.will_handle_new_chat_title() =>
+            {
+                let context = contexts::NewChatTitle::new(bot, data, title);
+                self.run_new_chat_title_handlers(Arc::new(context));
+            }
+            message::Kind::PassportData(passport_data)
+                if self.will_handle_passport() =>
+            {
+                let context = contexts::Passport::new(bot, data, passport_data);
+                self.run_passport_handlers(Arc::new(context));
+            }
+            message::Kind::Photo(photo, caption, media_group_id)
+                if self.will_handle_photo() =>
+            {
+                let context = contexts::Photo::new(
+                    bot,
+                    data,
+                    photo,
+                    caption,
+                    media_group_id,
+                );
+                self.run_photo_handlers(Arc::new(context));
+            }
+            message::Kind::Pinned(message)
+                if self.will_handle_pinned_message() =>
+            {
+                let context = contexts::PinnedMessage::new(bot, data, *message);
+                self.run_pinned_message_handlers(Arc::new(context));
+            }
+            message::Kind::Poll(poll) if self.will_handle_poll() => {
+                let context = contexts::Poll::new(bot, data, poll);
+                self.run_poll_handlers(Arc::new(context));
+            }
+            message::Kind::Sticker(sticker) if self.will_handle_sticker() => {
+                let context = contexts::Sticker::new(bot, data, sticker);
+                self.run_sticker_handlers(Arc::new(context));
+            }
+            message::Kind::SuccessfulPayment(payment)
+                if self.will_handle_payment() =>
+            {
+                let context = contexts::Payment::new(bot, data, payment);
+                self.run_payment_handlers(Arc::new(context));
+            }
             message::Kind::Text(text) if is_command(&text) => {
                 let (command, username) = parse_command(&text);
 
@@ -821,32 +945,6 @@ impl<C> EventLoop<C> {
             message::Kind::Text(text) if self.will_handle_text() => {
                 let context = contexts::Text::new(bot, data, text);
                 self.run_text_handlers(Arc::new(context));
-            }
-            message::Kind::Poll(poll) if self.will_handle_poll() => {
-                let context = contexts::Poll::new(bot, data, poll);
-                self.run_poll_handlers(Arc::new(context));
-            }
-            message::Kind::Photo(photo, caption, media_group_id)
-                if self.will_handle_photo() =>
-            {
-                let context = contexts::Photo::new(
-                    bot,
-                    data,
-                    photo,
-                    caption,
-                    media_group_id,
-                );
-                self.run_photo_handlers(Arc::new(context));
-            }
-            message::Kind::Pinned(message)
-                if self.will_handle_pinned_message() =>
-            {
-                let context = contexts::PinnedMessage::new(bot, data, *message);
-                self.run_pinned_message_handlers(Arc::new(context));
-            }
-            message::Kind::Sticker(sticker) if self.will_handle_sticker() => {
-                let context = contexts::Sticker::new(bot, data, sticker);
-                self.run_sticker_handlers(Arc::new(context));
             }
             message::Kind::Venue(venue) if self.will_handle_venue() => {
                 let context = contexts::Venue::new(bot, data, venue);
@@ -876,104 +974,6 @@ impl<C> EventLoop<C> {
                 let context = contexts::Voice::new(bot, data, voice, caption);
                 self.run_voice_handlers(Arc::new(context));
             }
-            message::Kind::Audio(audio, caption)
-                if self.will_handle_audio() =>
-            {
-                let context = contexts::Audio::new(bot, data, audio, caption);
-                self.run_audio_handlers(Arc::new(context));
-            }
-            message::Kind::Animation(animation, caption)
-                if self.will_handle_animation() =>
-            {
-                let context =
-                    contexts::Animation::new(bot, data, animation, caption);
-                self.run_animation_handlers(Arc::new(context));
-            }
-            message::Kind::ChatPhotoDeleted
-                if self.will_handle_deleted_chat_photo() =>
-            {
-                let context = contexts::DeletedChatPhoto::new(bot, data);
-                self.run_deleted_chat_photo_handlers(Arc::new(context));
-            }
-            message::Kind::Document(document, caption)
-                if self.will_handle_document() =>
-            {
-                let context =
-                    contexts::Document::new(bot, data, document, caption);
-                self.run_document_handlers(Arc::new(context));
-            }
-            message::Kind::Game(game) if self.will_handle_game() => {
-                let context = contexts::Game::new(bot, data, game);
-                self.run_game_handlers(Arc::new(context));
-            }
-            message::Kind::Invoice(invoice) if self.will_handle_invoice() => {
-                let context = contexts::Invoice::new(bot, data, invoice);
-                self.run_invoice_handlers(Arc::new(context));
-            }
-            message::Kind::LeftChatMember(member)
-                if self.will_handle_left_member() =>
-            {
-                let context = contexts::LeftMember::new(bot, data, member);
-                self.run_left_member_handlers(Arc::new(context));
-            }
-            message::Kind::Location(location)
-                if self.will_handle_location() =>
-            {
-                let context = contexts::Location::new(bot, data, location);
-                self.run_location_handlers(Arc::new(context));
-            }
-            message::Kind::MigrateTo(..) => (), // ignored on purpose
-            message::Kind::MigrateFrom(old_id)
-                if self.will_handle_migration() =>
-            {
-                let context = contexts::Migration::new(bot, data, old_id);
-                self.run_migration_handlers(Arc::new(context));
-            }
-            message::Kind::NewChatPhoto(photo)
-                if self.will_handle_new_chat_photo() =>
-            {
-                let context = contexts::NewChatPhoto::new(bot, data, photo);
-                self.run_new_chat_photo_handlers(Arc::new(context));
-            }
-            message::Kind::NewChatTitle(title)
-                if self.will_handle_new_chat_title() =>
-            {
-                let context = contexts::NewChatTitle::new(bot, data, title);
-                self.run_new_chat_title_handlers(Arc::new(context));
-            }
-            message::Kind::NewChatMembers(members)
-                if self.will_handle_new_members() =>
-            {
-                let context = contexts::NewMembers::new(bot, data, members);
-                self.run_new_members_handlers(Arc::new(context));
-            }
-            message::Kind::PassportData(passport_data)
-                if self.will_handle_passport() =>
-            {
-                let context = contexts::Passport::new(bot, data, passport_data);
-                self.run_passport_handlers(Arc::new(context));
-            }
-            message::Kind::Contact(contact) if self.will_handle_contact() => {
-                let context = contexts::Contact::new(bot, data, contact);
-                self.run_contact_handlers(Arc::new(context));
-            }
-            message::Kind::GroupCreated if self.will_handle_created_group() => {
-                let context = contexts::CreatedGroup::new(bot, data);
-                self.run_created_group_handlers(Arc::new(context));
-            }
-            message::Kind::SuccessfulPayment(payment)
-                if self.will_handle_payment() =>
-            {
-                let context = contexts::Payment::new(bot, data, payment);
-                self.run_payment_handlers(Arc::new(context));
-            }
-            message::Kind::ConnectedWebsite(website)
-                if self.will_handle_connected_website() =>
-            {
-                let context =
-                    contexts::ConnectedWebsite::new(bot, data, website);
-                self.run_connected_website_handlers(Arc::new(context));
-            }
             message::Kind::SupergroupCreated => eprintln!(
                 "[tbot] Did not expect to receive a `supergroup_created` \
                  update. Skipping the update."
@@ -987,32 +987,32 @@ impl<C> EventLoop<C> {
                 let update = update::Kind::Message(message);
                 self.run_unhandled_handlers(bot, update);
             }
-            message::Kind::Text(..)
-            | message::Kind::Poll(..)
-            | message::Kind::Photo(..)
-            | message::Kind::Pinned(..)
-            | message::Kind::Sticker(..)
-            | message::Kind::Venue(..)
-            | message::Kind::Video(..)
-            | message::Kind::VideoNote(..)
-            | message::Kind::Voice(..)
+            message::Kind::Animation(..)
             | message::Kind::Audio(..)
-            | message::Kind::Animation(..)
             | message::Kind::ChatPhotoDeleted
+            | message::Kind::ConnectedWebsite(..)
+            | message::Kind::Contact(..)
             | message::Kind::Document(..)
             | message::Kind::Game(..)
+            | message::Kind::GroupCreated
             | message::Kind::Invoice(..)
             | message::Kind::LeftChatMember(..)
             | message::Kind::Location(..)
             | message::Kind::MigrateFrom(..)
+            | message::Kind::NewChatMembers(..)
             | message::Kind::NewChatPhoto(..)
             | message::Kind::NewChatTitle(..)
-            | message::Kind::NewChatMembers(..)
             | message::Kind::PassportData(..)
-            | message::Kind::Contact(..)
-            | message::Kind::GroupCreated
+            | message::Kind::Photo(..)
+            | message::Kind::Pinned(..)
+            | message::Kind::Poll(..)
+            | message::Kind::Sticker(..)
             | message::Kind::SuccessfulPayment(..)
-            | message::Kind::ConnectedWebsite(..)
+            | message::Kind::Text(..)
+            | message::Kind::Venue(..)
+            | message::Kind::Video(..)
+            | message::Kind::VideoNote(..)
+            | message::Kind::Voice(..)
             | message::Kind::Unknown => (),
         }
     }
@@ -1123,15 +1123,15 @@ impl<C> EventLoop<C> {
 
             message::Kind::Contact(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited contact. \
-                Skipping the update."
+                 Skipping the update."
             ),
             message::Kind::Game(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited game. \
-                Skipping the update."
+                 Skipping the update."
             ),
             message::Kind::Invoice(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited invoice. \
-                Skipping the update."
+                 Skipping the update."
             ),
             message::Kind::Poll(..) => eprintln!(
                 "[tbot] Did not expect to receive a poll as an edited message. \
@@ -1139,35 +1139,34 @@ impl<C> EventLoop<C> {
             ),
             message::Kind::Sticker(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited sticker. \
-                Skipping the update."
+                 Skipping the update."
             ),
             message::Kind::Venue(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited venue. \
-                Skipping the update."
+                 Skipping the update."
             ),
             message::Kind::VideoNote(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited video note. \
-                Skipping the update."
+                 Skipping the update."
             ),
             message::Kind::Voice(..) => eprintln!(
                 "[tbot] Did not expect to receive an edited voice. \
-                Skipping the update."
+                 Skipping the update."
             ),
-            message::Kind::NewChatMembers(..)
-            | message::Kind::LeftChatMember(..)
+            message::Kind::ChannelCreated
             | message::Kind::ChatPhotoDeleted
+            | message::Kind::ConnectedWebsite(..)
+            | message::Kind::GroupCreated
+            | message::Kind::LeftChatMember(..)
+            | message::Kind::MigrateFrom(..)
+            | message::Kind::MigrateTo(..)
+            | message::Kind::NewChatMembers(..)
             | message::Kind::NewChatPhoto(..)
             | message::Kind::NewChatTitle(..)
-            | message::Kind::GroupCreated
-            | message::Kind::SupergroupCreated
-            | message::Kind::ChannelCreated
-            | message::Kind::Pinned(..)
-            | message::Kind::MigrateTo(..)
-            | message::Kind::MigrateFrom(..)
-            | message::Kind::ConnectedWebsite(..)
-            | message::Kind::SuccessfulPayment(..)
             | message::Kind::PassportData(..)
-            => eprintln!(
+            | message::Kind::Pinned(..)
+            | message::Kind::SuccessfulPayment(..)
+            | message::Kind::SupergroupCreated => eprintln!(
                 "[tbot] Did not expect to receive a service message as an \
                  edited message. Skipping the update."
             ),
