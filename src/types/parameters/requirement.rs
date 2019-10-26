@@ -10,6 +10,6 @@ pub enum Requirement {
 impl Requirement {
     /// Checks if `self` is `Required`.
     pub fn is_required(self) -> bool {
-        self == Requirement::Required
+        self == Self::Required
     }
 }

@@ -19,19 +19,19 @@ pub enum HttpWebhook {
 impl Display for HttpWebhook {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            HttpWebhook::SetWebhook(error) => write!(
+            Self::SetWebhook(error) => write!(
                 formatter,
                 "The webhook event loop failed because a call to `setWebhook` \
                  failed with an error: {}",
                 error,
             ),
-            HttpWebhook::SetWebhookTimeout(timeout) => write!(
+            Self::SetWebhookTimeout(timeout) => write!(
                 formatter,
                 "The webhook event loop failed because a call to `setWebhook`
                 timed out: {}",
                 timeout,
             ),
-            HttpWebhook::Server(error) => write!(
+            Self::Server(error) => write!(
                 formatter,
                 "The webhook event loop failed because the server returned \
                  with an error: {}",
@@ -47,7 +47,7 @@ impl HttpWebhook {
     /// Checks if `self` is `SetWebhook`.
     pub fn is_set_webhook(&self) -> bool {
         match self {
-            HttpWebhook::SetWebhook(..) => true,
+            Self::SetWebhook(..) => true,
             _ => false,
         }
     }
@@ -55,7 +55,7 @@ impl HttpWebhook {
     /// Checks if `self` is `SetWebhookTimeout`.
     pub fn is_set_webhook_timeout(&self) -> bool {
         match self {
-            HttpWebhook::SetWebhookTimeout(..) => true,
+            Self::SetWebhookTimeout(..) => true,
             _ => false,
         }
     }
@@ -63,7 +63,7 @@ impl HttpWebhook {
     /// Checks if `self` is `Server`.
     pub fn is_server(&self) -> bool {
         match self {
-            HttpWebhook::Server(..) => true,
+            Self::Server(..) => true,
             _ => false,
         }
     }
@@ -71,18 +71,18 @@ impl HttpWebhook {
 
 impl From<MethodCall> for HttpWebhook {
     fn from(error: MethodCall) -> Self {
-        HttpWebhook::SetWebhook(error)
+        Self::SetWebhook(error)
     }
 }
 
 impl From<Elapsed> for HttpWebhook {
     fn from(timeout: Elapsed) -> Self {
-        HttpWebhook::SetWebhookTimeout(timeout)
+        Self::SetWebhookTimeout(timeout)
     }
 }
 
 impl From<hyper::Error> for HttpWebhook {
     fn from(error: hyper::Error) -> Self {
-        HttpWebhook::Server(error)
+        Self::Server(error)
     }
 }

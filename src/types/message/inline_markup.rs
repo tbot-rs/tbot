@@ -41,7 +41,7 @@ impl ButtonKind {
     /// Checks if `self` is `Url`.
     pub fn is_url(&self) -> bool {
         match self {
-            ButtonKind::Url(..) => true,
+            Self::Url(..) => true,
             _ => false,
         }
     }
@@ -49,7 +49,7 @@ impl ButtonKind {
     /// Checks if `self` is `CallbackData`.
     pub fn is_callback_data(&self) -> bool {
         match self {
-            ButtonKind::CallbackData(..) => true,
+            Self::CallbackData(..) => true,
             _ => false,
         }
     }
@@ -57,7 +57,7 @@ impl ButtonKind {
     /// Checks if `self` is `SwitchInlineQuery`.
     pub fn is_switch_inline_query(&self) -> bool {
         match self {
-            ButtonKind::SwitchInlineQuery(..) => true,
+            Self::SwitchInlineQuery(..) => true,
             _ => false,
         }
     }
@@ -67,7 +67,7 @@ impl ButtonKind {
         // what a name
 
         match self {
-            ButtonKind::SwitchInlineQueryCurrentChat(..) => true,
+            Self::SwitchInlineQueryCurrentChat(..) => true,
             _ => false,
         }
     }
@@ -75,7 +75,7 @@ impl ButtonKind {
     /// Checks if `self` is `CallbackGame`.
     pub fn is_callback_game(&self) -> bool {
         match self {
-            ButtonKind::CallbackGame(..) => true,
+            Self::CallbackGame(..) => true,
             _ => false,
         }
     }
@@ -83,7 +83,7 @@ impl ButtonKind {
     /// Checks if `self` is `Pay`.
     pub fn is_pay(&self) -> bool {
         match self {
-            ButtonKind::Pay(..) => true,
+            Self::Pay(..) => true,
             _ => false,
         }
     }

@@ -48,67 +48,67 @@ pub struct Unspecified<'a> {
 impl Kind {
     /// Checks if `self` is `PersonalDetails`.
     pub fn is_personal_details(self) -> bool {
-        self == Kind::PersonalDetails
+        self == Self::PersonalDetails
     }
 
     /// Checks if `self` is `Passport`.
     pub fn is_passport(self) -> bool {
-        self == Kind::Passport
+        self == Self::Passport
     }
 
     /// Checks if `self` is ` DriverLicense`.
     pub fn is_driver_license(self) -> bool {
-        self == Kind::DriverLicense
+        self == Self::DriverLicense
     }
 
     /// Checks if `self` is `IdentityCard`.
     pub fn is_identity_card(self) -> bool {
-        self == Kind::IdentityCard
+        self == Self::IdentityCard
     }
 
     /// Checks if `self` is `InternalPassport`.
     pub fn is_internal_passport(self) -> bool {
-        self == Kind::InternalPassport
+        self == Self::InternalPassport
     }
 
     /// Checks if `self` is `Address`.
     pub fn is_address(self) -> bool {
-        self == Kind::Address
+        self == Self::Address
     }
 
     /// Checks if `self` is `UtilityBill`.
     pub fn is_utility_bill(self) -> bool {
-        self == Kind::UtilityBill
+        self == Self::UtilityBill
     }
 
     /// Checks if `self` is `BankStatement`.
     pub fn is_bank_statement(self) -> bool {
-        self == Kind::BankStatement
+        self == Self::BankStatement
     }
 
     /// Checks if `self` is `RentalAgreement`.
     pub fn is_rental_agreement(self) -> bool {
-        self == Kind::RentalAgreement
+        self == Self::RentalAgreement
     }
 
     /// Checks if `self` is `PassportRegistration`.
     pub fn is_passport_registration(self) -> bool {
-        self == Kind::PassportRegistration
+        self == Self::PassportRegistration
     }
 
     /// Checks if `self` is `TemporaryRegistration`.
     pub fn is_temporary_registration(self) -> bool {
-        self == Kind::TemporaryRegistration
+        self == Self::TemporaryRegistration
     }
 
     /// Checks if `self` is `PhoneNumber`.
     pub fn is_phone_number(self) -> bool {
-        self == Kind::PhoneNumber
+        self == Self::PhoneNumber
     }
 
     /// Checks if `self` is `Email`.
     pub fn is_email(self) -> bool {
-        self == Kind::Email
+        self == Self::Email
     }
 }
 

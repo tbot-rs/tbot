@@ -30,51 +30,51 @@ pub enum Action {
 impl Action {
     /// Checks if `self` is `Typing`.
     pub fn is_typing(self) -> bool {
-        self == Action::Typing
+        self == Self::Typing
     }
 
     /// Checks if `self` is `UploadPhoto`.
     pub fn is_upload_photo(self) -> bool {
-        self == Action::UploadPhoto
+        self == Self::UploadPhoto
     }
 
     /// Checks if `self` is `RecordVideo`.
     pub fn is_record_video(self) -> bool {
-        self == Action::RecordVideo
+        self == Self::RecordVideo
     }
 
     /// Checks if `self` is `UploadVideo`.
     pub fn is_upload_video(self) -> bool {
-        self == Action::UploadVideo
+        self == Self::UploadVideo
     }
 
     /// Checks if `self` is `RecordAudio`.
     pub fn is_record_audio(self) -> bool {
-        self == Action::RecordAudio
+        self == Self::RecordAudio
     }
 
     /// Checks if `self` is `UploadAudio`.
     pub fn is_upload_audio(self) -> bool {
-        self == Action::UploadAudio
+        self == Self::UploadAudio
     }
 
     /// Checks if `self` is `UploadDocument`.
     pub fn is_upload_document(self) -> bool {
-        self == Action::UploadDocument
+        self == Self::UploadDocument
     }
 
     /// Checks if `self` is `FindLocation`.
     pub fn is_find_location(self) -> bool {
-        self == Action::FindLocation
+        self == Self::FindLocation
     }
 
     /// Checks if `self` is `RecordVideoNote`.
     pub fn is_record_video_note(self) -> bool {
-        self == Action::RecordVideoNote
+        self == Self::RecordVideoNote
     }
 
     /// Checks if `self` is `UploadVideoNote`.
     pub fn is_upload_video_note(self) -> bool {
-        self == Action::UploadVideoNote
+        self == Self::UploadVideoNote
     }
 }

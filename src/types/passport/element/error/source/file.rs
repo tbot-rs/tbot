@@ -22,27 +22,27 @@ pub enum Kind {
 impl Kind {
     /// Checks if `self` is `UtilityBill`.
     pub fn is_utility_bill(self) -> bool {
-        self == Kind::UtilityBill
+        self == Self::UtilityBill
     }
 
     /// Checks if `self` is `BankStatement`.
     pub fn is_bank_statement(self) -> bool {
-        self == Kind::BankStatement
+        self == Self::BankStatement
     }
 
     /// Checks if `self` is `RentalAgreement`.
     pub fn is_rental_agreement(self) -> bool {
-        self == Kind::RentalAgreement
+        self == Self::RentalAgreement
     }
 
     /// Checks if `self` is `PassportRegistration`.
     pub fn is_passport_registration(self) -> bool {
-        self == Kind::PassportRegistration
+        self == Self::PassportRegistration
     }
 
     /// Checks if `self` is `TemporaryRegistration`.
     pub fn is_temporary_registration(self) -> bool {
-        self == Kind::TemporaryRegistration
+        self == Self::TemporaryRegistration
     }
 }
 

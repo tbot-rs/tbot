@@ -11,11 +11,11 @@ pub enum NotificationState {
 impl NotificationState {
     /// Checks if the state is `Enabled`.
     pub fn is_enabled(self) -> bool {
-        self == NotificationState::Enabled
+        self == Self::Enabled
     }
 
     /// Checks if the state is `Disabled`.
     pub fn is_disabled(self) -> bool {
-        self == NotificationState::Disabled
+        self == Self::Disabled
     }
 }

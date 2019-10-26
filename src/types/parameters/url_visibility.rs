@@ -11,11 +11,11 @@ pub enum UrlVisibility {
 impl UrlVisibility {
     /// Checks if the visibility is set to `Shown`.
     pub fn is_shown(self) -> bool {
-        self == UrlVisibility::Shown
+        self == Self::Shown
     }
 
     /// Checks if the visibility is set to `Hidden`.
     pub fn is_hidden(self) -> bool {
-        self == UrlVisibility::Hidden
+        self == Self::Hidden
     }
 }

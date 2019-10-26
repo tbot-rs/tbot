@@ -68,12 +68,12 @@ pub struct Video<'a> {
 impl MimeType {
     /// Checks if the MIME type is `text/html`.
     pub fn is_html(self) -> bool {
-        self == MimeType::TextHtml
+        self == Self::TextHtml
     }
 
     /// Checks if the MIME type is `video/mp4`.
     pub fn is_zip(self) -> bool {
-        self == MimeType::VideoMp4
+        self == Self::VideoMp4
     }
 }
 

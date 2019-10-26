@@ -10,11 +10,11 @@ pub enum Flexibility {
 impl Flexibility {
     /// Checks if `self` is `Flexible`.
     pub fn is_flexible(self) -> bool {
-        self == Flexibility::Flexible
+        self == Self::Flexible
     }
 
     /// Checks if `self` is `Inflexible`.
     pub fn is_inflexible(self) -> bool {
-        self == Flexibility::Inflexible
+        self == Self::Inflexible
     }
 }

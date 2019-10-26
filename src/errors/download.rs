@@ -19,7 +19,7 @@ impl Download {
     /// Checks if `self` is `NoPath`.
     pub fn is_no_path(&self) -> bool {
         match self {
-            Download::NoPath => true,
+            Self::NoPath => true,
             _ => false,
         }
     }
@@ -27,7 +27,7 @@ impl Download {
     /// Checks if `self` is `Network`.
     pub fn is_network(&self) -> bool {
         match self {
-            Download::Network(..) => true,
+            Self::Network(..) => true,
             _ => false,
         }
     }
@@ -35,7 +35,7 @@ impl Download {
     /// Checks if `self` is `InvalidStatusCode`.
     pub fn is_invalid_status_code(&self) -> bool {
         match self {
-            Download::InvalidStatusCode(..) => true,
+            Self::InvalidStatusCode(..) => true,
             _ => false,
         }
     }
@@ -44,16 +44,16 @@ impl Download {
 impl Display for Download {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Download::NoPath => write!(
+            Self::NoPath => write!(
                 formatter,
                 "A file could not be downloaded because of missing `path`.",
             ),
-            Download::Network(error) => write!(
+            Self::Network(error) => write!(
                 formatter,
                 "A file could not be downloaded because of a network error: {}",
                 error,
             ),
-            Download::InvalidStatusCode(code) => write!(
+            Self::InvalidStatusCode(code) => write!(
                 formatter,
                 "A file could not be downloaded because Telegram responded \
                  with {} instead of 200 OK.",
@@ -67,12 +67,12 @@ impl Error for Download {}
 
 impl From<hyper::Error> for Download {
     fn from(error: hyper::Error) -> Self {
-        Download::Network(error)
+        Self::Network(error)
     }
 }
 
 impl From<StatusCode> for Download {
     fn from(error: StatusCode) -> Self {
-        Download::InvalidStatusCode(error)
+        Self::InvalidStatusCode(error)
     }
 }

@@ -14,14 +14,14 @@ impl Polling {
     /// Checks if `self` is `Fetching`.
     pub fn is_fetching(&self) -> bool {
         match self {
-            Polling::Fetching(..) => true,
+            Self::Fetching(..) => true,
             _ => false,
         }
     }
     /// Checks if `self` is `Timeout`.
     pub fn is_timeout(&self) -> bool {
         match self {
-            Polling::Timeout(..) => true,
+            Self::Timeout(..) => true,
             _ => false,
         }
     }
@@ -29,12 +29,12 @@ impl Polling {
 
 impl From<MethodCall> for Polling {
     fn from(error: MethodCall) -> Self {
-        Polling::Fetching(error)
+        Self::Fetching(error)
     }
 }
 
 impl From<Elapsed> for Polling {
     fn from(error: Elapsed) -> Self {
-        Polling::Timeout(error)
+        Self::Timeout(error)
     }
 }

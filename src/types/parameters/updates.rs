@@ -33,51 +33,51 @@ pub enum Updates {
 impl Updates {
     /// Checks if `self` is `Message`.
     pub fn is_message(self) -> bool {
-        self == Updates::Message
+        self == Self::Message
     }
 
     /// Checks if `self` is `EditedMessage`.
     pub fn is_edited_message(self) -> bool {
-        self == Updates::EditedMessage
+        self == Self::EditedMessage
     }
 
     /// Checks if `self` is ChanelPost``.
     pub fn is_channel_post(self) -> bool {
-        self == Updates::ChannelPost
+        self == Self::ChannelPost
     }
 
     /// Checks if `self` is `EditedChannelPost`.
     pub fn is_edited_channel_post(self) -> bool {
-        self == Updates::EditedChannelPost
+        self == Self::EditedChannelPost
     }
 
     /// Checks if `self` is `InlineQuery`.
     pub fn is_inline_query(self) -> bool {
-        self == Updates::InlineQuery
+        self == Self::InlineQuery
     }
 
     /// Checks if `self` is `ChosenInlineResult`.
     pub fn is_chosen_inline_result(self) -> bool {
-        self == Updates::ChosenInlineResult
+        self == Self::ChosenInlineResult
     }
 
     /// Checks if `self` is `CallbackQuery`.
     pub fn is_callback_query(self) -> bool {
-        self == Updates::CallbackQuery
+        self == Self::CallbackQuery
     }
 
     /// Checks if `self` is `ShippingQuery`.
     pub fn is_shipping_query(self) -> bool {
-        self == Updates::ShippingQuery
+        self == Self::ShippingQuery
     }
 
     /// Checks if `self` is `PreCheckoutQuery`.
     pub fn is_pre_checkout_query(self) -> bool {
-        self == Updates::PreCheckoutQuery
+        self == Self::PreCheckoutQuery
     }
 
     /// Checks if `self` is `Poll`.
     pub fn is_poll(self) -> bool {
-        self == Updates::Poll
+        self == Self::Poll
     }
 }

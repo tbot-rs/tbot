@@ -10,6 +10,6 @@ pub enum SendToProviderState {
 impl SendToProviderState {
     /// Checks if `self` is `Send`.
     pub fn should_send(self) -> bool {
-        self == SendToProviderState::Send
+        self == Self::Send
     }
 }

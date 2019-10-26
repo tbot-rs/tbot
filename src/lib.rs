@@ -38,7 +38,6 @@
     clippy::cargo
 )]
 #![allow(clippy::multiple_crate_versions)] // can't do much
-#![allow(clippy::use_self)] // temporary
 
 mod bot;
 mod download_file;
