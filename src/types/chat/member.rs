@@ -84,39 +84,39 @@ pub struct Member {
 impl Status {
     /// Checks if `self` is `Creator`.
     pub fn is_creator(&self) -> bool {
-        *self == Status::Creator
+        *self == Self::Creator
     }
 
     /// Checks if `self` is `Administrator`.
     pub fn is_administator(&self) -> bool {
         match self {
-            Status::Administator { .. } => true,
+            Self::Administator { .. } => true,
             _ => false,
         }
     }
 
     /// Checks if `self` is `Member`.
     pub fn is_member(&self) -> bool {
-        *self == Status::Member
+        *self == Self::Member
     }
 
     /// Checks if `self` is `Restricted`.
     pub fn is_restricted(&self) -> bool {
         match self {
-            Status::Restricted { .. } => true,
+            Self::Restricted { .. } => true,
             _ => false,
         }
     }
 
     /// Checks if `self` is `Left`.
     pub fn is_left(&self) -> bool {
-        *self == Status::Left
+        *self == Self::Left
     }
 
     /// Checks if `self` is `Kicked`.
     pub fn is_kicked(&self) -> bool {
         match self {
-            Status::Kicked { .. } => true,
+            Self::Kicked { .. } => true,
             _ => false,
         }
     }

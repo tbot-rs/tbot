@@ -23,31 +23,31 @@ pub enum HttpsWebhook {
 impl Display for HttpsWebhook {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            HttpsWebhook::SetWebhook(error) => write!(
+            Self::SetWebhook(error) => write!(
                 formatter,
                 "The webhook event loop failed because a call to `setWebhook` \
                  failed with an error: {}",
                 error,
             ),
-            HttpsWebhook::SetWebhookTimeout(timeout) => write!(
+            Self::SetWebhookTimeout(timeout) => write!(
                 formatter,
                 "The webhook event loop failed because a call to `setWebhook` \
                  timed out: {}",
                 timeout,
             ),
-            HttpsWebhook::Tls(timeout) => write!(
+            Self::Tls(timeout) => write!(
                 formatter,
                 "The webhook event loop failed because TLS initialization \
                  failed with an error: {}",
                 timeout,
             ),
-            HttpsWebhook::Bind(timeout) => write!(
+            Self::Bind(timeout) => write!(
                 formatter,
                 "The webhook event loop failed because failed to bind to a \
                  port: {}",
                 timeout,
             ),
-            HttpsWebhook::Server(error) => write!(
+            Self::Server(error) => write!(
                 formatter,
                 "The webhook event loop failed because the server returned \
                  with an error: {}",

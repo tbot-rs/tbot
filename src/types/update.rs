@@ -60,7 +60,7 @@ impl Kind {
     /// Checks if `self` is `Message`.
     pub fn is_message(&self) -> bool {
         match self {
-            Kind::Message(..) => true,
+            Self::Message(..) => true,
             _ => false,
         }
     }
@@ -68,7 +68,7 @@ impl Kind {
     /// Checks if `self` is `EditedMessage`.
     pub fn is_edited_message(&self) -> bool {
         match self {
-            Kind::EditedMessage(..) => true,
+            Self::EditedMessage(..) => true,
             _ => false,
         }
     }
@@ -76,7 +76,7 @@ impl Kind {
     /// Checks if `self` is `ChannelPost`.
     pub fn is_channel_post(&self) -> bool {
         match self {
-            Kind::ChannelPost(..) => true,
+            Self::ChannelPost(..) => true,
             _ => false,
         }
     }
@@ -84,7 +84,7 @@ impl Kind {
     /// Checks if `self` is `EditedChannelPost`.
     pub fn is_edited_channel_post(&self) -> bool {
         match self {
-            Kind::EditedChannelPost(..) => true,
+            Self::EditedChannelPost(..) => true,
             _ => false,
         }
     }
@@ -92,7 +92,7 @@ impl Kind {
     /// Checks if `self` is `InlineQuery`.
     pub fn is_inline_query(&self) -> bool {
         match self {
-            Kind::InlineQuery(..) => true,
+            Self::InlineQuery(..) => true,
             _ => false,
         }
     }
@@ -100,7 +100,7 @@ impl Kind {
     /// Checks if `self` is `CallbackQuery`.
     pub fn is_callback_query(&self) -> bool {
         match self {
-            Kind::CallbackQuery(..) => true,
+            Self::CallbackQuery(..) => true,
             _ => false,
         }
     }
@@ -108,7 +108,7 @@ impl Kind {
     /// Checks if `self` is `Poll`.
     pub fn is_poll(&self) -> bool {
         match self {
-            Kind::Poll(..) => true,
+            Self::Poll(..) => true,
             _ => false,
         }
     }
@@ -116,7 +116,7 @@ impl Kind {
     /// Checks if `self` is `ChosenInlineResult`.
     pub fn is_chosen_inline_result(&self) -> bool {
         match self {
-            Kind::ChosenInlineResult(..) => true,
+            Self::ChosenInlineResult(..) => true,
             _ => false,
         }
     }
@@ -124,7 +124,7 @@ impl Kind {
     /// Checks if `self` is `ShippingQuery`.
     pub fn is_shipping_query(&self) -> bool {
         match self {
-            Kind::ShippingQuery(..) => true,
+            Self::ShippingQuery(..) => true,
             _ => false,
         }
     }
@@ -132,7 +132,7 @@ impl Kind {
     /// Checks if `self` is `PreCheckoutQuery`.
     pub fn is_pre_checkout_query(&self) -> bool {
         match self {
-            Kind::PreCheckoutQuery(..) => true,
+            Self::PreCheckoutQuery(..) => true,
             _ => false,
         }
     }

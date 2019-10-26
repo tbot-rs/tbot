@@ -35,16 +35,16 @@ pub enum MethodCall {
 impl Display for MethodCall {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            MethodCall::Network(error) => write!(
+            Self::Network(error) => write!(
                 formatter,
                 "A method call failed because of a network error: {}",
                 error,
             ),
-            MethodCall::OutOfService => write!(
+            Self::OutOfService => write!(
                 formatter,
                 "A method call failed because Telegram is out of service.",
             ),
-            MethodCall::Parse { response, error } => write!(
+            Self::Parse { response, error } => write!(
                 formatter,
                 "A method call failed because `tbot` failed to parse the \
                 response.\n\n\
@@ -54,7 +54,7 @@ impl Display for MethodCall {
                 response = response,
                 error = error,
             ),
-            MethodCall::RequestError {
+            Self::RequestError {
                 description,
                 error_code,
                 migrate_to_chat_id,
@@ -81,7 +81,7 @@ impl MethodCall {
     /// Checks if `self` is `Network`.
     pub fn is_network(&self) -> bool {
         match self {
-            MethodCall::Network(..) => true,
+            Self::Network(..) => true,
             _ => false,
         }
     }
@@ -89,7 +89,7 @@ impl MethodCall {
     /// Checks if `self` is `OutOfService`.
     pub fn is_out_of_service(&self) -> bool {
         match self {
-            MethodCall::OutOfService => true,
+            Self::OutOfService => true,
             _ => false,
         }
     }
@@ -97,7 +97,7 @@ impl MethodCall {
     /// Checks if `self` is `Parse`.
     pub fn is_parse(&self) -> bool {
         match self {
-            MethodCall::Parse { .. } => true,
+            Self::Parse { .. } => true,
             _ => false,
         }
     }
@@ -105,7 +105,7 @@ impl MethodCall {
     /// Checks if `self` is `RequestError`.
     pub fn is_request_error(&self) -> bool {
         match self {
-            MethodCall::RequestError { .. } => true,
+            Self::RequestError { .. } => true,
             _ => false,
         }
     }
@@ -113,6 +113,6 @@ impl MethodCall {
 
 impl From<hyper::Error> for MethodCall {
     fn from(error: hyper::Error) -> Self {
-        MethodCall::Network(error)
+        Self::Network(error)
     }
 }

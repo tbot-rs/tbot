@@ -30,47 +30,47 @@ pub enum Kind {
 impl Kind {
     /// Checks if `self` is `Passport`.
     pub fn is_passport(self) -> bool {
-        self == Kind::Passport
+        self == Self::Passport
     }
 
     /// Checks if `self` is `DriverLicense`.
     pub fn is_driver_license(self) -> bool {
-        self == Kind::DriverLicense
+        self == Self::DriverLicense
     }
 
     /// Checks if `self` is `IdentityCard`.
     pub fn is_identity_card(self) -> bool {
-        self == Kind::IdentityCard
+        self == Self::IdentityCard
     }
 
     /// Checks if `self` is `InternalPassport`.
     pub fn is_internal_passport(self) -> bool {
-        self == Kind::InternalPassport
+        self == Self::InternalPassport
     }
 
     /// Checks if `self` is `UtilityBill`.
     pub fn is_utility_bill(self) -> bool {
-        self == Kind::UtilityBill
+        self == Self::UtilityBill
     }
 
     /// Checks if `self` is `BankStatement`.
     pub fn is_bank_statement(self) -> bool {
-        self == Kind::BankStatement
+        self == Self::BankStatement
     }
 
     /// Checks if `self` is `RentalAgreement`.
     pub fn is_rental_agreement(self) -> bool {
-        self == Kind::RentalAgreement
+        self == Self::RentalAgreement
     }
 
     /// Checks if `self` is `PassportRegistration`.
     pub fn is_passport_registration(self) -> bool {
-        self == Kind::PassportRegistration
+        self == Self::PassportRegistration
     }
 
     /// Checks if `self` is `TemporaryRegistration`.
     pub fn is_temporary_registration(self) -> bool {
-        self == Kind::TemporaryRegistration
+        self == Self::TemporaryRegistration
     }
 }
 

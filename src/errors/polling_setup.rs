@@ -15,7 +15,7 @@ impl PollingSetup {
     /// Checks if `self` is `DeleteWebhook`.
     pub fn is_delete_webhook(&self) -> bool {
         match self {
-            PollingSetup::DeleteWebhook(..) => true,
+            Self::DeleteWebhook(..) => true,
             _ => false,
         }
     }
@@ -23,19 +23,19 @@ impl PollingSetup {
     /// Checks if `self` is `DeleteWebhookTimeout`.
     pub fn is_delete_webhook_timeout(&self) -> bool {
         match self {
-            PollingSetup::DeleteWebhookTimeout(..) => true,
+            Self::DeleteWebhookTimeout(..) => true,
             _ => false,
         }
     }
 }
 impl From<MethodCall> for PollingSetup {
     fn from(error: MethodCall) -> Self {
-        PollingSetup::DeleteWebhook(error)
+        Self::DeleteWebhook(error)
     }
 }
 
 impl From<Elapsed> for PollingSetup {
     fn from(error: Elapsed) -> Self {
-        PollingSetup::DeleteWebhookTimeout(error)
+        Self::DeleteWebhookTimeout(error)
     }
 }

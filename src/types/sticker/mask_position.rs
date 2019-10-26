@@ -36,21 +36,21 @@ pub struct MaskPosition {
 impl Point {
     /// Checks if `self` is `Forehead`.
     pub fn is_forehead(self) -> bool {
-        self == Point::Forehead
+        self == Self::Forehead
     }
 
     /// Checks if `self` is `Eyes`.
     pub fn is_eyes(self) -> bool {
-        self == Point::Eyes
+        self == Self::Eyes
     }
 
     /// Checks if `self` is `Mouth`.
     pub fn is_mouth(self) -> bool {
-        self == Point::Mouth
+        self == Self::Mouth
     }
 
     /// Checks if `self` is `Chin`.
     pub fn is_chin(self) -> bool {
-        self == Point::Chin
+        self == Self::Chin
     }
 }

@@ -37,7 +37,7 @@ impl From {
     /// Checks if `self` is `User`.
     pub fn is_user(&self) -> bool {
         match self {
-            From::User(..) => true,
+            Self::User(..) => true,
             _ => false,
         }
     }
@@ -45,7 +45,7 @@ impl From {
     /// Checks if `self` is `Hidden`.
     pub fn is_hidden_user(&self) -> bool {
         match self {
-            From::HiddenUser(..) => true,
+            Self::HiddenUser(..) => true,
             _ => false,
         }
     }
@@ -53,7 +53,7 @@ impl From {
     /// Checks if `self` is `Channel`.
     pub fn is_channel(&self) -> bool {
         match self {
-            From::Channel { .. } => true,
+            Self::Channel { .. } => true,
             _ => false,
         }
     }

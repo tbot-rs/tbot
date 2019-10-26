@@ -18,8 +18,8 @@ pub struct Text<'a> {
 impl Display for ParseMode {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter.write_str(match self {
-            ParseMode::Markdown => "Markdown",
-            ParseMode::Html => "HTML",
+            Self::Markdown => "Markdown",
+            Self::Html => "HTML",
         })
     }
 }

@@ -63,12 +63,12 @@ pub struct Document<'a> {
 impl MimeType {
     /// Checks if the MIME type is `application/pdf`.
     pub fn is_pdf(self) -> bool {
-        self == MimeType::ApplicationPdf
+        self == Self::ApplicationPdf
     }
 
     /// Checks if the MIME type is `application/zip`.
     pub fn is_zip(self) -> bool {
-        self == MimeType::ApplicationZip
+        self == Self::ApplicationZip
     }
 }
 

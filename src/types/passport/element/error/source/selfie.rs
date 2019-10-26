@@ -20,22 +20,22 @@ pub enum Kind {
 impl Kind {
     /// Checks if `self` is `Passport`.
     pub fn is_passport(self) -> bool {
-        self == Kind::Passport
+        self == Self::Passport
     }
 
     /// Checks if `self` is `DriverLicense`.
     pub fn is_driver_license(self) -> bool {
-        self == Kind::DriverLicense
+        self == Self::DriverLicense
     }
 
     /// Checks if `self` is `IdentityCard`.
     pub fn is_identity_card(self) -> bool {
-        self == Kind::IdentityCard
+        self == Self::IdentityCard
     }
 
     /// Checks if `self` is `InternalPassport`.
     pub fn is_internal_passport(self) -> bool {
-        self == Kind::InternalPassport
+        self == Self::InternalPassport
     }
 }
 

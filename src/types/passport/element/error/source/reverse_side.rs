@@ -16,12 +16,12 @@ pub enum Kind {
 impl Kind {
     /// Checks if `self` is `DriverLicense`.
     pub fn is_driver_license(self) -> bool {
-        self == Kind::DriverLicense
+        self == Self::DriverLicense
     }
 
     /// Checks if `self` is `IdentityCard`.
     pub fn is_identity_card(self) -> bool {
-        self == Kind::IdentityCard
+        self == Self::IdentityCard
     }
 }
 

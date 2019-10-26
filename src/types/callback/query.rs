@@ -48,7 +48,7 @@ impl Origin {
     /// Checks if `self` is `Message`.
     pub fn is_message(&self) -> bool {
         match self {
-            Origin::Message(..) => true,
+            Self::Message(..) => true,
             _ => false,
         }
     }
@@ -56,7 +56,7 @@ impl Origin {
     /// Checks if `self` is `Inline`.
     pub fn is_inline(&self) -> bool {
         match self {
-            Origin::Inline(..) => true,
+            Self::Inline(..) => true,
             _ => false,
         }
     }
@@ -66,7 +66,7 @@ impl Kind {
     /// Checks if `self` is `Data`.
     pub fn is_data(&self) -> bool {
         match self {
-            Kind::Data(..) => true,
+            Self::Data(..) => true,
             _ => false,
         }
     }
@@ -74,7 +74,7 @@ impl Kind {
     /// Checks if `self` is `Game`.
     pub fn is_game(&self) -> bool {
         match self {
-            Kind::Game(..) => true,
+            Self::Game(..) => true,
             _ => false,
         }
     }

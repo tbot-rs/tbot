@@ -11,11 +11,11 @@ pub enum WebPagePreviewState {
 impl WebPagePreviewState {
     /// Checks if the state is `Enabled`.
     pub fn is_enabled(self) -> bool {
-        self == WebPagePreviewState::Enabled
+        self == Self::Enabled
     }
 
     /// Checks if the state is `Disabled`.
     pub fn is_disabled(self) -> bool {
-        self == WebPagePreviewState::Disabled
+        self == Self::Disabled
     }
 }
