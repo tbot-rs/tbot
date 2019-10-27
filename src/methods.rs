@@ -1,16 +1,15 @@
 //! Structs for calling API methods.
 //!
-//! The methods from this module are low-level: you have to pass everything
-//! a method needs to their `new` methods. More likely, you'd like to use
-//! [`Bot`] to infer your bot's token when calling methods. Moreover, when
-//! handling updates, their [contexts] provide methods that infer even more
-//! information from the update.
+//! The methods from this module can't be constructed directly; instead, you
+//! construct them using a [`Bot`] instance, which infers the underlying client
+//! and your bot's token, and [contexts] that can infer even more information
+//! from the update, such as the chat ID.
 //!
 //! All the methods have a common pattern:
 //!
-//! - Methods provide the builder API for optional parameters;
-//! - Methods have the `call` method, which returns a `Future` that makes
-//!   the request and resolves with the call's result.
+//! - Methods provide Builder API for optional parameters;
+//! - Methods have the asynchronous `call` method, which calls the method
+//!   and resolves with a `Result`.
 //!
 //! For example, here's how to call [`SendMessage`]:
 //!
@@ -22,15 +21,10 @@
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";
 //!
 //! let bot = tbot::from_env!("BOT_TOKEN");
-//!
 //! bot.send_message(CHAT, Text::markdown(MESSAGE)).call().await.unwrap();
 //! # }
 //! ```
 //!
-//! Each method resolves with a `Result` that may be `Ok` if the call
-//! was successful or `Err` if an error happened. Here, we simply `unwrap`
-//! the result, but you should handle error properly.
-
 //! # Inline/message methods
 //!
 //! Several API methods accept either (`chat_id` and `message_id`) or
