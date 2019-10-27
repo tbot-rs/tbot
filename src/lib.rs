@@ -52,10 +52,10 @@ pub mod event_loop;
 pub mod methods;
 pub mod types;
 
-use {download_file::download_file, multipart::Multipart};
+use {download_file::download_file, multipart::Multipart, token::Token};
 
 pub use tokio::main;
-pub use {bot::Bot, event_loop::EventLoop, token::Token};
+pub use {bot::Bot, event_loop::EventLoop};
 
 pub mod prelude {
     //! Traits needed when working with `tbot`.

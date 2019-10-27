@@ -45,9 +45,9 @@ pub struct Bot<C> {
 
 impl Bot<connectors::Https> {
     /// Constructs a new `Bot`.
-    pub fn new(token: Token) -> Self {
+    pub fn new(token: String) -> Self {
         Self {
-            token,
+            token: Token::new(token),
             client: Arc::new(connectors::default()),
         }
     }
@@ -974,9 +974,9 @@ impl<C> Bot<C> {
 
 impl<C: Connector> Bot<C> {
     /// Constructs a `Bot` with a custom connector.
-    pub fn with_connector(token: Token, connector: C) -> Self {
+    pub fn with_connector(token: String, connector: C) -> Self {
         Self {
-            token,
+            token: Token::new(token),
             client: Arc::new(connectors::create_client(connector)),
         }
     }
@@ -1024,14 +1024,14 @@ impl<C: Connector> Bot<C> {
 macro_rules! from_env {
     ($var:literal) => {{
         let token = env!($var).to_string();
-        $crate::Bot::new($crate::Token::new(token))
+        $crate::Bot::new(token)
     }};
     ($var:literal,) => {
         $crate::from_env!($var)
     };
     ($var:literal, $connector:expr) => {{
         let token = env!($var).to_string();
-        $crate::Bot::with_connector($crate::Token::new(token), $connector)
+        $crate::Bot::with_connector(token, $connector)
     }};
     ($var:literal, $connector:expr,) => {
         $crate::from_env!($var, $connector)
@@ -1047,8 +1047,8 @@ macro_rules! from_env {
     };
 }
 
-fn extract_token(env_var: &'static str) -> Token {
-    Token::new(std::env::var(env_var).unwrap_or_else(|_| {
+fn extract_token(env_var: &'static str) -> String {
+    std::env::var(env_var).unwrap_or_else(|_| {
         panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
-    }))
+    })
 }
