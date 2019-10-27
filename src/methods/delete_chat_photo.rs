@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::parameters::{ChatId, ImplicitChatId},
-    Token,
 };
 use serde::Serialize;
 
@@ -19,14 +19,14 @@ pub struct DeleteChatPhoto<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
 }
 
 impl<'a, C> DeleteChatPhoto<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
     ) -> Self {
         Self {
@@ -42,7 +42,7 @@ impl<C: Connector> DeleteChatPhoto<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "deleteChatPhoto",
             None,
             serde_json::to_vec(&self).unwrap(),

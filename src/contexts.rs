@@ -33,8 +33,7 @@
 //! ```no_run
 //! # async fn foo() {
 //! # use tbot::prelude::*;
-//! # let mut bot = tbot::Bot::new(tbot::Token::new(String::new()))
-//! #     .event_loop();
+//! # let mut bot = tbot::Bot::new(String::new()).event_loop();
 //! use tbot::types::chat;
 //! const ADMIN_CHAT: chat::Id = chat::Id(0);
 //!

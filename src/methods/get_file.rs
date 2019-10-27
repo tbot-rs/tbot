@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::file::{self, id::AsFileId, File},
-    Token,
 };
 use serde::Serialize;
 
@@ -19,14 +19,14 @@ pub struct GetFile<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     file_id: file::id::Ref<'a>,
 }
 
 impl<'a, C> GetFile<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         file_id: &'a impl AsFileId,
     ) -> Self {
         Self {
@@ -42,7 +42,7 @@ impl<C: Connector> GetFile<'_, C> {
     pub async fn call(self) -> Result<File, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getFile",
             None,
             serde_json::to_vec(&self).unwrap(),

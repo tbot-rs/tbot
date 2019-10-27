@@ -3,11 +3,11 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         chat,
         parameters::{ChatId, ImplicitChatId},
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -22,7 +22,7 @@ pub struct SetChatPermissions<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     permissions: chat::Permissions,
 }
@@ -30,7 +30,7 @@ pub struct SetChatPermissions<'a, C> {
 impl<'a, C> SetChatPermissions<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         permissions: chat::Permissions,
     ) -> Self {
@@ -48,7 +48,7 @@ impl<C: Connector> SetChatPermissions<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "setChatPermissions",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -16,11 +16,7 @@
 //!
 //! ```no_run
 //! # async fn foo() {
-//! use tbot::{
-//!     prelude::*,
-//!     types::{chat, parameters::Text},
-//!     Token,
-//! };
+//! use tbot::types::{chat, parameters::Text};
 //!
 //! const CHAT: chat::Id = chat::Id(0);
 //! const MESSAGE: &str = "`tbot` is a super-cool crate!";

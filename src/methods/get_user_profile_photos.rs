@@ -1,6 +1,6 @@
 use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::user, Token,
+    connectors::Connector, errors, internal::Client, token, types::user,
 };
 use serde::Serialize;
 
@@ -15,7 +15,7 @@ pub struct GetUserProfilePhotos<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u32>,
@@ -26,7 +26,7 @@ pub struct GetUserProfilePhotos<'a, C> {
 impl<'a, C> GetUserProfilePhotos<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         user_id: user::Id,
     ) -> Self {
         Self {
@@ -58,7 +58,7 @@ impl<C: Connector> GetUserProfilePhotos<'_, C> {
     pub async fn call(self) -> Result<user::ProfilePhotos, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getUserProfilePhotos",
             None,
             serde_json::to_vec(&self).unwrap(),

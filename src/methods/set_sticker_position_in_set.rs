@@ -1,5 +1,5 @@
 use super::send_method;
-use crate::{connectors::Connector, errors, internal::Client, Token};
+use crate::{connectors::Connector, errors, internal::Client, token};
 use serde::Serialize;
 
 /// Changes a sticker's position in a sticker set.
@@ -13,7 +13,7 @@ pub struct SetStickerPositionInSet<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     sticker: &'a str,
     position: u32,
 }
@@ -21,7 +21,7 @@ pub struct SetStickerPositionInSet<'a, C> {
 impl<'a, C> SetStickerPositionInSet<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         sticker: &'a str,
         position: u32,
     ) -> Self {
@@ -39,7 +39,7 @@ impl<C: Connector> SetStickerPositionInSet<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "setStickerPositionInSet",
             None,
             serde_json::to_vec(&self).unwrap(),

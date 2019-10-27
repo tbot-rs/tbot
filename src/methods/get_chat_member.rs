@@ -3,12 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         chat,
         parameters::{ChatId, ImplicitChatId},
         user,
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct GetChatMember<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     user_id: user::Id,
 }
@@ -31,7 +31,7 @@ pub struct GetChatMember<'a, C> {
 impl<'a, C> GetChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> Self {
@@ -49,7 +49,7 @@ impl<C: Connector> GetChatMember<'_, C> {
     pub async fn call(self) -> Result<chat::Member, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getChatMember",
             None,
             serde_json::to_vec(&self).unwrap(),

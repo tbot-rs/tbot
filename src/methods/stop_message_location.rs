@@ -3,12 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard::inline,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct StopMessageLocation<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,7 +33,7 @@ pub struct StopMessageLocation<'a, C> {
 impl<'a, C> StopMessageLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> Self {
@@ -59,7 +59,7 @@ impl<C: Connector> StopMessageLocation<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),

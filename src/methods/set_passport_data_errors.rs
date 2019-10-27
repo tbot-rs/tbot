@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{passport, user},
-    Token,
 };
 use serde::Serialize;
 
@@ -19,7 +19,7 @@ pub struct SetPassportDataErrors<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     errors: &'a [passport::element::Error<'a>],
 }
@@ -27,7 +27,7 @@ pub struct SetPassportDataErrors<'a, C> {
 impl<'a, C> SetPassportDataErrors<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         user_id: user::Id,
         errors: &'a [passport::element::Error<'a>],
     ) -> Self {
@@ -45,7 +45,7 @@ impl<C: Connector> SetPassportDataErrors<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "setPassportDataErrors",
             None,
             serde_json::to_vec(&self).unwrap(),

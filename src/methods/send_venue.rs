@@ -3,12 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct SendVenue<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     latitude: f64,
     longitude: f64,
@@ -44,7 +44,7 @@ pub struct SendVenue<'a, C> {
 impl<'a, C> SendVenue<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         (latitude, longitude): (f64, f64),
         title: &'a str,
@@ -110,7 +110,7 @@ impl<C: Connector> SendVenue<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendVenue",
             None,
             serde_json::to_vec(&self).unwrap(),

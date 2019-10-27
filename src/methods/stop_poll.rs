@@ -3,13 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
         Poll,
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -24,7 +24,7 @@ pub struct StopPoll<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,7 +34,7 @@ pub struct StopPoll<'a, C> {
 impl<'a, C> StopPoll<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> Self {
@@ -60,7 +60,7 @@ impl<C: Connector> StopPoll<'_, C> {
     pub async fn call(self) -> Result<Poll, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "stopPoll",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,6 +1,6 @@
 use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::shipping, Token,
+    connectors::Connector, errors, internal::Client, token, types::shipping,
 };
 use serde::Serialize;
 
@@ -15,7 +15,7 @@ pub struct AnswerShippingQuery<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     shipping_query_id: shipping::query::id::Ref<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27,7 +27,7 @@ pub struct AnswerShippingQuery<'a, C> {
 impl<'a, C> AnswerShippingQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         shipping_query_id: shipping::query::id::Ref<'a>,
         result: Result<&'a [shipping::Option<'a>], &'a str>,
     ) -> Self {
@@ -47,7 +47,7 @@ impl<C: Connector> AnswerShippingQuery<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "answerShippingQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

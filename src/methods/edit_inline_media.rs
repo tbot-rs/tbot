@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         inline_message_id,
         input_file::{
@@ -10,7 +11,7 @@ use crate::{
         },
         keyboard::inline,
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Edits the media of a message sent via the inline mode.
@@ -22,7 +23,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineMedia<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     inline_message_id: inline_message_id::Ref<'a>,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
@@ -31,7 +32,7 @@ pub struct EditInlineMedia<'a, C> {
 impl<'a, C> EditInlineMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
@@ -76,7 +77,7 @@ impl<C: Connector> EditInlineMedia<'_, C> {
 
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "editMessageMedia",
             Some(boundary),
             body,

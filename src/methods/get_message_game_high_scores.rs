@@ -3,13 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         game::HighScore,
         message,
         parameters::{ChatId, ImplicitChatId},
         user,
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -24,7 +24,7 @@ pub struct GetMessageGameHighScores<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     chat_id: ChatId<'a>,
     message_id: message::Id,
@@ -33,7 +33,7 @@ pub struct GetMessageGameHighScores<'a, C> {
 impl<'a, C> GetMessageGameHighScores<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         user_id: user::Id,
@@ -53,7 +53,7 @@ impl<C: Connector> GetMessageGameHighScores<'_, C> {
     pub async fn call(self) -> Result<Vec<HighScore>, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),

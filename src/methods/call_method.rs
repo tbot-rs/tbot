@@ -1,5 +1,5 @@
 use crate::{
-    connectors::Connector, errors, internal::Client, types::chat, Token,
+    connectors::Connector, errors, internal::Client, token, types::chat,
 };
 use hyper::{header::HeaderValue, Body, Method, Request, Uri};
 use serde::{de::DeserializeOwned, Deserialize};
@@ -21,7 +21,7 @@ struct Response<T> {
 #[must_use]
 pub async fn send_method<'a, T, C>(
     client: &'a Client<C>,
-    token: &'a Token,
+    token: token::Ref<'a>,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,

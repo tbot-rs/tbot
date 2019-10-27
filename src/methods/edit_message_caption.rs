@@ -3,12 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard::inline,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, ParseMode, Text},
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct EditMessageCaption<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
     caption: &'a str,
@@ -36,7 +36,7 @@ pub struct EditMessageCaption<'a, C> {
 impl<'a, C> EditMessageCaption<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         caption: impl Into<Text<'a>>,
@@ -67,7 +67,7 @@ impl<C: Connector> EditMessageCaption<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "editMessageCaption",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,5 +1,5 @@
 use super::send_method;
-use crate::{connectors::Connector, errors, internal::Client, types, Token};
+use crate::{connectors::Connector, errors, internal::Client, token, types};
 
 /// Gets information about the bot's webhook.
 ///
@@ -10,11 +10,14 @@ use crate::{connectors::Connector, errors, internal::Client, types, Token};
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetWebhookInfo<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
 }
 
 impl<'a, C> GetWebhookInfo<'a, C> {
-    pub(crate) const fn new(client: &'a Client<C>, token: Token) -> Self {
+    pub(crate) const fn new(
+        client: &'a Client<C>,
+        token: token::Ref<'a>,
+    ) -> Self {
         Self { client, token }
     }
 }
@@ -22,13 +25,7 @@ impl<'a, C> GetWebhookInfo<'a, C> {
 impl<C: Connector> GetWebhookInfo<'_, C> {
     /// Calls the method.
     pub async fn call(self) -> Result<types::WebhookInfo, errors::MethodCall> {
-        send_method(
-            self.client,
-            &self.token,
-            "getWebhookInfo",
-            None,
-            Vec::new(),
-        )
-        .await
+        send_method(self.client, self.token, "getWebhookInfo", None, Vec::new())
+            .await
     }
 }

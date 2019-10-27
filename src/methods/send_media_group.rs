@@ -3,12 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{Album, GroupMedia, InputFile, Photo, Thumb, Video},
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Sends an album.
@@ -20,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     media: &'a [GroupMedia<'a>],
     disable_notification: Option<bool>,
@@ -30,7 +31,7 @@ pub struct SendMediaGroup<'a, C> {
 impl<'a, C> SendMediaGroup<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         media: &'a [GroupMedia<'a>],
     ) -> Self {
@@ -104,7 +105,7 @@ impl<C: Connector> SendMediaGroup<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendMediaGroup",
             Some(boundary),
             body,

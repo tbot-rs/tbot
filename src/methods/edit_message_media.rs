@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{
             Animation, Audio, Document, EditableMedia, InputFile, Photo, Video,
@@ -11,7 +12,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Edits the media of a message sent by the bot itself.
@@ -23,7 +24,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditMessageMedia<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
     media: EditableMedia<'a>,
@@ -33,7 +34,7 @@ pub struct EditMessageMedia<'a, C> {
 impl<'a, C> EditMessageMedia<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
@@ -81,7 +82,7 @@ impl<C: Connector> EditMessageMedia<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "editMessageMedia",
             Some(boundary),
             body,

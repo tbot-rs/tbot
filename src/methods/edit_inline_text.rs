@@ -3,12 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         inline_message_id,
         keyboard::inline,
         parameters::{ParseMode, Text, WebPagePreviewState},
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct EditInlineText<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     inline_message_id: inline_message_id::Ref<'a>,
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,7 +37,7 @@ pub struct EditInlineText<'a, C> {
 impl<'a, C> EditInlineText<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
         text: impl Into<Text<'a>>,
     ) -> Self {
@@ -74,7 +74,7 @@ impl<C: Connector> EditInlineText<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "editMessageText",
             None,
             serde_json::to_vec(&self).unwrap(),

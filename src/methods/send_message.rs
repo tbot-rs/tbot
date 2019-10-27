@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard,
         message::{self, Message},
@@ -11,7 +12,6 @@ use crate::{
             WebPagePreviewState,
         },
     },
-    Token,
 };
 use serde::Serialize;
 
@@ -26,7 +26,7 @@ pub struct SendMessage<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     text: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -44,7 +44,7 @@ pub struct SendMessage<'a, C> {
 impl<'a, C> SendMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         text: impl Into<Text<'a>>,
     ) -> Self {
@@ -100,7 +100,7 @@ impl<C: Connector> SendMessage<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendMessage",
             None,
             serde_json::to_vec(&self).unwrap(),

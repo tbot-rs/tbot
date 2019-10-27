@@ -3,13 +3,14 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{Animation, InputFile, Thumb},
         keyboard,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Sends an animation.
@@ -21,7 +22,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     animation: Animation<'a>,
     disable_notification: Option<bool>,
@@ -32,7 +33,7 @@ pub struct SendAnimation<'a, C> {
 impl<'a, C> SendAnimation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         animation: Animation<'a>,
     ) -> Self {
@@ -106,7 +107,7 @@ impl<C: Connector> SendAnimation<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendAnimation",
             Some(boundary),
             body,

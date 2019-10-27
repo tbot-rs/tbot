@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{inline_message_id, keyboard::inline},
-    Token,
 };
 use serde::Serialize;
 
@@ -19,7 +19,7 @@ pub struct EditInlineReplyMarkup<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     inline_message_id: inline_message_id::Ref<'a>,
     reply_markup: inline::Keyboard<'a>,
 }
@@ -27,7 +27,7 @@ pub struct EditInlineReplyMarkup<'a, C> {
 impl<'a, C> EditInlineReplyMarkup<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
         reply_markup: inline::Keyboard<'a>,
     ) -> Self {
@@ -45,7 +45,7 @@ impl<C: Connector> EditInlineReplyMarkup<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "editMessageReplyMarkup",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -3,12 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
         user,
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Adds a new sticker to an existing sticker set.
@@ -20,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AddStickerToSet<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     name: &'a str,
     png_sticker: PngSticker<'a>,
@@ -31,7 +32,7 @@ pub struct AddStickerToSet<'a, C> {
 impl<'a, C> AddStickerToSet<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         user_id: user::Id,
         name: &'a str,
         png_sticker: PngSticker<'a>,
@@ -77,7 +78,7 @@ impl<C: Connector> AddStickerToSet<'_, C> {
 
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "addStickerToSet",
             Some(boundary),
             body,

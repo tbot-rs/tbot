@@ -3,13 +3,14 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{Document, InputFile, Thumb},
         keyboard,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Sends a document.
@@ -21,7 +22,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendDocument<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     document: Document<'a>,
     disable_notification: Option<bool>,
@@ -32,7 +33,7 @@ pub struct SendDocument<'a, C> {
 impl<'a, C> SendDocument<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         document: Document<'a>,
     ) -> Self {
@@ -103,7 +104,7 @@ impl<C: Connector> SendDocument<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendDocument",
             Some(boundary),
             body,

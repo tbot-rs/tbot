@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{inline_message_id, keyboard::inline},
-    Token,
 };
 use serde::Serialize;
 
@@ -19,7 +19,7 @@ pub struct EditInlineLocation<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     inline_message_id: inline_message_id::Ref<'a>,
     latitude: f64,
     longitude: f64,
@@ -30,7 +30,7 @@ pub struct EditInlineLocation<'a, C> {
 impl<'a, C> EditInlineLocation<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
         (latitude, longitude): (f64, f64),
     ) -> Self {
@@ -57,7 +57,7 @@ impl<C: Connector> EditInlineLocation<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "editMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),

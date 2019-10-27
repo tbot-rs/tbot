@@ -3,13 +3,14 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{InputFile, Thumb, Video},
         keyboard,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Sends a video.
@@ -21,7 +22,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideo<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     video: Video<'a>,
     disable_notification: Option<bool>,
@@ -32,7 +33,7 @@ pub struct SendVideo<'a, C> {
 impl<'a, C> SendVideo<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         video: Video<'a>,
     ) -> Self {
@@ -105,7 +106,7 @@ impl<C: Connector> SendVideo<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.client, &self.token, "sendVideo", Some(boundary), body)
+        send_method(self.client, self.token, "sendVideo", Some(boundary), body)
             .await
     }
 }

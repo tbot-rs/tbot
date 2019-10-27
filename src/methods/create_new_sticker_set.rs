@@ -3,12 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
         user,
     },
-    Multipart, Token,
+    Multipart,
 };
 
 /// Creates a new sticker set.
@@ -20,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct CreateNewStickerSet<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     name: &'a str,
     title: &'a str,
@@ -33,7 +34,7 @@ pub struct CreateNewStickerSet<'a, C> {
 impl<'a, C> CreateNewStickerSet<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         user_id: user::Id,
         name: &'a str,
         title: &'a str,
@@ -92,7 +93,7 @@ impl<C: Connector> CreateNewStickerSet<'_, C> {
 
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "createNewStickerSet",
             Some(boundary),
             body,
