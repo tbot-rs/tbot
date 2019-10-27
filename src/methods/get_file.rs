@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::file::{self, id::AsFileId, File},
     token,
+    types::file::{self, id::AsFileId, File},
 };
 use serde::Serialize;
 

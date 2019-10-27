@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard::inline,
         message::{self, Message},
@@ -10,7 +11,6 @@ use crate::{
             ChatId, ImplicitChatId, ParseMode, Text, WebPagePreviewState,
         },
     },
-    token,
 };
 use serde::Serialize;
 

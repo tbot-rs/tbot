@@ -1,5 +1,5 @@
 use crate::{
-    connectors::Connector, errors, internal::Client, types::chat, token,
+    connectors::Connector, errors, internal::Client, token, types::chat,
 };
 use hyper::{header::HeaderValue, Body, Method, Request, Uri};
 use serde::{de::DeserializeOwned, Deserialize};

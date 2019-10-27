@@ -568,7 +568,12 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         animation: Animation<'a>,
     ) -> SendAnimation<'a, C> {
-        SendAnimation::new(&self.client, self.token.as_ref(), chat_id, animation)
+        SendAnimation::new(
+            &self.client,
+            self.token.as_ref(),
+            chat_id,
+            animation,
+        )
     }
 
     /// Sends an audio.
@@ -946,7 +951,12 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> UnbanChatMember<'a, C> {
-        UnbanChatMember::new(&self.client, self.token.as_ref(), chat_id, user_id)
+        UnbanChatMember::new(
+            &self.client,
+            self.token.as_ref(),
+            chat_id,
+            user_id,
+        )
     }
 
     /// Unpins a chat message.

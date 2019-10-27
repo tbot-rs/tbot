@@ -3,13 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         game::HighScore,
         message,
         parameters::{ChatId, ImplicitChatId},
         user,
     },
-    token,
 };
 use serde::Serialize;
 

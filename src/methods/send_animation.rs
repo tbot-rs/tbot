@@ -3,13 +3,14 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{Animation, InputFile, Thumb},
         keyboard,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Sends an animation.

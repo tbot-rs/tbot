@@ -3,13 +3,14 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{InputFile, Thumb, Video},
         keyboard,
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Sends a video.

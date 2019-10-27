@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard,
         message::{self, Message},
@@ -11,7 +12,6 @@ use crate::{
             WebPagePreviewState,
         },
     },
-    token,
 };
 use serde::Serialize;
 

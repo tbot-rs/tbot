@@ -1,6 +1,6 @@
 use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::inline_query, token,
+    connectors::Connector, errors, internal::Client, token, types::inline_query,
 };
 use serde::Serialize;
 

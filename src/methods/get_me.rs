@@ -1,5 +1,5 @@
 use super::send_method;
-use crate::{connectors::Connector, errors, internal::Client, types, token};
+use crate::{connectors::Connector, errors, internal::Client, token, types};
 
 /// Gets information about the bot.
 ///
@@ -14,7 +14,10 @@ pub struct GetMe<'a, C> {
 }
 
 impl<'a, C> GetMe<'a, C> {
-    pub(crate) const fn new(client: &'a Client<C>, token: token::Ref<'a>) -> Self {
+    pub(crate) const fn new(
+        client: &'a Client<C>,
+        token: token::Ref<'a>,
+    ) -> Self {
         Self { client, token }
     }
 }

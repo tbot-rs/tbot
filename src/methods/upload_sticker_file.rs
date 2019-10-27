@@ -3,8 +3,9 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{user, File},
-    Multipart, token,
+    Multipart,
 };
 
 /// Uploads a sticker file.

@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::{game::HighScore, inline_message_id, user},
     token,
+    types::{game::HighScore, inline_message_id, user},
 };
 use serde::Serialize;
 

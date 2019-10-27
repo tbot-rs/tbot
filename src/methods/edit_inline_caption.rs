@@ -3,12 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         inline_message_id,
         keyboard::inline,
         parameters::{ParseMode, Text},
     },
-    token,
 };
 use serde::Serialize;
 

@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::{inline_message_id, user},
     token,
+    types::{inline_message_id, user},
 };
 use serde::Serialize;
 

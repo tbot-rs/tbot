@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::{parameters::Updates, Update},
     token,
+    types::{parameters::Updates, Update},
 };
 use serde::Serialize;
 

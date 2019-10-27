@@ -1,5 +1,5 @@
 use crate::{
-    connectors::Connector, errors, internal::Client, types::File, token,
+    connectors::Connector, errors, internal::Client, token, types::File,
 };
 use hyper::{StatusCode, Uri};
 

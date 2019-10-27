@@ -3,11 +3,11 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         chat,
         parameters::{ChatId, ImplicitChatId},
     },
-    token,
 };
 use serde::Serialize;
 

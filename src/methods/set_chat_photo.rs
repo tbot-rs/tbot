@@ -3,11 +3,12 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{ChatPhoto, InputFile},
         parameters::{ChatId, ImplicitChatId},
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Sets a chat's photo.

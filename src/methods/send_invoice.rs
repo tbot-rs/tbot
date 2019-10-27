@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         chat,
         keyboard::inline,
@@ -13,7 +14,6 @@ use crate::{
         },
         LabeledPrice,
     },
-    token,
 };
 use serde::Serialize;
 

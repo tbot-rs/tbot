@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         inline_message_id,
         input_file::{
@@ -10,7 +11,7 @@ use crate::{
         },
         keyboard::inline,
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Edits the media of a message sent via the inline mode.

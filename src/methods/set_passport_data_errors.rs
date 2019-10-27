@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::{passport, user},
     token,
+    types::{passport, user},
 };
 use serde::Serialize;
 

@@ -3,8 +3,8 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::{callback, parameters::CallbackAction},
     token,
+    types::{callback, parameters::CallbackAction},
 };
 use serde::Serialize;
 

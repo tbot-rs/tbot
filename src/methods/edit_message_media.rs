@@ -3,6 +3,7 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{
             Animation, Audio, Document, EditableMedia, InputFile, Photo, Video,
@@ -11,7 +12,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Edits the media of a message sent by the bot itself.

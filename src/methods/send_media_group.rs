@@ -3,12 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{Album, GroupMedia, InputFile, Photo, Thumb, Video},
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Sends an album.

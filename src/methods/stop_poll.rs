@@ -3,13 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
         Poll,
     },
-    token,
 };
 use serde::Serialize;
 

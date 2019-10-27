@@ -3,12 +3,13 @@ use crate::{
     connectors::Connector,
     errors,
     internal::Client,
+    token,
     types::{
         input_file::{InputFile, PngSticker},
         sticker::MaskPosition,
         user,
     },
-    Multipart, token,
+    Multipart,
 };
 
 /// Adds a new sticker to an existing sticker set.
