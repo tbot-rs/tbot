@@ -1,13 +1,14 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
-        input_file::*,
-        message,
+        input_file::{Album, GroupMedia, InputFile, Photo, Thumb, Video},
+        message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
+    Multipart, Token,
 };
 
 /// Sends an album.
@@ -60,7 +61,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
 
 impl<C: Connector> SendMediaGroup<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<Vec<types::Message>, errors::MethodCall> {
+    pub async fn call(self) -> Result<Vec<Message>, errors::MethodCall> {
         let mut multipart = Multipart::new(4 + self.media.len())
             .chat_id("chat_id", self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)

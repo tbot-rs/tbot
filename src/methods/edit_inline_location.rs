@@ -1,10 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{inline_message_id, keyboard::inline},
+    Token,
 };
+use serde::Serialize;
 
 /// Edits a live location sent via the inline mode.
 ///

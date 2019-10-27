@@ -5,7 +5,7 @@ use serde::Deserialize;
 mod id;
 mod profile_photos;
 
-pub use {id::*, profile_photos::*};
+pub use {id::Id, profile_photos::ProfilePhotos};
 
 /// Represents a [`User`].
 ///

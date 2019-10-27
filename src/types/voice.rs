@@ -1,5 +1,5 @@
-use super::*;
-use crate::types::file::id::AsFileId;
+use crate::types::file::{self, id::AsFileId};
+use serde::Deserialize;
 
 /// Represents a [`Voice`].
 ///

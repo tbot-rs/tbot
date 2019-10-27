@@ -1,4 +1,5 @@
-use super::*;
+use crate::types::user;
+use serde::Deserialize;
 
 /// Represents a [`Contact`].
 ///

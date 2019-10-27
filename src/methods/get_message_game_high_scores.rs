@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -9,7 +9,9 @@ use crate::{
         parameters::{ChatId, ImplicitChatId},
         user,
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Gets an excerpt from the high score table of a game sent by the bot itself.
 ///

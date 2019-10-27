@@ -1,4 +1,5 @@
-use super::*;
+use super::ChatMethods;
+use crate::methods::PinChatMessage;
 
 /// Provides methods for pinnable messages.
 pub trait Pinnable<'a, C: 'static>: ChatMethods<'a, C> {

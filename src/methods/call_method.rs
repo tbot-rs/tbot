@@ -1,6 +1,8 @@
-use super::*;
-use crate::{connectors::Connector, errors, internal::Client};
+use crate::{
+    connectors::Connector, errors, internal::Client, types::chat, Token,
+};
 use hyper::{header::HeaderValue, Body, Method, Request, Uri};
+use serde::{de::DeserializeOwned, Deserialize};
 
 #[derive(Deserialize)]
 struct ResponseParameters {
@@ -25,7 +27,7 @@ pub async fn send_method<'a, T, C>(
     body: Vec<u8>,
 ) -> Result<T, errors::MethodCall>
 where
-    T: serde::de::DeserializeOwned,
+    T: DeserializeOwned,
     C: Connector,
 {
     let url = Uri::builder()

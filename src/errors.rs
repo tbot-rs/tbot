@@ -8,6 +8,6 @@ mod polling;
 mod polling_setup;
 
 pub use {
-    download::*, http_webhook::*, https_webhook::*, method_call::*, polling::*,
-    polling_setup::*,
+    download::Download, http_webhook::HttpWebhook, https_webhook::HttpsWebhook,
+    method_call::MethodCall, polling::Polling, polling_setup::PollingSetup,
 };

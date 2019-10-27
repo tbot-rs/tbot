@@ -1,16 +1,18 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
         keyboard::inline,
-        message,
+        message::{self, Message},
         parameters::{
             ChatId, ImplicitChatId, ParseMode, Text, WebPagePreviewState,
         },
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Edits the text of a message sent by the bot itself.
 ///
@@ -74,7 +76,7 @@ impl<'a, C> EditMessageText<'a, C> {
 
 impl<C: Connector> EditMessageText<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

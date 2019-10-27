@@ -1,4 +1,4 @@
-use super::*;
+use super::{Photo, Video};
 use serde::{
     ser::{SerializeSeq, Serializer},
     Serialize,

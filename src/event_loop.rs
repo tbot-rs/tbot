@@ -22,7 +22,7 @@ mod handlers_macros;
 mod polling;
 pub mod webhook;
 
-pub use {polling::*, webhook::Webhook};
+pub use {polling::Polling, webhook::Webhook};
 
 type Handlers<T> = Vec<Box<T>>;
 type Map<T> = HashMap<&'static str, Handlers<T>>;

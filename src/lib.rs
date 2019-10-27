@@ -52,11 +52,10 @@ pub mod event_loop;
 pub mod methods;
 pub mod types;
 
-use serde::{Deserialize, Serialize};
-use {download_file::download_file, multipart::*};
+use {download_file::download_file, multipart::Multipart};
 
 pub use tokio::main;
-pub use {bot::*, event_loop::EventLoop, token::*};
+pub use {bot::Bot, event_loop::EventLoop, token::Token};
 
 pub mod prelude {
     //! Traits needed when working with `tbot`.

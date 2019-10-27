@@ -1,6 +1,6 @@
 //! Types related to messages.
 
-use super::*;
+use crate::types::{Chat, User};
 
 pub mod forward;
 mod id;

@@ -1,5 +1,8 @@
-use super::*;
-use crate::{connectors::Connector, errors, internal::Client, types::sticker};
+use super::send_method;
+use crate::{
+    connectors::Connector, errors, internal::Client, types::sticker, Token,
+};
+use serde::Serialize;
 
 /// Gets a sticker set by its name.
 ///

@@ -1,5 +1,11 @@
-use super::*;
-use crate::{connectors::Connector, errors, internal::Client, types::user};
+use super::send_method;
+use crate::{
+    connectors::Connector,
+    errors,
+    internal::Client,
+    types::{user, File},
+    Multipart, Token,
+};
 
 /// Uploads a sticker file.
 ///
@@ -33,7 +39,7 @@ impl<'a, C> UploadStickerFile<'a, C> {
 
 impl<C: Connector> UploadStickerFile<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::File, errors::MethodCall> {
+    pub async fn call(self) -> Result<File, errors::MethodCall> {
         let (boundary, body) = Multipart::new(2)
             .string("user_id", &self.user_id)
             .file("png_sticker", "sticker.png", self.png_sticker)

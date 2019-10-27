@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -6,13 +6,14 @@ use crate::{
     types::{
         chat,
         keyboard::inline,
-        message,
+        message::{self, Message},
         parameters::{
             Flexibility, NotificationState, Photo, Requirement,
             SendToProviderState,
         },
         LabeledPrice,
     },
+    Token,
 };
 use serde::Serialize;
 
@@ -195,7 +196,7 @@ impl<'a, C> SendInvoice<'a, C> {
 
 impl<C: Connector> SendInvoice<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

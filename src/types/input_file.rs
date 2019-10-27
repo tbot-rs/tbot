@@ -14,10 +14,12 @@ mod video;
 mod video_note;
 mod voice;
 
+pub(crate) use group_media::Album;
 pub use {
-    animation::*, audio::*, chat_photo::*, document::*, editable_media::*,
-    group_media::*, photo::*, png_sticker::*, sticker::*, thumb::*, video::*,
-    video_note::*, voice::*,
+    animation::Animation, audio::Audio, chat_photo::ChatPhoto,
+    document::Document, editable_media::EditableMedia, group_media::GroupMedia,
+    photo::Photo, png_sticker::PngSticker, sticker::Sticker, thumb::Thumb,
+    video::Video, video_note::VideoNote, voice::Voice,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]

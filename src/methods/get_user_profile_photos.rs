@@ -1,5 +1,8 @@
-use super::*;
-use crate::{connectors::Connector, errors, internal::Client, types::user};
+use super::send_method;
+use crate::{
+    connectors::Connector, errors, internal::Client, types::user, Token,
+};
+use serde::Serialize;
 
 /// Gets a user's profile photos.
 ///

@@ -1,13 +1,15 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
-        message,
+        message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Forwards a message.
 ///
@@ -56,7 +58,7 @@ impl<'a, C> ForwardMessage<'a, C> {
 
 impl<C: Connector> ForwardMessage<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

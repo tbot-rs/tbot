@@ -1,4 +1,4 @@
-use super::*;
+use serde::Serialize;
 
 /// Represents a [`LoginUrl`].
 ///

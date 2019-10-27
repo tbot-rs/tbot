@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -7,7 +7,9 @@ use crate::{
         message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Pins a message in a chat.
 ///

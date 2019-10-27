@@ -1,14 +1,16 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
-        message,
+        message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
         user,
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Sets a user's new high score in a game sent by the bot itself.
 ///
@@ -69,7 +71,7 @@ impl<'a, C> SetMessageGameScore<'a, C> {
 
 impl<C: Connector> SetMessageGameScore<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

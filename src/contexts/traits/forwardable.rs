@@ -1,5 +1,5 @@
-use super::*;
-use crate::types::parameters::ImplicitChatId;
+use super::ChatMethods;
+use crate::{methods::ForwardMessage, types::parameters::ImplicitChatId};
 
 /// Provides methods for forwardable messages.
 pub trait Forwardable<'a, C: 'static>: ChatMethods<'a, C> {

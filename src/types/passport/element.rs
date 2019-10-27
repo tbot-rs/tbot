@@ -8,7 +8,7 @@ use std::fmt::{self, Formatter};
 pub mod error;
 mod kind;
 
-pub use {error::Error, kind::*};
+pub use {error::Error, kind::Kind};
 
 /// Represents an [`EncryptedPassportElement`][docs].
 ///

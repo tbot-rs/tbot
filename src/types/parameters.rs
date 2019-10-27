@@ -14,7 +14,15 @@ mod web_page_preview_state;
 
 pub(crate) use text::ParseMode;
 pub use {
-    callback_action::*, chat_id::*, flexibility::*, notification_state::*,
-    photo::*, requirement::*, send_to_provider_state::*, text::Text,
-    updates::*, url_visibility::*, web_page_preview_state::*,
+    callback_action::CallbackAction,
+    chat_id::{ChatId, ImplicitChatId},
+    flexibility::Flexibility,
+    notification_state::NotificationState,
+    photo::Photo,
+    requirement::Requirement,
+    send_to_provider_state::SendToProviderState,
+    text::Text,
+    updates::Updates,
+    url_visibility::UrlVisibility,
+    web_page_preview_state::WebPagePreviewState,
 };

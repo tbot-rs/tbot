@@ -1,4 +1,4 @@
-use super::*;
+use super::{InputFile, Thumb};
 use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
 

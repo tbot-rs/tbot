@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -7,6 +7,7 @@ use crate::{
         input_file::{ChatPhoto, InputFile},
         parameters::{ChatId, ImplicitChatId},
     },
+    Multipart, Token,
 };
 
 /// Sets a chat's photo.

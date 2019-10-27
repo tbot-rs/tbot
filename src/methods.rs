@@ -53,9 +53,6 @@
 //! [`EditInlineText`]: ./struct.EditInlineText.html
 //! [`types::Message`]: ../types/struct.Message.html
 
-use super::*;
-use crate::types::chat;
-
 mod add_sticker_to_set;
 mod answer_callback_query;
 mod answer_inline_query;
@@ -131,39 +128,62 @@ mod unpin_chat_message;
 mod upload_sticker_file;
 
 pub use {
-    add_sticker_to_set::*, answer_callback_query::*, answer_inline_query::*,
-    answer_pre_checkout_query::*, answer_shipping_query::*,
-    create_new_sticker_set::*, delete_chat_photo::*,
-    delete_chat_sticker_set::*, delete_message::*, delete_sticker_from_set::*,
-    edit_inline_caption::*, edit_inline_location::*, edit_inline_media::*,
-    edit_inline_reply_markup::*, edit_inline_text::*, edit_message_caption::*,
-    edit_message_location::*, edit_message_media::*,
-    edit_message_reply_markup::*, edit_message_text::*,
-    export_chat_invite_link::*, forward_message::*, get_chat::*,
-    get_chat_administrators::*, get_chat_member::*, get_chat_members_count::*,
-    get_file::*, get_inline_game_high_scores::*, get_me::*,
-    get_message_game_high_scores::*, get_sticker_set::*,
-    get_user_profile_photos::*, get_webhook_info::*, kick_chat_member::*,
-    leave_chat::*, pin_chat_message::*, promote_chat_member::*,
-    restrict_chat_member::*, send_animation::*, send_audio::*,
-    send_chat_action::*, send_contact::*, send_document::*, send_game::*,
-    send_invoice::*, send_location::*, send_media_group::*, send_message::*,
-    send_photo::*, send_photo::*, send_poll::*, send_poll::*, send_sticker::*,
-    send_sticker::*, send_venue::*, send_venue::*, send_video::*,
-    send_video::*, send_video_note::*, send_video_note::*, send_voice::*,
-    send_voice::*, set_chat_description::*, set_chat_description::*,
-    set_chat_permissions::*, set_chat_photo::*, set_chat_photo::*,
-    set_chat_sticker_set::*, set_chat_title::*, set_chat_title::*,
-    set_inline_game_score::*, set_message_game_score::*,
-    set_passport_data_errors::*, set_sticker_position_in_set::*,
-    set_sticker_position_in_set::*, stop_inline_location::*,
-    stop_inline_location::*, stop_message_location::*,
-    stop_message_location::*, stop_poll::*, stop_poll::*, unban_chat_member::*,
-    unban_chat_member::*, unpin_chat_message::*, unpin_chat_message::*,
-    upload_sticker_file::*, upload_sticker_file::*,
+    add_sticker_to_set::AddStickerToSet,
+    answer_callback_query::AnswerCallbackQuery,
+    answer_inline_query::AnswerInlineQuery,
+    answer_pre_checkout_query::AnswerPreCheckoutQuery,
+    answer_shipping_query::AnswerShippingQuery,
+    create_new_sticker_set::CreateNewStickerSet,
+    delete_chat_photo::DeleteChatPhoto,
+    delete_chat_sticker_set::DeleteChatStickerSet,
+    delete_message::DeleteMessage,
+    delete_sticker_from_set::DeleteStickerFromSet,
+    edit_inline_caption::EditInlineCaption,
+    edit_inline_location::EditInlineLocation,
+    edit_inline_media::EditInlineMedia,
+    edit_inline_reply_markup::EditInlineReplyMarkup,
+    edit_inline_text::EditInlineText, edit_message_caption::EditMessageCaption,
+    edit_message_location::EditMessageLocation,
+    edit_message_media::EditMessageMedia,
+    edit_message_reply_markup::EditMessageReplyMarkup,
+    edit_message_text::EditMessageText,
+    export_chat_invite_link::ExportChatInviteLink,
+    forward_message::ForwardMessage, get_chat::GetChat,
+    get_chat_administrators::GetChatAdministrators,
+    get_chat_member::GetChatMember,
+    get_chat_members_count::GetChatMembersCount, get_file::GetFile,
+    get_inline_game_high_scores::GetInlineGameHighScores, get_me::GetMe,
+    get_message_game_high_scores::GetMessageGameHighScores,
+    get_sticker_set::GetStickerSet,
+    get_user_profile_photos::GetUserProfilePhotos,
+    get_webhook_info::GetWebhookInfo, kick_chat_member::KickChatMember,
+    leave_chat::LeaveChat, pin_chat_message::PinChatMessage,
+    promote_chat_member::PromoteChatMember,
+    restrict_chat_member::RestrictChatMember, send_animation::SendAnimation,
+    send_audio::SendAudio, send_chat_action::SendChatAction,
+    send_contact::SendContact, send_document::SendDocument,
+    send_game::SendGame, send_invoice::SendInvoice,
+    send_location::SendLocation, send_media_group::SendMediaGroup,
+    send_message::SendMessage, send_photo::SendPhoto, send_poll::SendPoll,
+    send_sticker::SendSticker, send_venue::SendVenue, send_video::SendVideo,
+    send_video_note::SendVideoNote, send_voice::SendVoice,
+    set_chat_description::SetChatDescription,
+    set_chat_permissions::SetChatPermissions, set_chat_photo::SetChatPhoto,
+    set_chat_sticker_set::SetChatStickerSet, set_chat_title::SetChatTitle,
+    set_inline_game_score::SetInlineGameScore,
+    set_message_game_score::SetMessageGameScore,
+    set_passport_data_errors::SetPassportDataErrors,
+    set_sticker_position_in_set::SetStickerPositionInSet,
+    stop_inline_location::StopInlineLocation,
+    stop_message_location::StopMessageLocation, stop_poll::StopPoll,
+    unban_chat_member::UnbanChatMember, unpin_chat_message::UnpinChatMessage,
+    upload_sticker_file::UploadStickerFile,
 };
 
-pub(crate) use {delete_webhook::*, get_updates::*, set_webhook::*};
+pub(crate) use {
+    delete_webhook::DeleteWebhook, get_updates::GetUpdates,
+    set_webhook::SetWebhook,
+};
 
 mod call_method;
-use call_method::*;
+use call_method::send_method;

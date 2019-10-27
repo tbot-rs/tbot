@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -8,7 +8,9 @@ use crate::{
         keyboard::inline,
         parameters::{ParseMode, Text, WebPagePreviewState},
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Edits the text of a message sent via the inline mode.
 ///
