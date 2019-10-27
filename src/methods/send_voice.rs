@@ -1,13 +1,15 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
         input_file::{InputFile, Voice},
-        keyboard, message,
+        keyboard,
+        message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
+    Multipart, Token,
 };
 
 /// Sends a voice.
@@ -72,7 +74,7 @@ impl<'a, C> SendVoice<'a, C> {
 
 impl<C: Connector> SendVoice<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(8)
             .chat_id("chat_id", self.chat_id)
             .maybe_string("duration", self.voice.duration)

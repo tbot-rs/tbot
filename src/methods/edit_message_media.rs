@@ -1,14 +1,17 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
-        input_file::*,
+        input_file::{
+            Animation, Audio, Document, EditableMedia, InputFile, Photo, Video,
+        },
         keyboard::inline,
-        message,
+        message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
     },
+    Multipart, Token,
 };
 
 /// Edits the media of a message sent by the bot itself.
@@ -55,7 +58,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
 
 impl<C: Connector> EditMessageMedia<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(5)
             .chat_id("chat_id", self.chat_id)
             .string("message_id", &self.message_id)

@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -7,7 +7,9 @@ use crate::{
         parameters::{ChatId, ImplicitChatId},
         user,
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Promotes a chat member to an admin.
 ///

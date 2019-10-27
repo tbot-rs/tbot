@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 mod high_score;
 
-pub use high_score::*;
+pub use high_score::HighScore;
 
 /// Represents a [`Game`].
 ///

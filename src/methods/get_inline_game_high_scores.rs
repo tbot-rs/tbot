@@ -1,10 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{game::HighScore, inline_message_id, user},
+    Token,
 };
+use serde::Serialize;
 
 /// Gets an excerpt from the high score table of a game sent via the inline
 /// mode.

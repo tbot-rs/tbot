@@ -1,16 +1,19 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
-        keyboard, message,
+        keyboard,
+        message::{self, Message},
         parameters::{
             ChatId, ImplicitChatId, NotificationState, ParseMode, Text,
             WebPagePreviewState,
         },
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Sends a text message.
 ///
@@ -94,7 +97,7 @@ impl<'a, C> SendMessage<'a, C> {
 
 impl<C: Connector> SendMessage<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

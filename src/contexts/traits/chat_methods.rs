@@ -3,7 +3,10 @@ use crate::{
     methods::*,
     types::{
         chat,
-        input_file::*,
+        input_file::{
+            Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
+            Photo, Sticker, Video, VideoNote, Voice,
+        },
         keyboard::inline,
         message,
         parameters::{ImplicitChatId, Text},

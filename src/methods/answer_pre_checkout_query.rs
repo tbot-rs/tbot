@@ -1,4 +1,3 @@
-// use super::*;
 use super::send_method;
 use crate::{
     connectors::Connector, errors, internal::Client, types::pre_checkout_query,

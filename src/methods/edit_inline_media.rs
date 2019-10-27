@@ -1,9 +1,16 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::{inline_message_id, input_file::*, keyboard::inline},
+    types::{
+        inline_message_id,
+        input_file::{
+            Animation, Audio, Document, EditableMedia, InputFile, Photo, Video,
+        },
+        keyboard::inline,
+    },
+    Multipart, Token,
 };
 
 /// Edits the media of a message sent via the inline mode.

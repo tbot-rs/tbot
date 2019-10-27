@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -7,8 +7,11 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{ChatId, ImplicitChatId},
+        Poll,
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Stops a poll.
 ///
@@ -54,7 +57,7 @@ impl<'a, C> StopPoll<'a, C> {
 
 impl<C: Connector> StopPoll<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Poll, errors::MethodCall> {
+    pub async fn call(self) -> Result<Poll, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

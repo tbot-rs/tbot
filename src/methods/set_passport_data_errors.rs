@@ -1,10 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{passport, user},
+    Token,
 };
+use serde::Serialize;
 
 /// Reports passport errors to the user.
 ///

@@ -1,6 +1,6 @@
 //! Types related to chats.
 
-use super::*;
+use serde::Deserialize;
 
 mod action;
 mod id;
@@ -9,7 +9,10 @@ pub mod member;
 mod permissions;
 mod photo;
 
-pub use {action::*, id::*, kind::*, member::*, permissions::*, photo::*};
+pub use {
+    action::Action, id::Id, kind::Kind, member::Member,
+    permissions::Permissions, photo::Photo,
+};
 
 /// Represents a [`Chat`].
 ///

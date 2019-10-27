@@ -1,7 +1,5 @@
 //! Types for interacting with the API.
 
-use super::*;
-
 mod animation;
 mod audio;
 pub mod callback;
@@ -39,12 +37,15 @@ mod voice;
 pub mod webhook_info;
 
 pub use {
-    animation::*, audio::*, chat::Chat, chosen_inline_result::*, contact::*,
-    document::*, file::File, game::Game, inline_message_id::InlineMessageId,
-    inline_query::InlineQuery, input_message_content::InputMessageContent,
-    invoice::*, labeled_price::*, location::*, login_url::*, message::Message,
-    order_info::*, photo_size::*, poll::Poll,
+    animation::Animation, audio::Audio, chat::Chat,
+    chosen_inline_result::ChosenInlineResult, contact::Contact,
+    document::Document, file::File, game::Game,
+    inline_message_id::InlineMessageId, inline_query::InlineQuery,
+    input_message_content::InputMessageContent, invoice::Invoice,
+    labeled_price::LabeledPrice, location::Location, login_url::LoginUrl,
+    message::Message, order_info::OrderInfo, photo_size::PhotoSize, poll::Poll,
     pre_checkout_query::PreCheckoutQuery, sticker::Sticker,
-    successful_payment::*, update::Update, user::User, venue::*, video::*,
-    video_note::*, voice::*, webhook_info::WebhookInfo,
+    successful_payment::SuccessfulPayment, update::Update, user::User,
+    venue::Venue, video::Video, video_note::VideoNote, voice::Voice,
+    webhook_info::WebhookInfo,
 };

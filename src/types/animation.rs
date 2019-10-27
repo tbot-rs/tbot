@@ -1,5 +1,8 @@
-use super::*;
-use crate::types::file::id::AsFileId;
+use crate::types::{
+    file::{self, id::AsFileId},
+    PhotoSize,
+};
+use serde::Deserialize;
 
 /// Represents an [`Animation`].
 ///

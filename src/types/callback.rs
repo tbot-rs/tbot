@@ -4,6 +4,6 @@ mod game;
 pub mod query;
 
 pub use {
-    game::*,
+    game::Game,
     query::{Kind, Origin, Query},
 };

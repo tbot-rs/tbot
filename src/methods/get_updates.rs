@@ -1,7 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::parameters::Updates,
+    connectors::Connector,
+    errors,
+    internal::Client,
+    types::{parameters::Updates, Update},
+    Token,
 };
+use serde::Serialize;
 
 #[derive(Serialize, Debug, Clone)]
 #[must_use]
@@ -42,7 +47,7 @@ impl<'a, C> GetUpdates<'a, C> {
 
 impl<C: Connector> GetUpdates<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<Vec<types::Update>, errors::MethodCall> {
+    pub async fn call(self) -> Result<Vec<Update>, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

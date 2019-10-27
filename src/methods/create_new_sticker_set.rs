@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -8,6 +8,7 @@ use crate::{
         sticker::MaskPosition,
         user,
     },
+    Multipart, Token,
 };
 
 /// Creates a new sticker set.

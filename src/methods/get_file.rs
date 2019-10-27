@@ -1,10 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::file::{self, id::AsFileId, File},
+    Token,
 };
+use serde::Serialize;
 
 /// Gets information about a file.
 ///

@@ -1,10 +1,15 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
-    types::parameters::{ChatId, ImplicitChatId},
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        Chat,
+    },
+    Token,
 };
+use serde::Serialize;
 
 /// Gets information about a chat.
 ///
@@ -37,7 +42,7 @@ impl<'a, C> GetChat<'a, C> {
 
 impl<C: Connector> GetChat<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Chat, errors::MethodCall> {
+    pub async fn call(self) -> Result<Chat, errors::MethodCall> {
         send_method(
             self.client,
             &self.token,

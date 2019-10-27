@@ -1,4 +1,4 @@
-use super::*;
+use super::InputFile;
 use serde::ser::SerializeMap;
 
 /// Represents a sticker to be sent.

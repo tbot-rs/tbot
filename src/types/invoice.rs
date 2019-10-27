@@ -1,9 +1,9 @@
-use super::*;
+use serde::Deserialize;
 
 /// Represents an [`Invoice`].
 ///
 /// [`Invoice`]: https://core.telegram.org/bots/api#invoice
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 // todo: #[non_exhaustive]
 pub struct Invoice {
     /// The title of the invoice.

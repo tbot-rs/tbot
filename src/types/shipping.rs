@@ -4,4 +4,4 @@ mod address;
 mod option;
 pub mod query;
 
-pub use {address::*, option::*, query::Query};
+pub use {address::Address, option::Option, query::Query};

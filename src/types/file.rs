@@ -1,6 +1,6 @@
 //! Types related to downloadable files.
 
-use serde::*;
+use serde::Deserialize;
 
 pub mod id;
 

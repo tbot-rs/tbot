@@ -1,4 +1,4 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
@@ -7,7 +7,9 @@ use crate::{
         chat,
         parameters::{ChatId, ImplicitChatId},
     },
+    Token,
 };
+use serde::Serialize;
 
 /// Sends a chat action.
 ///

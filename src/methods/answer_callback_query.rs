@@ -1,10 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{callback, parameters::CallbackAction},
+    Token,
 };
+use serde::Serialize;
 
 /// Answers a callback query.
 ///

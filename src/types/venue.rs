@@ -1,4 +1,5 @@
-use super::*;
+use crate::types::Location;
+use serde::Deserialize;
 
 /// Represents a [`Venue`].
 ///

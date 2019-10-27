@@ -1,7 +1,6 @@
 //! Types representing reply keyboards.
 
-use super::*;
-use serde::ser::SerializeMap;
+use serde::{ser::SerializeMap, Serialize};
 
 /// A shorthand for reply markup.
 pub type Markup<'a> = &'a [&'a [Button<'a>]];

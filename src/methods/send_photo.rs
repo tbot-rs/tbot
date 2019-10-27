@@ -1,13 +1,15 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{
         input_file::{InputFile, Photo},
-        keyboard, message,
+        keyboard,
+        message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
+    Multipart, Token,
 };
 
 /// Sends a photo.
@@ -72,7 +74,7 @@ impl<'a, C> SendPhoto<'a, C> {
 
 impl<C: Connector> SendPhoto<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::Message, errors::MethodCall> {
+    pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(7)
             .chat_id("chat_id", self.chat_id)
             .maybe_str("caption", self.photo.caption)

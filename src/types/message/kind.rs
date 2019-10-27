@@ -1,5 +1,9 @@
-use super::Text;
-use crate::types::*;
+use super::{Message, Text};
+use crate::types::{
+    chat, passport, Animation, Audio, Contact, Document, Game, Invoice,
+    Location, PhotoSize, Poll, Sticker, SuccessfulPayment, User, Venue, Video,
+    VideoNote, Voice,
+};
 
 /// Represents kinds of messages.
 #[derive(Debug, PartialEq, Clone)]

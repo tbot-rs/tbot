@@ -1,6 +1,7 @@
-use super::*;
+use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::parameters::Updates,
+    connectors::Connector, errors, internal::Client,
+    types::parameters::Updates, Multipart, Token,
 };
 
 /// This method isn't meant to be used by users directly.

@@ -1,10 +1,12 @@
-use super::*;
+use super::send_method;
 use crate::{
     connectors::Connector,
     errors,
     internal::Client,
     types::{inline_message_id, user},
+    Token,
 };
+use serde::Serialize;
 
 /// Sets a user's new high score in a game sent via the inline mode.
 ///

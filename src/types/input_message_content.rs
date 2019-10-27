@@ -7,7 +7,7 @@ mod location;
 mod text;
 mod venue;
 
-pub use {contact::*, location::*, text::*, venue::*};
+pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 
 /// Represents [`InputMessageContext`][docs].
 ///
