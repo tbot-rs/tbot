@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     types::parameters::{ChatId, ImplicitChatId},
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -19,14 +19,14 @@ pub struct LeaveChat<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
 }
 
 impl<'a, C> LeaveChat<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
     ) -> Self {
         Self {
@@ -42,7 +42,7 @@ impl<C: Connector> LeaveChat<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "leaveChat",
             None,
             serde_json::to_vec(&self).unwrap(),

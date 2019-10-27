@@ -8,7 +8,7 @@ use crate::{
         parameters::{ChatId, ImplicitChatId},
         user,
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct SetMessageGameScore<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     score: u32,
     chat_id: ChatId<'a>,
@@ -37,7 +37,7 @@ pub struct SetMessageGameScore<'a, C> {
 impl<'a, C> SetMessageGameScore<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         user_id: user::Id,
@@ -74,7 +74,7 @@ impl<C: Connector> SetMessageGameScore<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "setGameScore",
             None,
             serde_json::to_vec(&self).unwrap(),

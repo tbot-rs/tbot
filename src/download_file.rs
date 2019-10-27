@@ -1,11 +1,11 @@
 use crate::{
-    connectors::Connector, errors, internal::Client, types::File, Token,
+    connectors::Connector, errors, internal::Client, types::File, token,
 };
 use hyper::{StatusCode, Uri};
 
 pub async fn download_file<C>(
     client: &Client<C>,
-    token: &Token,
+    token: token::Ref<'_>,
     file: &File,
 ) -> Result<Vec<u8>, errors::Download>
 where

@@ -7,7 +7,7 @@ use crate::{
         parameters::{ChatId, ImplicitChatId},
         user,
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -22,7 +22,7 @@ pub struct UnbanChatMember<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     user_id: user::Id,
 }
@@ -30,7 +30,7 @@ pub struct UnbanChatMember<'a, C> {
 impl<'a, C> UnbanChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> Self {
@@ -48,7 +48,7 @@ impl<C: Connector> UnbanChatMember<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             &*self.client,
-            &self.token,
+            self.token,
             "unbanChatMember",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     types::{inline_message_id, keyboard::inline},
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -19,7 +19,7 @@ pub struct StopInlineLocation<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     inline_message_id: inline_message_id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
@@ -28,7 +28,7 @@ pub struct StopInlineLocation<'a, C> {
 impl<'a, C> StopInlineLocation<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
     ) -> Self {
         Self {
@@ -52,7 +52,7 @@ impl<C: Connector> StopInlineLocation<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),

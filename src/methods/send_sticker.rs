@@ -9,7 +9,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart, token,
 };
 
 /// Sends a sticker.
@@ -21,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendSticker<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     sticker: Sticker<'a>,
     disable_notification: Option<bool>,
@@ -32,7 +32,7 @@ pub struct SendSticker<'a, C> {
 impl<'a, C> SendSticker<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         sticker: Sticker<'a>,
     ) -> Self {
@@ -94,7 +94,7 @@ impl<C: Connector> SendSticker<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendSticker",
             Some(boundary),
             body,

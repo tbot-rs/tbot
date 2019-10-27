@@ -7,7 +7,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -22,7 +22,7 @@ pub struct ForwardMessage<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     from_chat_id: ChatId<'a>,
     message_id: message::Id,
@@ -33,7 +33,7 @@ pub struct ForwardMessage<'a, C> {
 impl<'a, C> ForwardMessage<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         from_chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
@@ -61,7 +61,7 @@ impl<C: Connector> ForwardMessage<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "forwardMessage",
             None,
             serde_json::to_vec(&self).unwrap(),

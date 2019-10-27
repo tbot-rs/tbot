@@ -7,7 +7,7 @@ use crate::{
         parameters::{ChatId, ImplicitChatId},
         user,
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -22,7 +22,7 @@ pub struct KickChatMember<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32,7 +32,7 @@ pub struct KickChatMember<'a, C> {
 impl<'a, C> KickChatMember<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> Self {
@@ -58,7 +58,7 @@ impl<C: Connector> KickChatMember<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "kickChatMember",
             None,
             serde_json::to_vec(&self).unwrap(),

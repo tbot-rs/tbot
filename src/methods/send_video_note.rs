@@ -9,7 +9,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart, token,
 };
 
 /// Sends a video note.
@@ -21,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideoNote<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     video_note: VideoNote<'a>,
     disable_notification: Option<bool>,
@@ -32,7 +32,7 @@ pub struct SendVideoNote<'a, C> {
 impl<'a, C> SendVideoNote<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         video_note: VideoNote<'a>,
     ) -> Self {
@@ -103,7 +103,7 @@ impl<C: Connector> SendVideoNote<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendVideoNote",
             Some(boundary),
             body,

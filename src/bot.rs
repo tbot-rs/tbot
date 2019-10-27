@@ -89,7 +89,7 @@ impl<C> Bot<C> {
     ) -> AddStickerToSet<'a, C> {
         AddStickerToSet::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             user_id,
             name,
             png_sticker,
@@ -104,7 +104,7 @@ impl<C> Bot<C> {
     ) -> AnswerCallbackQuery<'a, C> {
         AnswerCallbackQuery::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             callback_query_id,
             action,
         )
@@ -117,7 +117,7 @@ impl<C> Bot<C> {
     ) -> AnswerInlineQuery<'a, C> {
         AnswerInlineQuery::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_query_id,
             results,
         )
@@ -130,7 +130,7 @@ impl<C> Bot<C> {
     ) -> AnswerPreCheckoutQuery<'a, C> {
         AnswerPreCheckoutQuery::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             pre_checkout_query_id,
             result,
         )
@@ -143,7 +143,7 @@ impl<C> Bot<C> {
     ) -> AnswerShippingQuery<'a, C> {
         AnswerShippingQuery::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             shipping_query_id,
             result,
         )
@@ -160,7 +160,7 @@ impl<C> Bot<C> {
     ) -> CreateNewStickerSet<'a, C> {
         CreateNewStickerSet::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             user_id,
             name,
             title,
@@ -174,7 +174,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> DeleteChatPhoto<'a, C> {
-        DeleteChatPhoto::new(&self.client, self.token.clone(), chat_id)
+        DeleteChatPhoto::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Deletes a chat's sticker set.
@@ -182,7 +182,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> DeleteChatStickerSet<'a, C> {
-        DeleteChatStickerSet::new(&self.client, self.token.clone(), chat_id)
+        DeleteChatStickerSet::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Deletes a message from a chat.
@@ -193,7 +193,7 @@ impl<C> Bot<C> {
     ) -> DeleteMessage<'a, C> {
         DeleteMessage::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
         )
@@ -204,11 +204,11 @@ impl<C> Bot<C> {
         &'a self,
         sticker: &'a str,
     ) -> DeleteStickerFromSet<'a, C> {
-        DeleteStickerFromSet::new(&self.client, self.token.clone(), sticker)
+        DeleteStickerFromSet::new(&self.client, self.token.as_ref(), sticker)
     }
 
     pub(crate) fn delete_webhook(&self) -> DeleteWebhook<'_, C> {
-        DeleteWebhook::new(&self.client, self.token.clone())
+        DeleteWebhook::new(&self.client, self.token.as_ref())
     }
 
     /// Edits the caption of a media message sent via the inline mode.
@@ -219,7 +219,7 @@ impl<C> Bot<C> {
     ) -> EditInlineCaption<'a, C> {
         EditInlineCaption::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             caption,
         )
@@ -233,7 +233,7 @@ impl<C> Bot<C> {
     ) -> EditInlineLocation<'a, C> {
         EditInlineLocation::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             position,
         )
@@ -247,7 +247,7 @@ impl<C> Bot<C> {
     ) -> EditInlineMedia<'a, C> {
         EditInlineMedia::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             media,
         )
@@ -261,7 +261,7 @@ impl<C> Bot<C> {
     ) -> EditInlineReplyMarkup<'a, C> {
         EditInlineReplyMarkup::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             reply_markup,
         )
@@ -275,7 +275,7 @@ impl<C> Bot<C> {
     ) -> EditInlineText<'a, C> {
         EditInlineText::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             text,
         )
@@ -290,7 +290,7 @@ impl<C> Bot<C> {
     ) -> EditMessageCaption<'a, C> {
         EditMessageCaption::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             caption,
@@ -306,7 +306,7 @@ impl<C> Bot<C> {
     ) -> EditMessageLocation<'a, C> {
         EditMessageLocation::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             position,
@@ -322,7 +322,7 @@ impl<C> Bot<C> {
     ) -> EditMessageMedia<'a, C> {
         EditMessageMedia::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             media,
@@ -338,7 +338,7 @@ impl<C> Bot<C> {
     ) -> EditMessageReplyMarkup<'a, C> {
         EditMessageReplyMarkup::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             reply_markup,
@@ -354,7 +354,7 @@ impl<C> Bot<C> {
     ) -> EditMessageText<'a, C> {
         EditMessageText::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             text,
@@ -366,7 +366,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> ExportChatInviteLink<'a, C> {
-        ExportChatInviteLink::new(&self.client, self.token.clone(), chat_id)
+        ExportChatInviteLink::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Forwards a message.
@@ -378,7 +378,7 @@ impl<C> Bot<C> {
     ) -> ForwardMessage<'a, C> {
         ForwardMessage::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             from_chat_id,
             message_id,
@@ -390,7 +390,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> GetChat<'a, C> {
-        GetChat::new(&self.client, self.token.clone(), chat_id)
+        GetChat::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Gets information about a file.
@@ -398,7 +398,7 @@ impl<C> Bot<C> {
         &'a self,
         file_id: &'a impl AsFileId,
     ) -> GetFile<'a, C> {
-        GetFile::new(&self.client, self.token.clone(), file_id)
+        GetFile::new(&self.client, self.token.as_ref(), file_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent via the inline
@@ -410,7 +410,7 @@ impl<C> Bot<C> {
     ) -> GetInlineGameHighScores<'a, C> {
         GetInlineGameHighScores::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             user_id,
         )
@@ -421,7 +421,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> GetChatAdministrators<'a, C> {
-        GetChatAdministrators::new(&self.client, self.token.clone(), chat_id)
+        GetChatAdministrators::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Gets information about a chat's member.
@@ -430,7 +430,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> GetChatMember<'a, C> {
-        GetChatMember::new(&self.client, self.token.clone(), chat_id, user_id)
+        GetChatMember::new(&self.client, self.token.as_ref(), chat_id, user_id)
     }
 
     /// Gets a chat's member count.
@@ -438,7 +438,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> GetChatMembersCount<'a, C> {
-        GetChatMembersCount::new(&self.client, self.token.clone(), chat_id)
+        GetChatMembersCount::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent by the bot
@@ -451,7 +451,7 @@ impl<C> Bot<C> {
     ) -> GetMessageGameHighScores<'a, C> {
         GetMessageGameHighScores::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             user_id,
@@ -460,7 +460,7 @@ impl<C> Bot<C> {
 
     /// Gets information about the bot.
     pub fn get_me(&self) -> GetMe<'_, C> {
-        GetMe::new(&self.client, self.token.clone())
+        GetMe::new(&self.client, self.token.as_ref())
     }
 
     /// Gets a sticker set by its name.
@@ -468,7 +468,7 @@ impl<C> Bot<C> {
         &'a self,
         name: &'a str,
     ) -> GetStickerSet<'a, C> {
-        GetStickerSet::new(&self.client, self.token.clone(), name)
+        GetStickerSet::new(&self.client, self.token.as_ref(), name)
     }
 
     pub(crate) fn get_updates<'a>(
@@ -480,7 +480,7 @@ impl<C> Bot<C> {
     ) -> GetUpdates<'a, C> {
         GetUpdates::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             offset,
             limit,
             timeout,
@@ -493,12 +493,12 @@ impl<C> Bot<C> {
         &self,
         user_id: user::Id,
     ) -> GetUserProfilePhotos<'_, C> {
-        GetUserProfilePhotos::new(&self.client, self.token.clone(), user_id)
+        GetUserProfilePhotos::new(&self.client, self.token.as_ref(), user_id)
     }
 
     /// Gets information about the bot's webhook.
     pub fn get_webhook_info(&self) -> GetWebhookInfo<'_, C> {
-        GetWebhookInfo::new(&self.client, self.token.clone())
+        GetWebhookInfo::new(&self.client, self.token.as_ref())
     }
 
     /// Kicks a member out of a chat.
@@ -507,7 +507,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> KickChatMember<'a, C> {
-        KickChatMember::new(&self.client, self.token.clone(), chat_id, user_id)
+        KickChatMember::new(&self.client, self.token.as_ref(), chat_id, user_id)
     }
 
     /// Leaves a chat.
@@ -515,7 +515,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> LeaveChat<'a, C> {
-        LeaveChat::new(&self.client, self.token.clone(), chat_id)
+        LeaveChat::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Pins a message in a chat.
@@ -526,7 +526,7 @@ impl<C> Bot<C> {
     ) -> PinChatMessage<'a, C> {
         PinChatMessage::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
         )
@@ -540,7 +540,7 @@ impl<C> Bot<C> {
     ) -> PromoteChatMember<'a, C> {
         PromoteChatMember::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             user_id,
         )
@@ -555,7 +555,7 @@ impl<C> Bot<C> {
     ) -> RestrictChatMember<'a, C> {
         RestrictChatMember::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             user_id,
             permissions,
@@ -568,7 +568,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         animation: Animation<'a>,
     ) -> SendAnimation<'a, C> {
-        SendAnimation::new(&self.client, self.token.clone(), chat_id, animation)
+        SendAnimation::new(&self.client, self.token.as_ref(), chat_id, animation)
     }
 
     /// Sends an audio.
@@ -577,7 +577,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         audio: Audio<'a>,
     ) -> SendAudio<'a, C> {
-        SendAudio::new(&self.client, self.token.clone(), chat_id, audio)
+        SendAudio::new(&self.client, self.token.as_ref(), chat_id, audio)
     }
 
     /// Sends a chat action.
@@ -586,7 +586,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         action: chat::Action,
     ) -> SendChatAction<'a, C> {
-        SendChatAction::new(&self.client, self.token.clone(), chat_id, action)
+        SendChatAction::new(&self.client, self.token.as_ref(), chat_id, action)
     }
 
     /// Sends a contact.
@@ -598,7 +598,7 @@ impl<C> Bot<C> {
     ) -> SendContact<'a, C> {
         SendContact::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             phone_number,
             first_name,
@@ -613,7 +613,7 @@ impl<C> Bot<C> {
     ) -> SendGame<'a, C> {
         SendGame::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             game_short_name,
         )
@@ -625,7 +625,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         document: Document<'a>,
     ) -> SendDocument<'a, C> {
-        SendDocument::new(&self.client, self.token.clone(), chat_id, document)
+        SendDocument::new(&self.client, self.token.as_ref(), chat_id, document)
     }
 
     /// Sends an invoice.
@@ -643,7 +643,7 @@ impl<C> Bot<C> {
     ) -> SendInvoice<'a, C> {
         SendInvoice::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             title,
             description,
@@ -661,7 +661,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         position: (f64, f64),
     ) -> SendLocation<'a, C> {
-        SendLocation::new(&self.client, self.token.clone(), chat_id, position)
+        SendLocation::new(&self.client, self.token.as_ref(), chat_id, position)
     }
 
     /// Sends an album.
@@ -670,7 +670,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
-        SendMediaGroup::new(&self.client, self.token.clone(), chat_id, media)
+        SendMediaGroup::new(&self.client, self.token.as_ref(), chat_id, media)
     }
 
     /// Sends a text message.
@@ -679,7 +679,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         text: impl Into<Text<'a>>,
     ) -> SendMessage<'a, C> {
-        SendMessage::new(&self.client, self.token.clone(), chat_id, text)
+        SendMessage::new(&self.client, self.token.as_ref(), chat_id, text)
     }
 
     /// Sends a photo.
@@ -688,7 +688,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         photo: Photo<'a>,
     ) -> SendPhoto<'a, C> {
-        SendPhoto::new(&self.client, self.token.clone(), chat_id, photo)
+        SendPhoto::new(&self.client, self.token.as_ref(), chat_id, photo)
     }
 
     /// Sends a poll.
@@ -700,7 +700,7 @@ impl<C> Bot<C> {
     ) -> SendPoll<'a, C> {
         SendPoll::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             question,
             options,
@@ -713,7 +713,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         sticker: Sticker<'a>,
     ) -> SendSticker<'a, C> {
-        SendSticker::new(&self.client, self.token.clone(), chat_id, sticker)
+        SendSticker::new(&self.client, self.token.as_ref(), chat_id, sticker)
     }
 
     /// Sends a venue.
@@ -726,7 +726,7 @@ impl<C> Bot<C> {
     ) -> SendVenue<'a, C> {
         SendVenue::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             position,
             title,
@@ -742,7 +742,7 @@ impl<C> Bot<C> {
     ) -> SendVideoNote<'a, C> {
         SendVideoNote::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             video_note,
         )
@@ -754,7 +754,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         video: Video<'a>,
     ) -> SendVideo<'a, C> {
-        SendVideo::new(&self.client, self.token.clone(), chat_id, video)
+        SendVideo::new(&self.client, self.token.as_ref(), chat_id, video)
     }
 
     /// Sends a voice.
@@ -763,7 +763,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         voice: Voice<'a>,
     ) -> SendVoice<'a, C> {
-        SendVoice::new(&self.client, self.token.clone(), chat_id, voice)
+        SendVoice::new(&self.client, self.token.as_ref(), chat_id, voice)
     }
 
     /// Sets a chat's description.
@@ -774,7 +774,7 @@ impl<C> Bot<C> {
     ) -> SetChatDescription<'a, C> {
         SetChatDescription::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             description,
         )
@@ -788,7 +788,7 @@ impl<C> Bot<C> {
     ) -> SetChatPermissions<'a, C> {
         SetChatPermissions::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             permissions,
         )
@@ -800,7 +800,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         photo: ChatPhoto<'a>,
     ) -> SetChatPhoto<'a, C> {
-        SetChatPhoto::new(&self.client, self.token.clone(), chat_id, photo)
+        SetChatPhoto::new(&self.client, self.token.as_ref(), chat_id, photo)
     }
 
     /// Sets a group's sticker set.
@@ -811,7 +811,7 @@ impl<C> Bot<C> {
     ) -> SetChatStickerSet<'a, C> {
         SetChatStickerSet::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             sticker_set_name,
         )
@@ -823,7 +823,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         title: &'a str,
     ) -> SetChatTitle<'a, C> {
-        SetChatTitle::new(&self.client, self.token.clone(), chat_id, title)
+        SetChatTitle::new(&self.client, self.token.as_ref(), chat_id, title)
     }
 
     /// Sets a user's new high score in a game sent via the inline mode.
@@ -835,7 +835,7 @@ impl<C> Bot<C> {
     ) -> SetInlineGameScore<'a, C> {
         SetInlineGameScore::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
             user_id,
             score,
@@ -852,7 +852,7 @@ impl<C> Bot<C> {
     ) -> SetMessageGameScore<'a, C> {
         SetMessageGameScore::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
             user_id,
@@ -868,7 +868,7 @@ impl<C> Bot<C> {
     ) -> SetPassportDataErrors<'a, C> {
         SetPassportDataErrors::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             user_id,
             errors,
         )
@@ -882,7 +882,7 @@ impl<C> Bot<C> {
     ) -> SetStickerPositionInSet<'a, C> {
         SetStickerPositionInSet::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             sticker,
             position,
         )
@@ -897,7 +897,7 @@ impl<C> Bot<C> {
     ) -> SetWebhook<'a, C> {
         SetWebhook::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             url,
             certificate,
             max_connections,
@@ -912,7 +912,7 @@ impl<C> Bot<C> {
     ) -> StopInlineLocation<'a, C> {
         StopInlineLocation::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             inline_message_id,
         )
     }
@@ -925,7 +925,7 @@ impl<C> Bot<C> {
     ) -> StopMessageLocation<'a, C> {
         StopMessageLocation::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             chat_id,
             message_id,
         )
@@ -937,7 +937,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> StopPoll<'a, C> {
-        StopPoll::new(&self.client, self.token.clone(), chat_id, message_id)
+        StopPoll::new(&self.client, self.token.as_ref(), chat_id, message_id)
     }
 
     /// Lifts all restrictions from a group's member.
@@ -946,7 +946,7 @@ impl<C> Bot<C> {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> UnbanChatMember<'a, C> {
-        UnbanChatMember::new(&self.client, self.token.clone(), chat_id, user_id)
+        UnbanChatMember::new(&self.client, self.token.as_ref(), chat_id, user_id)
     }
 
     /// Unpins a chat message.
@@ -954,7 +954,7 @@ impl<C> Bot<C> {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> UnpinChatMessage<'a, C> {
-        UnpinChatMessage::new(&self.client, self.token.clone(), chat_id)
+        UnpinChatMessage::new(&self.client, self.token.as_ref(), chat_id)
     }
 
     /// Uploads a sticker file.
@@ -965,7 +965,7 @@ impl<C> Bot<C> {
     ) -> UploadStickerFile<'a, C> {
         UploadStickerFile::new(
             &self.client,
-            self.token.clone(),
+            self.token.as_ref(),
             user_id,
             png_sticker,
         )
@@ -996,7 +996,7 @@ impl<C: Connector> Bot<C> {
         &self,
         file: &File,
     ) -> Result<Vec<u8>, errors::Download> {
-        download_file(&self.client, &self.token, file).await
+        download_file(&self.client, self.token.as_ref(), file).await
     }
 }
 

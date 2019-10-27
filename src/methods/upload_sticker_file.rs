@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     types::{user, File},
-    Multipart, Token,
+    Multipart, token,
 };
 
 /// Uploads a sticker file.
@@ -16,7 +16,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct UploadStickerFile<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     png_sticker: &'a [u8],
 }
@@ -24,7 +24,7 @@ pub struct UploadStickerFile<'a, C> {
 impl<'a, C> UploadStickerFile<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         user_id: user::Id,
         png_sticker: &'a [u8],
     ) -> Self {
@@ -47,7 +47,7 @@ impl<C: Connector> UploadStickerFile<'_, C> {
 
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "uploadStickerFile",
             Some(boundary),
             body,

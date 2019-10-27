@@ -13,7 +13,7 @@ use crate::{
         },
         LabeledPrice,
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -28,7 +28,7 @@ pub struct SendInvoice<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: chat::Id,
     title: &'a str,
     description: &'a str,
@@ -67,7 +67,7 @@ impl<'a, C> SendInvoice<'a, C> {
     #[allow(clippy::too_many_arguments)] // I know, brother
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl Into<chat::Id>,
         title: &'a str,
         description: &'a str,
@@ -199,7 +199,7 @@ impl<C: Connector> SendInvoice<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendInvoice",
             None,
             serde_json::to_vec(&self).unwrap(),

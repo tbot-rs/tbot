@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     types::{callback, parameters::CallbackAction},
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -19,7 +19,7 @@ pub struct AnswerCallbackQuery<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     callback_query_id: callback::query::id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<&'a str>,
@@ -34,7 +34,7 @@ pub struct AnswerCallbackQuery<'a, C> {
 impl<'a, C> AnswerCallbackQuery<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAction<'a>,
     ) -> Self {
@@ -62,7 +62,7 @@ impl<C: Connector> AnswerCallbackQuery<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "answerCallbackQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

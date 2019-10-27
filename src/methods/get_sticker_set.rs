@@ -1,6 +1,6 @@
 use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::sticker, Token,
+    connectors::Connector, errors, internal::Client, types::sticker, token,
 };
 use serde::Serialize;
 
@@ -15,14 +15,14 @@ pub struct GetStickerSet<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     name: &'a str,
 }
 
 impl<'a, C> GetStickerSet<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         name: &'a str,
     ) -> Self {
         Self {
@@ -38,7 +38,7 @@ impl<C: Connector> GetStickerSet<'_, C> {
     pub async fn call(self) -> Result<sticker::Set, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getStickerSet",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,6 +1,6 @@
 use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, types::inline_query, Token,
+    connectors::Connector, errors, internal::Client, types::inline_query, token,
 };
 use serde::Serialize;
 
@@ -15,7 +15,7 @@ pub struct AnswerInlineQuery<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     inline_query_id: inline_query::id::Ref<'a>,
     results: &'a [inline_query::Result<'a>],
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,7 +33,7 @@ pub struct AnswerInlineQuery<'a, C> {
 impl<'a, C> AnswerInlineQuery<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_query_id: inline_query::id::Ref<'a>,
         results: &'a [inline_query::Result<'a>],
     ) -> Self {
@@ -86,7 +86,7 @@ impl<C: Connector> AnswerInlineQuery<'_, C> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "answerInlineQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

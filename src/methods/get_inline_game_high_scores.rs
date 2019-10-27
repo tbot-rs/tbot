@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     types::{game::HighScore, inline_message_id, user},
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -20,7 +20,7 @@ pub struct GetInlineGameHighScores<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     user_id: user::Id,
     inline_message_id: inline_message_id::Ref<'a>,
 }
@@ -28,7 +28,7 @@ pub struct GetInlineGameHighScores<'a, C> {
 impl<'a, C> GetInlineGameHighScores<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
         user_id: user::Id,
     ) -> Self {
@@ -46,7 +46,7 @@ impl<C: Connector> GetInlineGameHighScores<'_, C> {
     pub async fn call(self) -> Result<Vec<HighScore>, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -8,7 +8,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct SendPoll<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     question: &'a str,
     options: &'a [&'a str],
@@ -38,7 +38,7 @@ pub struct SendPoll<'a, C> {
 impl<'a, C> SendPoll<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         question: &'a str,
         options: &'a [&'a str],
@@ -85,7 +85,7 @@ impl<C: Connector> SendPoll<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "sendPoll",
             None,
             serde_json::to_vec(&self).unwrap(),

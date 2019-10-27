@@ -1,7 +1,7 @@
 use super::send_method;
 use crate::{
     connectors::Connector, errors, internal::Client,
-    types::parameters::Updates, Multipart, Token,
+    types::parameters::Updates, Multipart, token,
 };
 
 /// This method isn't meant to be used by users directly.
@@ -9,7 +9,7 @@ use crate::{
 #[must_use]
 pub(crate) struct SetWebhook<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     url: &'a str,
     certificate: Option<&'a str>,
     max_connections: Option<u8>,
@@ -19,7 +19,7 @@ pub(crate) struct SetWebhook<'a, C> {
 impl<'a, C> SetWebhook<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         url: &'a str,
         certificate: Option<&'a str>,
         max_connections: Option<u8>,
@@ -56,7 +56,7 @@ impl<C: Connector> SetWebhook<'_, C> {
 
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "setWebhook",
             Some(boundary),
             body,

@@ -7,7 +7,7 @@ use crate::{
         input_file::{ChatPhoto, InputFile},
         parameters::{ChatId, ImplicitChatId},
     },
-    Multipart, Token,
+    Multipart, token,
 };
 
 /// Sets a chat's photo.
@@ -19,7 +19,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatPhoto<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     photo: ChatPhoto<'a>,
 }
@@ -27,7 +27,7 @@ pub struct SetChatPhoto<'a, C> {
 impl<'a, C> SetChatPhoto<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         photo: ChatPhoto<'a>,
     ) -> Self {
@@ -61,7 +61,7 @@ impl<C: Connector> SetChatPhoto<'_, C> {
 
         send_method::<bool, _>(
             self.client,
-            &self.token,
+            self.token,
             "setChatPhoto",
             Some(boundary),
             body,

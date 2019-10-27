@@ -8,7 +8,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
     },
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -23,7 +23,7 @@ pub struct EditMessageLocation<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
     latitude: f64,
@@ -35,7 +35,7 @@ pub struct EditMessageLocation<'a, C> {
 impl<'a, C> EditMessageLocation<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         (latitude, longitude): (f64, f64),
@@ -64,7 +64,7 @@ impl<C: Connector> EditMessageLocation<'_, C> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "editMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     types::{parameters::Updates, Update},
-    Token,
+    token,
 };
 use serde::Serialize;
 
@@ -14,7 +14,7 @@ pub(crate) struct GetUpdates<'a, C> {
     #[serde(skip)]
     client: &'a Client<C>,
     #[serde(skip)]
-    token: Token,
+    token: token::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<isize>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28,7 +28,7 @@ pub(crate) struct GetUpdates<'a, C> {
 impl<'a, C> GetUpdates<'a, C> {
     pub(crate) const fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
@@ -50,7 +50,7 @@ impl<C: Connector> GetUpdates<'_, C> {
     pub async fn call(self) -> Result<Vec<Update>, errors::MethodCall> {
         send_method(
             self.client,
-            &self.token,
+            self.token,
             "getUpdates",
             None,
             serde_json::to_vec(&self).unwrap(),

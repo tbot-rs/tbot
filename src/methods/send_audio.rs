@@ -9,7 +9,7 @@ use crate::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
     },
-    Multipart, Token,
+    Multipart, token,
 };
 
 /// Sends an audio.
@@ -21,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAudio<'a, C> {
     client: &'a Client<C>,
-    token: Token,
+    token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     audio: Audio<'a>,
     disable_notification: Option<bool>,
@@ -32,7 +32,7 @@ pub struct SendAudio<'a, C> {
 impl<'a, C> SendAudio<'a, C> {
     pub(crate) fn new(
         client: &'a Client<C>,
-        token: Token,
+        token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         audio: Audio<'a>,
     ) -> Self {
@@ -104,7 +104,7 @@ impl<C: Connector> SendAudio<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.client, &self.token, "sendAudio", Some(boundary), body)
+        send_method(self.client, self.token, "sendAudio", Some(boundary), body)
             .await
     }
 }
