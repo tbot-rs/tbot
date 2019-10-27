@@ -25,7 +25,7 @@ pub mod webhook;
 pub use {polling::Polling, webhook::Webhook};
 
 type Handlers<T> = Vec<Box<T>>;
-type Map<T> = HashMap<&'static str, Handlers<T>>;
+type Map<T> = HashMap<String, Handlers<T>>;
 
 // Wish trait alises came out soon
 type Handler<T> = dyn Fn(Arc<T>) + Send + Sync;
@@ -225,23 +225,23 @@ impl<C> EventLoop<C> {
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_handlers
-            .entry(command)
+            .entry(command.to_string())
             .or_insert_with(Vec::new)
             .push(Box::new(move |context| {
                 tokio::spawn(handler(context));
             }));
     }
 
-    fn will_handle_command(&self, command: &'static str) -> bool {
-        self.command_handlers.contains_key(&command)
+    fn will_handle_command(&self, command: &str) -> bool {
+        self.command_handlers.contains_key(command)
     }
 
     fn run_command_handlers(
         &self,
-        command: &'static str,
+        command: &str,
         context: &Arc<contexts::Text<C>>,
     ) {
-        if let Some(handlers) = self.command_handlers.get(&command) {
+        if let Some(handlers) = self.command_handlers.get(command) {
             for handler in handlers {
                 handler(context.clone());
             }
@@ -282,23 +282,23 @@ impl<C> EventLoop<C> {
         F: Future<Output = ()> + Send + 'static,
     {
         self.edited_command_handlers
-            .entry(command)
+            .entry(command.to_string())
             .or_insert_with(Vec::new)
             .push(Box::new(move |context| {
                 tokio::spawn(handler(context));
             }));
     }
 
-    fn will_handle_edited_command(&self, command: &'static str) -> bool {
-        self.edited_command_handlers.contains_key(&command)
+    fn will_handle_edited_command(&self, command: &str) -> bool {
+        self.edited_command_handlers.contains_key(command)
     }
 
     fn run_edited_command_handlers(
         &self,
-        command: &'static str,
+        command: &str,
         context: &Arc<contexts::EditedText<C>>,
     ) {
-        if let Some(handlers) = self.edited_command_handlers.get(&command) {
+        if let Some(handlers) = self.edited_command_handlers.get(command) {
             for handler in handlers {
                 handler(context.clone());
             }
@@ -929,12 +929,10 @@ impl<C> EventLoop<C> {
                     return;
                 }
 
-                let command = Box::leak(Box::new(command.to_string()));
-
-                if self.will_handle_command(command) {
+                if self.will_handle_command(&command) {
                     let text = trim_command(text);
                     let context = contexts::Text::new(bot, data, text);
-                    self.run_command_handlers(command, &Arc::new(context));
+                    self.run_command_handlers(&command, &Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
@@ -1086,13 +1084,12 @@ impl<C> EventLoop<C> {
                     return;
                 }
 
-                let command = Box::leak(Box::new(command.to_string()));
-                if self.will_handle_edited_command(command) {
+                if self.will_handle_edited_command(&command) {
                     let text = trim_command(text);
                     let context =
                         contexts::EditedText::new(bot, data, edit_date, text);
                     self.run_edited_command_handlers(
-                        command,
+                        &command,
                         &Arc::new(context),
                     );
                 } else if self.will_handle_unhandled() {
@@ -1216,7 +1213,7 @@ fn is_command(text: &Text) -> bool {
     }) == Some(true)
 }
 
-fn parse_command(text: &Text) -> (&str, Option<&str>) {
+fn parse_command(text: &Text) -> (String, Option<&str>) {
     let mut iter =
         // As this function is only run when a message starts with `/`,
         // the first value will always be yielded.
@@ -1226,7 +1223,7 @@ fn parse_command(text: &Text) -> (&str, Option<&str>) {
     let command = iter.next().unwrap();
     let username = iter.next();
 
-    (command, username)
+    (command.to_string(), username)
 }
 
 fn trim_command(text: Text) -> Text {
