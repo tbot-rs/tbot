@@ -6,7 +6,7 @@ use std::{
     sync::{Arc, Mutex},
     time::Duration,
 };
-use tokio::timer::{delay_for, Timeout};
+use tokio::time::{delay_for, timeout as timeout_future};
 
 type ErrorHandler = dyn FnMut(errors::Polling) + Send + Sync;
 
@@ -124,7 +124,7 @@ impl<C: Connector + Clone> Polling<C> {
             .unwrap_or_else(|| Duration::from_secs(timeout.unwrap_or(0) + 60));
 
         let delete_webhook = event_loop.bot.delete_webhook().call();
-        Timeout::new(delete_webhook, request_timeout).await??;
+        timeout_future(request_timeout, delete_webhook).await??;
 
         let bot = Arc::new(event_loop.bot.clone());
         let error_handler = &mut *error_handler.lock().unwrap();
@@ -136,7 +136,7 @@ impl<C: Connector + Clone> Polling<C> {
                 .get_updates(offset, limit, timeout, allowed_updates)
                 .call();
 
-            match Timeout::new(get_updates, request_timeout).await {
+            match timeout_future(request_timeout, get_updates).await {
                 Ok(Ok(updates)) => {
                     if let Some(update) = updates.last() {
                         offset = Some(update.id.0 + 1);

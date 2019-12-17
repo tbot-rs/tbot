@@ -22,7 +22,7 @@ const DELIVERY: &[shipping::Option] = &[shipping::Option::new(
 )];
 const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
-#[tbot::main]
+#[tokio::main]
 async fn main() {
     // I don't want everyone to set up another environment variable
     // so they don't see constant errors from RLS or `cargo test`.

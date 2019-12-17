@@ -1,5 +1,5 @@
 use super::MethodCall;
-use tokio::timer::timeout::Elapsed;
+use tokio::time::Elapsed;
 
 /// Reperesents possible errors that may happen during preparation of the
 /// polling event loop.

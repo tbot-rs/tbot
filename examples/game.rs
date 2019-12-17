@@ -14,7 +14,7 @@ const BAD_MULTIPLIER: i32 = 100;
 
 const SCORE_NOT_MODIFIED: &str = "Bad Request: BOT_SCORE_NOT_MODIFIED";
 
-#[tbot::main]
+#[tokio::main]
 async fn main() {
     let chats = Arc::new(Mutex::new(HashMap::new()));
     let game_chats_ref = Arc::clone(&chats);

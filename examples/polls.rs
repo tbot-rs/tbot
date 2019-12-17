@@ -4,7 +4,7 @@ const QUESTION: &str = "Do you like tbot?";
 const OPTIONS: &[&str] =
     &["Yes", "Also yes", "I like shooting myself in the foot more"];
 
-#[tbot::main]
+#[tokio::main]
 async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 

@@ -3,7 +3,7 @@ use std::{
     error::Error,
     fmt::{self, Display, Formatter},
 };
-use tokio::timer::timeout::Elapsed;
+use tokio::time::Elapsed;
 
 /// Represents possible errors that an HTTPS webhook server may return.
 #[derive(Debug)]

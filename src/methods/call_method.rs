@@ -1,7 +1,11 @@
 use crate::{
     connectors::Connector, errors, internal::Client, token, types::chat,
 };
-use hyper::{header::HeaderValue, Body, Method, Request, Uri};
+use hyper::{
+    body::{Body, HttpBody},
+    header::HeaderValue,
+    Method, Request, Uri,
+};
 use serde::{de::DeserializeOwned, Deserialize};
 
 #[derive(Deserialize)]
@@ -62,7 +66,7 @@ where
         .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
         .map_or_else(Vec::new, Vec::with_capacity);
 
-    while let Some(chunk) = body.next().await {
+    while let Some(chunk) = body.data().await {
         response.extend(chunk?);
     }
 

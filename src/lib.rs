@@ -3,8 +3,11 @@
 //! ```no_run
 //! use tbot::prelude::*;
 //!
-//! #[tbot::main]
+//! # /*
+//! #[tokio::main]
 //! async fn main() {
+//! # */
+//! # async fn bot() { // is there a way to enable `tokio/macros` for examples?
 //!     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
 //!     bot.text(|context| async move {
@@ -54,7 +57,6 @@ pub mod types;
 
 use {download_file::download_file, multipart::Multipart, token::Token};
 
-pub use tokio::main;
 pub use {bot::Bot, event_loop::EventLoop};
 
 pub mod prelude {

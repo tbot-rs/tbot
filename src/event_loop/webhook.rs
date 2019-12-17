@@ -2,7 +2,10 @@
 
 use super::EventLoop;
 use crate::{types::parameters::Updates, Bot};
-use hyper::{Body, Method, Request, Response};
+use hyper::{
+    body::{Body, HttpBody},
+    Method, Request, Response,
+};
 use std::{
     net::{IpAddr, Ipv4Addr},
     sync::Arc,
@@ -124,7 +127,7 @@ where
             .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
             .map_or_else(Vec::new, Vec::with_capacity);
 
-        while let Some(chunk) = body.next().await {
+        while let Some(chunk) = body.data().await {
             request.extend(chunk?);
         }
 
