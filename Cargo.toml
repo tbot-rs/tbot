@@ -19,15 +19,59 @@ categories = [
 ]
 
 [dependencies]
-hyper = "=0.13.0-alpha.4"
-hyper-tls = "=0.4.0-alpha.4"
-tokio = "=0.2.0-alpha.6"
+hyper = { version = "0.13", default-features = false }
+hyper-tls = "0.4"
+tokio = { version = "0.2", features = ["time"] }
 serde_json = "1"
 serde = { version = "1.0.34", features = ["derive"] }
-tokio-tls = "=0.3.0-alpha.6"
-native-tls = "0.2.3"
+tokio-tls = "0.3"
+native-tls = "0.2"
 
 [dev-dependencies]
 meval = "0.2"
 
 [features]
+
+[[example]]
+name = "attachments"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "download"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "game"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "get_me"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "keyboard"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "location"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "payment"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "polls"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "sticker_packs"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "tutorial"
+required-features = ["tokio/macros"]
+
+[[example]]
+name = "webhook"
+required-features = ["tokio/macros"]

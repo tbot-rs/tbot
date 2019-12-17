@@ -5,7 +5,7 @@ use hyper::{
     Server,
 };
 use std::{convert::Infallible, net::SocketAddr, sync::Arc};
-use tokio::timer::Timeout;
+use tokio::time::timeout;
 
 /// Configures the HTTP webhook server.
 pub struct Http<'a, C> {
@@ -37,7 +37,7 @@ impl<'a, C: Connector + Clone> Http<'a, C> {
             .set_webhook(url, certificate, max_connections, allowed_updates)
             .call();
 
-        Timeout::new(set_webhook, request_timeout).await??;
+        timeout(request_timeout, set_webhook).await??;
 
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);

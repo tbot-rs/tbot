@@ -8,7 +8,7 @@ use tbot::{
     },
 };
 
-#[tbot::main]
+#[tokio::main]
 async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 

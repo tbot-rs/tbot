@@ -1,6 +1,6 @@
 use std::time::Duration;
 use tbot::prelude::*;
-use tokio::timer::delay_for;
+use tokio::time::delay_for;
 
 const INTERVAL: u64 = 15;
 const PLACES: [(f64, f64); 6] = [
@@ -13,7 +13,7 @@ const PLACES: [(f64, f64); 6] = [
 ];
 const UPDATE_PERIOD: u32 = 3600 * 24;
 
-#[tbot::main]
+#[tokio::main]
 async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 

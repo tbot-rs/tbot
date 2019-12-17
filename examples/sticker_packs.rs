@@ -9,7 +9,7 @@ const STICKERS: [(&[u8], &str); 2] = [
     (include_bytes!("./assets/stickers/2.png"), "🐱"),
 ];
 
-#[tbot::main]
+#[tokio::main]
 async fn main() {
     let bot = tbot::from_env!("BOT_TOKEN");
 

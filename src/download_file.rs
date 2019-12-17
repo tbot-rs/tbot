@@ -1,7 +1,7 @@
 use crate::{
     connectors::Connector, errors, internal::Client, token, types::File,
 };
-use hyper::{StatusCode, Uri};
+use hyper::{body::HttpBody, StatusCode, Uri};
 
 pub async fn download_file<C>(
     client: &Client<C>,
@@ -39,7 +39,7 @@ where
         .and_then(|x| x.to_str().ok().and_then(|x| x.parse().ok()))
         .map_or_else(Vec::new, Vec::with_capacity);
 
-    while let Some(chunk) = body.next().await {
+    while let Some(chunk) = body.data().await {
         response.extend(chunk?);
     }
 
