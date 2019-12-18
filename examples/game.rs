@@ -1,10 +1,8 @@
 //! Simple but stupid game. Note that it's implemented
 
-use std::{
-    collections::HashMap,
-    sync::{Arc, Mutex},
-};
+use std::{collections::HashMap, sync::Arc};
 use tbot::{errors, prelude::*};
+use tokio::sync::Mutex;
 
 const GAME: &str = "";
 const GOOD_PHRASE: &str = "tbot good";
@@ -25,7 +23,7 @@ async fn main() {
         let chats = Arc::clone(&game_chats_ref);
         async move {
             let message = context.send_game(GAME).call().await.unwrap();
-            chats.lock().unwrap().insert(message.chat.id, message.id);
+            chats.lock().await.insert(message.chat.id, message.id);
         }
     });
 
@@ -33,7 +31,7 @@ async fn main() {
         let chats = Arc::clone(&chats);
         async move {
             let message_id = {
-                let chats = chats.lock().unwrap();
+                let chats = chats.lock().await;
 
                 match chats.get(&context.chat.id) {
                     Some(id) => *id,

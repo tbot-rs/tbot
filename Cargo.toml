@@ -42,7 +42,7 @@ required-features = ["tokio/macros"]
 
 [[example]]
 name = "game"
-required-features = ["tokio/macros"]
+required-features = ["tokio/macros", "tokio/sync"]
 
 [[example]]
 name = "get_me"
@@ -70,7 +70,7 @@ required-features = ["tokio/macros"]
 
 [[example]]
 name = "tutorial"
-required-features = ["tokio/macros"]
+required-features = ["tokio/macros", "tokio/sync"]
 
 [[example]]
 name = "webhook"
