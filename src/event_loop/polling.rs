@@ -3,12 +3,12 @@ use crate::{connectors::Connector, errors, types::parameters::Updates};
 use std::{
     convert::{Infallible, TryInto},
     num::NonZeroUsize,
-    sync::{Arc, Mutex},
+    sync::Arc,
     time::Duration,
 };
 use tokio::time::{delay_for, timeout as timeout_future};
 
-type ErrorHandler = dyn FnMut(errors::Polling) + Send + Sync;
+type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
 
 /// Configures and starts polling.
 ///
@@ -22,7 +22,7 @@ pub struct Polling<C> {
     timeout: Option<u64>,
     allowed_updates: Option<&'static [Updates]>,
     poll_interval: Duration,
-    error_handler: Mutex<Box<ErrorHandler>>,
+    error_handler: Box<ErrorHandler>,
     request_timeout: Option<Duration>,
     offset: Option<isize>,
 }
@@ -35,9 +35,9 @@ impl<C> Polling<C> {
             timeout: None,
             allowed_updates: None,
             poll_interval: Duration::from_millis(25),
-            error_handler: Mutex::new(Box::new(|err| {
+            error_handler: Box::new(|err| {
                 eprintln!("[tbot] Polling error: {:#?}", err);
-            })),
+            }),
             request_timeout: None,
             offset: None,
         }
@@ -65,11 +65,14 @@ impl<C> Polling<C> {
     }
 
     /// Adds a handler for errors ocurred while polling.
-    pub fn error_handler(
-        mut self,
-        handler: impl FnMut(errors::Polling) + Send + Sync + 'static,
-    ) -> Self {
-        self.error_handler = Mutex::new(Box::new(handler));
+    pub fn error_handler<H, F>(mut self, handler: H) -> Self
+    where
+        H: (Fn(errors::Polling) -> F) + Send + Sync + 'static,
+        F: std::future::Future<Output = ()> + Send + 'static,
+    {
+        self.error_handler = Box::new(move |error| {
+            tokio::spawn(handler(error));
+        });
         self
     }
 
@@ -127,7 +130,6 @@ impl<C: Connector + Clone> Polling<C> {
         timeout_future(request_timeout, delete_webhook).await??;
 
         let bot = Arc::new(event_loop.bot.clone());
-        let error_handler = &mut *error_handler.lock().unwrap();
 
         loop {
             let next_tick = delay_for(poll_interval);
