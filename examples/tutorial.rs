@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tbot::{
     prelude::*,
     types::{
@@ -7,6 +7,7 @@ use tbot::{
         parameters::Text as ParseMode,
     },
 };
+use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() {
@@ -45,7 +46,7 @@ async fn main() {
             };
 
             let id = {
-                let mut id = std::sync::Mutex::lock(&id).unwrap();
+                let mut id = id.lock().await;
                 *id += 1;
                 id.to_string()
             };
