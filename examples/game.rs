@@ -1,5 +1,3 @@
-//! Simple but stupid game. Note that it's implemented
-
 use std::{collections::HashMap, sync::Arc};
 use tbot::{errors, prelude::*};
 use tokio::sync::Mutex;
