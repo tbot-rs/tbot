@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 /// [`Polling`]: ../../event_loop/struct.Polling.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Updates {
     /// Handles chat messages of any kind.
     Message,

@@ -14,7 +14,7 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[serde(untagged)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum InputMessageContent<'a> {
     /// A text message.
     Text(Text<'a>),

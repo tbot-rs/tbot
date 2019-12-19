@@ -11,7 +11,7 @@ pub use {id::Id, profile_photos::ProfilePhotos};
 ///
 /// [`User`]: https://core.telegram.org/bots/api#user
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct User {
     /// The ID of the user.
     pub id: Id,

@@ -11,7 +11,7 @@ use serde::Serialize;
 
 /// Represents possible MIME types for a fresh document.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum MimeType {
     /// The `application/pdf` MIME type.
     #[serde(rename = "application/pdf")]

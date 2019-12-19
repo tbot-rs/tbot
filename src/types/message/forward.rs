@@ -5,14 +5,14 @@ use crate::types::{Chat, User};
 
 /// Represents a forward source.
 #[derive(Debug, PartialEq, Clone)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum From {
     /// The forward is from a user.
     User(User),
     /// The forward is from a user who decided to hide their profile.
     HiddenUser(String),
     /// The forward is from a channel.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Channel {
         /// Information about the channel.
         chat: Box<Chat>,
@@ -25,7 +25,7 @@ pub enum From {
 
 /// Represents forward information.
 #[derive(Debug, PartialEq, Clone)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Forward {
     /// The author of the original message.
     pub from: From,

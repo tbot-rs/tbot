@@ -6,17 +6,10 @@ use serde::{Deserialize, Serialize};
 /// This struct is a representation of [`ChatPermissions`].
 ///
 /// [`ChatPermissions`]: https://core.telegram.org/bots/api#chatpermissions
-///
-/// # Non-exhaustiveness
-///
-/// Users should not match this struct exhaustively. New fields added to it
-/// are _not_ considered a breaking change per `tbot`'s
-/// [breaking change policy].
-///
-/// [breaking change policy]: https://gitlab.com/SnejUgal/tbot/wikis/Breaking-changes
 #[derive(
     Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize, Default,
 )]
+#[non_exhaustive]
 pub struct Permissions {
     /// `true` if the user can send text messages, contacts, locations and
     /// venues.

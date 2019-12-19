@@ -5,7 +5,7 @@ use serde::Deserialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#successfulpayment
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct SuccessfulPayment {
     /// Currency of the payment.
     pub currency: String,

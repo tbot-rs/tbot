@@ -7,14 +7,8 @@ use std::fmt::{self, Formatter};
 /// Represents different kinds of a [`sticker::Set`].
 ///
 /// [`sticker::Set`]: ./struct.Set.html
-///
-/// # Non-exhaustiveness
-///
-/// Users should not match this enum exhaustively. New variants added to it are
-///  _not_ considered a breaking change per `tbot`'s [breaking change policy].
-///
-/// [breaking change policy]: https://gitlab.com/SnejUgal/tbot/wikis/
 #[derive(Debug, PartialEq, Clone, Copy)]
+#[non_exhaustive]
 pub enum Kind {
     /// The stickers in the sticker set are neither animated nor masks.
     Plain,
@@ -28,7 +22,7 @@ pub enum Kind {
 ///
 /// [`StickerSet`]: https://core.telegram.org/bots/api#stickerset
 #[derive(Debug, PartialEq, Clone)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Set {
     /// The name of the sticker set (used in URLs).
     pub name: String,

@@ -11,7 +11,7 @@ pub use id::Id;
 ///
 /// [docs]: https://core.telegram.org/bots/api#precheckoutquery
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct PreCheckoutQuery {
     /// The ID of the query.
     pub id: Id,

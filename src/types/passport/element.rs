@@ -14,7 +14,7 @@ pub use {error::Error, kind::Kind};
 ///
 /// [docs]: https://core.telegram.org/bots/api#encryptedpassportelement
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Element {
     /// The kind of the element.
     pub kind: Kind,

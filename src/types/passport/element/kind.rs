@@ -4,12 +4,12 @@ use crate::types::passport;
 ///
 /// [`Element`]: ./struct.Element.html
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Kind {
     /// THe user's personal details.
     PersonalDetails(String),
     /// The user's passport.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Passport {
         /// Data related to the passport.
         data: String,
@@ -21,7 +21,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's driver license.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     DriverLicense {
         /// Data related to the license.
         data: String,
@@ -35,7 +35,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's identity card.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     IdentityCard {
         /// Data related to the identity card.
         data: String,
@@ -49,7 +49,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's internal passport.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     InternalPassport {
         /// Data related to the passport.
         data: String,
@@ -63,7 +63,7 @@ pub enum Kind {
     /// The user's address.
     Address(String),
     /// The user's utility bill.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     UtilityBill {
         /// Photos of the bill.
         files: Vec<passport::File>,
@@ -71,7 +71,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's bank statement.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     BankStatement {
         /// Photos of the statement.
         files: Vec<passport::File>,
@@ -79,7 +79,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's rental agreement.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     RentalAgreement {
         /// Photos of the agreement.
         files: Vec<passport::File>,
@@ -87,7 +87,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's passport registration.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     PassportRegistration {
         /// Photos of the registration.
         files: Vec<passport::File>,
@@ -95,7 +95,7 @@ pub enum Kind {
         translation: Vec<passport::File>,
     },
     /// The user's temporary registration.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     TemporaryRegistration {
         /// Photos of the registration.
         files: Vec<passport::File>,

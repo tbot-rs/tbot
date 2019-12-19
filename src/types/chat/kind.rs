@@ -2,10 +2,10 @@ use crate::types::{chat, Message};
 
 /// Represents the kind of a chat.
 #[derive(Debug, PartialEq, Clone)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Kind {
     /// The chat is private.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Private {
         /// The username of the user.
         username: Option<String>,
@@ -15,7 +15,7 @@ pub enum Kind {
         last_name: Option<String>,
     },
     /// The chat is a group.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Group {
         /// The title of the group.
         title: String,
@@ -32,7 +32,7 @@ pub enum Kind {
         permissions: Option<chat::Permissions>,
     },
     /// The chat is a supergroup.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Supergroup {
         /// The title of the supergroup.
         title: String,
@@ -55,7 +55,7 @@ pub enum Kind {
         permissions: Option<chat::Permissions>,
     },
     /// The chat is a channel.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Channel {
         /// The title of the channel.
         title: String,

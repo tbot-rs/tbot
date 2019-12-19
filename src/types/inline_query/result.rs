@@ -46,7 +46,7 @@ pub use {
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Kind<'a> {
     /// An article.
     Article(Article<'a>),

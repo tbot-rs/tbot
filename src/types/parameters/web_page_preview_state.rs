@@ -1,6 +1,6 @@
 /// Chooses if a web page preview will be shown.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum WebPagePreviewState {
     /// The preview will be enabled.
     Enabled,

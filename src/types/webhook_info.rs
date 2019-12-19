@@ -5,7 +5,7 @@ use serde::de::{Deserialize, Deserializer, Error, MapAccess, Visitor};
 
 /// Represents information about the last error.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct LastError {
     /// The timestamp of the error.
     pub date: i64,
@@ -17,7 +17,7 @@ pub struct LastError {
 ///
 /// [`WebhookInfo`]: https://core.telegram.org/bots/api#webhookinfo
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct WebhookInfo {
     /// The URL to which Telegram sends Webhook updates.
     pub url: String,

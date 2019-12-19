@@ -21,7 +21,7 @@ pub type Markup = Vec<Vec<Button>>;
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum ButtonKind {
     /// Represents a URL button.
     Url(String),
@@ -94,7 +94,7 @@ impl ButtonKind {
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Button {
     /// The text of the button.
     pub text: String,

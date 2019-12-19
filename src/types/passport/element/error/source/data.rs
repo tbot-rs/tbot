@@ -5,7 +5,7 @@ use serde::Serialize;
 /// Represents possible element kinds for data error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Kind {
     /// An error in the user's personal details.
     PersonalDetails,

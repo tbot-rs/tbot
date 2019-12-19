@@ -5,7 +5,7 @@ use serde::Deserialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportdata
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Data {
     /// Documents shared with the bot.
     pub data: Vec<passport::Element>,

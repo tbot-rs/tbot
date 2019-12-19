@@ -6,7 +6,7 @@ use serde::{
 
 /// Represents a media that can be sent in a group (aka albums).
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum GroupMedia<'a> {
     /// A group's photo.
     Photo(Photo<'a>),

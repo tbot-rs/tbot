@@ -14,7 +14,7 @@ pub use {
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Message {
     /// The ID of the message.
     pub id: Id,

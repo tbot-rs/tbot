@@ -10,7 +10,7 @@ pub use id::Id;
 ///
 /// [docs]: https://core.telegram.org/bots/api#shippingquery
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Query {
     /// The ID of the query.
     pub id: Id,
