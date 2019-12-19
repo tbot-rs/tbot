@@ -41,7 +41,7 @@ impl Updates {
         self == Self::EditedMessage
     }
 
-    /// Checks if `self` is ChanelPost``.
+    /// Checks if `self` is `ChanelPost`.
     pub fn is_channel_post(self) -> bool {
         self == Self::ChannelPost
     }
