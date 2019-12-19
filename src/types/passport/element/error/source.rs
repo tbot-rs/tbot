@@ -21,7 +21,7 @@ pub use {
 /// Reperesents possible sources of an error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case", tag = "source")]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Source<'a> {
     /// An error with data.
     Data(Data<'a>),

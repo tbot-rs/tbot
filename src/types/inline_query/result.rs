@@ -46,7 +46,7 @@ pub use {
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Kind<'a> {
     /// An article.
     Article(Article<'a>),
@@ -145,7 +145,7 @@ impl Kind<'_> {
         }
     }
 
-    /// Checks if `self` is Mpeg4Gif``.
+    /// Checks if `self` is `Mpeg4Gif`.
     pub fn is_mpeg4_gif(&self) -> bool {
         match self {
             Kind::Mpeg4Gif(..) => true,
@@ -153,7 +153,7 @@ impl Kind<'_> {
         }
     }
 
-    /// Checks if `self` is ``.
+    /// Checks if `self` is `Photo`.
     pub fn is_photo(&self) -> bool {
         match self {
             Kind::Photo(..) => true,

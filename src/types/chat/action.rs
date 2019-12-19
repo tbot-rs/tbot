@@ -3,7 +3,7 @@ use serde::Serialize;
 /// Represents possible chat actions.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Action {
     /// About to send a text message.
     Typing,

@@ -10,7 +10,7 @@ use serde::Serialize;
 
 /// Represents possible MIME types.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum MimeType {
     /// The `text/html` MIME type.
     #[serde(rename = "text/html")]

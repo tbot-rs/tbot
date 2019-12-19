@@ -7,12 +7,12 @@ use serde::de::{
 
 /// Represents the status of a member.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Status {
     /// The user is the creator of the chat.
     Creator,
     /// The user is an administrator of the chat.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Administator {
         /// `true` if the bot can edit this admin's rights.
         can_be_edited: bool,
@@ -36,7 +36,7 @@ pub enum Status {
     /// The user is a member of the chat.
     Member,
     /// The user is restricted in the chat.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Restricted {
         /// Time when the restriction will be lifted.
         until_date: Option<i64>,
@@ -62,7 +62,7 @@ pub enum Status {
     /// The user left the chat.
     Left,
     /// The user was kicked out of the chat.
-    // todo: #[non_exhaustive]
+    #[non_exhaustive]
     Kicked {
         /// Time when the restriction will be lifted.
         until_date: Option<i64>,
@@ -73,7 +73,7 @@ pub enum Status {
 ///
 /// [`ChatMember`]: https://core.telegram.org/bots/api#chatmember
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Member {
     /// Information about the member.
     pub user: User,

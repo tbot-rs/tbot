@@ -4,7 +4,7 @@ use serde::Deserialize;
 ///
 /// [`Invoice`]: https://core.telegram.org/bots/api#invoice
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Invoice {
     /// The title of the invoice.
     pub title: String,

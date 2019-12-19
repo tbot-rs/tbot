@@ -5,7 +5,7 @@ use serde::Deserialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#orderinfo
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct OrderInfo {
     /// User's name.
     pub name: Option<String>,

@@ -20,7 +20,7 @@ pub struct Id(pub isize);
 // In fact, the large-sized variants are more common than the small-sized ones,
 // so I think it's better not to box them.
 #[allow(clippy::large_enum_variant)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum Kind {
     /// A new chat message.
     Message(Message),
@@ -48,7 +48,7 @@ pub enum Kind {
 
 /// Represents an update from Telegram.
 #[derive(Debug)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Update {
     /// The ID of the update.
     pub id: Id,

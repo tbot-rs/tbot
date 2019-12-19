@@ -22,7 +22,6 @@ struct Response<T> {
     parameters: Option<ResponseParameters>,
 }
 
-#[must_use]
 pub async fn send_method<'a, T, C>(
     client: &'a Client<C>,
     token: token::Ref<'a>,

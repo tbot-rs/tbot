@@ -10,7 +10,7 @@ pub use id::Id;
 ///
 /// [`File`]: https://core.telegram.org/bots/api#file
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct File {
     /// The ID of the file.
     #[serde(rename = "file_id")]

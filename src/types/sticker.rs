@@ -15,15 +15,8 @@ pub use {mask_position::MaskPosition, set::Set};
 /// Represents different kinds of a [`Sticker`].
 ///
 /// [`Sticker`]: ./struct.Sticker.html
-///
-/// # Non-exhaustiveness
-///
-/// Users should not match this enum exhaustively (but you can match the tuple
-/// on the `Mask` variant). New variants added to it are _not_ considered
-/// a breaking change per `tbot`'s [breaking change policy].
-///
-/// [breaking change policy]: https://gitlab.com/SnejUgal/tbot/wikis/
 #[derive(Debug, PartialEq, Clone, Copy)]
+#[non_exhaustive]
 pub enum Kind {
     /// The sticker is neither animated nor a mask.
     Plain,
@@ -36,15 +29,8 @@ pub enum Kind {
 /// Represents a [`Sticker`].
 ///
 /// [`Sticker`]: https://core.telegram.org/bots/api#sticker
-///
-/// # Non-exhaustiveness
-///
-/// Users should not match this struct exhaustively. New fields added to it
-/// are _not_ considered a breaking change per `tbot`'s
-/// [breaking change policy].
-///
-/// [breaking change policy]: https://gitlab.com/SnejUgal/tbot/wikis/
 #[derive(Debug, PartialEq, Clone)]
+#[non_exhaustive]
 pub struct Sticker {
     /// The file ID of the sticker.
     pub file_id: file::Id,

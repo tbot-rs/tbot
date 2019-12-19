@@ -18,7 +18,7 @@ pub use {
 ///
 /// [`Chat`]: https://core.telegram.org/bots/api#chat
 #[derive(Debug, PartialEq, Clone)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Chat {
     /// The ID of the chat.
     pub id: Id,

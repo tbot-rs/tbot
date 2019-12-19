@@ -1,6 +1,6 @@
 /// Chooses if a notification will be sent for a new message.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub enum NotificationState {
     /// The notification will be enabled.
     Enabled,

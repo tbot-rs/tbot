@@ -4,7 +4,7 @@ use serde::Deserialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#encryptedcredentials
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct Credentials {
     /// Base64-encoded JSON-serialized data required for decryption.
     pub data: String,

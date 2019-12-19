@@ -4,7 +4,7 @@ use serde::Serialize;
 ///
 /// [`LabeledPrice`]: https://core.telegram.org/bots/api#labeledprice
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-// todo: #[non_exhaustive]
+#[non_exhaustive]
 pub struct LabeledPrice<'a> {
     label: &'a str,
     amount: u32,
