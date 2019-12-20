@@ -6,6 +6,7 @@ use std::{
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]
+#[must_use]
 pub enum Download {
     /// The provided file had the `path` field set to `None`.
     NoPath,
@@ -17,6 +18,7 @@ pub enum Download {
 
 impl Download {
     /// Checks if `self` is `NoPath`.
+    #[must_use]
     pub fn is_no_path(&self) -> bool {
         match self {
             Self::NoPath => true,
@@ -25,6 +27,7 @@ impl Download {
     }
 
     /// Checks if `self` is `Network`.
+    #[must_use]
     pub fn is_network(&self) -> bool {
         match self {
             Self::Network(..) => true,
@@ -33,6 +36,7 @@ impl Download {
     }
 
     /// Checks if `self` is `InvalidStatusCode`.
+    #[must_use]
     pub fn is_invalid_status_code(&self) -> bool {
         match self {
             Self::InvalidStatusCode(..) => true,

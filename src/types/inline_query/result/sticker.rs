@@ -5,6 +5,7 @@ use serde::Serialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Sticker<'a> {
     #[serde(rename = "sticker_file_id")]
     id: &'a str,

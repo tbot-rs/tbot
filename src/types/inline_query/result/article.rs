@@ -10,6 +10,7 @@ use serde::Serialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultarticle
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Article<'a> {
     title: &'a str,
     input_message_content: InputMessageContent<'a>,

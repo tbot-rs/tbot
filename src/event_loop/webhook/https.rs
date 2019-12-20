@@ -12,6 +12,7 @@ use tokio::time::timeout;
 pub use native_tls::Identity;
 
 /// Configures the HTTPS webhook server.
+#[must_use = "webhook server needs to be `start`ed to run the event loop"]
 pub struct Https<'a, C> {
     webhook: Webhook<'a, C>,
     identity: Identity,

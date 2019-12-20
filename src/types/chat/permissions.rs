@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
     Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize, Default,
 )]
 #[non_exhaustive]
+#[must_use]
 pub struct Permissions {
     /// `true` if the user can send text messages, contacts, locations and
     /// venues.

@@ -10,6 +10,7 @@ pub use source::*;
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerror
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Error<'a> {
     #[serde(flatten)]
     source: Source<'a>,

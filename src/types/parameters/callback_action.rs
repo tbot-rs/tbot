@@ -9,6 +9,7 @@
 /// [`alert`]: #method.alert
 /// [`url`]: #method.url
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
 pub enum CallbackAction<'a> {
     /// No action.
     None,

@@ -2,6 +2,7 @@ use serde::Serialize;
 
 /// Represents a thumb.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Thumb<'a> {
     #[serde(rename = "thumb_url")]
     url: &'a str,

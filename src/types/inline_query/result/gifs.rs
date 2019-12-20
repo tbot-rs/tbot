@@ -24,6 +24,7 @@ macro_rules! gif_base {
 
         /// Represents a non-cached GIF.
         #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+        #[must_use]
         pub struct Fresh<'a> {
             thumb_url: &'a str,
             #[serde(rename = $url)]
@@ -47,6 +48,7 @@ macro_rules! gif_base {
 
         #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
         #[serde(untagged)]
+        #[must_use]
         enum Kind<'a> {
             Cached {
                 #[serde(rename = $file_id)]
@@ -68,6 +70,7 @@ macro_rules! gif_base {
                 $doc_link_part,
             ),
             #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+            #[must_use]
             pub struct $struct<'a> {
                 #[serde(flatten)]
                 kind: Kind<'a>,

@@ -13,6 +13,7 @@ use std::fmt::{self, Formatter};
 /// Represents an update ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 #[serde(transparent)]
+#[must_use]
 pub struct Id(pub isize);
 
 /// Represents different types of updates from Telegram.
@@ -21,6 +22,7 @@ pub struct Id(pub isize);
 // so I think it's better not to box them.
 #[allow(clippy::large_enum_variant)]
 #[non_exhaustive]
+#[must_use]
 pub enum Kind {
     /// A new chat message.
     Message(Message),
@@ -49,6 +51,7 @@ pub enum Kind {
 /// Represents an update from Telegram.
 #[derive(Debug)]
 #[non_exhaustive]
+#[must_use]
 pub struct Update {
     /// The ID of the update.
     pub id: Id,
@@ -58,6 +61,7 @@ pub struct Update {
 
 impl Kind {
     /// Checks if `self` is `Message`.
+    #[must_use]
     pub fn is_message(&self) -> bool {
         match self {
             Self::Message(..) => true,
@@ -66,6 +70,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `EditedMessage`.
+    #[must_use]
     pub fn is_edited_message(&self) -> bool {
         match self {
             Self::EditedMessage(..) => true,
@@ -74,6 +79,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `ChannelPost`.
+    #[must_use]
     pub fn is_channel_post(&self) -> bool {
         match self {
             Self::ChannelPost(..) => true,
@@ -82,6 +88,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `EditedChannelPost`.
+    #[must_use]
     pub fn is_edited_channel_post(&self) -> bool {
         match self {
             Self::EditedChannelPost(..) => true,
@@ -90,6 +97,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `InlineQuery`.
+    #[must_use]
     pub fn is_inline_query(&self) -> bool {
         match self {
             Self::InlineQuery(..) => true,
@@ -98,6 +106,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `CallbackQuery`.
+    #[must_use]
     pub fn is_callback_query(&self) -> bool {
         match self {
             Self::CallbackQuery(..) => true,
@@ -106,6 +115,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Poll`.
+    #[must_use]
     pub fn is_poll(&self) -> bool {
         match self {
             Self::Poll(..) => true,
@@ -114,6 +124,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `ChosenInlineResult`.
+    #[must_use]
     pub fn is_chosen_inline_result(&self) -> bool {
         match self {
             Self::ChosenInlineResult(..) => true,
@@ -122,6 +133,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `ShippingQuery`.
+    #[must_use]
     pub fn is_shipping_query(&self) -> bool {
         match self {
             Self::ShippingQuery(..) => true,
@@ -130,6 +142,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `PreCheckoutQuery`.
+    #[must_use]
     pub fn is_pre_checkout_query(&self) -> bool {
         match self {
             Self::PreCheckoutQuery(..) => true,

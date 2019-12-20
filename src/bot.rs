@@ -38,6 +38,7 @@ use std::sync::Arc;
 /// [`EventLoop`]: ./event_loop/struct.EventLoop.html
 /// [`methods`]: ./methods/index.html
 #[derive(Debug, Clone)]
+#[must_use]
 pub struct Bot<C> {
     pub(crate) token: Token,
     pub(crate) client: Arc<crate::internal::Client<C>>,

@@ -42,7 +42,6 @@
 )]
 #![allow(clippy::multiple_crate_versions)] // can't do much
 #![allow(clippy::needless_doctest_main)] // that's where you're wrong, kiddo
-#![allow(clippy::must_use_candidate)] // not now
 
 mod bot;
 mod download_file;

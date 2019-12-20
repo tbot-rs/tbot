@@ -22,6 +22,7 @@ pub use {
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case", tag = "source")]
 #[non_exhaustive]
+#[must_use]
 pub enum Source<'a> {
     /// An error with data.
     Data(Data<'a>),
@@ -45,6 +46,7 @@ pub enum Source<'a> {
 
 impl<'a> Source<'a> {
     /// Checks if `self` is `Data`.
+    #[must_use]
     pub fn is_data(self) -> bool {
         match self {
             Self::Data { .. } => true,
@@ -53,6 +55,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `FrontSide`.
+    #[must_use]
     pub fn is_front_side(self) -> bool {
         match self {
             Self::FrontSide { .. } => true,
@@ -61,6 +64,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `ReverseSide`.
+    #[must_use]
     pub fn is_reverse_side(self) -> bool {
         match self {
             Self::ReverseSide { .. } => true,
@@ -69,6 +73,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `Selfie`.
+    #[must_use]
     pub fn is_selfie(self) -> bool {
         match self {
             Self::Selfie { .. } => true,
@@ -77,6 +82,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `File`.
+    #[must_use]
     pub fn is_file(self) -> bool {
         match self {
             Self::File { .. } => true,
@@ -85,6 +91,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `Files`.
+    #[must_use]
     pub fn is_files(self) -> bool {
         match self {
             Self::Files { .. } => true,
@@ -93,6 +100,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `TranslationFile`.
+    #[must_use]
     pub fn is_translation_file(self) -> bool {
         match self {
             Self::TranslationFile { .. } => true,
@@ -101,6 +109,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `TranslationFiles`.
+    #[must_use]
     pub fn is_translation_files(self) -> bool {
         match self {
             Self::TranslationFiles { .. } => true,
@@ -109,6 +118,7 @@ impl<'a> Source<'a> {
     }
 
     /// Checks if `self` is `Unspecified`.
+    #[must_use]
     pub fn is_unspecified(self) -> bool {
         match self {
             Self::Unspecified { .. } => true,

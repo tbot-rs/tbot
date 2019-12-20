@@ -11,6 +11,7 @@ use hyper_tls::HttpsConnector;
 pub type Https = HttpsConnector<HttpConnector>;
 
 /// Constructs a HTTPS connector.
+#[must_use]
 pub fn https() -> Https {
     HttpsConnector::new()
 }

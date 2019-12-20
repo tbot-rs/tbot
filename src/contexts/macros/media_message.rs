@@ -48,14 +48,17 @@ macro_rules! media_message {
         impl<'a, C: 'static> super::traits::Pinnable<'a, C> for $name<C> {}
 
         impl<C> crate::contexts::fields::MediaMessage<C> for $name<C> {
+            #[must_use]
             fn reply_to(&self) -> Option<&crate::types::Message> {
                 self.reply_to.as_ref()
             }
 
+            #[must_use]
             fn author_signature(&self) -> Option<&str> {
                 self.author_signature.as_ref().map(String::as_str)
             }
 
+            #[must_use]
             fn reply_markup(
                 &self
             ) -> Option<&crate::types::message::inline_markup::Keyboard> {
@@ -64,6 +67,7 @@ macro_rules! media_message {
         }
 
         impl<C> crate::contexts::fields::Forward<C> for $name<C> {
+            #[must_use]
             fn forward(&self) -> Option<&crate::types::message::Forward> {
                 self.forward.as_ref()
             }

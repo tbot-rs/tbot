@@ -1,5 +1,6 @@
 /// Chooses if some payment data is send to the provider.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
 pub enum SendToProviderState {
     /// The data will be sent.
     Send,
@@ -9,6 +10,7 @@ pub enum SendToProviderState {
 
 impl SendToProviderState {
     /// Checks if `self` is `Send`.
+    #[must_use]
     pub fn should_send(self) -> bool {
         self == Self::Send
     }

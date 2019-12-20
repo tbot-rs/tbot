@@ -13,6 +13,7 @@ pub type Markup<'a> = &'a [&'a [Button<'a>]];
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[non_exhaustive]
+#[must_use]
 pub enum ButtonKind<'a> {
     /// Represents a URL button.
     Url(&'a str),
@@ -32,20 +33,25 @@ pub enum ButtonKind<'a> {
 
 impl ButtonKind<'_> {
     /// Checks if `self` is `Url`.
+    #[must_use]
     pub fn is_url(&self) -> bool {
         match self {
             ButtonKind::Url(..) => true,
             _ => false,
         }
     }
+
     /// Checks if `self` is `LoginUrl`.
+    #[must_use]
     pub fn is_login_url(&self) -> bool {
         match self {
             ButtonKind::LoginUrl(..) => true,
             _ => false,
         }
     }
+
     /// Checks if `self` is `CallbackData`.
+    #[must_use]
     pub fn is_callback_data(&self) -> bool {
         match self {
             ButtonKind::CallbackData(..) => true,
@@ -54,6 +60,7 @@ impl ButtonKind<'_> {
     }
 
     /// Checks if `self` is `SwitchInlineQuery`.
+    #[must_use]
     pub fn is_switch_inline_query(&self) -> bool {
         match self {
             ButtonKind::SwitchInlineQuery(..) => true,
@@ -62,6 +69,7 @@ impl ButtonKind<'_> {
     }
 
     /// Checks if `self` is `SwitchInlineQueryCurrentChat`.
+    #[must_use]
     pub fn is_switch_inline_query_current_chat(&self) -> bool {
         // what a name
 
@@ -72,6 +80,7 @@ impl ButtonKind<'_> {
     }
 
     /// Checks if `self` is `CallbackGame`.
+    #[must_use]
     pub fn is_callback_game(&self) -> bool {
         match self {
             ButtonKind::CallbackGame(..) => true,
@@ -80,6 +89,7 @@ impl ButtonKind<'_> {
     }
 
     /// Checks if `self` is `Pay`.
+    #[must_use]
     pub fn is_pay(&self) -> bool {
         match self {
             ButtonKind::Pay(..) => true,
@@ -93,6 +103,7 @@ impl ButtonKind<'_> {
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use]
+#[must_use]
 pub struct Button<'a> {
     text: &'a str,
     kind: ButtonKind<'a>,
@@ -102,6 +113,7 @@ pub struct Button<'a> {
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Keyboard<'a> {
     inline_keyboard: Markup<'a>,
 }

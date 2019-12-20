@@ -8,6 +8,7 @@ use std::{convert::Infallible, net::SocketAddr, sync::Arc};
 use tokio::time::timeout;
 
 /// Configures the HTTP webhook server.
+#[must_use = "webhook server needs to be `start`ed to run the event loop"]
 pub struct Http<'a, C> {
     webhook: Webhook<'a, C>,
 }

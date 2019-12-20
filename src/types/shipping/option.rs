@@ -5,6 +5,7 @@ use serde::Serialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api/#shippingoption
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Option<'a> {
     id: &'a str,
     title: &'a str,

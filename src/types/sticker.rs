@@ -17,6 +17,7 @@ pub use {mask_position::MaskPosition, set::Set};
 /// [`Sticker`]: ./struct.Sticker.html
 #[derive(Debug, PartialEq, Clone, Copy)]
 #[non_exhaustive]
+#[must_use]
 pub enum Kind {
     /// The sticker is neither animated nor a mask.
     Plain,
@@ -31,6 +32,7 @@ pub enum Kind {
 /// [`Sticker`]: https://core.telegram.org/bots/api#sticker
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
+#[must_use]
 pub struct Sticker {
     /// The file ID of the sticker.
     pub file_id: file::Id,

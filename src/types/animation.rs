@@ -9,6 +9,7 @@ use serde::Deserialize;
 /// [`Animation`]: https://core.telegram.org/bots/api#animation
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
+#[must_use]
 pub struct Animation {
     /// The file ID of the animation.
     pub file_id: file::Id,

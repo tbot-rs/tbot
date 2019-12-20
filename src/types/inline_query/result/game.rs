@@ -4,6 +4,7 @@ use serde::Serialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultgame
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Game<'a> {
     game_short_name: &'a str,
 }

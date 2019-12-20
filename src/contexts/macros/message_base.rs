@@ -59,10 +59,12 @@ macro_rules! message_base {
                 self.message_id
             }
 
+            #[must_use]
             fn from(&self) -> Option<&crate::types::User> {
                 self.from.as_ref()
             }
 
+            #[must_use]
             fn date(&self) -> i64 {
                 self.date
             }

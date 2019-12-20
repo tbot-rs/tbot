@@ -9,6 +9,7 @@ use serde::Deserialize;
 /// [`VideoNote`]: https://core.telegram.org/bots/api#videonote
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
+#[must_use]
 pub struct VideoNote {
     /// The file ID of the video note.
     pub file_id: file::Id,

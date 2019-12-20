@@ -3,6 +3,7 @@ use crate::types::{chat, Message};
 /// Represents the kind of a chat.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
+#[must_use]
 pub enum Kind {
     /// The chat is private.
     #[non_exhaustive]
@@ -72,6 +73,7 @@ pub enum Kind {
 
 impl Kind {
     /// Checks if `self` is `Private`.
+    #[must_use]
     pub fn is_private(&self) -> bool {
         match self {
             Self::Private { .. } => true,
@@ -80,6 +82,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Group`.
+    #[must_use]
     pub fn is_group(&self) -> bool {
         match self {
             Self::Group { .. } => true,
@@ -88,6 +91,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Supergroup`.
+    #[must_use]
     pub fn is_supergroup(&self) -> bool {
         match self {
             Self::Supergroup { .. } => true,
@@ -96,6 +100,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Channel`.
+    #[must_use]
     pub fn is_channel(&self) -> bool {
         match self {
             Self::Channel { .. } => true,

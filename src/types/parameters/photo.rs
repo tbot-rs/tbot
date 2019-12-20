@@ -2,6 +2,7 @@ use serde::Serialize;
 
 /// Represents a photo to be sent as an invoice preview.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Photo<'a> {
     #[serde(rename = "photo_url")]
     url: &'a str,
