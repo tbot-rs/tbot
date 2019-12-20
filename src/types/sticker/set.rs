@@ -34,6 +34,26 @@ pub struct Set {
     pub stickers: Vec<Sticker>,
 }
 
+impl Kind {
+    /// Checks if `self` is `Plain`.
+    #[must_use]
+    pub fn is_plain(self) -> bool {
+        self == Self::Plain
+    }
+
+    /// Checks if `self` is `Animated`.
+    #[must_use]
+    pub fn is_animated(self) -> bool {
+        self == Self::Animated
+    }
+
+    /// Checks if `self` is `Masks`.
+    #[must_use]
+    pub fn is_mask(self) -> bool {
+        self == Self::Masks
+    }
+}
+
 const NAME: &str = "name";
 const TITLE: &str = "title";
 const IS_ANIMATED: &str = "is_animated";
