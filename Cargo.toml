@@ -21,6 +21,7 @@ categories = [
 [dependencies]
 hyper = { version = "0.13", default-features = false }
 hyper-tls = "0.4"
+hyper-proxy = { version = "0.6", optional = true }
 tokio = { version = "0.2", features = ["time", "rt-core", "tcp"] }
 serde_json = "1"
 serde = { version = "1.0.34", features = ["derive"] }
@@ -31,6 +32,7 @@ native-tls = "0.2"
 meval = "0.2"
 
 [features]
+proxy = ["hyper-proxy"]
 
 [[example]]
 name = "attachments"
@@ -63,6 +65,10 @@ required-features = ["tokio/macros"]
 [[example]]
 name = "polls"
 required-features = ["tokio/macros"]
+
+[[example]]
+name = "proxy"
+required-features = ["tokio/macros", "proxy"]
 
 [[example]]
 name = "sticker_packs"
