@@ -4,12 +4,12 @@ use tokio::time::delay_for;
 
 const INTERVAL: u64 = 15;
 const PLACES: [(f64, f64); 6] = [
-    (38.904722, -77.016389), // Washington
-    (51.507222, -0.1275),    // London
-    (41.9, 12.5),            // Rome
-    (59.329444, 18.068611),  // Stockholm
-    (55.796389, 49.108889),  // Kazan
-    (56.5, 84.966667),       // Tomsk
+    (38.904_722, -77.016_389), // Washington
+    (51.507_222, -0.1275),     // London
+    (41.9, 12.5),              // Rome
+    (59.329_444, 18.068_611),  // Stockholm
+    (55.796_389, 49.108_889),  // Kazan
+    (56.5, 84.966_667),        // Tomsk
 ];
 const UPDATE_PERIOD: u32 = 3600 * 24;
 

@@ -1,14 +1,25 @@
-test:
+check-formatting:
     stage: test
     script:
         - cargo fmt -- --check
-        - cargo clippy --target-dir=../target -- -D warnings
-        - cargo clippy --target-dir=../target --all-features -- -D warnings
+    only:
+        - branches
+
+run-clippy:
+    stage: test
+    script:
+        - cargo clippy --target-dir=../target --examples --features "tokio/macros" -- -D warnings
+    only:
+        - branches
+
+run-tests:
+    stage: test
+    script:
         - cargo test --target-dir=../target --all-features
     only:
         - branches
 
-pages:
+generate-master-docs:
     stage: docs
     script:
         - cargo doc --release --no-deps --target-dir=../target
