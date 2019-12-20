@@ -15,12 +15,14 @@ media_message! {
 }
 
 impl<C> fields::Text<C> for Text<C> {
+    #[must_use]
     fn text(&self) -> &message::Text {
         &self.text
     }
 }
 
 impl<C> AnyText<C> for Text<C> {
+    #[must_use]
     fn text(&self) -> &message::Text {
         &self.text
     }

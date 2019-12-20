@@ -19,18 +19,21 @@ edited_message! {
 }
 
 impl<C> fields::Audio<C> for EditedAudio<C> {
+    #[must_use]
     fn audio(&self) -> &Audio {
         &self.audio
     }
 }
 
 impl<C> Caption<C> for EditedAudio<C> {
+    #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
 impl<C> AnyText<C> for EditedAudio<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }

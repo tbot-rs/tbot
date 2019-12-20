@@ -9,7 +9,6 @@ use serde::Deserialize;
 /// [`Document`]: https://core.telegram.org/bots/api#document
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct Document {
     /// The file ID of the document.
     pub file_id: file::Id,
@@ -26,6 +25,7 @@ pub struct Document {
 impl crate::internal::Sealed for Document {}
 
 impl AsFileId for Document {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
     }

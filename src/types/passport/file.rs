@@ -6,7 +6,6 @@ use serde::Deserialize;
 /// [docs]: https://core.telegram.org/bots/api#passportfile
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct File {
     /// The ID of the file.
     pub id: file::Id,
@@ -19,6 +18,7 @@ pub struct File {
 impl crate::internal::Sealed for File {}
 
 impl AsFileId for File {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.id.as_ref()
     }

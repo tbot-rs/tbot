@@ -9,7 +9,6 @@ use std::fmt::{self, Formatter};
 /// [`sticker::Set`]: ./struct.Set.html
 #[derive(Debug, PartialEq, Clone, Copy)]
 #[non_exhaustive]
-#[must_use]
 pub enum Kind {
     /// The stickers in the sticker set are neither animated nor masks.
     Plain,
@@ -24,7 +23,6 @@ pub enum Kind {
 /// [`StickerSet`]: https://core.telegram.org/bots/api#stickerset
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub struct Set {
     /// The name of the sticker set (used in URLs).
     pub name: String,

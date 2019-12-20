@@ -9,7 +9,6 @@ pub use id::Id;
 /// Represents the origin of the callback.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub enum Origin {
     /// The callback comes from this message.
     Message(Box<Message>),
@@ -20,7 +19,6 @@ pub enum Origin {
 /// Represents the kind of the callback.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
-#[must_use]
 pub enum Kind {
     /// The callback is sent with some data.
     Data(String),
@@ -33,7 +31,6 @@ pub enum Kind {
 /// [`CallbackQuery`]: https://core.telegram.org/bots/api#callbackquery
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub struct Query {
     /// The ID of the callback.
     pub id: Id,

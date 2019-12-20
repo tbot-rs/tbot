@@ -6,7 +6,6 @@ use crate::types::{Chat, User};
 /// Represents a forward source.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub enum From {
     /// The forward is from a user.
     User(User),
@@ -27,7 +26,6 @@ pub enum From {
 /// Represents forward information.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub struct Forward {
     /// The author of the original message.
     pub from: From,

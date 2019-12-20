@@ -8,7 +8,6 @@ use serde::de::{
 /// Represents the status of a member.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[non_exhaustive]
-#[must_use]
 pub enum Status {
     /// The user is the creator of the chat.
     Creator,
@@ -75,7 +74,6 @@ pub enum Status {
 /// [`ChatMember`]: https://core.telegram.org/bots/api#chatmember
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
-#[must_use]
 pub struct Member {
     /// Information about the member.
     pub user: User,

@@ -12,7 +12,6 @@ pub use high_score::HighScore;
 /// [`Game`]: https://core.telegram.org/bots/api#game
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct Game {
     /// The title of the game.
     pub title: String,

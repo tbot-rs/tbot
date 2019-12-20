@@ -19,18 +19,21 @@ edited_message! {
 }
 
 impl<C> fields::Document<C> for EditedDocument<C> {
+    #[must_use]
     fn document(&self) -> &Document {
         &self.document
     }
 }
 
 impl<C> Caption<C> for EditedDocument<C> {
+    #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
 impl<C> AnyText<C> for EditedDocument<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }

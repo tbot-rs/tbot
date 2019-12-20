@@ -11,7 +11,6 @@ use crate::types::{
 // unraw payment types.
 #[allow(clippy::large_enum_variant)]
 #[non_exhaustive]
-#[must_use]
 pub enum Kind {
     /// A text message.
     Text(Text),

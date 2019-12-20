@@ -15,7 +15,6 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[serde(untagged)]
 #[non_exhaustive]
-#[must_use]
 pub enum InputMessageContent<'a> {
     /// A text message.
     Text(Text<'a>),
@@ -66,24 +65,28 @@ impl InputMessageContent<'_> {
 }
 
 impl<'a> From<Text<'a>> for InputMessageContent<'a> {
+    #[must_use]
     fn from(text: Text<'a>) -> Self {
         InputMessageContent::Text(text)
     }
 }
 
 impl<'a> From<Location> for InputMessageContent<'a> {
+    #[must_use]
     fn from(location: Location) -> Self {
         InputMessageContent::Location(location)
     }
 }
 
 impl<'a> From<Venue<'a>> for InputMessageContent<'a> {
+    #[must_use]
     fn from(venue: Venue<'a>) -> Self {
         InputMessageContent::Venue(venue)
     }
 }
 
 impl<'a> From<Contact<'a>> for InputMessageContent<'a> {
+    #[must_use]
     fn from(contact: Contact<'a>) -> Self {
         InputMessageContent::Contact(contact)
     }

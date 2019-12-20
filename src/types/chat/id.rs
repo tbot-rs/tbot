@@ -5,10 +5,10 @@ use std::fmt::{self, Display, Formatter};
 /// Represents a chat ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Serialize)]
 #[serde(transparent)]
-#[must_use]
 pub struct Id(pub i64);
 
 impl From<i64> for Id {
+    #[must_use]
     fn from(id: i64) -> Self {
         Self(id)
     }
@@ -21,6 +21,7 @@ impl Display for Id {
 }
 
 impl From<user::Id> for Id {
+    #[must_use]
     fn from(id: user::Id) -> Self {
         Self(id.0)
     }

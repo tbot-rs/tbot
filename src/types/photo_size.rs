@@ -6,7 +6,6 @@ use serde::Deserialize;
 /// [`PhotoSize`]: https://core.telegram.org/bots/api#photosize
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct PhotoSize {
     /// The file ID of the photo.
     pub file_id: file::Id,
@@ -21,6 +20,7 @@ pub struct PhotoSize {
 impl crate::internal::Sealed for PhotoSize {}
 
 impl AsFileId for PhotoSize {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
     }

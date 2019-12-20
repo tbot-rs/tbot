@@ -3,7 +3,6 @@ use crate::types::{chat, Message};
 /// Represents the kind of a chat.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub enum Kind {
     /// The chat is private.
     #[non_exhaustive]

@@ -48,14 +48,17 @@ macro_rules! callback {
         }
 
         impl<C> crate::contexts::fields::Callback<C> for $name<C> {
+            #[must_use]
             fn id(&self) -> &crate::types::callback::query::Id {
                 &self.id
             }
 
+            #[must_use]
             fn from(&self) -> &crate::types::User {
                 &self.from
             }
 
+            #[must_use]
             fn origin(&self) -> &crate::types::callback::Origin {
                 &self.origin
             }

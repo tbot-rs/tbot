@@ -8,7 +8,6 @@ macro_rules! common {
         $(#[doc = $doc])+
         #[derive(Debug, Clone)]
         #[non_exhaustive]
-        #[must_use]
         pub struct $name<C> {
             /// A bot for calling API without information inference.
             pub bot: std::sync::Arc<crate::Bot<C>>,

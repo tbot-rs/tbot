@@ -22,24 +22,28 @@ media_message! {
 }
 
 impl<C> fields::Video<C> for Video<C> {
+    #[must_use]
     fn video(&self) -> &types::Video {
         &self.video
     }
 }
 
 impl<C> Caption<C> for Video<C> {
+    #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
 impl<C> AnyText<C> for Video<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }
 }
 
 impl<C> Album<C> for Video<C> {
+    #[must_use]
     fn media_group_id(&self) -> Option<&str> {
         self.media_group_id.as_ref().map(String::as_ref)
     }

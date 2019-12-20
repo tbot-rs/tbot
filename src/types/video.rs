@@ -9,7 +9,6 @@ use serde::Deserialize;
 /// [`Video`]: https://core.telegram.org/bots/api#video
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct Video {
     /// The file ID of the video.
     pub file_id: file::Id,
@@ -30,6 +29,7 @@ pub struct Video {
 impl crate::internal::Sealed for Video {}
 
 impl AsFileId for Video {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
     }
