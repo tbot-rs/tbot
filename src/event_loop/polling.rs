@@ -1,5 +1,5 @@
 use super::EventLoop;
-use crate::{connectors::Connector, errors, types::parameters::Updates};
+use crate::{connectors::Connector, errors, types::parameters::UpdateKind};
 use std::{
     convert::{Infallible, TryInto},
     num::NonZeroUsize,
@@ -20,7 +20,7 @@ pub struct Polling<C> {
     event_loop: EventLoop<C>,
     limit: Option<u8>,
     timeout: Option<u64>,
-    allowed_updates: Option<&'static [Updates]>,
+    allowed_updates: Option<&'static [UpdateKind]>,
     poll_interval: Duration,
     error_handler: Box<ErrorHandler>,
     request_timeout: Option<Duration>,
@@ -58,7 +58,7 @@ impl<C> Polling<C> {
     /// Configures which updates you'd like to listen to.
     pub fn allowed_updates(
         mut self,
-        allowed_updates: &'static [Updates],
+        allowed_updates: &'static [UpdateKind],
     ) -> Self {
         self.allowed_updates = Some(allowed_updates);
         self

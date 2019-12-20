@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
-pub enum Updates {
+pub enum UpdateKind {
     /// Handles chat messages of any kind.
     Message,
     /// Handles chat message edits.
@@ -31,7 +31,7 @@ pub enum Updates {
     Poll,
 }
 
-impl Updates {
+impl UpdateKind {
     /// Checks if `self` is `Message`.
     #[must_use]
     pub fn is_message(self) -> bool {

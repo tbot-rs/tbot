@@ -8,7 +8,7 @@ mod photo;
 mod requirement;
 mod send_to_provider_state;
 mod text;
-mod updates;
+mod update_kind;
 mod url_visibility;
 mod web_page_preview_state;
 
@@ -22,7 +22,7 @@ pub use {
     requirement::Requirement,
     send_to_provider_state::SendToProviderState,
     text::Text,
-    updates::Updates,
+    update_kind::UpdateKind,
     url_visibility::UrlVisibility,
     web_page_preview_state::WebPagePreviewState,
 };

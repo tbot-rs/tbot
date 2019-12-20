@@ -13,7 +13,7 @@ use crate::{
         },
         keyboard::inline,
         message,
-        parameters::{CallbackAction, ImplicitChatId, Text, Updates},
+        parameters::{CallbackAction, ImplicitChatId, Text, UpdateKind},
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
     Token,
@@ -477,7 +477,7 @@ impl<C> Bot<C> {
         offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
-        allowed_updates: Option<&'a [Updates]>,
+        allowed_updates: Option<&'a [UpdateKind]>,
     ) -> GetUpdates<'a, C> {
         GetUpdates::new(
             &self.client,
@@ -899,7 +899,7 @@ impl<C> Bot<C> {
         url: &'a str,
         certificate: Option<&'a str>,
         max_connections: Option<u8>,
-        allowed_updates: Option<&'a [Updates]>,
+        allowed_updates: Option<&'a [UpdateKind]>,
     ) -> SetWebhook<'a, C> {
         SetWebhook::new(
             &self.client,
