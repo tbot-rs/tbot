@@ -50,6 +50,29 @@ pub struct Sticker {
     pub kind: Kind,
 }
 
+impl Kind {
+    /// Checks if `self` is `Plain`.
+    #[must_use]
+    pub fn is_plain(self) -> bool {
+        self == Self::Plain
+    }
+
+    /// Checks if `self` is `Animated`.
+    #[must_use]
+    pub fn is_animated(self) -> bool {
+        self == Self::Animated
+    }
+
+    /// Checks if `self` is `Mask`.
+    #[must_use]
+    pub fn is_mask(self) -> bool {
+        match self {
+            Self::Mask(..) => true,
+            _ => false,
+        }
+    }
+}
+
 impl crate::internal::Sealed for Sticker {}
 
 impl AsFileId for Sticker {

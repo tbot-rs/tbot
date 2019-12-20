@@ -40,6 +40,30 @@ impl<'a> CallbackAction<'a> {
         CallbackAction::Url(url)
     }
 
+    /// Checks if `self` is `None`.
+    #[must_use]
+    pub fn is_none(self) -> bool {
+        self == Self::None
+    }
+
+    /// Checks if `self` is `Text`.
+    #[must_use]
+    pub fn is_text(self) -> bool {
+        match self {
+            Self::Text(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Url`.
+    #[must_use]
+    pub fn is_url(self) -> bool {
+        match self {
+            Self::Url(..) => true,
+            _ => false,
+        }
+    }
+
     pub(crate) fn to_text(self) -> Option<&'a str> {
         match self {
             CallbackAction::Text(text, _) => Some(text),
