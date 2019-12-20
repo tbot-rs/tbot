@@ -19,12 +19,14 @@ media_message! {
 }
 
 impl<C> Caption<C> for Voice<C> {
+    #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
 impl<C> AnyText<C> for Voice<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }

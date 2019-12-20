@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
-#[must_use]
 pub enum Point {
     /// Placed on forehead.
     Forehead,
@@ -23,7 +22,6 @@ pub enum Point {
 /// [`MaskPosition`]: https://core.telegram.org/bots/api#maskposition
 #[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct MaskPosition {
     /// The position point of the mask.
     pub point: Point,

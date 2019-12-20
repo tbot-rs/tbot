@@ -9,7 +9,6 @@ use serde::Deserialize;
 /// [`Animation`]: https://core.telegram.org/bots/api#animation
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct Animation {
     /// The file ID of the animation.
     pub file_id: file::Id,
@@ -30,6 +29,7 @@ pub struct Animation {
 impl crate::internal::Sealed for Animation {}
 
 impl AsFileId for Animation {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
     }

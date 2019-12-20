@@ -55,6 +55,7 @@ macro_rules! message_base {
         }
 
         impl<C> crate::contexts::fields::Message<C> for $name<C> {
+            #[must_use]
             fn message_id(&self) -> crate::types::message::Id {
                 self.message_id
             }
@@ -69,6 +70,7 @@ macro_rules! message_base {
                 self.date
             }
 
+            #[must_use]
             fn chat(&self) -> &crate::types::Chat {
                 &self.chat
             }

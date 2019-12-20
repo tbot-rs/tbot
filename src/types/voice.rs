@@ -6,7 +6,6 @@ use serde::Deserialize;
 /// [`Voice`]: https://core.telegram.org/bots/api#voice
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct Voice {
     /// The file ID of the voice.
     pub file_id: file::Id,
@@ -21,6 +20,7 @@ pub struct Voice {
 impl crate::internal::Sealed for Voice {}
 
 impl AsFileId for Voice {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
     }

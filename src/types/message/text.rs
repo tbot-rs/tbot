@@ -7,7 +7,6 @@ use std::fmt::{self, Formatter};
 /// Represents either a text message or a caption.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
-#[must_use]
 pub struct Text {
     /// The text/caption. If there's no text, will be empty.
     pub value: String,
@@ -18,7 +17,6 @@ pub struct Text {
 /// Represents an entity's kind.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
-#[must_use]
 pub enum EntityKind {
     /// A mention.
     Mention,
@@ -51,7 +49,6 @@ pub enum EntityKind {
 /// Represents an entity of a message.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
-#[must_use]
 pub struct Entity {
     /// The kind of the entity.
     pub kind: EntityKind,

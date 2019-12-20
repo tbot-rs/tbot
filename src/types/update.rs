@@ -13,7 +13,6 @@ use std::fmt::{self, Formatter};
 /// Represents an update ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 #[serde(transparent)]
-#[must_use]
 pub struct Id(pub isize);
 
 /// Represents different types of updates from Telegram.
@@ -22,7 +21,6 @@ pub struct Id(pub isize);
 // so I think it's better not to box them.
 #[allow(clippy::large_enum_variant)]
 #[non_exhaustive]
-#[must_use]
 pub enum Kind {
     /// A new chat message.
     Message(Message),
@@ -51,7 +49,6 @@ pub enum Kind {
 /// Represents an update from Telegram.
 #[derive(Debug)]
 #[non_exhaustive]
-#[must_use]
 pub struct Update {
     /// The ID of the update.
     pub id: Id,

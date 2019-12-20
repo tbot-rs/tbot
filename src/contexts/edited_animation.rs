@@ -19,18 +19,21 @@ edited_message! {
 }
 
 impl<C> fields::Animation<C> for EditedAnimation<C> {
+    #[must_use]
     fn animation(&self) -> &Animation {
         &self.animation
     }
 }
 
 impl<C> Caption<C> for EditedAnimation<C> {
+    #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
 impl<C> AnyText<C> for EditedAnimation<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }

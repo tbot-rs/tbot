@@ -12,6 +12,7 @@ edited_message! {
 }
 
 impl<C> fields::Location<C> for EditedLocation<C> {
+    #[must_use]
     fn location(&self) -> &Location {
         &self.location
     }

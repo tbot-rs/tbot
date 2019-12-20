@@ -9,7 +9,6 @@ use serde::Deserialize;
 /// [`Audio`]: https://core.telegram.org/bots/api#audio
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
-#[must_use]
 pub struct Audio {
     /// The file ID of the audio.
     pub file_id: file::Id,
@@ -30,6 +29,7 @@ pub struct Audio {
 impl crate::internal::Sealed for Audio {}
 
 impl AsFileId for Audio {
+    #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
     }

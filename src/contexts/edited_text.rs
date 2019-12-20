@@ -15,12 +15,14 @@ edited_message! {
 }
 
 impl<C> fields::Text<C> for EditedText<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.text
     }
 }
 
 impl<C> AnyText<C> for EditedText<C> {
+    #[must_use]
     fn text(&self) -> &Text {
         &self.text
     }
