@@ -6,7 +6,6 @@ use std::{
 
 /// Represents possible errors whic may occur while downloading a file.
 #[derive(Debug)]
-#[must_use]
 pub enum Download {
     /// The provided file had the `path` field set to `None`.
     NoPath,
@@ -70,12 +69,14 @@ impl Display for Download {
 impl Error for Download {}
 
 impl From<hyper::Error> for Download {
+    #[must_use]
     fn from(error: hyper::Error) -> Self {
         Self::Network(error)
     }
 }
 
 impl From<StatusCode> for Download {
+    #[must_use]
     fn from(error: StatusCode) -> Self {
         Self::InvalidStatusCode(error)
     }

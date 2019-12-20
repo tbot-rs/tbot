@@ -6,7 +6,6 @@ use std::{
 
 /// Represents possible errors that may happen during a method call.
 #[derive(Debug)]
-#[must_use]
 pub enum MethodCall {
     /// A network error.
     Network(hyper::Error),
@@ -117,6 +116,7 @@ impl Display for MethodCall {
 impl Error for MethodCall {}
 
 impl From<hyper::Error> for MethodCall {
+    #[must_use]
     fn from(error: hyper::Error) -> Self {
         Self::Network(error)
     }

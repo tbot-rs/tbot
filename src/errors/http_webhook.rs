@@ -7,7 +7,6 @@ use tokio::time::Elapsed;
 
 /// Represents possible errors that a webhook server may return.
 #[derive(Debug)]
-#[must_use]
 pub enum HttpWebhook {
     /// An error during setting the webhook.
     SetWebhook(MethodCall),
@@ -74,18 +73,21 @@ impl Display for HttpWebhook {
 impl Error for HttpWebhook {}
 
 impl From<MethodCall> for HttpWebhook {
+    #[must_use]
     fn from(error: MethodCall) -> Self {
         Self::SetWebhook(error)
     }
 }
 
 impl From<Elapsed> for HttpWebhook {
+    #[must_use]
     fn from(timeout: Elapsed) -> Self {
         Self::SetWebhookTimeout(timeout)
     }
 }
 
 impl From<hyper::Error> for HttpWebhook {
+    #[must_use]
     fn from(error: hyper::Error) -> Self {
         Self::Server(error)
     }
