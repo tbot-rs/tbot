@@ -9,8 +9,15 @@ use tbot::prelude::*;
 async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
-    bot.text(|context| async move {
-        context.send_message(&context.text.value).call().await.unwrap();
+    bot.text(|context| {
+        async move {
+            let echo = &context.text.value;
+            let call_result = context.send_message(echo).call().await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
+        }
     });
 
     bot.polling().start().await.unwrap();
@@ -23,14 +30,16 @@ have several [How-to guides][how-to] to help you use `tbot`.
 If you have a question, ask it in [our group] on Telegram. If you find a bug,
 fill an issue on either our [GitLab] or [GitHub] repository.
 
+> **Important note:** `tbot` v0.3's minimum supported Rust version is 1.40
+> due to use of `#[non_exhaustive]`.
+
 ## Features
 
--   Full Bots API support, including media upload/download and recent API
-    updates;
--   Support for both polling and [webhooks];
--   Type-safe API;
--   Based on futures and `tokio`;
--   Easy to use, while scalable and configurable.
+- Full Bots API support, including media upload/download and recent API updates;
+- Support for both polling and [webhooks];
+- Type-safe API;
+- Based on futures and `tokio`;
+- Easy to use, while scalable and configurable.
 
 ## Installing
 
@@ -38,7 +47,7 @@ Add `tbot` to your Cargo.toml:
 
 ```toml
 [dependencies]
-tbot = "0.2"
+tbot = "0.3"
 ```
 
 ## Documentation
@@ -55,7 +64,7 @@ Glad you want to contribute to `tbot`! We develop the crate on [GitLab], so
 create your pull/merge request there if you can. We accept pull requests on
 [GitHub] as well, but we prefer [GitLab].
 
-[our group]: t.me/tbot_group
+[our group]: https://t.me/tbot_group
 [webhooks]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
 [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
