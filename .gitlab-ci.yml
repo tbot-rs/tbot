@@ -8,7 +8,7 @@ check-formatting:
 run-clippy:
     stage: test
     script:
-        - cargo clippy --target-dir=../target --all-features -- -D warnings
+        - cargo clippy --target-dir=../target --examples --features "tokio/macros" -- -D warnings
     only:
         - branches
 
