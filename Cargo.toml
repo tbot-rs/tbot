@@ -1,13 +1,13 @@
 [package]
 name = "tbot"
-version = "0.2.2"
+version = "0.3.0"
 description = "Make cool Telegram bots with Rust easily."
 repository = "https://gitlab.com/SnejUgal/tbot"
 readme = "./readme.md"
 license = "MIT"
 authors = [
-  "SnejUgal <snejugal@icloud.com>",
-  "AlexStrNik (t.me/AlexStrNik)",
+    "SnejUgal <snejugal@icloud.com>",
+    "AlexStrNik (t.me/AlexStrNik)",
 ]
 edition = "2018"
 keywords = [
