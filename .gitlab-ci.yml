@@ -19,7 +19,7 @@ run-tests:
     only:
         - branches
 
-pages:
+generate-master-docs:
     stage: docs
     script:
         - cargo doc --release --no-deps --target-dir=../target
