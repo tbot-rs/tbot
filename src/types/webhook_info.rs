@@ -1,6 +1,6 @@
 //! Types related to webhook information.
 
-use crate::types::parameters::Updates;
+use crate::types::parameters::UpdateKind;
 use serde::de::{Deserialize, Deserializer, Error, MapAccess, Visitor};
 
 /// Represents information about the last error.
@@ -30,7 +30,7 @@ pub struct WebhookInfo {
     /// Maximum allowed number of connections at a time.
     pub max_connections: Option<u8>,
     /// A list of updates the bot is subscribed to.
-    pub allowed_updates: Option<Vec<Updates>>,
+    pub allowed_updates: Option<Vec<UpdateKind>>,
 }
 
 const URL: &str = "url";

@@ -4,7 +4,7 @@ use crate::{
     errors,
     internal::Client,
     token,
-    types::{parameters::Updates, Update},
+    types::{parameters::UpdateKind, Update},
 };
 use serde::Serialize;
 
@@ -22,7 +22,7 @@ pub(crate) struct GetUpdates<'a, C> {
     #[serde(skip_serializing_if = "Option::is_none")]
     timeout: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allowed_updates: Option<&'a [Updates]>,
+    allowed_updates: Option<&'a [UpdateKind]>,
 }
 
 impl<'a, C> GetUpdates<'a, C> {
@@ -32,7 +32,7 @@ impl<'a, C> GetUpdates<'a, C> {
         offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
-        allowed_updates: Option<&'a [Updates]>,
+        allowed_updates: Option<&'a [UpdateKind]>,
     ) -> Self {
         Self {
             client,
