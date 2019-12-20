@@ -9,11 +9,12 @@ async fn main() {
 
     bot.text(|context| {
         async move {
-            context
-                .send_message_in_reply(&context.text.value)
-                .call()
-                .await
-                .unwrap();
+            let echo = &context.text.value;
+            let call_result = context.send_message_in_reply(echo).call().await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 

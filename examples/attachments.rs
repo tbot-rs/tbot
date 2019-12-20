@@ -14,21 +14,30 @@ async fn main() {
     bot.command("photo", |context| {
         async move {
             let photo = Photo::bytes(PHOTO);
-            context.send_photo(photo).call().await.unwrap();
+            let call_result = context.send_photo(photo).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.command("animation", |context| {
         async move {
             let animation = Animation::bytes(GIF);
-            context.send_animation(animation).call().await.unwrap();
+            let call_result = context.send_animation(animation).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.command("document", |context| {
         async move {
             let document = Document::bytes("tutorial.rs", TUTORIAL);
-            context.send_document(document).call().await.unwrap();
+            let call_result = context.send_document(document).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
@@ -39,14 +48,20 @@ async fn main() {
     bot.command("video", |context| {
         async move {
             let video = Video::bytes(GIF);
-            context.send_video(video).call().await.unwrap();
+            let call_result = context.send_video(video).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.command("album", |context| {
         async move {
             let album = &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
-            context.send_media_group(album).call().await.unwrap();
+            let call_result = context.send_media_group(album).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
