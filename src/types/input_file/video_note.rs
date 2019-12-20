@@ -3,6 +3,7 @@ use serde::Serialize;
 
 /// Represents a video note to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct VideoNote<'a> {
     pub(crate) media: WithName<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -15,6 +15,7 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[serde(untagged)]
 #[non_exhaustive]
+#[must_use]
 pub enum InputMessageContent<'a> {
     /// A text message.
     Text(Text<'a>),
@@ -28,6 +29,7 @@ pub enum InputMessageContent<'a> {
 
 impl InputMessageContent<'_> {
     /// Checks if `self` is `Text`.
+    #[must_use]
     pub fn is_text(self) -> bool {
         match self {
             InputMessageContent::Text(..) => true,
@@ -36,6 +38,7 @@ impl InputMessageContent<'_> {
     }
 
     /// Checks if `self` is `Location`.
+    #[must_use]
     pub fn is_location(self) -> bool {
         match self {
             InputMessageContent::Location(..) => true,
@@ -44,6 +47,7 @@ impl InputMessageContent<'_> {
     }
 
     /// Checks if `self` is `Venue`.
+    #[must_use]
     pub fn is_venue(self) -> bool {
         match self {
             InputMessageContent::Venue(..) => true,
@@ -52,6 +56,7 @@ impl InputMessageContent<'_> {
     }
 
     /// Checks if `self` is `Contact.`
+    #[must_use]
     pub fn is_contact(self) -> bool {
         match self {
             InputMessageContent::Contact(..) => true,

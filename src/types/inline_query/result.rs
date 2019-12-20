@@ -47,6 +47,7 @@ pub use {
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 #[non_exhaustive]
+#[must_use]
 pub enum Kind<'a> {
     /// An article.
     Article(Article<'a>),
@@ -80,6 +81,7 @@ pub enum Kind<'a> {
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Result<'a> {
     id: &'a str,
     #[serde(flatten)]
@@ -90,6 +92,7 @@ pub struct Result<'a> {
 
 impl Kind<'_> {
     /// Checks if `self` is `Article`.
+    #[must_use]
     pub fn is_article(&self) -> bool {
         match self {
             Kind::Article(..) => true,
@@ -98,6 +101,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Audio`.
+    #[must_use]
     pub fn is_audio(&self) -> bool {
         match self {
             Kind::Audio(..) => true,
@@ -106,6 +110,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Contact`.
+    #[must_use]
     pub fn is_contact(&self) -> bool {
         match self {
             Kind::Contact(..) => true,
@@ -114,6 +119,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Document`.
+    #[must_use]
     pub fn is_document(&self) -> bool {
         match self {
             Kind::Document(..) => true,
@@ -122,6 +128,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Game`.
+    #[must_use]
     pub fn is_game(&self) -> bool {
         match self {
             Kind::Game(..) => true,
@@ -130,6 +137,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Gif`.
+    #[must_use]
     pub fn is_gif(&self) -> bool {
         match self {
             Kind::Gif(..) => true,
@@ -138,6 +146,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Location`.
+    #[must_use]
     pub fn is_location(&self) -> bool {
         match self {
             Kind::Location(..) => true,
@@ -146,6 +155,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Mpeg4Gif`.
+    #[must_use]
     pub fn is_mpeg4_gif(&self) -> bool {
         match self {
             Kind::Mpeg4Gif(..) => true,
@@ -154,6 +164,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Photo`.
+    #[must_use]
     pub fn is_photo(&self) -> bool {
         match self {
             Kind::Photo(..) => true,
@@ -162,6 +173,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Sticker`.
+    #[must_use]
     pub fn is_sticker(&self) -> bool {
         match self {
             Kind::Sticker(..) => true,
@@ -170,6 +182,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Venue`.
+    #[must_use]
     pub fn is_venue(&self) -> bool {
         match self {
             Kind::Venue(..) => true,
@@ -178,6 +191,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Video`.
+    #[must_use]
     pub fn is_video(&self) -> bool {
         match self {
             Kind::Video(..) => true,
@@ -186,6 +200,7 @@ impl Kind<'_> {
     }
 
     /// Checks if `self` is `Voice`.
+    #[must_use]
     pub fn is_voice(&self) -> bool {
         match self {
             Kind::Voice(..) => true,

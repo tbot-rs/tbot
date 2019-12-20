@@ -11,6 +11,7 @@ use crate::types::{
 // unraw payment types.
 #[allow(clippy::large_enum_variant)]
 #[non_exhaustive]
+#[must_use]
 pub enum Kind {
     /// A text message.
     Text(Text),
@@ -78,6 +79,7 @@ pub enum Kind {
 
 impl Kind {
     /// Checks if `self` is `Text`.
+    #[must_use]
     pub fn is_text(&self) -> bool {
         match self {
             Self::Text(..) => true,
@@ -86,6 +88,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Audio`.
+    #[must_use]
     pub fn is_audio(&self) -> bool {
         match self {
             Self::Audio(..) => true,
@@ -94,6 +97,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Document`.
+    #[must_use]
     pub fn is_document(&self) -> bool {
         match self {
             Self::Document(..) => true,
@@ -102,6 +106,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Game`.
+    #[must_use]
     pub fn is_game(&self) -> bool {
         match self {
             Self::Game(..) => true,
@@ -110,6 +115,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Photo`.
+    #[must_use]
     pub fn is_photo(&self) -> bool {
         match self {
             Self::Photo(..) => true,
@@ -118,6 +124,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Sticker`.
+    #[must_use]
     pub fn is_sticker(&self) -> bool {
         match self {
             Self::Sticker(..) => true,
@@ -126,6 +133,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Video`.
+    #[must_use]
     pub fn is_video(&self) -> bool {
         match self {
             Self::Video(..) => true,
@@ -134,6 +142,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Voice`.
+    #[must_use]
     pub fn is_voice(&self) -> bool {
         match self {
             Self::Voice(..) => true,
@@ -142,6 +151,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `VideoNote`.
+    #[must_use]
     pub fn is_video_note(&self) -> bool {
         match self {
             Self::VideoNote(..) => true,
@@ -150,6 +160,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Contact`.
+    #[must_use]
     pub fn is_contact(&self) -> bool {
         match self {
             Self::Contact(..) => true,
@@ -158,6 +169,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Location`.
+    #[must_use]
     pub fn is_location(&self) -> bool {
         match self {
             Self::Location(..) => true,
@@ -166,6 +178,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Venue`.
+    #[must_use]
     pub fn is_venue(&self) -> bool {
         match self {
             Self::Venue(..) => true,
@@ -174,6 +187,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Animation`.
+    #[must_use]
     pub fn is_animation(&self) -> bool {
         match self {
             Self::Animation(..) => true,
@@ -182,6 +196,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Poll`.
+    #[must_use]
     pub fn is_poll(&self) -> bool {
         match self {
             Self::Poll(..) => true,
@@ -190,6 +205,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `NewChatMembers`.
+    #[must_use]
     pub fn is_new_chat_members(&self) -> bool {
         match self {
             Self::NewChatMembers(..) => true,
@@ -198,6 +214,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `LeftChatMember`.
+    #[must_use]
     pub fn is_left_chat_member(&self) -> bool {
         match self {
             Self::LeftChatMember(..) => true,
@@ -206,6 +223,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `NewChatTitle`.
+    #[must_use]
     pub fn is_new_chat_title(&self) -> bool {
         match self {
             Self::NewChatTitle(..) => true,
@@ -214,6 +232,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `NewChatPhoto`.
+    #[must_use]
     pub fn is_new_chat_photo(&self) -> bool {
         match self {
             Self::NewChatPhoto(..) => true,
@@ -222,26 +241,31 @@ impl Kind {
     }
 
     /// Checks if `self` is `ChatPhotoDeleted`.
+    #[must_use]
     pub fn is_chat_photo_deleted(&self) -> bool {
         *self == Self::ChatPhotoDeleted
     }
 
     /// Checks if `self` is `GroupCreated`.
+    #[must_use]
     pub fn is_group_created(&self) -> bool {
         *self == Self::GroupCreated
     }
 
     /// Checks if `self` is `SupergroupCreated`.
+    #[must_use]
     pub fn is_supergroup_created(&self) -> bool {
         *self == Self::SupergroupCreated
     }
 
     /// Checks if `self` is `ChannelCreated`.
+    #[must_use]
     pub fn is_channel_created(&self) -> bool {
         *self == Self::ChannelCreated
     }
 
     /// Checks if `self` is `MigrateTo`.
+    #[must_use]
     pub fn is_migrate_to(&self) -> bool {
         match self {
             Self::MigrateTo(..) => true,
@@ -250,6 +274,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `MigrateFrom`.
+    #[must_use]
     pub fn is_migrate_from(&self) -> bool {
         match self {
             Self::MigrateFrom(..) => true,
@@ -258,6 +283,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Pinned`.
+    #[must_use]
     pub fn is_pinned(&self) -> bool {
         match self {
             Self::Pinned(..) => true,
@@ -266,6 +292,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `Invoice`.
+    #[must_use]
     pub fn is_invoice(&self) -> bool {
         match self {
             Self::Invoice(..) => true,
@@ -274,6 +301,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `SuccessfulPayment`.
+    #[must_use]
     pub fn is_successful_payment(&self) -> bool {
         match self {
             Self::SuccessfulPayment(..) => true,
@@ -282,6 +310,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `ConnectedWebsite`.
+    #[must_use]
     pub fn is_connected_website(&self) -> bool {
         match self {
             Self::ConnectedWebsite(..) => true,
@@ -290,6 +319,7 @@ impl Kind {
     }
 
     /// Checks if `self` is `PassportData`.
+    #[must_use]
     pub fn is_passport_data(&self) -> bool {
         match self {
             Self::PassportData(..) => true,

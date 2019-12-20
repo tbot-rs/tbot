@@ -8,6 +8,7 @@ use serde::de::{
 /// Represents the status of a member.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[non_exhaustive]
+#[must_use]
 pub enum Status {
     /// The user is the creator of the chat.
     Creator,
@@ -74,6 +75,7 @@ pub enum Status {
 /// [`ChatMember`]: https://core.telegram.org/bots/api#chatmember
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
+#[must_use]
 pub struct Member {
     /// Information about the member.
     pub user: User,
@@ -83,11 +85,13 @@ pub struct Member {
 
 impl Status {
     /// Checks if `self` is `Creator`.
+    #[must_use]
     pub fn is_creator(&self) -> bool {
         *self == Self::Creator
     }
 
     /// Checks if `self` is `Administrator`.
+    #[must_use]
     pub fn is_administator(&self) -> bool {
         match self {
             Self::Administator { .. } => true,
@@ -96,11 +100,13 @@ impl Status {
     }
 
     /// Checks if `self` is `Member`.
+    #[must_use]
     pub fn is_member(&self) -> bool {
         *self == Self::Member
     }
 
     /// Checks if `self` is `Restricted`.
+    #[must_use]
     pub fn is_restricted(&self) -> bool {
         match self {
             Self::Restricted { .. } => true,
@@ -109,11 +115,13 @@ impl Status {
     }
 
     /// Checks if `self` is `Left`.
+    #[must_use]
     pub fn is_left(&self) -> bool {
         *self == Self::Left
     }
 
     /// Checks if `self` is `Kicked`.
+    #[must_use]
     pub fn is_kicked(&self) -> bool {
         match self {
             Self::Kicked { .. } => true,

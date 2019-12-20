@@ -7,6 +7,7 @@ use tokio::time::Elapsed;
 
 /// Represents possible errors that an HTTPS webhook server may return.
 #[derive(Debug)]
+#[must_use]
 pub enum HttpsWebhook {
     /// An error during setting the webhook.
     SetWebhook(MethodCall),
@@ -18,6 +19,53 @@ pub enum HttpsWebhook {
     Bind(std::io::Error),
     /// An error while running the server.
     Server(hyper::Error),
+}
+
+impl HttpsWebhook {
+    /// Checks if `self` is `SetWebhook`.
+    #[must_use]
+    pub fn is_set_webhook(&self) -> bool {
+        match self {
+            Self::SetWebhook(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `SetWebhookTimeout`.
+    #[must_use]
+    pub fn is_set_webhook_timeout(&self) -> bool {
+        match self {
+            Self::SetWebhookTimeout(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Tls`.
+    #[must_use]
+    pub fn is_tls(&self) -> bool {
+        match self {
+            Self::Tls(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Bind`.
+    #[must_use]
+    pub fn is_bind(&self) -> bool {
+        match self {
+            Self::Bind(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Server`.
+    #[must_use]
+    pub fn is_server(&self) -> bool {
+        match self {
+            Self::Server(..) => true,
+            _ => false,
+        }
+    }
 }
 
 impl Display for HttpsWebhook {

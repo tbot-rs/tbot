@@ -4,6 +4,7 @@ use serde::Serialize;
 
 /// Represents a voice to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Voice<'a> {
     pub(crate) media: WithName<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]

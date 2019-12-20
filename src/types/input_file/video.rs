@@ -4,6 +4,7 @@ use serde::ser::SerializeMap;
 
 /// Represents a video to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
 pub struct Video<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<Thumb<'a>>,

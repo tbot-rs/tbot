@@ -6,6 +6,7 @@ use serde::Deserialize;
 /// [`GameHighScore`]: https://core.telegram.org/bots/api#gamehighscore
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
+#[must_use]
 pub struct HighScore {
     /// Position of the user in the high score table.
     pub position: u32,

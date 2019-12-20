@@ -5,6 +5,7 @@ use serde::Serialize;
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
 #[non_exhaustive]
+#[must_use]
 pub enum ChatId<'a> {
     /// The ID of a chat.
     Id(chat::Id),
@@ -14,6 +15,7 @@ pub enum ChatId<'a> {
 
 impl ChatId<'_> {
     /// Checks if `self` is `Id`.
+    #[must_use]
     pub fn is_id(self) -> bool {
         match self {
             ChatId::Id(..) => true,
@@ -22,6 +24,7 @@ impl ChatId<'_> {
     }
 
     /// Checks if `self` is `Username`.
+    #[must_use]
     pub fn is_username(self) -> bool {
         match self {
             ChatId::Username(..) => true,
@@ -31,25 +34,25 @@ impl ChatId<'_> {
 }
 
 impl<'a> From<i64> for ChatId<'a> {
-    fn from(id: i64) -> ChatId<'a> {
+    fn from(id: i64) -> Self {
         ChatId::Id(chat::Id(id))
     }
 }
 
 impl<'a> From<chat::Id> for ChatId<'a> {
-    fn from(id: chat::Id) -> ChatId<'a> {
+    fn from(id: chat::Id) -> Self {
         ChatId::Id(id)
     }
 }
 
 impl<'a> From<user::Id> for ChatId<'a> {
-    fn from(id: user::Id) -> ChatId<'a> {
+    fn from(id: user::Id) -> Self {
         ChatId::Id(chat::Id(id.0))
     }
 }
 
 impl<'a> From<&'a str> for ChatId<'a> {
-    fn from(username: &'a str) -> ChatId<'a> {
+    fn from(username: &'a str) -> Self {
         ChatId::Username(username)
     }
 }

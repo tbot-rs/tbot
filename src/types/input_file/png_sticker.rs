@@ -3,6 +3,7 @@ use serde::ser::SerializeMap;
 
 /// Represents a sticker to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
 pub struct PngSticker<'a> {
     pub(crate) media: InputFile<'a>,
 }

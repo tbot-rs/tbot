@@ -7,6 +7,7 @@ use serde::{
 /// Represents a media that can be sent in a group (aka albums).
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[non_exhaustive]
+#[must_use]
 pub enum GroupMedia<'a> {
     /// A group's photo.
     Photo(Photo<'a>),
@@ -24,6 +25,7 @@ pub(crate) struct Album<'a>(pub &'a [GroupMedia<'a>]);
 
 impl GroupMedia<'_> {
     /// Checks if `self` is `Photo`.
+    #[must_use]
     pub fn is_photo(&self) -> bool {
         match self {
             GroupMedia::Photo(..) => true,
@@ -32,6 +34,7 @@ impl GroupMedia<'_> {
     }
 
     /// Checks if `self` is `Video`.
+    #[must_use]
     pub fn is_video(&self) -> bool {
         match self {
             GroupMedia::Video(..) => true,

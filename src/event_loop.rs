@@ -92,6 +92,7 @@ type VoiceHandler<C> = Handler<contexts::Voice<C>>;
 /// [polling]: #method.polling
 /// [webhook]: #method.webhook
 /// [`text`]: #method.text
+#[must_use]
 pub struct EventLoop<C> {
     bot: Bot<C>,
     username: Option<String>,

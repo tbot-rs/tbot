@@ -6,6 +6,7 @@ use std::{
 
 /// Represents possible errors that may happen during a method call.
 #[derive(Debug)]
+#[must_use]
 pub enum MethodCall {
     /// A network error.
     Network(hyper::Error),
@@ -30,6 +31,44 @@ pub enum MethodCall {
         /// after the following amount of seconds.
         retry_after: Option<u64>,
     },
+}
+
+impl MethodCall {
+    /// Checks if `self` is `Network`.
+    #[must_use]
+    pub fn is_network(&self) -> bool {
+        match self {
+            Self::Network(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `OutOfService`.
+    #[must_use]
+    pub fn is_out_of_service(&self) -> bool {
+        match self {
+            Self::OutOfService => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Parse`.
+    #[must_use]
+    pub fn is_parse(&self) -> bool {
+        match self {
+            Self::Parse { .. } => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `RequestError`.
+    #[must_use]
+    pub fn is_request_error(&self) -> bool {
+        match self {
+            Self::RequestError { .. } => true,
+            _ => false,
+        }
+    }
 }
 
 impl Display for MethodCall {
@@ -76,40 +115,6 @@ impl Display for MethodCall {
 }
 
 impl Error for MethodCall {}
-
-impl MethodCall {
-    /// Checks if `self` is `Network`.
-    pub fn is_network(&self) -> bool {
-        match self {
-            Self::Network(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `OutOfService`.
-    pub fn is_out_of_service(&self) -> bool {
-        match self {
-            Self::OutOfService => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Parse`.
-    pub fn is_parse(&self) -> bool {
-        match self {
-            Self::Parse { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `RequestError`.
-    pub fn is_request_error(&self) -> bool {
-        match self {
-            Self::RequestError { .. } => true,
-            _ => false,
-        }
-    }
-}
 
 impl From<hyper::Error> for MethodCall {
     fn from(error: hyper::Error) -> Self {

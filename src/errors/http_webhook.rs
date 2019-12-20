@@ -7,6 +7,7 @@ use tokio::time::Elapsed;
 
 /// Represents possible errors that a webhook server may return.
 #[derive(Debug)]
+#[must_use]
 pub enum HttpWebhook {
     /// An error during setting the webhook.
     SetWebhook(MethodCall),
@@ -14,6 +15,35 @@ pub enum HttpWebhook {
     SetWebhookTimeout(Elapsed),
     /// An error while running the server.
     Server(hyper::Error),
+}
+
+impl HttpWebhook {
+    /// Checks if `self` is `SetWebhook`.
+    #[must_use]
+    pub fn is_set_webhook(&self) -> bool {
+        match self {
+            Self::SetWebhook(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `SetWebhookTimeout`.
+    #[must_use]
+    pub fn is_set_webhook_timeout(&self) -> bool {
+        match self {
+            Self::SetWebhookTimeout(..) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks if `self` is `Server`.
+    #[must_use]
+    pub fn is_server(&self) -> bool {
+        match self {
+            Self::Server(..) => true,
+            _ => false,
+        }
+    }
 }
 
 impl Display for HttpWebhook {
@@ -42,32 +72,6 @@ impl Display for HttpWebhook {
 }
 
 impl Error for HttpWebhook {}
-
-impl HttpWebhook {
-    /// Checks if `self` is `SetWebhook`.
-    pub fn is_set_webhook(&self) -> bool {
-        match self {
-            Self::SetWebhook(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `SetWebhookTimeout`.
-    pub fn is_set_webhook_timeout(&self) -> bool {
-        match self {
-            Self::SetWebhookTimeout(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Server`.
-    pub fn is_server(&self) -> bool {
-        match self {
-            Self::Server(..) => true,
-            _ => false,
-        }
-    }
-}
 
 impl From<MethodCall> for HttpWebhook {
     fn from(error: MethodCall) -> Self {

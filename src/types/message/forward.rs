@@ -6,6 +6,7 @@ use crate::types::{Chat, User};
 /// Represents a forward source.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
+#[must_use]
 pub enum From {
     /// The forward is from a user.
     User(User),
@@ -26,6 +27,7 @@ pub enum From {
 /// Represents forward information.
 #[derive(Debug, PartialEq, Clone)]
 #[non_exhaustive]
+#[must_use]
 pub struct Forward {
     /// The author of the original message.
     pub from: From,
@@ -35,6 +37,7 @@ pub struct Forward {
 
 impl From {
     /// Checks if `self` is `User`.
+    #[must_use]
     pub fn is_user(&self) -> bool {
         match self {
             Self::User(..) => true,
@@ -43,6 +46,7 @@ impl From {
     }
 
     /// Checks if `self` is `Hidden`.
+    #[must_use]
     pub fn is_hidden_user(&self) -> bool {
         match self {
             Self::HiddenUser(..) => true,
@@ -51,6 +55,7 @@ impl From {
     }
 
     /// Checks if `self` is `Channel`.
+    #[must_use]
     pub fn is_channel(&self) -> bool {
         match self {
             Self::Channel { .. } => true,

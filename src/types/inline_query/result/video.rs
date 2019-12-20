@@ -11,6 +11,7 @@ use serde::Serialize;
 /// Represents possible MIME types.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[non_exhaustive]
+#[must_use]
 pub enum MimeType {
     /// The `text/html` MIME type.
     #[serde(rename = "text/html")]
@@ -22,6 +23,7 @@ pub enum MimeType {
 
 /// Represents a non-cached video.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Fresh<'a> {
     #[serde(rename = "video_url")]
     url: &'a str,
@@ -39,6 +41,7 @@ pub struct Fresh<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "video_file_id")]
@@ -52,6 +55,7 @@ enum Kind<'a> {
 /// [`InlineQueryResultVideo`]: https://core.telegram.org/bots/api#inlinequeryresultvideo
 /// [`InlineQueryResultCachedVideo`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Video<'a> {
     kind: Kind<'a>,
     title: &'a str,
@@ -67,11 +71,13 @@ pub struct Video<'a> {
 
 impl MimeType {
     /// Checks if the MIME type is `text/html`.
+    #[must_use]
     pub fn is_html(self) -> bool {
         self == Self::TextHtml
     }
 
     /// Checks if the MIME type is `video/mp4`.
+    #[must_use]
     pub fn is_zip(self) -> bool {
         self == Self::VideoMp4
     }

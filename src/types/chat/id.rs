@@ -5,6 +5,7 @@ use std::fmt::{self, Display, Formatter};
 /// Represents a chat ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Serialize)]
 #[serde(transparent)]
+#[must_use]
 pub struct Id(pub i64);
 
 impl From<i64> for Id {

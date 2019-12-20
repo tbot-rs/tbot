@@ -2,6 +2,7 @@ use serde::Serialize;
 use std::fmt::{self, Display};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub enum ParseMode {
     Markdown,
     #[serde(rename = "HTML")]
@@ -10,6 +11,7 @@ pub enum ParseMode {
 
 /// Represents input text.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
 pub struct Text<'a> {
     pub(crate) text: &'a str,
     pub(crate) parse_mode: Option<ParseMode>,
@@ -50,16 +52,19 @@ impl<'a> Text<'a> {
     }
 
     /// Checks if parse mode isn't set.
+    #[must_use]
     pub fn is_plain(self) -> bool {
         self.parse_mode == None
     }
 
     /// Checks if parse mode is `Markdown`.
+    #[must_use]
     pub fn is_markdown(self) -> bool {
         self.parse_mode == Some(ParseMode::Markdown)
     }
 
     /// Checks if parse mode is `Html`.
+    #[must_use]
     pub fn is_html(self) -> bool {
         self.parse_mode == Some(ParseMode::Html)
     }

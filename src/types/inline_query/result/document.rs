@@ -12,6 +12,7 @@ use serde::Serialize;
 /// Represents possible MIME types for a fresh document.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[non_exhaustive]
+#[must_use]
 pub enum MimeType {
     /// The `application/pdf` MIME type.
     #[serde(rename = "application/pdf")]
@@ -23,6 +24,7 @@ pub enum MimeType {
 
 /// Represents a non-cached document.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Fresh<'a> {
     #[serde(rename = "document_url")]
     url: &'a str,
@@ -33,6 +35,7 @@ pub struct Fresh<'a> {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
+#[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "document_file_id")]
@@ -46,6 +49,7 @@ enum Kind<'a> {
 /// [`InlineQueryResultDocument`]: https://core.telegram.org/bots/api#inlinequeryresultdocument
 /// [`InlineQueryResultCachedDocument`]: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Document<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
@@ -62,11 +66,13 @@ pub struct Document<'a> {
 
 impl MimeType {
     /// Checks if the MIME type is `application/pdf`.
+    #[must_use]
     pub fn is_pdf(self) -> bool {
         self == Self::ApplicationPdf
     }
 
     /// Checks if the MIME type is `application/zip`.
+    #[must_use]
     pub fn is_zip(self) -> bool {
         self == Self::ApplicationZip
     }

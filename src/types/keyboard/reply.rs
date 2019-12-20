@@ -22,6 +22,7 @@ pub struct Button<'a> {
 ///
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Keyboard<'a> {
     keyboard: Markup<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -5,6 +5,7 @@ use serde::Serialize;
 ///
 /// Note that a chat photo cannot be set via either a file ID or a URL.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct ChatPhoto<'a>(pub(crate) WithName<'a>);
 
 impl<'a> ChatPhoto<'a> {

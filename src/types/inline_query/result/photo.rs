@@ -10,6 +10,7 @@ use serde::Serialize;
 
 /// Represents a non-cached photo.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Fresh<'a> {
     thumb_url: &'a str,
     #[serde(rename = "photo_url")]
@@ -21,6 +22,7 @@ pub struct Fresh<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "photo_file_id")]
@@ -34,6 +36,7 @@ enum Kind<'a> {
 /// [`InlineQueryResultPhoto`]: https://core.telegram.org/bots/api#inlinequeryresultphoto
 /// [`InlineQueryResultCachedPhoto`]: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Photo<'a> {
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -60,6 +60,7 @@ macro_rules! callback {
                 &self.origin
             }
 
+            #[must_use]
             fn chat_instance(&self) -> &str {
                 &self.chat_instance
             }

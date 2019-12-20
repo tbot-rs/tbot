@@ -5,6 +5,7 @@ use serde::Serialize;
 #[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[serde(untagged)]
 #[non_exhaustive]
+#[must_use]
 pub enum Any<'a> {
     /// An inline keyboard.
     Inline(inline::Keyboard<'a>),
@@ -18,6 +19,7 @@ pub enum Any<'a> {
 
 impl Any<'_> {
     /// Checks if `self` is `Inline`.
+    #[must_use]
     pub fn is_inline(&self) -> bool {
         match self {
             Any::Inline(..) => true,
@@ -26,6 +28,7 @@ impl Any<'_> {
     }
 
     /// Checks if `self` is `Reply`.
+    #[must_use]
     pub fn is_reply(&self) -> bool {
         match self {
             Any::Reply(..) => true,
@@ -34,6 +37,7 @@ impl Any<'_> {
     }
 
     /// Checks if `self` is `RemoveReply`.
+    #[must_use]
     pub fn is_remove_reply(&self) -> bool {
         match self {
             Any::RemoveReply(..) => true,
@@ -42,6 +46,7 @@ impl Any<'_> {
     }
 
     /// Checks if `self` is `ForceReply`.
+    #[must_use]
     pub fn is_force_reply(&self) -> bool {
         match self {
             Any::ForceReply(..) => true,

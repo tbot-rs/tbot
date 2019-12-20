@@ -5,11 +5,13 @@ use serde::{Deserialize, Serialize};
 /// Represents a shipping query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[serde(transparent)]
+#[must_use]
 pub struct Id(pub String);
 
 /// Contains a reference to a shipping query ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(transparent)]
+#[must_use]
 pub struct Ref<'a>(pub &'a str);
 
 impl Id {
@@ -43,12 +45,14 @@ impl<'a> From<&'a str> for Ref<'a> {
 }
 
 impl<'a> PartialEq<Ref<'a>> for Id {
+    #[must_use]
     fn eq(&self, other: &Ref<'a>) -> bool {
         self.0 == other.0
     }
 }
 
 impl<'a> PartialEq<Id> for Ref<'a> {
+    #[must_use]
     fn eq(&self, other: &Id) -> bool {
         self.0 == other.0
     }

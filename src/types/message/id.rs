@@ -4,6 +4,7 @@ use std::fmt::{self, Display, Formatter};
 /// Represents a message ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize, Serialize)]
 #[serde(transparent)]
+#[must_use]
 pub struct Id(pub u32);
 
 impl From<u32> for Id {

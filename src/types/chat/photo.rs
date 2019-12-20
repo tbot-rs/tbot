@@ -6,6 +6,7 @@ use serde::Deserialize;
 /// [`ChatPhoto`]: https://core.telegram.org/bots/api#chatphoto
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
+#[must_use]
 pub struct Photo {
     /// The file ID of the small photo.
     #[serde(rename = "small_file_id")]

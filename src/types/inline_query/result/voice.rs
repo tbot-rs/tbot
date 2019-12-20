@@ -10,6 +10,7 @@ use serde::Serialize;
 
 /// Represents a non-cached voice.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Fresh<'a> {
     #[serde(rename = "voice_url")]
     url: &'a str,
@@ -22,6 +23,7 @@ pub struct Fresh<'a> {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
+#[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "voice_file_id")]
@@ -35,6 +37,7 @@ enum Kind<'a> {
 /// [`InlineQueryResultVoice`]: https://core.telegram.org/bots/api#inlinequeryresultvoice
 /// [`InlineQueryResultCachedVoice`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Voice<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,

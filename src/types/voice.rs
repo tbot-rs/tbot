@@ -6,6 +6,7 @@ use serde::Deserialize;
 /// [`Voice`]: https://core.telegram.org/bots/api#voice
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
+#[must_use]
 pub struct Voice {
     /// The file ID of the voice.
     pub file_id: file::Id,

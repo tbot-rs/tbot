@@ -6,6 +6,7 @@ use serde::Serialize;
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
+#[must_use]
 pub enum Kind {
     /// An error in the user's utility bill.
     UtilityBill,
@@ -21,26 +22,31 @@ pub enum Kind {
 
 impl Kind {
     /// Checks if `self` is `UtilityBill`.
+    #[must_use]
     pub fn is_utility_bill(self) -> bool {
         self == Self::UtilityBill
     }
 
     /// Checks if `self` is `BankStatement`.
+    #[must_use]
     pub fn is_bank_statement(self) -> bool {
         self == Self::BankStatement
     }
 
     /// Checks if `self` is `RentalAgreement`.
+    #[must_use]
     pub fn is_rental_agreement(self) -> bool {
         self == Self::RentalAgreement
     }
 
     /// Checks if `self` is `PassportRegistration`.
+    #[must_use]
     pub fn is_passport_registration(self) -> bool {
         self == Self::PassportRegistration
     }
 
     /// Checks if `self` is `TemporaryRegistration`.
+    #[must_use]
     pub fn is_temporary_registration(self) -> bool {
         self == Self::TemporaryRegistration
     }
@@ -50,6 +56,7 @@ impl Kind {
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorfile
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct File<'a> {
     #[serde(rename = "type")]
     kind: Kind,
@@ -67,6 +74,7 @@ impl<'a> File<'a> {
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorfiles
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Files<'a> {
     #[serde(rename = "type")]
     kind: Kind,
@@ -74,7 +82,7 @@ pub struct Files<'a> {
 }
 
 impl<'a> Files<'a> {
-    /// Constructs neile`.
+    /// Constructs new `Files`.
     pub const fn new(kind: Kind, file_hashes: &'a [&'a str]) -> Self {
         Self { kind, file_hashes }
     }

@@ -5,6 +5,7 @@ use serde::Serialize;
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
 #[non_exhaustive]
+#[must_use]
 pub enum EditableMedia<'a> {
     /// An animation that will replace the old media.
     Animation(Animation<'a>),
@@ -28,7 +29,9 @@ impl EditableMedia<'_> {
             EditableMedia::Video(..) => "video",
         }
     }
+
     /// Checks if `self` is `Animation`.
+    #[must_use]
     pub fn is_animation(&self) -> bool {
         match self {
             EditableMedia::Animation(..) => true,
@@ -37,6 +40,7 @@ impl EditableMedia<'_> {
     }
 
     /// Checks if `self` is `Audio`.
+    #[must_use]
     pub fn is_audio(&self) -> bool {
         match self {
             EditableMedia::Audio(..) => true,
@@ -45,6 +49,7 @@ impl EditableMedia<'_> {
     }
 
     /// Checks if `self` is `Document`.
+    #[must_use]
     pub fn is_document(&self) -> bool {
         match self {
             EditableMedia::Document(..) => true,
@@ -53,6 +58,7 @@ impl EditableMedia<'_> {
     }
 
     /// Checks if `self` is `Photo`.
+    #[must_use]
     pub fn is_photo(&self) -> bool {
         match self {
             EditableMedia::Photo(..) => true,
@@ -61,6 +67,7 @@ impl EditableMedia<'_> {
     }
 
     /// Checks if `self` is `Video`.
+    #[must_use]
     pub fn is_video(&self) -> bool {
         match self {
             EditableMedia::Video(..) => true,

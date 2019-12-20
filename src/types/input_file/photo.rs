@@ -4,6 +4,7 @@ use serde::ser::SerializeMap;
 
 /// Represents a photo to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
 pub struct Photo<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) caption: Option<&'a str>,

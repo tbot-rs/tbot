@@ -4,6 +4,7 @@ use serde::Serialize;
 ///
 /// [`LoginUrl`]: https://core.telegram.org/bots/api#loginurl
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct LoginUrl<'a> {
     url: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]

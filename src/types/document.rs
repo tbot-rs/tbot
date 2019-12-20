@@ -9,6 +9,7 @@ use serde::Deserialize;
 /// [`Document`]: https://core.telegram.org/bots/api#document
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
+#[must_use]
 pub struct Document {
     /// The file ID of the document.
     pub file_id: file::Id,

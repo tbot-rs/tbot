@@ -10,6 +10,7 @@ use serde::Serialize;
 
 /// Represents a non-cached audio.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[must_use]
 pub struct Fresh<'a> {
     #[serde(rename = "audio_url")]
     url: &'a str,
@@ -25,6 +26,7 @@ pub struct Fresh<'a> {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(untagged)]
+#[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "audio_file_id")]
@@ -38,6 +40,7 @@ enum Kind<'a> {
 /// [`InlineQueryResultAudio`]: https://core.telegram.org/bots/api#inlinequeryresultaudio
 /// [`InlineQueryResultCachedAudio`]: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Audio<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,

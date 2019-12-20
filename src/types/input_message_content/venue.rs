@@ -4,6 +4,7 @@ use serde::Serialize;
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputvenuemessagecontent
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[must_use]
 pub struct Venue<'a> {
     latitude: f64,
     longitude: f64,
