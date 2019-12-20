@@ -1,9 +1,20 @@
-test:
+check-formatting:
     stage: test
     script:
         - cargo fmt -- --check
-        - cargo clippy --target-dir=../target -- -D warnings
+    only:
+        - branches
+
+run-clippy:
+    stage: test
+    script:
         - cargo clippy --target-dir=../target --all-features -- -D warnings
+    only:
+        - branches
+
+run-tests:
+    stage: test
+    script:
         - cargo test --target-dir=../target --all-features
     only:
         - branches
