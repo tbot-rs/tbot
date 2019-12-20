@@ -4,7 +4,6 @@ use tokio::time::Elapsed;
 /// Reperesents possible errors that may happen during preparation of the
 /// polling event loop.
 #[derive(Debug)]
-#[must_use]
 pub enum PollingSetup {
     /// Calling `DeleteWebhook` resulted in an error.
     DeleteWebhook(MethodCall),
@@ -32,12 +31,14 @@ impl PollingSetup {
     }
 }
 impl From<MethodCall> for PollingSetup {
+    #[must_use]
     fn from(error: MethodCall) -> Self {
         Self::DeleteWebhook(error)
     }
 }
 
 impl From<Elapsed> for PollingSetup {
+    #[must_use]
     fn from(error: Elapsed) -> Self {
         Self::DeleteWebhookTimeout(error)
     }

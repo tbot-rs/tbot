@@ -3,7 +3,6 @@ use tokio::time::Elapsed;
 
 /// Represent possible errors that may happen during the polling event loop.
 #[derive(Debug)]
-#[must_use]
 pub enum Polling {
     /// Calling `GetUpdates` resulted in an error.
     Fetching(MethodCall),
@@ -32,12 +31,14 @@ impl Polling {
 }
 
 impl From<MethodCall> for Polling {
+    #[must_use]
     fn from(error: MethodCall) -> Self {
         Self::Fetching(error)
     }
 }
 
 impl From<Elapsed> for Polling {
+    #[must_use]
     fn from(error: Elapsed) -> Self {
         Self::Timeout(error)
     }
