@@ -10,37 +10,29 @@ const STICKERS: [(&[u8], &str); 2] = [
 ];
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), tbot::errors::MethodCall> {
     let bot = tbot::from_env!("BOT_TOKEN");
 
+    let user_id = USER.into();
     let mut stickers = STICKERS.iter();
-    let first_sticker = stickers.next().unwrap();
+    let &(bytes, emoji) = stickers.next().unwrap();
 
-    bot.create_new_sticker_set(
-        USER.into(),
-        NAME,
-        TITLE,
-        PngSticker::bytes(first_sticker.0),
-        first_sticker.1,
-    )
-    .call()
-    .await
-    .unwrap();
-
-    for sticker in stickers {
-        bot.add_sticker_to_set(
-            USER.into(),
-            NAME,
-            PngSticker::bytes(sticker.0),
-            sticker.1,
-        )
+    let sticker = PngSticker::bytes(bytes);
+    bot.create_new_sticker_set(user_id, NAME, TITLE, sticker, emoji)
         .call()
-        .await
-        .unwrap();
+        .await?;
+
+    for &(bytes, emoji) in stickers {
+        let sticker = PngSticker::bytes(bytes);
+        bot.add_sticker_to_set(user_id, NAME, sticker, emoji)
+            .call()
+            .await?;
     }
 
     println!(
         "Go check out this amazing sticker pack: https://t.me/addstickers/{}",
         NAME,
     );
+
+    Ok(())
 }

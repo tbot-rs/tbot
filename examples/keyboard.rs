@@ -21,12 +21,15 @@ async fn main() {
 
     bot.command("keyboard", |context| {
         async move {
-            context
+            let call_result = context
                 .send_message("This is a keyboard done with tbot!")
                 .reply_markup(KEYBOARD)
                 .call()
-                .await
-                .unwrap();
+                .await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
@@ -38,7 +41,10 @@ async fn main() {
                 _ => "Are you trying to hack me?",
             };
 
-            context.notify(message).call().await.unwrap();
+            let call_result = context.notify(message).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 

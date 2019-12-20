@@ -15,18 +15,18 @@ async fn main() {
 
     bot.text(|context| {
         async move {
-            let message = match meval::eval_str(&context.text.value) {
-                Ok(result) => format!("= `{}`", result),
-                Err(_) => {
-                    "Whops, I couldn't evaluate your expression :(".into()
-                }
+            let calc_result = meval::eval_str(&context.text.value);
+            let message = if let Ok(answer) = calc_result {
+                format!("= `{}`", answer)
+            } else {
+                "Whops, I couldn't evaluate your expression :(".into()
             };
+            let reply = ParseMode::markdown(&message);
 
-            context
-                .send_message_in_reply(ParseMode::markdown(&message))
-                .call()
-                .await
-                .unwrap();
+            let call_result = context.send_message_in_reply(reply).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
@@ -34,15 +34,15 @@ async fn main() {
     bot.inline(move |context| {
         let id = Arc::clone(&id);
         async move {
-            let (title, message) = match meval::eval_str(&context.query) {
-                Ok(result) => (
-                    result.to_string(),
-                    format!("`{} = {}`", context.query, result),
-                ),
-                Err(_) => (
-                    "Whops...".into(),
-                    "I couldn't evaluate your expression :(".into(),
-                ),
+            let calc_result = meval::eval_str(&context.query);
+            let (title, message) = if let Ok(answer) = calc_result {
+                let title = answer.to_string();
+                let message = format!("`{} = {}`", context.query, answer);
+                (title, message)
+            } else {
+                let title = "Whops...".into();
+                let message = "I couldn't evaluate your expression :(".into();
+                (title, message)
             };
 
             let id = {
@@ -54,7 +54,10 @@ async fn main() {
             let article = Article::new(&title, content).description(&message);
             let result = inline_query::Result::new(&id, article);
 
-            context.answer(&[result]).call().await.unwrap();
+            let call_result = context.answer(&[result]).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 

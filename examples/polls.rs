@@ -3,6 +3,7 @@ use tbot::prelude::*;
 const QUESTION: &str = "Do you like tbot?";
 const OPTIONS: &[&str] =
     &["Yes", "Also yes", "I like shooting myself in the foot more"];
+const SEND_IN_REPLY_ERROR: &str = "Please send the command in reply to a poll";
 
 #[tokio::main]
 async fn main() {
@@ -10,39 +11,39 @@ async fn main() {
 
     bot.command("poll", |context| {
         async move {
-            context.send_poll(QUESTION, OPTIONS).call().await.unwrap();
+            let call_result = context.send_poll(QUESTION, OPTIONS).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.command("close", |context| {
         async move {
-            if let Some(message) = &context.reply_to {
-                context
-                    .bot
-                    .stop_poll(context.chat.id, message.id)
-                    .call()
-                    .await
-                    .unwrap();
+            let err = if let Some(message) = &context.reply_to {
+                let chat_id = context.chat.id;
+                let call_result =
+                    context.bot.stop_poll(chat_id, message.id).call().await;
+
+                call_result.err()
             } else {
-                context
-                    .send_message("Please send the command in reply to a poll")
-                    .call()
-                    .await
-                    .unwrap();
+                context.send_message(SEND_IN_REPLY_ERROR).call().await.err()
+            };
+
+            if let Some(err) = err {
+                dbg!(err);
             }
         }
     });
 
     bot.poll(|context| {
-        async move {
-            println!("Someone sent a poll: {:#?}", context.poll);
-        }
+        println!("Someone sent a poll: {:#?}", context.poll);
+        async move {}
     });
 
     bot.updated_poll(|context| {
-        async move {
-            println!("New update on my poll: {:#?}", context.poll);
-        }
+        println!("New update on my poll: {:#?}", context.poll);
+        async move {}
     });
 
     bot.polling().start().await.unwrap();

@@ -24,55 +24,61 @@ const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
 #[tokio::main]
 async fn main() {
-    // I don't want everyone to set up another environment variable
-    // so they don't see constant errors from RLS or `cargo test`.
-    let provider_token: &str = option_env!("PROVIDER_TOKEN").unwrap();
+    let provider_token = option_env!("PROVIDER_TOKEN").unwrap();
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
     bot.start(move |context| {
-        let start_message =
-            format!("Send `/start {}` to get started", START_PARAMETER);
         async move {
-            if context.text.value == START_PARAMETER {
-                context
-                    .bot
-                    .send_invoice(
-                        context.chat.id,
-                        TITLE,
-                        DESCRIPTION,
-                        PAYLOAD,
-                        provider_token,
-                        START_PARAMETER,
-                        CURRENCY,
-                        PRICE,
-                    )
-                    .photo(PHOTO)
-                    .flexibility(Flexible)
-                    .call()
-                    .await
-                    .unwrap();
+            let call_result = if context.text.value == START_PARAMETER {
+                let mut invoice = context.send_invoice(
+                    TITLE,
+                    DESCRIPTION,
+                    PAYLOAD,
+                    provider_token,
+                    START_PARAMETER,
+                    CURRENCY,
+                    PRICE,
+                );
+                invoice = invoice.photo(PHOTO).flexibility(Flexible);
+
+                invoice.call().await
             } else {
-                let text = Text::markdown(&start_message);
-                context.send_message(text).call().await.unwrap();
+                let error_message =
+                    format!("Send `/start {}` to get started", START_PARAMETER);
+                let text = Text::markdown(&error_message);
+                context.send_message(text).call().await
             };
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.shipping(|context| {
         async move {
-            context.ok(DELIVERY).call().await.unwrap();
+            let call_result = context.ok(DELIVERY).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.pre_checkout(|context| {
         async move {
-            context.ok().call().await.unwrap();
+            let call_result = context.ok().call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 
     bot.payment(|context| {
         async move {
-            context.send_message(SUCCESS).call().await.unwrap();
+            let call_result = context.send_message(SUCCESS).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 

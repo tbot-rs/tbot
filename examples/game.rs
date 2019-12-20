@@ -20,7 +20,15 @@ async fn main() {
     bot.command("game", move |context| {
         let chats = Arc::clone(&game_chats_ref);
         async move {
-            let message = context.send_game(GAME).call().await.unwrap();
+            let call_result = context.send_game(GAME).call().await;
+            let message = match call_result {
+                Ok(message) => message,
+                Err(err) => {
+                    dbg!(err);
+                    return;
+                }
+            };
+
             chats.lock().await.insert(message.chat.id, message.id);
         }
     });
@@ -47,18 +55,15 @@ async fn main() {
             let bad_score = text.matches(BAD_PHRASE).count() as i32;
             let score =
                 GOOD_MULTIPLIER * good_score - BAD_MULTIPLIER * bad_score;
+            let score = score.max(1) as u32;
 
-            let result = context
-                .set_message_game_score(
-                    message_id,
-                    user.id,
-                    score.max(1) as u32,
-                )
+            let call_result = context
+                .set_message_game_score(message_id, user.id, score)
                 .force(true)
                 .call()
                 .await;
 
-            match result {
+            match call_result {
                 Ok(_) => (),
                 Err(errors::MethodCall::RequestError {
                     ref description,
