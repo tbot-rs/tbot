@@ -15,7 +15,9 @@ run-clippy:
 run-tests:
     stage: test
     script:
-        - cargo test --target-dir=../target --all-features
+        - cargo test --target-dir=../target
+        - cargo test --target-dir=../target --no-default-features --features="rustls proxy"
+        - cargo test --target-dir=../target --no-default-features --features="tls proxy"
     only:
         - branches
 
