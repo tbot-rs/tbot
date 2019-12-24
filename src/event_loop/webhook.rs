@@ -98,8 +98,18 @@ impl<'a, C> Webhook<'a, C> {
     /// method.
     ///
     /// [`http`]: #method.http
-    pub const fn https(self, identity: https::Identity) -> Https<'a, C> {
-        Https::new(self, identity)
+    pub const fn https(
+        self,
+        #[cfg(feature = "tls")] identity: https::Identity,
+        #[cfg(feature = "rustls")] config: https::ServerConfig,
+    ) -> Https<'a, C> {
+        Https::new(
+            self,
+            #[cfg(feature = "tls")]
+            identity,
+            #[cfg(feature = "rustls")]
+            config,
+        )
     }
 }
 
