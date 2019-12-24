@@ -5,6 +5,10 @@ use hyper::{
     client::{connect::Connect, HttpConnector},
     Body, Client,
 };
+
+#[cfg(feature = "rustls")]
+use hyper_rustls::HttpsConnector;
+#[cfg(feature = "tls")]
 use hyper_tls::HttpsConnector;
 
 #[cfg(feature = "proxy")]

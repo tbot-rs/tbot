@@ -8,14 +8,16 @@ check-formatting:
 run-clippy:
     stage: test
     script:
-        - cargo clippy --target-dir=../target --examples --features "tokio/macros" -- -D warnings
+        - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros tls" -- -D warnings
+        - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros rustls" -- -D warnings
+        - cargo clippy --target-dir=../target --examples --features "tokio/macros proxy" -- -D warnings
     only:
         - branches
 
 run-tests:
     stage: test
     script:
-        - cargo test --target-dir=../target --all-features
+        - cargo test --target-dir=../target --features="proxy"
     only:
         - branches
 

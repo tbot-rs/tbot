@@ -4,26 +4,42 @@ use super::handle;
 use crate::{connectors::Connector, errors, event_loop::Webhook};
 use hyper::{server::conn::Http, service::service_fn};
 use hyper::{Body, Request};
+
+#[cfg(feature = "tls")]
+pub use native_tls::Identity;
+#[cfg(feature = "tls")]
 use native_tls::TlsAcceptor;
 use std::{convert::Infallible, net::SocketAddr, sync::Arc};
 use tokio::net::TcpListener;
 use tokio::time::timeout;
-
-pub use native_tls::Identity;
+#[cfg(feature = "rustls")]
+pub use tokio_rustls::rustls::ServerConfig;
+#[cfg(feature = "rustls")]
+use tokio_rustls::TlsAcceptor;
 
 /// Configures the HTTPS webhook server.
 #[must_use = "webhook server needs to be `start`ed to run the event loop"]
 pub struct Https<'a, C> {
     webhook: Webhook<'a, C>,
+    #[cfg(feature = "tls")]
     identity: Identity,
+    #[cfg(feature = "rustls")]
+    config: ServerConfig,
 }
 
 impl<'a, C> Https<'a, C> {
     pub(crate) const fn new(
         webhook: Webhook<'a, C>,
-        identity: Identity,
+        #[cfg(feature = "tls")] identity: Identity,
+        #[cfg(feature = "rustls")] config: ServerConfig,
     ) -> Self {
-        Self { webhook, identity }
+        Self {
+            webhook,
+            #[cfg(feature = "tls")]
+            identity,
+            #[cfg(feature = "rustls")]
+            config,
+        }
     }
 }
 
@@ -52,8 +68,13 @@ impl<'a, C: Connector + Clone> Https<'a, C> {
         let event_loop = Arc::new(event_loop);
         let addr = SocketAddr::new(ip, port);
 
-        let tls_acceptor = TlsAcceptor::builder(self.identity).build()?;
-        let tls_acceptor = tokio_tls::TlsAcceptor::from(tls_acceptor);
+        #[cfg(feature = "tls")]
+        let tls_acceptor = {
+            let tls_acceptor = TlsAcceptor::builder(self.identity).build()?;
+            tokio_tls::TlsAcceptor::from(tls_acceptor)
+        };
+        #[cfg(feature = "rustls")]
+        let tls_acceptor = TlsAcceptor::from(Arc::new(self.config));
 
         let mut server = TcpListener::bind(&addr).await?;
 

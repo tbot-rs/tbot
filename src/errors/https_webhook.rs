@@ -13,7 +13,10 @@ pub enum HttpsWebhook {
     /// Calling the `setWebhook` method timed out.
     SetWebhookTimeout(Elapsed),
     /// An error during initializing TLS.
-    Tls(native_tls::Error),
+    Tls(
+        #[cfg(feature = "tls")] native_tls::Error,
+        #[cfg(feature = "rustls")] tokio_rustls::rustls::TLSError,
+    ),
     /// An error during port binding.
     Bind(std::io::Error),
     /// An error while running the server.
@@ -120,9 +123,18 @@ impl From<Elapsed> for HttpsWebhook {
     }
 }
 
+#[cfg(feature = "tls")]
 impl From<native_tls::Error> for HttpsWebhook {
     #[must_use]
     fn from(error: native_tls::Error) -> Self {
+        Self::Tls(error)
+    }
+}
+
+#[cfg(feature = "rustls")]
+impl From<tokio_rustls::rustls::TLSError> for HttpsWebhook {
+    #[must_use]
+    fn from(error: tokio_rustls::rustls::TLSError) -> Self {
         Self::Tls(error)
     }
 }
