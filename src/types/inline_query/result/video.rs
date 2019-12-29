@@ -19,6 +19,7 @@ pub enum MimeType {
     TextHtml,
     /// The `video/mp4` MIME type.
     #[serde(rename = "video/mp4")]
+    #[is(name = "video_mp4")]
     VideoMp4,
 }
 

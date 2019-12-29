@@ -65,6 +65,7 @@ pub enum Kind<'a> {
     /// A location.
     Location(Location<'a>),
     /// A MPEG-4 GIF.
+    #[is(name = "mpeg4_gif")]
     Mpeg4Gif(Mpeg4Gif<'a>),
     /// A photo.
     Photo(Photo<'a>),
