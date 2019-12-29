@@ -14,7 +14,7 @@ pub enum Status {
     Creator,
     /// The user is an administrator of the chat.
     #[non_exhaustive]
-    Administator {
+    Administrator {
         /// `true` if the bot can edit this admin's rights.
         can_be_edited: bool,
         /// `true` if the admin can change the group's info.
@@ -187,7 +187,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
 
         let status = match &status {
             Some(CREATOR) => Status::Creator,
-            Some(ADMINISTRATOR) => Status::Administator {
+            Some(ADMINISTRATOR) => Status::Administrator {
                 can_be_edited: can_be_edited
                     .ok_or_else(|| Error::missing_field(CAN_BE_EDITED))?,
                 can_change_info: can_change_info
