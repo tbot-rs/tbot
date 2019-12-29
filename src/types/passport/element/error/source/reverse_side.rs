@@ -1,9 +1,10 @@
 //! Types related to reverse side errors.
 
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible element kinds for reverse side error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
@@ -12,20 +13,6 @@ pub enum Kind {
     DriverLicense,
     /// An error in the user's identity card.
     IdentityCard,
-}
-
-impl Kind {
-    /// Checks if `self` is `DriverLicense`.
-    #[must_use]
-    pub fn is_driver_license(self) -> bool {
-        self == Self::DriverLicense
-    }
-
-    /// Checks if `self` is `IdentityCard`.
-    #[must_use]
-    pub fn is_identity_card(self) -> bool {
-        self == Self::IdentityCard
-    }
 }
 
 /// Represents a [`PassportElementErrorReverseSide`][docs].

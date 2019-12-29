@@ -1,9 +1,10 @@
 //! Types related to data passport errors.
 
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible element kinds for data error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
@@ -20,44 +21,6 @@ pub enum Kind {
     InternalPassport,
     /// An error in the user's address.
     Address,
-}
-
-impl Kind {
-    /// Checks if `self` is `PersonalDetails`.
-    #[must_use]
-    pub fn is_personal_details(self) -> bool {
-        self == Self::PersonalDetails
-    }
-
-    /// Checks if `self` is `Passport`.
-    #[must_use]
-    pub fn is_passport(self) -> bool {
-        self == Self::Passport
-    }
-
-    /// Checks if `self` is `DriverLicense`.
-    #[must_use]
-    pub fn is_driver_license(self) -> bool {
-        self == Self::DriverLicense
-    }
-
-    /// Checks if `self` is `IdentityCard`.
-    #[must_use]
-    pub fn is_identity_card(self) -> bool {
-        self == Self::IdentityCard
-    }
-
-    /// Checks if `self` is `InternalPassport`.
-    #[must_use]
-    pub fn is_internal_passport(self) -> bool {
-        self == Self::InternalPassport
-    }
-
-    /// Checks if `self` is `Address`.
-    #[must_use]
-    pub fn is_address(self) -> bool {
-        self == Self::Address
-    }
 }
 
 /// Represents a [`PassportElementErrorDataField`][docs].

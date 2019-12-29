@@ -6,10 +6,11 @@ use crate::types::{
     parameters::{ParseMode, Text},
     InputMessageContent,
 };
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible MIME types.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum MimeType {
@@ -67,20 +68,6 @@ pub struct Video<'a> {
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
-}
-
-impl MimeType {
-    /// Checks if the MIME type is `text/html`.
-    #[must_use]
-    pub fn is_html(self) -> bool {
-        self == Self::TextHtml
-    }
-
-    /// Checks if the MIME type is `video/mp4`.
-    #[must_use]
-    pub fn is_zip(self) -> bool {
-        self == Self::VideoMp4
-    }
 }
 
 impl<'a> Fresh<'a> {

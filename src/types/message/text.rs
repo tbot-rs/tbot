@@ -1,6 +1,7 @@
 //! Types representing text.
 
 use crate::types::User;
+use is_macro::Is;
 use serde::de::{Deserialize, Deserializer, Error, Visitor};
 use std::fmt::{self, Formatter};
 
@@ -15,7 +16,7 @@ pub struct Text {
 }
 
 /// Represents an entity's kind.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum EntityKind {
     /// A mention.
@@ -44,92 +45,6 @@ pub enum EntityKind {
     TextLink(String),
     /// A mention for users without username.
     TextMention(User),
-}
-
-impl EntityKind {
-    /// Checks if `self` is `Mention`.
-    #[must_use]
-    pub fn is_mention(&self) -> bool {
-        *self == Self::Mention
-    }
-
-    /// Checks if `self` is `Hashtag`.
-    #[must_use]
-    pub fn is_hastag(&self) -> bool {
-        *self == Self::Hashtag
-    }
-
-    /// Checks if `self` is `Cashtag`.
-    #[must_use]
-    pub fn is_cashtag(&self) -> bool {
-        *self == Self::Cashtag
-    }
-
-    /// Checks if `self` is `BotCommand`.
-    #[must_use]
-    pub fn is_bot_command(&self) -> bool {
-        *self == Self::BotCommand
-    }
-
-    /// Checks if `self` is `Url`.
-    #[must_use]
-    pub fn is_url(&self) -> bool {
-        *self == Self::Url
-    }
-
-    /// Checks if `self` is `Email`.
-    #[must_use]
-    pub fn is_email(&self) -> bool {
-        *self == Self::Email
-    }
-
-    /// Checks if `self` is `PhoneNumber`.
-    #[must_use]
-    pub fn is_phone_number(&self) -> bool {
-        *self == Self::PhoneNumber
-    }
-
-    /// Checks if `self` is `Bold`.
-    #[must_use]
-    pub fn is_bold(&self) -> bool {
-        *self == Self::Bold
-    }
-
-    /// Checks if `self` is `Italic`.
-    #[must_use]
-    pub fn is_italic(&self) -> bool {
-        *self == Self::Italic
-    }
-
-    /// Checks if `self` is `Code`.
-    #[must_use]
-    pub fn is_code(&self) -> bool {
-        *self == Self::Code
-    }
-
-    /// Checks if `self` is `Pre`.
-    #[must_use]
-    pub fn is_pre(&self) -> bool {
-        *self == Self::Pre
-    }
-
-    /// Checks if `self` is `TextLink`.
-    #[must_use]
-    pub fn is_text_link(&self) -> bool {
-        match self {
-            Self::TextLink(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `TextMention`.
-    #[must_use]
-    pub fn is_text_mention(&self) -> bool {
-        match self {
-            Self::TextMention(..) => true,
-            _ => false,
-        }
-    }
 }
 
 /// Represents an entity of a message.

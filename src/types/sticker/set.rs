@@ -1,13 +1,14 @@
 //! Types related to sticker sets.
 
 use super::Sticker;
+use is_macro::Is;
 use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
 use std::fmt::{self, Formatter};
 
 /// Represents different kinds of a [`sticker::Set`].
 ///
 /// [`sticker::Set`]: ./struct.Set.html
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// The stickers in the sticker set are neither animated nor masks.
@@ -32,26 +33,6 @@ pub struct Set {
     pub kind: Kind,
     /// The stickers from this set.
     pub stickers: Vec<Sticker>,
-}
-
-impl Kind {
-    /// Checks if `self` is `Plain`.
-    #[must_use]
-    pub fn is_plain(self) -> bool {
-        self == Self::Plain
-    }
-
-    /// Checks if `self` is `Animated`.
-    #[must_use]
-    pub fn is_animated(self) -> bool {
-        self == Self::Animated
-    }
-
-    /// Checks if `self` is `Masks`.
-    #[must_use]
-    pub fn is_mask(self) -> bool {
-        self == Self::Masks
-    }
 }
 
 const NAME: &str = "name";

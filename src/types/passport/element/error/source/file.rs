@@ -1,9 +1,10 @@
 //! Types related to file passport errors.
 
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible element kinds for file error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
@@ -18,38 +19,6 @@ pub enum Kind {
     PassportRegistration,
     /// An error in the user's temporary registration.
     TemporaryRegistration,
-}
-
-impl Kind {
-    /// Checks if `self` is `UtilityBill`.
-    #[must_use]
-    pub fn is_utility_bill(self) -> bool {
-        self == Self::UtilityBill
-    }
-
-    /// Checks if `self` is `BankStatement`.
-    #[must_use]
-    pub fn is_bank_statement(self) -> bool {
-        self == Self::BankStatement
-    }
-
-    /// Checks if `self` is `RentalAgreement`.
-    #[must_use]
-    pub fn is_rental_agreement(self) -> bool {
-        self == Self::RentalAgreement
-    }
-
-    /// Checks if `self` is `PassportRegistration`.
-    #[must_use]
-    pub fn is_passport_registration(self) -> bool {
-        self == Self::PassportRegistration
-    }
-
-    /// Checks if `self` is `TemporaryRegistration`.
-    #[must_use]
-    pub fn is_temporary_registration(self) -> bool {
-        self == Self::TemporaryRegistration
-    }
 }
 
 /// Represents a [`PassportElementErrorFile`][docs].

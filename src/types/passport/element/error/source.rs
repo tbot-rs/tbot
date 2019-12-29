@@ -1,3 +1,4 @@
+use is_macro::Is;
 use serde::Serialize;
 
 pub mod data;
@@ -19,7 +20,7 @@ pub use {
 };
 
 /// Reperesents possible sources of an error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case", tag = "source")]
 #[non_exhaustive]
 #[must_use]
@@ -42,89 +43,6 @@ pub enum Source<'a> {
     TranslationFiles(TranslationFiles<'a>),
     /// An unspecified error.
     Unspecified(Unspecified<'a>),
-}
-
-impl<'a> Source<'a> {
-    /// Checks if `self` is `Data`.
-    #[must_use]
-    pub fn is_data(self) -> bool {
-        match self {
-            Self::Data { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `FrontSide`.
-    #[must_use]
-    pub fn is_front_side(self) -> bool {
-        match self {
-            Self::FrontSide { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `ReverseSide`.
-    #[must_use]
-    pub fn is_reverse_side(self) -> bool {
-        match self {
-            Self::ReverseSide { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Selfie`.
-    #[must_use]
-    pub fn is_selfie(self) -> bool {
-        match self {
-            Self::Selfie { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `File`.
-    #[must_use]
-    pub fn is_file(self) -> bool {
-        match self {
-            Self::File { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Files`.
-    #[must_use]
-    pub fn is_files(self) -> bool {
-        match self {
-            Self::Files { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `TranslationFile`.
-    #[must_use]
-    pub fn is_translation_file(self) -> bool {
-        match self {
-            Self::TranslationFile { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `TranslationFiles`.
-    #[must_use]
-    pub fn is_translation_files(self) -> bool {
-        match self {
-            Self::TranslationFiles { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Unspecified`.
-    #[must_use]
-    pub fn is_unspecified(self) -> bool {
-        match self {
-            Self::Unspecified { .. } => true,
-            _ => false,
-        }
-    }
 }
 
 impl<'a> From<Data<'a>> for Source<'a> {

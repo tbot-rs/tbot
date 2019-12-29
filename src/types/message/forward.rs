@@ -2,9 +2,10 @@
 
 use super::Id;
 use crate::types::{Chat, User};
+use is_macro::Is;
 
 /// Represents a forward source.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Is)]
 #[non_exhaustive]
 pub enum From {
     /// The forward is from a user.
@@ -31,33 +32,4 @@ pub struct Forward {
     pub from: From,
     /// The timestamp of the original message.
     pub date: i64,
-}
-
-impl From {
-    /// Checks if `self` is `User`.
-    #[must_use]
-    pub fn is_user(&self) -> bool {
-        match self {
-            Self::User(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Hidden`.
-    #[must_use]
-    pub fn is_hidden_user(&self) -> bool {
-        match self {
-            Self::HiddenUser(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Channel`.
-    #[must_use]
-    pub fn is_channel(&self) -> bool {
-        match self {
-            Self::Channel { .. } => true,
-            _ => false,
-        }
-    }
 }

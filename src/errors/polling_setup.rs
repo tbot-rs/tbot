@@ -1,9 +1,10 @@
 use super::MethodCall;
+use is_macro::Is;
 use tokio::time::Elapsed;
 
 /// Reperesents possible errors that may happen during preparation of the
 /// polling event loop.
-#[derive(Debug)]
+#[derive(Debug, Is)]
 pub enum PollingSetup {
     /// Calling `DeleteWebhook` resulted in an error.
     DeleteWebhook(MethodCall),
@@ -11,25 +12,6 @@ pub enum PollingSetup {
     DeleteWebhookTimeout(Elapsed),
 }
 
-impl PollingSetup {
-    /// Checks if `self` is `DeleteWebhook`.
-    #[must_use]
-    pub fn is_delete_webhook(&self) -> bool {
-        match self {
-            Self::DeleteWebhook(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `DeleteWebhookTimeout`.
-    #[must_use]
-    pub fn is_delete_webhook_timeout(&self) -> bool {
-        match self {
-            Self::DeleteWebhookTimeout(..) => true,
-            _ => false,
-        }
-    }
-}
 impl From<MethodCall> for PollingSetup {
     #[must_use]
     fn from(error: MethodCall) -> Self {

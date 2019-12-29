@@ -4,6 +4,7 @@ use super::{
     callback, shipping, ChosenInlineResult, InlineQuery, Message, Poll,
     PreCheckoutQuery,
 };
+use is_macro::Is;
 use serde::{
     de::{Deserializer, Error, IgnoredAny, MapAccess, Visitor},
     Deserialize,
@@ -16,7 +17,7 @@ use std::fmt::{self, Formatter};
 pub struct Id(pub isize);
 
 /// Represents different types of updates from Telegram.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Is)]
 // In fact, the large-sized variants are more common than the small-sized ones,
 // so I think it's better not to box them.
 #[allow(clippy::large_enum_variant)]
@@ -54,98 +55,6 @@ pub struct Update {
     pub id: Id,
     /// The kind of the update.
     pub kind: Kind,
-}
-
-impl Kind {
-    /// Checks if `self` is `Message`.
-    #[must_use]
-    pub fn is_message(&self) -> bool {
-        match self {
-            Self::Message(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `EditedMessage`.
-    #[must_use]
-    pub fn is_edited_message(&self) -> bool {
-        match self {
-            Self::EditedMessage(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `ChannelPost`.
-    #[must_use]
-    pub fn is_channel_post(&self) -> bool {
-        match self {
-            Self::ChannelPost(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `EditedChannelPost`.
-    #[must_use]
-    pub fn is_edited_channel_post(&self) -> bool {
-        match self {
-            Self::EditedChannelPost(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `InlineQuery`.
-    #[must_use]
-    pub fn is_inline_query(&self) -> bool {
-        match self {
-            Self::InlineQuery(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `CallbackQuery`.
-    #[must_use]
-    pub fn is_callback_query(&self) -> bool {
-        match self {
-            Self::CallbackQuery(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Poll`.
-    #[must_use]
-    pub fn is_poll(&self) -> bool {
-        match self {
-            Self::Poll(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `ChosenInlineResult`.
-    #[must_use]
-    pub fn is_chosen_inline_result(&self) -> bool {
-        match self {
-            Self::ChosenInlineResult(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `ShippingQuery`.
-    #[must_use]
-    pub fn is_shipping_query(&self) -> bool {
-        match self {
-            Self::ShippingQuery(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `PreCheckoutQuery`.
-    #[must_use]
-    pub fn is_pre_checkout_query(&self) -> bool {
-        match self {
-            Self::PreCheckoutQuery(..) => true,
-            _ => false,
-        }
-    }
 }
 
 const UPDATE_ID: &str = "update_id";

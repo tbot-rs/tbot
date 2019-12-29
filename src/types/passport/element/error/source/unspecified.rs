@@ -1,9 +1,10 @@
 //! Types related to unspecified errors.
 
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible element kinds for unspecified error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
@@ -45,86 +46,6 @@ pub struct Unspecified<'a> {
     #[serde(rename = "type")]
     kind: Kind,
     element_hash: &'a str,
-}
-
-impl Kind {
-    /// Checks if `self` is `PersonalDetails`.
-    #[must_use]
-    pub fn is_personal_details(self) -> bool {
-        self == Self::PersonalDetails
-    }
-
-    /// Checks if `self` is `Passport`.
-    #[must_use]
-    pub fn is_passport(self) -> bool {
-        self == Self::Passport
-    }
-
-    /// Checks if `self` is ` DriverLicense`.
-    #[must_use]
-    pub fn is_driver_license(self) -> bool {
-        self == Self::DriverLicense
-    }
-
-    /// Checks if `self` is `IdentityCard`.
-    #[must_use]
-    pub fn is_identity_card(self) -> bool {
-        self == Self::IdentityCard
-    }
-
-    /// Checks if `self` is `InternalPassport`.
-    #[must_use]
-    pub fn is_internal_passport(self) -> bool {
-        self == Self::InternalPassport
-    }
-
-    /// Checks if `self` is `Address`.
-    #[must_use]
-    pub fn is_address(self) -> bool {
-        self == Self::Address
-    }
-
-    /// Checks if `self` is `UtilityBill`.
-    #[must_use]
-    pub fn is_utility_bill(self) -> bool {
-        self == Self::UtilityBill
-    }
-
-    /// Checks if `self` is `BankStatement`.
-    #[must_use]
-    pub fn is_bank_statement(self) -> bool {
-        self == Self::BankStatement
-    }
-
-    /// Checks if `self` is `RentalAgreement`.
-    #[must_use]
-    pub fn is_rental_agreement(self) -> bool {
-        self == Self::RentalAgreement
-    }
-
-    /// Checks if `self` is `PassportRegistration`.
-    #[must_use]
-    pub fn is_passport_registration(self) -> bool {
-        self == Self::PassportRegistration
-    }
-
-    /// Checks if `self` is `TemporaryRegistration`.
-    #[must_use]
-    pub fn is_temporary_registration(self) -> bool {
-        self == Self::TemporaryRegistration
-    }
-
-    /// Checks if `self` is `PhoneNumber`.
-    #[must_use]
-    pub fn is_phone_number(self) -> bool {
-        self == Self::PhoneNumber
-    }
-
-    /// Checks if `self` is `Email`.
-    #[must_use]
-    pub fn is_email(self) -> bool {
-        self == Self::Email
-    }
 }
 
 impl<'a> Unspecified<'a> {

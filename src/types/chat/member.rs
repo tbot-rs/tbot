@@ -1,12 +1,13 @@
 //! Types representing a chat member.
 
 use crate::types::User;
+use is_macro::Is;
 use serde::de::{
     Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
 };
 
 /// Represents the status of a member.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[non_exhaustive]
 pub enum Status {
     /// The user is the creator of the chat.
@@ -79,53 +80,6 @@ pub struct Member {
     pub user: User,
     /// Status of the member.
     pub status: Status,
-}
-
-impl Status {
-    /// Checks if `self` is `Creator`.
-    #[must_use]
-    pub fn is_creator(&self) -> bool {
-        *self == Self::Creator
-    }
-
-    /// Checks if `self` is `Administrator`.
-    #[must_use]
-    pub fn is_administator(&self) -> bool {
-        match self {
-            Self::Administator { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Member`.
-    #[must_use]
-    pub fn is_member(&self) -> bool {
-        *self == Self::Member
-    }
-
-    /// Checks if `self` is `Restricted`.
-    #[must_use]
-    pub fn is_restricted(&self) -> bool {
-        match self {
-            Self::Restricted { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Left`.
-    #[must_use]
-    pub fn is_left(&self) -> bool {
-        *self == Self::Left
-    }
-
-    /// Checks if `self` is `Kicked`.
-    #[must_use]
-    pub fn is_kicked(&self) -> bool {
-        match self {
-            Self::Kicked { .. } => true,
-            _ => false,
-        }
-    }
 }
 
 const USER: &str = "user";

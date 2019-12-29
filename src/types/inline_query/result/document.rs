@@ -7,10 +7,11 @@ use crate::types::{
     parameters::{ParseMode, Text},
     InputMessageContent,
 };
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible MIME types for a fresh document.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum MimeType {
@@ -62,20 +63,6 @@ pub struct Document<'a> {
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
-}
-
-impl MimeType {
-    /// Checks if the MIME type is `application/pdf`.
-    #[must_use]
-    pub fn is_pdf(self) -> bool {
-        self == Self::ApplicationPdf
-    }
-
-    /// Checks if the MIME type is `application/zip`.
-    #[must_use]
-    pub fn is_zip(self) -> bool {
-        self == Self::ApplicationZip
-    }
 }
 
 impl<'a> Fresh<'a> {

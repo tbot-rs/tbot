@@ -1,11 +1,12 @@
 use crate::types::chat;
+use is_macro::Is;
 use std::{
     error::Error,
     fmt::{self, Display, Formatter},
 };
 
 /// Represents possible errors that may happen during a method call.
-#[derive(Debug)]
+#[derive(Debug, Is)]
 pub enum MethodCall {
     /// A network error.
     Network(hyper::Error),
@@ -30,44 +31,6 @@ pub enum MethodCall {
         /// after the following amount of seconds.
         retry_after: Option<u64>,
     },
-}
-
-impl MethodCall {
-    /// Checks if `self` is `Network`.
-    #[must_use]
-    pub fn is_network(&self) -> bool {
-        match self {
-            Self::Network(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `OutOfService`.
-    #[must_use]
-    pub fn is_out_of_service(&self) -> bool {
-        match self {
-            Self::OutOfService => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Parse`.
-    #[must_use]
-    pub fn is_parse(&self) -> bool {
-        match self {
-            Self::Parse { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `RequestError`.
-    #[must_use]
-    pub fn is_request_error(&self) -> bool {
-        match self {
-            Self::RequestError { .. } => true,
-            _ => false,
-        }
-    }
 }
 
 impl Display for MethodCall {
