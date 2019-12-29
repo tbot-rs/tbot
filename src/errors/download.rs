@@ -5,7 +5,7 @@ use std::{
     fmt::{self, Display, Formatter},
 };
 
-/// Represents possible errors whic may occur while downloading a file.
+/// Represents possible errors which may occur while downloading a file.
 #[derive(Debug, Is)]
 pub enum Download {
     /// The provided file had the `path` field set to `None`.
