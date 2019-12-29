@@ -1,8 +1,9 @@
 use super::{inline, reply, ForceReply};
+use is_macro::Is;
 use serde::Serialize;
 
 /// An enum of possible keyboards.
-#[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
@@ -15,44 +16,6 @@ pub enum Any<'a> {
     RemoveReply(reply::Remove),
     /// Forces reply.
     ForceReply(ForceReply),
-}
-
-impl Any<'_> {
-    /// Checks if `self` is `Inline`.
-    #[must_use]
-    pub fn is_inline(&self) -> bool {
-        match self {
-            Any::Inline(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Reply`.
-    #[must_use]
-    pub fn is_reply(&self) -> bool {
-        match self {
-            Any::Reply(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `RemoveReply`.
-    #[must_use]
-    pub fn is_remove_reply(&self) -> bool {
-        match self {
-            Any::RemoveReply(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `ForceReply`.
-    #[must_use]
-    pub fn is_force_reply(&self) -> bool {
-        match self {
-            Any::ForceReply(..) => true,
-            _ => false,
-        }
-    }
 }
 
 impl<'a> From<inline::Keyboard<'a>> for Any<'a> {

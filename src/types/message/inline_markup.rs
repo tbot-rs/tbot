@@ -7,6 +7,7 @@
 //! without references.
 
 use crate::types::callback::Game;
+use is_macro::Is;
 use serde::de::{
     self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor,
 };
@@ -20,7 +21,7 @@ pub type Markup = Vec<Vec<Button>>;
 /// Complete descriptions can be found in [Bots API docs][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum ButtonKind {
     /// Represents a URL button.
@@ -35,64 +36,6 @@ pub enum ButtonKind {
     CallbackGame(Game),
     /// if `true`, a pay button.
     Pay(bool),
-}
-
-impl ButtonKind {
-    /// Checks if `self` is `Url`.
-    #[must_use]
-    pub fn is_url(&self) -> bool {
-        match self {
-            Self::Url(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `CallbackData`.
-    #[must_use]
-    pub fn is_callback_data(&self) -> bool {
-        match self {
-            Self::CallbackData(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `SwitchInlineQuery`.
-    #[must_use]
-    pub fn is_switch_inline_query(&self) -> bool {
-        match self {
-            Self::SwitchInlineQuery(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `SwitchInlineQueryCurrentChat`.
-    #[must_use]
-    pub fn is_switch_inline_query_current_chat(&self) -> bool {
-        // what a name
-
-        match self {
-            Self::SwitchInlineQueryCurrentChat(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `CallbackGame`.
-    #[must_use]
-    pub fn is_callback_game(&self) -> bool {
-        match self {
-            Self::CallbackGame(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Pay`.
-    #[must_use]
-    pub fn is_pay(&self) -> bool {
-        match self {
-            Self::Pay(..) => true,
-            _ => false,
-        }
-    }
 }
 
 /// Represents an [`InlineKeyboardButton`].

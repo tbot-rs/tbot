@@ -1,13 +1,14 @@
 //! Types related to callback queries.
 
 use crate::types::{Message, User};
+use is_macro::Is;
 
 pub mod id;
 
 pub use id::Id;
 
 /// Represents the origin of the callback.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Is)]
 #[non_exhaustive]
 pub enum Origin {
     /// The callback comes from this message.
@@ -17,7 +18,7 @@ pub enum Origin {
 }
 
 /// Represents the kind of the callback.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// The callback is sent with some data.
@@ -42,46 +43,6 @@ pub struct Query {
     pub chat_instance: String,
     /// The kind of the callback.
     pub kind: Kind,
-}
-
-impl Origin {
-    /// Checks if `self` is `Message`.
-    #[must_use]
-    pub fn is_message(&self) -> bool {
-        match self {
-            Self::Message(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Inline`.
-    #[must_use]
-    pub fn is_inline(&self) -> bool {
-        match self {
-            Self::Inline(..) => true,
-            _ => false,
-        }
-    }
-}
-
-impl Kind {
-    /// Checks if `self` is `Data`.
-    #[must_use]
-    pub fn is_data(&self) -> bool {
-        match self {
-            Self::Data(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Game`.
-    #[must_use]
-    pub fn is_game(&self) -> bool {
-        match self {
-            Self::Game(..) => true,
-            _ => false,
-        }
-    }
 }
 
 const ID: &str = "id";

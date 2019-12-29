@@ -1,9 +1,12 @@
 //! Types representing a mask position.
 
+use is_macro::Is;
 use serde::{Deserialize, Serialize};
 
 /// Represents where the mask is placed.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
+#[derive(
+    Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize, Is,
+)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub enum Point {
@@ -31,30 +34,4 @@ pub struct MaskPosition {
     pub y_shift: f64,
     /// The scale of the mask.
     pub scale: f64,
-}
-
-impl Point {
-    /// Checks if `self` is `Forehead`.
-    #[must_use]
-    pub fn is_forehead(self) -> bool {
-        self == Self::Forehead
-    }
-
-    /// Checks if `self` is `Eyes`.
-    #[must_use]
-    pub fn is_eyes(self) -> bool {
-        self == Self::Eyes
-    }
-
-    /// Checks if `self` is `Mouth`.
-    #[must_use]
-    pub fn is_mouth(self) -> bool {
-        self == Self::Mouth
-    }
-
-    /// Checks if `self` is `Chin`.
-    #[must_use]
-    pub fn is_chin(self) -> bool {
-        self == Self::Chin
-    }
 }

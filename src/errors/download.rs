@@ -1,11 +1,12 @@
 use hyper::StatusCode;
+use is_macro::Is;
 use std::{
     error::Error,
     fmt::{self, Display, Formatter},
 };
 
 /// Represents possible errors whic may occur while downloading a file.
-#[derive(Debug)]
+#[derive(Debug, Is)]
 pub enum Download {
     /// The provided file had the `path` field set to `None`.
     NoPath,
@@ -13,35 +14,6 @@ pub enum Download {
     Network(hyper::Error),
     /// Telegram returned a different from 200 status code.
     InvalidStatusCode(StatusCode),
-}
-
-impl Download {
-    /// Checks if `self` is `NoPath`.
-    #[must_use]
-    pub fn is_no_path(&self) -> bool {
-        match self {
-            Self::NoPath => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Network`.
-    #[must_use]
-    pub fn is_network(&self) -> bool {
-        match self {
-            Self::Network(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `InvalidStatusCode`.
-    #[must_use]
-    pub fn is_invalid_status_code(&self) -> bool {
-        match self {
-            Self::InvalidStatusCode(..) => true,
-            _ => false,
-        }
-    }
 }
 
 impl Display for Download {

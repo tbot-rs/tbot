@@ -4,6 +4,7 @@ use super::{
     file::{self, id::AsFileId},
     PhotoSize,
 };
+use is_macro::Is;
 use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
 use std::fmt::{self, Formatter};
 
@@ -15,7 +16,7 @@ pub use {mask_position::MaskPosition, set::Set};
 /// Represents different kinds of a [`Sticker`].
 ///
 /// [`Sticker`]: ./struct.Sticker.html
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// The sticker is neither animated nor a mask.
@@ -48,29 +49,6 @@ pub struct Sticker {
     pub file_size: Option<u32>,
     /// The kind of the sticker.
     pub kind: Kind,
-}
-
-impl Kind {
-    /// Checks if `self` is `Plain`.
-    #[must_use]
-    pub fn is_plain(self) -> bool {
-        self == Self::Plain
-    }
-
-    /// Checks if `self` is `Animated`.
-    #[must_use]
-    pub fn is_animated(self) -> bool {
-        self == Self::Animated
-    }
-
-    /// Checks if `self` is `Mask`.
-    #[must_use]
-    pub fn is_mask(self) -> bool {
-        match self {
-            Self::Mask(..) => true,
-            _ => false,
-        }
-    }
 }
 
 impl crate::internal::Sealed for Sticker {}

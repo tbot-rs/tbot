@@ -1,9 +1,10 @@
 //! Types related to selfie errors.
 
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible element kinds for selfie error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
@@ -16,32 +17,6 @@ pub enum Kind {
     IdentityCard,
     /// An error in the user's internal passport.
     InternalPassport,
-}
-
-impl Kind {
-    /// Checks if `self` is `Passport`.
-    #[must_use]
-    pub fn is_passport(self) -> bool {
-        self == Self::Passport
-    }
-
-    /// Checks if `self` is `DriverLicense`.
-    #[must_use]
-    pub fn is_driver_license(self) -> bool {
-        self == Self::DriverLicense
-    }
-
-    /// Checks if `self` is `IdentityCard`.
-    #[must_use]
-    pub fn is_identity_card(self) -> bool {
-        self == Self::IdentityCard
-    }
-
-    /// Checks if `self` is `InternalPassport`.
-    #[must_use]
-    pub fn is_internal_passport(self) -> bool {
-        self == Self::InternalPassport
-    }
 }
 
 /// Represents a [`PassportElementErrorSelfie`][docs].

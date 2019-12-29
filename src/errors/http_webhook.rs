@@ -1,4 +1,5 @@
 use crate::errors::MethodCall;
+use is_macro::Is;
 use std::{
     error::Error,
     fmt::{self, Display, Formatter},
@@ -6,7 +7,7 @@ use std::{
 use tokio::time::Elapsed;
 
 /// Represents possible errors that a webhook server may return.
-#[derive(Debug)]
+#[derive(Debug, Is)]
 pub enum HttpWebhook {
     /// An error during setting the webhook.
     SetWebhook(MethodCall),
@@ -14,35 +15,6 @@ pub enum HttpWebhook {
     SetWebhookTimeout(Elapsed),
     /// An error while running the server.
     Server(hyper::Error),
-}
-
-impl HttpWebhook {
-    /// Checks if `self` is `SetWebhook`.
-    #[must_use]
-    pub fn is_set_webhook(&self) -> bool {
-        match self {
-            Self::SetWebhook(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `SetWebhookTimeout`.
-    #[must_use]
-    pub fn is_set_webhook_timeout(&self) -> bool {
-        match self {
-            Self::SetWebhookTimeout(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Server`.
-    #[must_use]
-    pub fn is_server(&self) -> bool {
-        match self {
-            Self::Server(..) => true,
-            _ => false,
-        }
-    }
 }
 
 impl Display for HttpWebhook {

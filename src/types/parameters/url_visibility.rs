@@ -1,5 +1,7 @@
+use is_macro::Is;
+
 /// Represent URL visibility state.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum UrlVisibility {
@@ -7,18 +9,4 @@ pub enum UrlVisibility {
     Shown,
     /// The URL is hidden.
     Hidden,
-}
-
-impl UrlVisibility {
-    /// Checks if the visibility is set to `Shown`.
-    #[must_use]
-    pub fn is_shown(self) -> bool {
-        self == Self::Shown
-    }
-
-    /// Checks if the visibility is set to `Hidden`.
-    #[must_use]
-    pub fn is_hidden(self) -> bool {
-        self == Self::Hidden
-    }
 }

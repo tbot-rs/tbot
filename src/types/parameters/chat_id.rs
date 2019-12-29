@@ -1,8 +1,9 @@
 use crate::types::{chat, user};
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents possible ways to specify the destination chat.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
@@ -11,26 +12,6 @@ pub enum ChatId<'a> {
     Id(chat::Id),
     /// The `@username` of a chat.
     Username(&'a str),
-}
-
-impl ChatId<'_> {
-    /// Checks if `self` is `Id`.
-    #[must_use]
-    pub fn is_id(self) -> bool {
-        match self {
-            ChatId::Id(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Username`.
-    #[must_use]
-    pub fn is_username(self) -> bool {
-        match self {
-            ChatId::Username(..) => true,
-            _ => false,
-        }
-    }
 }
 
 impl<'a> From<i64> for ChatId<'a> {

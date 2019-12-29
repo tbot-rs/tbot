@@ -1,7 +1,8 @@
 use crate::types::{chat, Message};
+use is_macro::Is;
 
 /// Represents the kind of a chat.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// The chat is private.
@@ -68,42 +69,4 @@ pub enum Kind {
         /// The pinned message of the channel.
         pinned_message: Option<Box<Message>>,
     },
-}
-
-impl Kind {
-    /// Checks if `self` is `Private`.
-    #[must_use]
-    pub fn is_private(&self) -> bool {
-        match self {
-            Self::Private { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Group`.
-    #[must_use]
-    pub fn is_group(&self) -> bool {
-        match self {
-            Self::Group { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Supergroup`.
-    #[must_use]
-    pub fn is_supergroup(&self) -> bool {
-        match self {
-            Self::Supergroup { .. } => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Channel`.
-    #[must_use]
-    pub fn is_channel(&self) -> bool {
-        match self {
-            Self::Channel { .. } => true,
-            _ => false,
-        }
-    }
 }

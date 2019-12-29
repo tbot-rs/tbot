@@ -1,8 +1,9 @@
 use super::{Animation, Audio, Document, Photo, Video};
+use is_macro::Is;
 use serde::Serialize;
 
 /// Represents media that can be used to edit a message.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
@@ -27,51 +28,6 @@ impl EditableMedia<'_> {
             EditableMedia::Document(..) => "document",
             EditableMedia::Photo(..) => "photo",
             EditableMedia::Video(..) => "video",
-        }
-    }
-
-    /// Checks if `self` is `Animation`.
-    #[must_use]
-    pub fn is_animation(&self) -> bool {
-        match self {
-            EditableMedia::Animation(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Audio`.
-    #[must_use]
-    pub fn is_audio(&self) -> bool {
-        match self {
-            EditableMedia::Audio(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Document`.
-    #[must_use]
-    pub fn is_document(&self) -> bool {
-        match self {
-            EditableMedia::Document(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Photo`.
-    #[must_use]
-    pub fn is_photo(&self) -> bool {
-        match self {
-            EditableMedia::Photo(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Video`.
-    #[must_use]
-    pub fn is_video(&self) -> bool {
-        match self {
-            EditableMedia::Video(..) => true,
-            _ => false,
         }
     }
 }

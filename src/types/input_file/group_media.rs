@@ -1,11 +1,12 @@
 use super::{Photo, Video};
+use is_macro::Is;
 use serde::{
     ser::{SerializeSeq, Serializer},
     Serialize,
 };
 
 /// Represents a media that can be sent in a group (aka albums).
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum GroupMedia<'a> {
@@ -24,24 +25,6 @@ struct WithIndex<'a> {
 pub(crate) struct Album<'a>(pub &'a [GroupMedia<'a>]);
 
 impl GroupMedia<'_> {
-    /// Checks if `self` is `Photo`.
-    #[must_use]
-    pub fn is_photo(&self) -> bool {
-        match self {
-            GroupMedia::Photo(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Video`.
-    #[must_use]
-    pub fn is_video(&self) -> bool {
-        match self {
-            GroupMedia::Video(..) => true,
-            _ => false,
-        }
-    }
-
     fn serialize<S>(
         &self,
         serializer: S,

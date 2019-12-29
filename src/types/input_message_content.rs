@@ -1,5 +1,6 @@
 //! Types related to input message contents.
 
+use is_macro::Is;
 use serde::Serialize;
 
 mod contact;
@@ -12,7 +13,7 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 /// Represents [`InputMessageContext`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 pub enum InputMessageContent<'a> {
@@ -24,44 +25,6 @@ pub enum InputMessageContent<'a> {
     Venue(Venue<'a>),
     /// A contact.
     Contact(Contact<'a>),
-}
-
-impl InputMessageContent<'_> {
-    /// Checks if `self` is `Text`.
-    #[must_use]
-    pub fn is_text(self) -> bool {
-        match self {
-            InputMessageContent::Text(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Location`.
-    #[must_use]
-    pub fn is_location(self) -> bool {
-        match self {
-            InputMessageContent::Location(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Venue`.
-    #[must_use]
-    pub fn is_venue(self) -> bool {
-        match self {
-            InputMessageContent::Venue(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Contact.`
-    #[must_use]
-    pub fn is_contact(self) -> bool {
-        match self {
-            InputMessageContent::Contact(..) => true,
-            _ => false,
-        }
-    }
 }
 
 impl<'a> From<Text<'a>> for InputMessageContent<'a> {
