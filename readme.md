@@ -24,52 +24,57 @@ async fn main() {
 }
 ```
 
+There are many examples in the [`examples`] directory to see `tbot` in action.
+If you want to see real-world use of `tbot`, check out [this list][projects].
+
 If you're a newcomer, we recommend you go through the [tutorial] first. We also
-have several [How-to guides][how-to] to help you use `tbot`.
+have several [How-to guides][how-to] to help you use `tbot`. You can always
+refer to our API docs on [_docs.rs_][api-docs] (also, docs for `master`
+are available [here][master-docs]).
 
 If you have a question, ask it in [our group] on Telegram. If you find a bug,
-fill an issue on either our [GitLab] or [GitHub] repository.
+file an issue on either our [GitLab] or [GitHub] repository.
 
 > **Important note:** `tbot` v0.3's minimum supported Rust version is 1.40
 > due to use of `#[non_exhaustive]`.
 
+[`examples`]: ./examples/
+[projects]: https://gitlab.com/SnejUgal/tbot/-/wikis/Projects-built-with-tbot
+
+[tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
+[how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
+[api-docs]: https://docs.rs/tbot
+[master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
+
+[our group]: https://t.me/tbot_group
+[gitlab]: https://gitlab.com/SnejUgal/tbot
+[github]: https://github.com/SnejUgal/tbot
+
 ## Features
 
-- Full Bots API support, including media upload/download and recent API updates;
-- Support for both polling and [webhooks];
-- Type-safe API;
-- Based on futures and `tokio`;
+- Full Bot API v4.4 support, including media download/upload, polling
+  and [webhooks];
+- `async`/`.await` support, built upon `tokio`;
+- Type-safe and idiomatic API;
 - Easy to use, while scalable and configurable.
 
-## Installing
+[webhooks]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
 
-Add `tbot` to your Cargo.toml:
+## Installation
+
+Add `tbot` and `tokio` to your Cargo.toml:
 
 ```toml
 [dependencies]
 tbot = "0.3"
+tokio = { version = "0.2", features = ["macros"] }
 ```
 
-## Documentation
-
-There are many examples in the [`examples`] directory to see `tbot` in action.
-If you want to get started with `tbot`, go through the [tutorial]. When you
-start making your bot, our [How-to guides][how-to] may help you. And you can
-always refer to our API docs on [_docs.rs_][api-docs] (docs for `master` are
-also available [here][master-docs]).
+`tokio` is required to start the runtime. You'll also need the `macros` feature
+of `tokio` if you're going to start the runtime using `#[tokio::main]`.
 
 ## Contribution
 
-Glad you want to contribute to `tbot`! We develop the crate on [GitLab], so
-create your pull/merge request there if you can. We accept pull requests on
-[GitHub] as well, but we prefer [GitLab].
-
-[our group]: https://t.me/tbot_group
-[webhooks]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
-[tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
-[how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
-[gitlab]: https://gitlab.com/SnejUgal/tbot
-[github]: https://github.com/SnejUgal/tbot
-[`examples`]: ./examples/
-[api-docs]: https://docs.rs/tbot
-[master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
+Glad you want to contribute to `tbot`! We develop the crate on [GitLab],
+so create your merge request there if you can. We may accept pull requests
+on [GitHub] as well, but we prefer [GitLab].
