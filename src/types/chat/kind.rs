@@ -45,6 +45,11 @@ pub enum Kind {
         invite_link: Option<String>,
         /// The pinned message of the supergroup.
         pinned_message: Option<Box<Message>>,
+        /// The minimum allowed delay between messages in the supergroup.
+        /// in [`GetChat`].
+        ///1
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        slow_mode_delay: Option<u64>,
         /// The name of the sticker set of the supergroup.
         sticker_set_name: Option<String>,
         /// `true` if the bot can set the sticker set of the supergroup.
