@@ -39,6 +39,7 @@ const PHOTO: &str = "photo";
 const DESCRIPTION: &str = "description";
 const INIVITE_LINK: &str = "invite_link";
 const PINNED_MESSAGE: &str = "pinned_message";
+const SLOW_MODE_DELAY: &str = "slow_mode_delay";
 const STICKER_SET_NAME: &str = "sticker_set_name";
 const CAN_SET_STICKER_SET: &str = "can_set_sticker_set";
 
@@ -71,6 +72,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
         let mut description = None;
         let mut invite_link = None;
         let mut pinned_message = None;
+        let mut slow_mode_delay = None;
         let mut sticker_set_name = None;
         let mut can_set_sticker_set = None;
 
@@ -87,6 +89,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 DESCRIPTION => description = Some(map.next_value()?),
                 INIVITE_LINK => invite_link = Some(map.next_value()?),
                 PINNED_MESSAGE => pinned_message = Some(map.next_value()?),
+                SLOW_MODE_DELAY => slow_mode_delay = Some(map.next_value()?),
                 STICKER_SET_NAME => sticker_set_name = Some(map.next_value()?),
                 CAN_SET_STICKER_SET => {
                     can_set_sticker_set = Some(map.next_value()?)
@@ -120,6 +123,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 description,
                 invite_link,
                 pinned_message,
+                slow_mode_delay,
                 sticker_set_name,
                 can_set_sticker_set,
                 permissions,
