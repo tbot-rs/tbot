@@ -12,6 +12,8 @@ use serde::Deserialize;
 pub struct VideoNote {
     /// The file ID of the video note.
     pub file_id: file::Id,
+    /// The unique ID of the video note.
+    pub file_unique_id: String,
     /// The length of the video note.
     pub length: u32,
     /// The duration of the video note.

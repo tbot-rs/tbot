@@ -35,6 +35,8 @@ pub enum Kind {
 pub struct Sticker {
     /// The file ID of the sticker.
     pub file_id: file::Id,
+    /// The unique ID of the sticker.
+    pub file_unique_id: String,
     /// The width of the sticker.
     pub width: u32,
     /// The height of the sticker.
@@ -61,6 +63,7 @@ impl AsFileId for Sticker {
 }
 
 const FILE_ID: &str = "file_id";
+const FILE_UNIQUE_ID: &str = "file_unique_id";
 const WIDTH: &str = "width";
 const HEIGHT: &str = "height";
 const IS_ANIMATED: &str = "is_animated";
@@ -84,6 +87,7 @@ impl<'v> Visitor<'v> for StickerVisitor {
         V: MapAccess<'v>,
     {
         let mut file_id = None;
+        let mut file_unique_id = None;
         let mut width = None;
         let mut height = None;
         let mut is_animated = None;
@@ -96,6 +100,7 @@ impl<'v> Visitor<'v> for StickerVisitor {
         while let Some(key) = map.next_key()? {
             match key {
                 FILE_ID => file_id = Some(map.next_value()?),
+                FILE_UNIQUE_ID => file_unique_id = Some(map.next_value()?),
                 WIDTH => width = Some(map.next_value()?),
                 HEIGHT => height = Some(map.next_value()?),
                 IS_ANIMATED => is_animated = Some(map.next_value()?),
@@ -121,6 +126,8 @@ impl<'v> Visitor<'v> for StickerVisitor {
         Ok(Sticker {
             file_id: file_id
                 .ok_or_else(|| serde::de::Error::missing_field(FILE_ID))?,
+            file_unique_id: file_unique_id
+                .ok_or_else(|| serde::de::Error::missing_field(FILE_UNIQUE_ID))?,
             width: width
                 .ok_or_else(|| serde::de::Error::missing_field(WIDTH))?,
             height: height

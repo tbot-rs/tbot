@@ -12,6 +12,8 @@ use serde::Deserialize;
 pub struct Audio {
     /// The file ID of the audio.
     pub file_id: file::Id,
+    /// The unique ID of the audio.
+    pub file_unique_id: String,
     /// The duration of the audio.
     pub duration: u32,
     /// The performer of the audio.

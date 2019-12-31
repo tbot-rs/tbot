@@ -9,6 +9,8 @@ use serde::Deserialize;
 pub struct PhotoSize {
     /// The file ID of the photo.
     pub file_id: file::Id,
+    /// The unique ID of the photo.
+    pub file_unique_id: String,
     /// The width of the photo.
     pub width: u32,
     /// The height of the photo.
