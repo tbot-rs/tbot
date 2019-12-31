@@ -1,6 +1,6 @@
 [package]
 name = "tbot"
-version = "0.3.0"
+version = "0.4.0"
 description = "Make cool Telegram bots with Rust easily."
 repository = "https://gitlab.com/SnejUgal/tbot"
 readme = "./readme.md"
