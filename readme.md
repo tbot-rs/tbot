@@ -35,9 +35,6 @@ are available [here][master-docs]).
 If you have a question, ask it in [our group] on Telegram. If you find a bug,
 file an issue on either our [GitLab] or [GitHub] repository.
 
-> **Important note:** `tbot` v0.3's minimum supported Rust version is 1.40
-> due to use of `#[non_exhaustive]`.
-
 [`examples`]: ./examples/
 [projects]: https://gitlab.com/SnejUgal/tbot/-/wikis/Projects-built-with-tbot
 
@@ -66,7 +63,7 @@ Add `tbot` and `tokio` to your Cargo.toml:
 
 ```toml
 [dependencies]
-tbot = "0.3"
+tbot = "0.4"
 tokio = { version = "0.2", features = ["macros"] }
 ```
 
