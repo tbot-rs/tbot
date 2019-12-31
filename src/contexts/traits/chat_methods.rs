@@ -461,7 +461,11 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
         user_id: user::Id,
         custom_title: &'a str,
     ) -> SetChatAdministratorCustomTitle<'a, C> {
-        self.bot().set_chat_administrator_custom_title(self.chat().id, user_id, custom_title)
+        self.bot().set_chat_administrator_custom_title(
+            self.chat().id,
+            user_id,
+            custom_title,
+        )
     }
 
     /// Sets a new description of this chat.

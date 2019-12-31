@@ -4,9 +4,9 @@ use crate::{
     errors,
     internal::Client,
     token,
-    types::{ 
-        user, 
-        parameters::{ChatId, ImplicitChatId}
+    types::{
+        parameters::{ChatId, ImplicitChatId},
+        user,
     },
 };
 use serde::Serialize;

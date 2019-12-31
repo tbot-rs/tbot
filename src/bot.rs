@@ -779,7 +779,13 @@ impl<C> Bot<C> {
         user_id: user::Id,
         custom_title: &'a str,
     ) -> SetChatAdministratorCustomTitle<'a, C> {
-        SetChatAdministratorCustomTitle::new(&self.client, self.token.as_ref(), chat_id, user_id, custom_title)
+        SetChatAdministratorCustomTitle::new(
+            &self.client,
+            self.token.as_ref(),
+            chat_id,
+            user_id,
+            custom_title,
+        )
     }
 
     /// Sets a chat's description.
