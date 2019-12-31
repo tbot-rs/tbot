@@ -9,6 +9,8 @@ use serde::Deserialize;
 pub struct Voice {
     /// The file ID of the voice.
     pub file_id: file::Id,
+    /// The unique ID of the voice.
+    pub file_unique_id: String,
     /// The duration of the voice.
     pub duration: u32,
     /// The MIME type of the voice.

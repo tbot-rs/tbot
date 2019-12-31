@@ -12,6 +12,8 @@ use serde::Deserialize;
 pub struct Animation {
     /// The file ID of the animation.
     pub file_id: file::Id,
+    /// The unique ID of the animation.
+    pub file_unique_id: String,
     /// The width of the animation.
     pub width: u32,
     /// The height of the animation.

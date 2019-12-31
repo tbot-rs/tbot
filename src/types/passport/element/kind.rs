@@ -7,6 +7,7 @@ use is_macro::Is;
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
+#[allow(clippy::large_enum_variant)]
 pub enum Kind {
     /// The user's personal details.
     PersonalDetails(String),

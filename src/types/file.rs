@@ -15,6 +15,9 @@ pub struct File {
     /// The ID of the file.
     #[serde(rename = "file_id")]
     pub id: Id,
+    /// The unique ID of the file.
+    #[serde(rename = "file_unique_id")]
+    pub unique_id: String,
     /// The size fo the file.
     #[serde(rename = "file_size")]
     pub size: Option<u32>,

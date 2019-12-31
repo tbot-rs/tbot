@@ -12,6 +12,8 @@ use serde::Deserialize;
 pub struct Document {
     /// The file ID of the document.
     pub file_id: file::Id,
+    /// The unique ID of the document.
+    pub file_unique_id: String,
     /// The thumb of the document.
     pub thumb: Option<PhotoSize>,
     /// The file name of the document.

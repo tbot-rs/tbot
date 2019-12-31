@@ -12,6 +12,8 @@ use serde::Deserialize;
 pub struct Video {
     /// The file ID of the video.
     pub file_id: file::Id,
+    /// The unique ID of the video.
+    pub file_unique_id: String,
     /// The width of the video.
     pub width: u32,
     /// The height of the video.
