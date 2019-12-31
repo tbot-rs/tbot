@@ -8,27 +8,24 @@ use is_macro::Is;
 
 /// Represents kinds of messages.
 #[derive(Debug, PartialEq, Clone, Is)]
-// It warns on SuccessfulPayment — we'll need to consider to box it when we
-// unraw payment types.
-#[allow(clippy::large_enum_variant)]
 #[non_exhaustive]
 pub enum Kind {
     /// A text message.
     Text(Text),
     /// An audio. The second item is the caption.
-    Audio(Audio, Text),
+    Audio(Box<Audio>, Text),
     /// A document. The second item is the caption.
-    Document(Document, Text),
+    Document(Box<Document>, Text),
     /// An invitation to play a game.
-    Game(Game),
+    Game(Box<Game>),
     /// A photo. The second item is the caption, the third one is
     /// `media_group_id`, i.e. this photo belongs to an album with this ID.
     Photo(Vec<PhotoSize>, Text, Option<String>),
     /// A sticker.
-    Sticker(Sticker),
+    Sticker(Box<Sticker>),
     /// A video. The second item is the caption, the third one is
     /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Video(Video, Text, Option<String>),
+    Video(Box<Video>, Text, Option<String>),
     /// A voice message. The second item is the caption.
     Voice(Voice, Text),
     /// A video note.
@@ -40,7 +37,7 @@ pub enum Kind {
     /// A venue.
     Venue(Venue),
     /// An animation. The second item is the caption.
-    Animation(Animation, Text),
+    Animation(Box<Animation>, Text),
     /// A poll.
     Poll(Poll),
     /// A service message about new chat members.
@@ -68,7 +65,7 @@ pub enum Kind {
     /// An invoice.
     Invoice(Invoice),
     /// A service message about a successful payment.
-    SuccessfulPayment(SuccessfulPayment),
+    SuccessfulPayment(Box<SuccessfulPayment>),
     /// A connected website.
     ConnectedWebsite(String),
     /// Passport data.
