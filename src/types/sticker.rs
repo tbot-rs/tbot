@@ -126,8 +126,9 @@ impl<'v> Visitor<'v> for StickerVisitor {
         Ok(Sticker {
             file_id: file_id
                 .ok_or_else(|| serde::de::Error::missing_field(FILE_ID))?,
-            file_unique_id: file_unique_id
-                .ok_or_else(|| serde::de::Error::missing_field(FILE_UNIQUE_ID))?,
+            file_unique_id: file_unique_id.ok_or_else(|| {
+                serde::de::Error::missing_field(FILE_UNIQUE_ID)
+            })?,
             width: width
                 .ok_or_else(|| serde::de::Error::missing_field(WIDTH))?,
             height: height
