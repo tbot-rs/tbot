@@ -772,6 +772,22 @@ impl<C> Bot<C> {
         SendVoice::new(&self.client, self.token.as_ref(), chat_id, voice)
     }
 
+    /// Sets a custom title for an admin in a chat.
+    pub fn set_chat_administrator_custom_title<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+        user_id: user::Id,
+        custom_title: &'a str,
+    ) -> SetChatAdministratorCustomTitle<'a, C> {
+        SetChatAdministratorCustomTitle::new(
+            &self.client,
+            self.token.as_ref(),
+            chat_id,
+            user_id,
+            custom_title,
+        )
+    }
+
     /// Sets a chat's description.
     pub fn set_chat_description<'a>(
         &'a self,

@@ -100,6 +100,7 @@ mod send_venue;
 mod send_video;
 mod send_video_note;
 mod send_voice;
+mod set_chat_administrator_custom_title;
 mod set_chat_description;
 mod set_chat_permissions;
 mod set_chat_photo;
@@ -157,6 +158,7 @@ pub use {
     send_message::SendMessage, send_photo::SendPhoto, send_poll::SendPoll,
     send_sticker::SendSticker, send_venue::SendVenue, send_video::SendVideo,
     send_video_note::SendVideoNote, send_voice::SendVoice,
+    set_chat_administrator_custom_title::SetChatAdministratorCustomTitle,
     set_chat_description::SetChatDescription,
     set_chat_permissions::SetChatPermissions, set_chat_photo::SetChatPhoto,
     set_chat_sticker_set::SetChatStickerSet, set_chat_title::SetChatTitle,
