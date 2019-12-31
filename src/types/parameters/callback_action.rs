@@ -1,3 +1,5 @@
+use is_macro::Is;
+
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
 /// Though you can consturct variants directly, there are convenient methods
@@ -8,7 +10,7 @@
 /// [`notification`]: #method.notification
 /// [`alert`]: #method.alert
 /// [`url`]: #method.url
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum CallbackAction<'a> {
     /// No action.
@@ -21,47 +23,23 @@ pub enum CallbackAction<'a> {
 
 impl<'a> CallbackAction<'a> {
     /// Constructs the `None` variant.
-    pub const fn none() -> Self {
+    pub const fn with_no_action() -> Self {
         CallbackAction::None
     }
 
     /// Constructs the `Text` variant that shows a simple notification.
-    pub fn notification(text: &'a str) -> Self {
+    pub fn with_notification(text: &'a str) -> Self {
         CallbackAction::Text(text, false)
     }
 
     /// Constructs the `Text` variant that shows an alert.
-    pub fn alert(text: &'a str) -> Self {
+    pub fn with_alert(text: &'a str) -> Self {
         CallbackAction::Text(text, true)
     }
 
     /// Constructs the `Url` variant.
-    pub fn url(url: &'a str) -> Self {
+    pub fn with_url(url: &'a str) -> Self {
         CallbackAction::Url(url)
-    }
-
-    /// Checks if `self` is `None`.
-    #[must_use]
-    pub fn is_none(self) -> bool {
-        self == Self::None
-    }
-
-    /// Checks if `self` is `Text`.
-    #[must_use]
-    pub fn is_text(self) -> bool {
-        match self {
-            Self::Text(..) => true,
-            _ => false,
-        }
-    }
-
-    /// Checks if `self` is `Url`.
-    #[must_use]
-    pub fn is_url(self) -> bool {
-        match self {
-            Self::Url(..) => true,
-            _ => false,
-        }
     }
 
     pub(crate) fn to_text(self) -> Option<&'a str> {
