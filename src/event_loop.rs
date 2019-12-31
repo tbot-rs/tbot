@@ -803,13 +803,13 @@ impl<C> EventLoop<C> {
                 if self.will_handle_animation() =>
             {
                 let context =
-                    contexts::Animation::new(bot, data, animation, caption);
+                    contexts::Animation::new(bot, data, *animation, caption);
                 self.run_animation_handlers(Arc::new(context));
             }
             message::Kind::Audio(audio, caption)
                 if self.will_handle_audio() =>
             {
-                let context = contexts::Audio::new(bot, data, audio, caption);
+                let context = contexts::Audio::new(bot, data, *audio, caption);
                 self.run_audio_handlers(Arc::new(context));
             }
             message::Kind::ChatPhotoDeleted
@@ -833,11 +833,11 @@ impl<C> EventLoop<C> {
                 if self.will_handle_document() =>
             {
                 let context =
-                    contexts::Document::new(bot, data, document, caption);
+                    contexts::Document::new(bot, data, *document, caption);
                 self.run_document_handlers(Arc::new(context));
             }
             message::Kind::Game(game) if self.will_handle_game() => {
-                let context = contexts::Game::new(bot, data, game);
+                let context = contexts::Game::new(bot, data, *game);
                 self.run_game_handlers(Arc::new(context));
             }
             message::Kind::GroupCreated if self.will_handle_created_group() => {
@@ -914,13 +914,13 @@ impl<C> EventLoop<C> {
                 self.run_poll_handlers(Arc::new(context));
             }
             message::Kind::Sticker(sticker) if self.will_handle_sticker() => {
-                let context = contexts::Sticker::new(bot, data, sticker);
+                let context = contexts::Sticker::new(bot, data, *sticker);
                 self.run_sticker_handlers(Arc::new(context));
             }
             message::Kind::SuccessfulPayment(payment)
                 if self.will_handle_payment() =>
             {
-                let context = contexts::Payment::new(bot, data, payment);
+                let context = contexts::Payment::new(bot, data, *payment);
                 self.run_payment_handlers(Arc::new(context));
             }
             message::Kind::Text(text) if is_command(&text) => {
@@ -955,7 +955,7 @@ impl<C> EventLoop<C> {
                 let context = contexts::Video::new(
                     bot,
                     data,
-                    video,
+                    *video,
                     caption,
                     media_group_id,
                 );
@@ -1038,7 +1038,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_edited_animation() =>
             {
                 let context = contexts::EditedAnimation::new(
-                    bot, data, edit_date, animation, caption,
+                    bot, data, edit_date, *animation, caption,
                 );
                 self.run_edited_animation_handlers(Arc::new(context));
             }
@@ -1046,7 +1046,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_edited_audio() =>
             {
                 let context = contexts::EditedAudio::new(
-                    bot, data, edit_date, audio, caption,
+                    bot, data, edit_date, *audio, caption,
                 );
                 self.run_edited_audio_handlers(Arc::new(context));
             }
@@ -1054,7 +1054,7 @@ impl<C> EventLoop<C> {
                 if self.will_handle_edited_document() =>
             {
                 let context = contexts::EditedDocument::new(
-                    bot, data, edit_date, document, caption,
+                    bot, data, edit_date, *document, caption,
                 );
                 self.run_edited_document_handlers(Arc::new(context));
             }
@@ -1112,7 +1112,7 @@ impl<C> EventLoop<C> {
                     bot,
                     data,
                     edit_date,
-                    video,
+                    *video,
                     caption,
                     media_group_id,
                 );
