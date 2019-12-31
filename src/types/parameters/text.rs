@@ -4,6 +4,7 @@ use std::fmt::{self, Display};
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[must_use]
 pub enum ParseMode {
+    MarkdownV2,
     Markdown,
     #[serde(rename = "HTML")]
     Html,
@@ -20,6 +21,7 @@ pub struct Text<'a> {
 impl Display for ParseMode {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter.write_str(match self {
+            Self::MarkdownV2 => "MarkdownV2",
             Self::Markdown => "Markdown",
             Self::Html => "HTML",
         })
@@ -43,6 +45,14 @@ impl<'a> Text<'a> {
         }
     }
 
+    /// Constructs new `Text` with `MarkdownV2` parse mode.
+    pub fn markdown_v2(text: &'a str) -> Self {
+        Self {
+            text,
+            parse_mode: Some(ParseMode::MarkdownV2),
+        }
+    }
+
     /// Constructs new `Text` with `HTML` parse mode.
     pub fn html(text: &'a str) -> Self {
         Self {
@@ -55,6 +65,12 @@ impl<'a> Text<'a> {
     #[must_use]
     pub fn is_plain(self) -> bool {
         self.parse_mode == None
+    }
+
+    /// Checks if parse mode is `MarkdownV2`.
+    #[must_use]
+    pub fn is_markdown_v2(self) -> bool {
+        self.parse_mode == Some(ParseMode::MarkdownV2)
     }
 
     /// Checks if parse mode is `Markdown`.
