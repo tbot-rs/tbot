@@ -151,6 +151,7 @@ impl<'de> Deserialize<'de> for Sticker {
             "Sticker",
             &[
                 FILE_ID,
+                FILE_UNIQUE_ID,
                 WIDTH,
                 HEIGHT,
                 IS_ANIMATED,
