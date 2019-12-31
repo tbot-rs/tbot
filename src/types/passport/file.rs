@@ -10,7 +10,7 @@ pub struct File {
     /// The ID of the file.
     pub id: file::Id,
     /// The unique ID of the file.
-    pub file_unique_id: String,
+    pub unique_id: String,
     /// The size of the file.
     pub size: usize,
     /// The date of the file.
