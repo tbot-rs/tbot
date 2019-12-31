@@ -270,6 +270,7 @@ impl<'de> Deserialize<'de> for Member {
             &[
                 USER,
                 STATUS,
+                CUSTOM_TITLE,
                 UNTIL_DATE,
                 CAN_BE_EDITED,
                 CAN_CHANGE_INFO,
