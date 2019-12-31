@@ -109,6 +109,7 @@ mod set_inline_game_score;
 mod set_message_game_score;
 mod set_passport_data_errors;
 mod set_sticker_position_in_set;
+mod set_chat_administrator_custom_title;
 mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
@@ -168,6 +169,7 @@ pub use {
     stop_message_location::StopMessageLocation, stop_poll::StopPoll,
     unban_chat_member::UnbanChatMember, unpin_chat_message::UnpinChatMessage,
     upload_sticker_file::UploadStickerFile,
+    set_chat_administrator_custom_title::SetChatAdministratorCustomTitle,
 };
 
 pub(crate) use {

@@ -455,6 +455,15 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
             .reply_to_message_id(self.message_id())
     }
 
+    /// Sets a custom title for an admin in this chat.
+    fn set_chat_administrator_custom_title(
+        &'a self,
+        user_id: user::Id,
+        custom_title: &'a str,
+    ) -> SetChatAdministratorCustomTitle<'a, C> {
+        self.bot().set_chat_administrator_custom_title(self.chat().id, user_id, custom_title)
+    }
+
     /// Sets a new description of this chat.
     fn set_chat_description(
         &'a self,
