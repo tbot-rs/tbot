@@ -24,22 +24,22 @@ pub trait Callback<'a, C: 'static>: fields::Callback<C> {
 
     /// Answers the query without any action.
     fn ignore(&'a self) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::none())
+        self.answer(CallbackAction::with_no_action())
     }
 
     /// Opens a URL.
     fn open_url(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::url(url))
+        self.answer(CallbackAction::with_url(url))
     }
 
     /// Shows a notification to the user.
     fn notify(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::notification(text))
+        self.answer(CallbackAction::with_notification(text))
     }
 
     /// Shows an alert to the user.
     fn alert(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
-        self.answer(CallbackAction::alert(text))
+        self.answer(CallbackAction::with_alert(text))
     }
 }
 
