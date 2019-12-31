@@ -45,6 +45,14 @@ impl<'a> Text<'a> {
         }
     }
 
+    /// Constructs new `Text` with `MarkdownV2` parse mode.
+    pub fn markdown_v2(text: &'a str) -> Self {
+        Self {
+            text,
+            parse_mode: Some(ParseMode::MarkdownV2),
+        }
+    }
+
     /// Constructs new `Text` with `HTML` parse mode.
     pub fn html(text: &'a str) -> Self {
         Self {
