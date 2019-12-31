@@ -37,6 +37,10 @@ pub enum EntityKind {
     Bold,
     /// Text in italic.
     Italic,
+    /// Underlined text.
+    Underline,
+    /// Strikethrough text.
+    Strikethrough,
     /// String of monowidth text.
     Code,
     /// Block of monowidth text.
@@ -74,6 +78,8 @@ const EMAIL: &str = "email";
 const PHONE_NUMBER: &str = "phone_number";
 const BOLD: &str = "bold";
 const ITALIC: &str = "italic";
+const UNDERLINE: &str = "underline";
+const STRIKETHROUGH: &str = "strikethrough";
 const CODE: &str = "code";
 const PRE: &str = "pre";
 const TEXT_LINK: &str = "text_link";
@@ -129,6 +135,8 @@ impl<'v> Visitor<'v> for EntityVisitor {
             PHONE_NUMBER => EntityKind::PhoneNumber,
             BOLD => EntityKind::Bold,
             ITALIC => EntityKind::Italic,
+            UNDERLINE => EntityKind::Underline,
+            STRIKETHROUGH => EntityKind::Strikethrough,
             CODE => EntityKind::Code,
             PRE => EntityKind::Pre,
             _ => {
@@ -144,6 +152,8 @@ impl<'v> Visitor<'v> for EntityVisitor {
                         PHONE_NUMBER,
                         BOLD,
                         ITALIC,
+                        UNDERLINE,
+                        STRIKETHROUGH,
                         CODE,
                         PRE,
                         TEXT_LINK,
