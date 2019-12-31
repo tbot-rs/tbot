@@ -7,14 +7,20 @@ use serde::de::{
 };
 
 /// Represents the status of a member.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum Status {
     /// The user is the creator of the chat.
-    Creator,
+    #[non_exhaustive]
+    Creator {
+        /// Custom title of the creator.
+        custom_title: Option<String>,
+    },
     /// The user is an administrator of the chat.
     #[non_exhaustive]
     Administrator {
+        /// Custom title of the admin.
+        custom_title: Option<String>,
         /// `true` if the bot can edit this admin's rights.
         can_be_edited: bool,
         /// `true` if the admin can change the group's info.
@@ -84,6 +90,7 @@ pub struct Member {
 
 const USER: &str = "user";
 const STATUS: &str = "status";
+const CUSTOM_TITLE: &str = "custom_title";
 const UNTIL_DATE: &str = "until_date";
 const CAN_BE_EDITED: &str = "can_be_edited";
 const CAN_CHANGE_INFO: &str = "can_change_info";
@@ -124,6 +131,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
     {
         let mut user = None;
         let mut status = None;
+        let mut custom_title = None;
         let mut until_date = None;
         let mut can_be_edited = None;
         let mut can_change_info = None;
@@ -145,6 +153,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
             match key {
                 USER => user = Some(map.next_value()?),
                 STATUS => status = Some(map.next_value()?),
+                CUSTOM_TITLE => custom_title = Some(map.next_value()?),
                 UNTIL_DATE => until_date = Some(map.next_value()?),
                 CAN_BE_EDITED => can_be_edited = Some(map.next_value()?),
                 CAN_CHANGE_INFO => can_change_info = Some(map.next_value()?),
@@ -186,8 +195,9 @@ impl<'v> Visitor<'v> for MemberVisitor {
         }
 
         let status = match &status {
-            Some(CREATOR) => Status::Creator,
+            Some(CREATOR) => Status::Creator { custom_title },
             Some(ADMINISTRATOR) => Status::Administrator {
+                custom_title,
                 can_be_edited: can_be_edited
                     .ok_or_else(|| Error::missing_field(CAN_BE_EDITED))?,
                 can_change_info: can_change_info
