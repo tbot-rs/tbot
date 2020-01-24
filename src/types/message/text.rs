@@ -142,7 +142,8 @@ impl<'v> Visitor<'v> for EntityVisitor {
             STRIKETHROUGH => EntityKind::Strikethrough,
             CODE => EntityKind::Code,
             PRE => EntityKind::Pre(
-                language.ok_or_else(|| serde::de::Error::missing_field(LANGUAGE))?,
+                language
+                    .ok_or_else(|| serde::de::Error::missing_field(LANGUAGE))?,
             ),
             _ => {
                 return Err(Error::unknown_variant(
