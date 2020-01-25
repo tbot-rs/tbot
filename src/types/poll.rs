@@ -14,7 +14,7 @@ pub enum Kind {
         /// `true` if the poll allows multiple answers.
         allows_multiple_answers: bool,
     },
-    /// The quiz poll.
+    /// A quiz.
     Quiz {
         /// The identifier of the correct answer option.
         correct_option_id: option::Option<u64>,
