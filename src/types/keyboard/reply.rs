@@ -5,17 +5,60 @@ use serde::{ser::SerializeMap, Serialize};
 /// A shorthand for reply markup.
 pub type Markup<'a> = &'a [&'a [Button<'a>]];
 
+const REGULAR: &str = "regular";
+const QUIZ: &str = "quiz";
+
+/// Represents different kinds of poll that a [`Button`] can request.
+///
+/// [`Button`]: ./struct.Button.html
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
+pub enum RequestPollKind {
+    /// Allows the user to create a poll of any type.
+    Any,
+    /// Allows the user to create only a regular poll.
+    Regular,
+    /// Allows the user to create only a quiz poll.
+    Quiz,
+}
+
+impl<'a> serde::Serialize for RequestPollKind {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let mut map =
+            s.serialize_map(Some(if *self == Self::Any { 0 } else { 1 }))?;
+
+        match self {
+            Self::Any => Ok(()),
+            Self::Regular => map.serialize_entry("type", REGULAR),
+            Self::Quiz => map.serialize_entry("type", QUIZ),
+        }?;
+
+        map.end()
+    }
+}
+
+/// Represents different information that a [`Button`] can request.
+///
+/// [`Button`]: ./struct.Button.html
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use]
+pub enum RequestKind {
+    /// Requests a location from the user.
+    Location,
+    /// Requests a contact from the user.
+    Contact,
+    /// Requests a poll from the user.
+    Poll(RequestPollKind),
+}
+
 /// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use]
 pub struct Button<'a> {
     text: &'a str,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    request_contact: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    request_localization: Option<bool>,
+    request: Option<RequestKind>,
 }
 
 /// Represents a [`ReplyKeyboardMarkup`].
@@ -48,21 +91,39 @@ impl<'a> Button<'a> {
     pub const fn new(text: &'a str) -> Self {
         Self {
             text,
-            request_contact: None,
-            request_localization: None,
+            request: None,
         }
     }
 
-    /// Configures `request_contact`.
-    pub fn request_contact(mut self, is_requested: bool) -> Self {
-        self.request_contact = Some(is_requested);
+    /// Configures `request`.
+    pub const fn request(mut self, request: RequestKind) -> Self {
+        self.request = Some(request);
         self
     }
+}
 
-    /// Configures `request_localization`.
-    pub fn request_localization(mut self, is_requested: bool) -> Self {
-        self.request_localization = Some(is_requested);
-        self
+impl<'a> serde::Serialize for Button<'a> {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        let len = if self.request.is_some() { 2 } else { 1 };
+
+        let mut map = s.serialize_map(Some(len))?;
+
+        map.serialize_entry("text", self.text)?;
+
+        match self.request {
+            Some(RequestKind::Location) => {
+                map.serialize_entry("request_location", &true)
+            }
+            Some(RequestKind::Contact) => {
+                map.serialize_entry("request_contact", &true)
+            }
+            Some(RequestKind::Poll(poll_kind)) => {
+                map.serialize_entry("request_poll", &poll_kind)
+            }
+            None => Ok(()),
+        }?;
+
+        map.end()
     }
 }
 
