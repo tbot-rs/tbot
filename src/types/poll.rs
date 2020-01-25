@@ -126,7 +126,7 @@ impl<'v> serde::de::Visitor<'v> for PollVisitor {
                 return Err(serde::de::Error::unknown_variant(
                     unknown_kind,
                     &[REGULAR, QUIZ],
-                ))
+                ));
             }
         };
 
