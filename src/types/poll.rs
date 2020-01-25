@@ -109,7 +109,7 @@ impl<'v> serde::de::Visitor<'v> for PollVisitor {
                     correct_option_id = Some(map.next_value()?)
                 }
                 _ => {
-                    let _ = map.next_value::<serde_json::Value>();
+                    let _ = map.next_value::<serde::de::IgnoredAny>();
                 }
             }
         }
