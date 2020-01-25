@@ -17,7 +17,7 @@ pub enum Kind {
     /// A quiz.
     Quiz {
         /// The index of the correct option.
-        correct_option_id: option::Option<u64>,
+        correct_option_id: option::Option<usize>,
     },
 }
 
