@@ -9,7 +9,7 @@ use std::option;
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
 pub enum Kind {
-    /// The regular poll.
+    /// A regular poll.
     Regular {
         /// `true` if the poll allows multiple answers.
         allows_multiple_answers: bool,
