@@ -44,7 +44,7 @@ pub enum EntityKind {
     /// String of monowidth text.
     Code,
     /// Block of monowidth text.
-    Pre,
+    Pre(String),
     /// A clickable text url.
     TextLink(String),
     /// A mention for users without username.
@@ -67,6 +67,7 @@ const OFFSET: &str = "offset";
 const LENGTH: &str = "length";
 const URL: &str = "url";
 const USER: &str = "user";
+const LANGUAGE: &str = "language";
 const TYPE: &str = "type";
 
 const MENTION: &str = "mention";
@@ -103,6 +104,7 @@ impl<'v> Visitor<'v> for EntityVisitor {
         let mut length = None;
         let mut url = None;
         let mut user = None;
+        let mut language = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -110,6 +112,7 @@ impl<'v> Visitor<'v> for EntityVisitor {
                 LENGTH => length = Some(map.next_value()?),
                 URL => url = Some(map.next_value()?),
                 USER => user = Some(map.next_value()?),
+                LANGUAGE => language = Some(map.next_value()?),
                 TYPE => kind = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<serde_json::Value>();
@@ -138,7 +141,10 @@ impl<'v> Visitor<'v> for EntityVisitor {
             UNDERLINE => EntityKind::Underline,
             STRIKETHROUGH => EntityKind::Strikethrough,
             CODE => EntityKind::Code,
-            PRE => EntityKind::Pre,
+            PRE => EntityKind::Pre(
+                language
+                    .ok_or_else(|| serde::de::Error::missing_field(LANGUAGE))?,
+            ),
             _ => {
                 return Err(Error::unknown_variant(
                     &kind,
@@ -178,7 +184,7 @@ impl<'de> Deserialize<'de> for Entity {
     {
         d.deserialize_struct(
             "Entity",
-            &[TYPE, OFFSET, LENGTH, URL, USER],
+            &[TYPE, OFFSET, LENGTH, URL, USER, LANGUAGE],
             EntityVisitor,
         )
     }
