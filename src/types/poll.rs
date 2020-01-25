@@ -1,6 +1,8 @@
 //! Types related to polls.
 
+use serde::de::{Deserializer, MapAccess};
 use serde::Deserialize;
+use std::fmt;
 use std::option;
 
 /// Represents the kind of the [`Poll`].
@@ -73,13 +75,13 @@ struct PollVisitor;
 impl<'v> serde::de::Visitor<'v> for PollVisitor {
     type Value = Poll;
 
-    fn expecting(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn expecting(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         write!(fmt, "struct Poll")
     }
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
     where
-        V: serde::de::MapAccess<'v>,
+        V: MapAccess<'v>,
     {
         let mut id = None;
         let mut question = None;
@@ -151,7 +153,7 @@ impl<'v> serde::de::Visitor<'v> for PollVisitor {
 impl<'de> Deserialize<'de> for Poll {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
-        D: serde::de::Deserializer<'de>,
+        D: Deserializer<'de>,
     {
         deserializer.deserialize_struct(
             "Poll",
