@@ -5,7 +5,7 @@ use serde::Deserialize;
 use std::fmt;
 use std::option;
 
-/// Represents the kind of the [`Poll`].
+/// Represents the kind of a [`Poll`].
 ///
 /// [`Poll`]: ./struct.Poll.html
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -49,7 +49,7 @@ pub struct Poll {
     pub question: String,
     /// The options of the poll.
     pub options: Vec<Option>,
-    /// How many people voted in this poll.
+    /// How many people voted in the poll.
     pub total_voter_count: u64,
     /// `true` if the poll is closed.
     pub is_closed: bool,
