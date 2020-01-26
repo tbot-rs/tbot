@@ -1,9 +1,14 @@
+default:
+  before_script:
+  - export PATH=$PATH:/root/.cargo/bin/
+    
 check-formatting:
     stage: test
     script:
         - cargo fmt -- --check
     only:
         - branches
+        - merge_requests
 
 run-clippy:
     stage: test
@@ -13,6 +18,7 @@ run-clippy:
         - cargo clippy --target-dir=../target --examples --features "tokio/macros proxy" -- -D warnings
     only:
         - branches
+        - merge_requests
 
 run-tests:
     stage: test
@@ -20,6 +26,7 @@ run-tests:
         - cargo test --target-dir=../target --features="proxy"
     only:
         - branches
+        - merge_requests
 
 generate-master-docs:
     stage: docs
