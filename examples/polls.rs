@@ -8,7 +8,7 @@ const OPTIONS: &[&str] =
     &["Yes", "Also yes", "I like shooting myself in the foot more"];
 const SEND_IN_REPLY_ERROR: &str = "Please send the command in reply to a poll";
 
-const QUIZ_QUESTION: &str = "The best Telegram bot library is..";
+const QUIZ_QUESTION: &str = "The best Telegram bot library is...";
 const QUIZ_OPTIONS: &[&str] = &["aiogram", "tbot", "python-telegram-bot"];
 const QUIZ_CORRECT_OPTION: usize = 1;
 
