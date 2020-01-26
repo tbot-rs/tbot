@@ -13,7 +13,7 @@ use crate::{
         },
         keyboard::inline,
         message,
-        parameters::{CallbackAction, ImplicitChatId, Text, UpdateKind},
+        parameters::{CallbackAction, ImplicitChatId, Poll, Text, UpdateKind},
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
     Token,
@@ -701,16 +701,9 @@ impl<C> Bot<C> {
     pub fn send_poll<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        question: &'a str,
-        options: &'a [&'a str],
+        poll: &'a Poll<'a>,
     ) -> SendPoll<'a, C> {
-        SendPoll::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            question,
-            options,
-        )
+        SendPoll::new(&self.client, self.token.as_ref(), chat_id, poll)
     }
 
     /// Sends a sticker.
