@@ -16,8 +16,6 @@ async fn main() {
 
     let quiz = Poll::quiz(QUIZ_QUESTION, QUIZ_OPTIONS, 1);
 
-    dbg!(serde_json::to_string(&quiz));
-
     bot.command("poll", move |context| {
         async move {
             let call_result = context.send_poll(&regular).call().await;
