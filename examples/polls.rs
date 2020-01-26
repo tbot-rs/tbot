@@ -59,17 +59,17 @@ async fn main() {
 
     bot.poll(|context| {
         println!("Someone sent a poll: {:#?}", context.poll);
-        async move {}
+        async {}
     });
 
     bot.updated_poll(|context| {
         println!("New update on my poll: {:#?}", context.poll);
-        async move {}
+        async {}
     });
 
     bot.poll_answer(|context| {
         println!("New answer in my poll: {:#?}", context.answer);
-        async move {}
+        async {}
     });
 
     bot.polling().start().await.unwrap();
