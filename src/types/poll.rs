@@ -139,9 +139,8 @@ impl<'v> Visitor<'v> for PollVisitor {
                 .ok_or_else(|| de::Error::missing_field(QUESTION))?,
             options: options
                 .ok_or_else(|| de::Error::missing_field(OPTIONS))?,
-            total_voter_count: total_voter_count.ok_or_else(|| {
-                de::Error::missing_field(TOTAL_VOTER_COUNT)
-            })?,
+            total_voter_count: total_voter_count
+                .ok_or_else(|| de::Error::missing_field(TOTAL_VOTER_COUNT))?,
             is_closed: is_closed
                 .ok_or_else(|| de::Error::missing_field(IS_CLOSED))?,
             is_anonymous: is_anonymous
