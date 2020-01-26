@@ -18,7 +18,8 @@ async fn main() {
 
     let regular = Poll::regular(QUESTION, OPTIONS, Answer::Single);
 
-    let quiz = Poll::quiz(QUIZ_QUESTION, QUIZ_OPTIONS, QUIZ_CORRECT_OPTION);
+    let quiz = Poll::quiz(QUIZ_QUESTION, QUIZ_OPTIONS, QUIZ_CORRECT_OPTION)
+        .anonymous(false);
 
     bot.command("poll", move |context| {
         async move {
@@ -63,6 +64,11 @@ async fn main() {
 
     bot.updated_poll(|context| {
         println!("New update on my poll: {:#?}", context.poll);
+        async move {}
+    });
+
+    bot.poll_answer(|context| {
+        println!("New answer in my poll: {:#?}", context.answer);
         async move {}
     });
 

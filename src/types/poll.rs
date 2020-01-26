@@ -1,5 +1,6 @@
 //! Types related to polls.
 
+use super::User;
 use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
 use std::fmt;
@@ -55,6 +56,19 @@ pub struct Poll {
     pub is_closed: bool,
     /// `true` if the poll is anonymous.
     pub is_anonymous: bool,
+}
+
+/// Represents a [`PollAnswer`].
+///
+/// [`PollAnswer`]: https://core.telegram.org/bots/api#pollanswer
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+pub struct Answer {
+    /// The ID of the poll.
+    pub poll_id: String,
+    /// The user who voted.
+    pub user: User,
+    /// The index of options choosen by user.
+    pub option_ids: Vec<usize>,
 }
 
 const ID: &str = "id";

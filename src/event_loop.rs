@@ -61,6 +61,7 @@ type PaymentHandler<C> = Handler<contexts::Payment<C>>;
 type PhotoHandler<C> = Handler<contexts::Photo<C>>;
 type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
 type PollHandler<C> = Handler<contexts::Poll<C>>;
+type PollAnswerHandler<C> = Handler<contexts::PollAnswer<C>>;
 type PreCheckoutHandler<C> = Handler<contexts::PreCheckout<C>>;
 type ShippingHandler<C> = Handler<contexts::Shipping<C>>;
 type StickerHandler<C> = Handler<contexts::Sticker<C>>;
@@ -132,6 +133,7 @@ pub struct EventLoop<C> {
     photo_handlers: Handlers<PhotoHandler<C>>,
     pinned_message_handlers: Handlers<PinnedMessageHandler<C>>,
     poll_handlers: Handlers<PollHandler<C>>,
+    poll_answer_handlers: Handlers<PollAnswerHandler<C>>,
     pre_checkout_handlers: Handlers<PreCheckoutHandler<C>>,
     shipping_handlers: Handlers<ShippingHandler<C>>,
     sticker_handlers: Handlers<StickerHandler<C>>,
@@ -184,6 +186,7 @@ impl<C> EventLoop<C> {
             photo_handlers: Vec::new(),
             pinned_message_handlers: Vec::new(),
             poll_handlers: Vec::new(),
+            poll_answer_handlers: Vec::new(),
             pre_checkout_handlers: Vec::new(),
             shipping_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
@@ -670,6 +673,15 @@ impl<C> EventLoop<C> {
     }
 
     handler! {
+        /// Adds a new handler for new answers in the poll.
+        poll_answer_handlers,
+        poll_answer,
+        contexts::PollAnswer<C>,
+        run_poll_answer_handlers,
+        will_handle_poll_answer,
+    }
+
+    handler! {
         /// Adds a new handler for venues.
         venue_handlers,
         venue,
@@ -773,6 +785,12 @@ impl<C> EventLoop<C> {
                 let context = contexts::UpdatedPoll::new(bot, poll);
                 self.run_updated_poll_handlers(Arc::new(context));
             }
+            update::Kind::PollAnswer(answer)
+                if self.will_handle_poll_answer() =>
+            {
+                let context = contexts::PollAnswer::new(bot, answer);
+                self.run_poll_answer_handlers(Arc::new(context));
+            }
             update::Kind::ShippingQuery(query)
                 if self.will_handle_shipping() =>
             {
@@ -785,6 +803,7 @@ impl<C> EventLoop<C> {
             update::Kind::ChosenInlineResult(..)
             | update::Kind::InlineQuery(..)
             | update::Kind::Poll(..)
+            | update::Kind::PollAnswer(..)
             | update::Kind::PreCheckoutQuery(..)
             | update::Kind::ShippingQuery(..)
             | update::Kind::Unknown => (),

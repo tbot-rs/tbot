@@ -95,6 +95,7 @@ mod payment;
 mod photo;
 mod pinned_message;
 mod poll;
+mod poll_answer;
 mod pre_checkout;
 mod shipping;
 mod sticker;
@@ -123,8 +124,8 @@ pub use {
     location::Location, migration::Migration, new_chat_photo::NewChatPhoto,
     new_chat_title::NewChatTitle, new_members::NewMembers, passport::Passport,
     payment::Payment, photo::Photo, pinned_message::PinnedMessage, poll::Poll,
-    pre_checkout::PreCheckout, shipping::Shipping, sticker::Sticker,
-    text::Text, unhandled::Unhandled, update::Update,
+    poll_answer::PollAnswer, pre_checkout::PreCheckout, shipping::Shipping,
+    sticker::Sticker, text::Text, unhandled::Unhandled, update::Update,
     updated_poll::UpdatedPoll, venue::Venue, video::Video,
     video_note::VideoNote, voice::Voice,
 };
