@@ -11,7 +11,7 @@ pub enum Answer {
 
 #[derive(Debug, Clone, Copy, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-pub enum Kind {
+enum Kind {
     Quiz { correct_option_id: usize },
     Regular { allows_multiple_answers: bool },
 }
