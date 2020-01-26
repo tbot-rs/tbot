@@ -1,17 +1,38 @@
-use tbot::prelude::*;
+use tbot::{
+    prelude::*,
+    types::parameters::{poll::Answer, Poll},
+};
 
 const QUESTION: &str = "Do you like tbot?";
 const OPTIONS: &[&str] =
     &["Yes", "Also yes", "I like shooting myself in the foot more"];
 const SEND_IN_REPLY_ERROR: &str = "Please send the command in reply to a poll";
 
+const QUIZ_QUESTION: &str = "The best Telegram bot library is...";
+const QUIZ_OPTIONS: &[&str] = &["aiogram", "tbot", "python-telegram-bot"];
+const QUIZ_CORRECT_OPTION: usize = 1;
+
 #[tokio::main]
 async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
-    bot.command("poll", |context| {
+    let regular = Poll::regular(QUESTION, OPTIONS, Answer::Single);
+
+    let quiz = Poll::quiz(QUIZ_QUESTION, QUIZ_OPTIONS, QUIZ_CORRECT_OPTION)
+        .anonymous(false);
+
+    bot.command("poll", move |context| {
         async move {
-            let call_result = context.send_poll(QUESTION, OPTIONS).call().await;
+            let call_result = context.send_poll(&regular).call().await;
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
+        }
+    });
+
+    bot.command("quiz", move |context| {
+        async move {
+            let call_result = context.send_poll(&quiz).call().await;
             if let Err(err) = call_result {
                 dbg!(err);
             }
@@ -38,12 +59,17 @@ async fn main() {
 
     bot.poll(|context| {
         println!("Someone sent a poll: {:#?}", context.poll);
-        async move {}
+        async {}
     });
 
     bot.updated_poll(|context| {
         println!("New update on my poll: {:#?}", context.poll);
-        async move {}
+        async {}
+    });
+
+    bot.poll_answer(|context| {
+        println!("New answer in my poll: {:#?}", context.answer);
+        async {}
     });
 
     bot.polling().start().await.unwrap();

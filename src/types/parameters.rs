@@ -5,6 +5,7 @@ mod chat_id;
 mod flexibility;
 mod notification_state;
 mod photo;
+pub mod poll;
 mod requirement;
 mod send_to_provider_state;
 mod text;
@@ -19,6 +20,7 @@ pub use {
     flexibility::Flexibility,
     notification_state::NotificationState,
     photo::Photo,
+    poll::Poll,
     requirement::Requirement,
     send_to_provider_state::SendToProviderState,
     text::Text,

@@ -1,8 +1,8 @@
 //! Types related to updates.
 
 use super::{
-    callback, shipping, ChosenInlineResult, InlineQuery, Message, Poll,
-    PreCheckoutQuery,
+    callback, poll::Answer, shipping, ChosenInlineResult, InlineQuery, Message,
+    Poll, PreCheckoutQuery,
 };
 use is_macro::Is;
 use serde::{
@@ -37,6 +37,8 @@ pub enum Kind {
     CallbackQuery(callback::Query),
     /// A new state of a poll.
     Poll(Poll),
+    /// A user changed their answer in a non-anonymous poll.
+    PollAnswer(Answer),
     /// A chosen inline result.
     ChosenInlineResult(ChosenInlineResult),
     /// A shipping query.
@@ -68,6 +70,7 @@ const CHOSEN_INLINE_RESULT: &str = "chosen_inline_result";
 const SHIPPING_QUERY: &str = "shipping_query";
 const PRE_CHECKOUT_QUERY: &str = "pre_checkout_query";
 const POLL: &str = "poll";
+const POLL_ANSWER: &str = "poll_answer";
 
 struct UpdateVisitor;
 
@@ -114,6 +117,7 @@ impl<'v> Visitor<'v> for UpdateVisitor {
                     kind = Some(Kind::PreCheckoutQuery(map.next_value()?))
                 }
                 POLL => kind = Some(Kind::Poll(map.next_value()?)),
+                POLL_ANSWER => kind = Some(Kind::PollAnswer(map.next_value()?)),
                 _ => {
                     let _ = map.next_value::<IgnoredAny>()?;
                 }
@@ -144,6 +148,8 @@ impl<'de> Deserialize<'de> for Update {
                 CHOSEN_INLINE_RESULT,
                 SHIPPING_QUERY,
                 PRE_CHECKOUT_QUERY,
+                POLL,
+                POLL_ANSWER,
             ],
             UpdateVisitor,
         )
