@@ -1,3 +1,5 @@
+//! Types related to polls.
+
 use serde::Serialize;
 
 /// Configures whether multiple answers are allowed in a poll.

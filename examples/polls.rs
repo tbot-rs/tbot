@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::parameters::{Poll, PollAnswer},
+    types::parameters::{poll::Answer, Poll},
 };
 
 const QUESTION: &str = "Do you like tbot?";
@@ -16,7 +16,7 @@ const QUIZ_CORRECT_OPTION: usize = 1;
 async fn main() {
     let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 
-    let regular = Poll::regular(QUESTION, OPTIONS, PollAnswer::Single);
+    let regular = Poll::regular(QUESTION, OPTIONS, Answer::Single);
 
     let quiz = Poll::quiz(QUIZ_QUESTION, QUIZ_OPTIONS, QUIZ_CORRECT_OPTION);
 
