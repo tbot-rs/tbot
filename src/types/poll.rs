@@ -1,6 +1,6 @@
 //! Types related to polls.
 
-use serde::de::{Deserializer, MapAccess};
+use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
 use std::fmt;
 use std::option;
@@ -72,7 +72,7 @@ const QUIZ: &str = "quiz";
 
 struct PollVisitor;
 
-impl<'v> serde::de::Visitor<'v> for PollVisitor {
+impl<'v> Visitor<'v> for PollVisitor {
     type Value = Poll;
 
     fn expecting(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -111,7 +111,7 @@ impl<'v> serde::de::Visitor<'v> for PollVisitor {
                     correct_option_id = Some(map.next_value()?)
                 }
                 _ => {
-                    let _ = map.next_value::<serde::de::IgnoredAny>();
+                    let _ = map.next_value::<de::IgnoredAny>();
                 }
             }
         }
@@ -119,13 +119,13 @@ impl<'v> serde::de::Visitor<'v> for PollVisitor {
         let kind = match kind {
             Some(REGULAR) => Kind::Regular {
                 allows_multiple_answers: allows_multiple_answers.ok_or_else(
-                    || serde::de::Error::missing_field(ALLOWS_MULTIPLE_ANSWERS),
+                    || de::Error::missing_field(ALLOWS_MULTIPLE_ANSWERS),
                 )?,
             },
             Some(QUIZ) => Kind::Quiz { correct_option_id },
-            None => return Err(serde::de::Error::missing_field(KIND)),
+            None => return Err(de::Error::missing_field(KIND)),
             Some(unknown_kind) => {
-                return Err(serde::de::Error::unknown_variant(
+                return Err(de::Error::unknown_variant(
                     unknown_kind,
                     &[REGULAR, QUIZ],
                 ));
@@ -134,18 +134,18 @@ impl<'v> serde::de::Visitor<'v> for PollVisitor {
 
         Ok(Poll {
             kind,
-            id: id.ok_or_else(|| serde::de::Error::missing_field(ID))?,
+            id: id.ok_or_else(|| de::Error::missing_field(ID))?,
             question: question
-                .ok_or_else(|| serde::de::Error::missing_field(QUESTION))?,
+                .ok_or_else(|| de::Error::missing_field(QUESTION))?,
             options: options
-                .ok_or_else(|| serde::de::Error::missing_field(OPTIONS))?,
+                .ok_or_else(|| de::Error::missing_field(OPTIONS))?,
             total_voter_count: total_voter_count.ok_or_else(|| {
-                serde::de::Error::missing_field(TOTAL_VOTER_COUNT)
+                de::Error::missing_field(TOTAL_VOTER_COUNT)
             })?,
             is_closed: is_closed
-                .ok_or_else(|| serde::de::Error::missing_field(IS_CLOSED))?,
+                .ok_or_else(|| de::Error::missing_field(IS_CLOSED))?,
             is_anonymous: is_anonymous
-                .ok_or_else(|| serde::de::Error::missing_field(IS_ANONYMOUS))?,
+                .ok_or_else(|| de::Error::missing_field(IS_ANONYMOUS))?,
         })
     }
 }
