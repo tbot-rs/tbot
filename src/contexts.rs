@@ -67,6 +67,7 @@ mod macros;
 mod animation;
 mod audio;
 mod chosen_inline;
+mod command;
 mod connected_website;
 mod contact;
 mod created_group;
@@ -113,7 +114,7 @@ pub mod traits;
 
 pub use {
     animation::Animation, audio::Audio, chosen_inline::ChosenInline,
-    connected_website::ConnectedWebsite, contact::Contact,
+    command::Command, connected_website::ConnectedWebsite, contact::Contact,
     created_group::CreatedGroup, data_callback::DataCallback,
     deleted_chat_photo::DeletedChatPhoto, document::Document,
     edited_animation::EditedAnimation, edited_audio::EditedAudio,
