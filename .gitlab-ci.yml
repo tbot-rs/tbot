@@ -2,6 +2,8 @@ default:
   image: rust:latest
   before_script:
   - export PATH=$PATH:/root/.cargo/bin/
+  - rustup component add clippy
+  - rustup component add rustfmt
     
 check-formatting:
     stage: test
