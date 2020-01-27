@@ -1,15 +1,18 @@
 use std::{sync::Arc, time::Duration};
-use tbot::{connectors::Connector, contexts::Text, prelude::*};
+use tbot::{
+    connectors::Connector, contexts::Command, contexts::Text, prelude::*,
+};
 use tokio::time::delay_for;
 
 const INTERVAL: u64 = 15;
-const PLACES: [(f64, f64); 6] = [
-    (38.904_722, -77.016_389), // Washington
-    (51.507_222, -0.1275),     // London
-    (41.9, 12.5),              // Rome
-    (59.329_444, 18.068_611),  // Stockholm
-    (55.796_389, 49.108_889),  // Kazan
-    (56.5, 84.966_667),        // Tomsk
+const PLACES: [(f64, f64); 7] = [
+    (38.904_722, -77.016_389),    // Washington
+    (51.507_222, -0.1275),        // London
+    (41.9, 12.5),                 // Rome
+    (59.329_444, 18.068_611),     // Stockholm
+    (41.709_539_2, 44.802_765_4), // Tbilisi
+    (55.796_389, 49.108_889),     // Kazan
+    (56.5, 84.966_667),           // Tomsk
 ];
 const UPDATE_PERIOD: u32 = 3600 * 24;
 
@@ -22,7 +25,7 @@ async fn main() {
     bot.polling().start().await.unwrap();
 }
 
-async fn handle_location<C: Connector>(context: Arc<Text<C>>) {
+async fn handle_location<C: Connector>(context: Arc<Command<Text<C>>>) {
     let mut places = PLACES.iter().cycle();
 
     let first_place = *places.next().unwrap();

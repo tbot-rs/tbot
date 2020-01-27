@@ -33,6 +33,7 @@ type Handler<T> = dyn Fn(Arc<T>) + Send + Sync;
 type AnimationHandler<C> = Handler<contexts::Animation<C>>;
 type AudioHandler<C> = Handler<contexts::Audio<C>>;
 type ChosenInlineHandler<C> = Handler<contexts::ChosenInline<C>>;
+type CommandHandler<C> = Handler<contexts::Command<contexts::Text<C>>>;
 type ConnectedWebsiteHandler<C> = Handler<contexts::ConnectedWebsite<C>>;
 type ContactHandler<C> = Handler<contexts::Contact<C>>;
 type CreatedGroupHandler<C> = Handler<contexts::CreatedGroup<C>>;
@@ -41,6 +42,8 @@ type DeletedChatPhotoHandler<C> = Handler<contexts::DeletedChatPhoto<C>>;
 type DocumentHandler<C> = Handler<contexts::Document<C>>;
 type EditedAnimationHandler<C> = Handler<contexts::EditedAnimation<C>>;
 type EditedAudioHandler<C> = Handler<contexts::EditedAudio<C>>;
+type EditedCommandHandler<C> =
+    Handler<contexts::Command<contexts::EditedText<C>>>;
 type EditedDocumentHandler<C> = Handler<contexts::EditedDocument<C>>;
 type EditedLocationHandler<C> = Handler<contexts::EditedLocation<C>>;
 type EditedPhotoHandler<C> = Handler<contexts::EditedPhoto<C>>;
@@ -98,8 +101,8 @@ pub struct EventLoop<C> {
     bot: Bot<C>,
     username: Option<String>,
 
-    command_handlers: Map<TextHandler<C>>,
-    edited_command_handlers: Map<EditedTextHandler<C>>,
+    command_handlers: Map<CommandHandler<C>>,
+    edited_command_handlers: Map<EditedCommandHandler<C>>,
     after_update_handlers: Handlers<UpdateHandler<C>>,
     animation_handlers: Handlers<AnimationHandler<C>>,
     audio_handlers: Handlers<AudioHandler<C>>,
@@ -225,7 +228,10 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for a command.
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_handlers
@@ -236,6 +242,29 @@ impl<C> EventLoop<C> {
             }));
     }
 
+    /// Adds a new handler for a sequence of commands.
+    pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
+    where
+        Cm: IntoIterator<Item = &'static str>,
+        F: Future<Output = ()> + Send + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
+    {
+        let handler = Arc::new(handler);
+
+        for command in commands {
+            let handler = Arc::clone(&handler);
+            self.command_handlers
+                .entry(command.to_string())
+                .or_insert_with(Vec::new)
+                .push(Box::new(move |context| {
+                    tokio::spawn(handler(context));
+                }));
+        }
+    }
+
     fn will_handle_command(&self, command: &str) -> bool {
         self.command_handlers.contains_key(command)
     }
@@ -243,7 +272,7 @@ impl<C> EventLoop<C> {
     fn run_command_handlers(
         &self,
         command: &str,
-        context: &Arc<contexts::Text<C>>,
+        context: &Arc<contexts::Command<contexts::Text<C>>>,
     ) {
         if let Some(handlers) = self.command_handlers.get(command) {
             for handler in handlers {
@@ -255,7 +284,10 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("start", handler);
@@ -264,7 +296,10 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("settings", handler);
@@ -273,7 +308,10 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Text<C>>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
@@ -282,7 +320,10 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::EditedText<C>>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.edited_command_handlers
@@ -293,6 +334,29 @@ impl<C> EventLoop<C> {
             }));
     }
 
+    /// Adds a new handler for an edited command from sequence of commands.
+    pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
+    where
+        Cm: IntoIterator<Item = &'static str>,
+        F: Future<Output = ()> + Send + 'static,
+        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>) -> F)
+            + Send
+            + Sync
+            + 'static,
+    {
+        let handler = Arc::new(handler);
+
+        for command in commands {
+            let handler = Arc::clone(&handler);
+            self.edited_command_handlers
+                .entry(command.to_string())
+                .or_insert_with(Vec::new)
+                .push(Box::new(move |context| {
+                    tokio::spawn(handler(context));
+                }));
+        }
+    }
+
     fn will_handle_edited_command(&self, command: &str) -> bool {
         self.edited_command_handlers.contains_key(command)
     }
@@ -300,7 +364,7 @@ impl<C> EventLoop<C> {
     fn run_edited_command_handlers(
         &self,
         command: &str,
-        context: &Arc<contexts::EditedText<C>>,
+        context: &Arc<contexts::Command<contexts::EditedText<C>>>,
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(command) {
             for handler in handlers {
@@ -752,7 +816,7 @@ impl<C> EventLoop<C> {
                     self.run_game_callback_handlers(Arc::new(context));
                 }
                 _ if self.will_handle_unhandled() => {
-                    let update = update::Kind::CallbackQuery(query);
+                    let update = update::Kind::CallbackQuery(query.clone());
                     self.run_unhandled_handlers(bot, update);
                 }
                 callback::Kind::Data(..) | callback::Kind::Game(..) => (),
@@ -951,7 +1015,10 @@ impl<C> EventLoop<C> {
 
                 if self.will_handle_command(&command) {
                     let text = trim_command(text);
-                    let context = contexts::Text::new(bot, data, text);
+                    let context = contexts::Command::new(
+                        command.clone(),
+                        contexts::Text::new(bot, data, text),
+                    );
                     self.run_command_handlers(&command, &Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
@@ -1106,8 +1173,10 @@ impl<C> EventLoop<C> {
 
                 if self.will_handle_edited_command(&command) {
                     let text = trim_command(text);
-                    let context =
-                        contexts::EditedText::new(bot, data, edit_date, text);
+                    let context = contexts::Command::new(
+                        command.clone(),
+                        contexts::EditedText::new(bot, data, edit_date, text),
+                    );
                     self.run_edited_command_handlers(
                         &command,
                         &Arc::new(context),
