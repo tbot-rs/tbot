@@ -1219,6 +1219,7 @@ impl<C: Connector> EventLoop<C> {
         let me = self.bot.get_me().call().await?;
 
         let username = me
+            .user
             .username
             .expect("[tbot] Expected the bot to have a username");
         self.username(username);
