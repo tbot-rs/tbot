@@ -24,7 +24,7 @@ impl<'a, C> GetMe<'a, C> {
 
 impl<C: Connector> GetMe<'_, C> {
     /// Calls the method.
-    pub async fn call(self) -> Result<types::User, errors::MethodCall> {
+    pub async fn call(self) -> Result<types::user::Me, errors::MethodCall> {
         send_method(self.client, self.token, "getMe", None, Vec::new()).await
     }
 }
