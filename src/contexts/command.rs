@@ -45,46 +45,46 @@ impl<T> Sealed for Command<T> {}
 
 impl<C> Context<C> for Command<Text<C>> {
     fn bot(&self) -> &Bot<C> {
-        self.context.bot()
+        &self.context.bot
     }
 }
 
 impl<C> Message<C> for Command<Text<C>> {
     #[must_use]
     fn message_id(&self) -> message::Id {
-        self.context.message_id()
+        self.context.message_id
     }
 
     #[must_use]
     fn from(&self) -> Option<&User> {
-        self.context.from()
+        self.context.from.as_ref()
     }
 
     #[must_use]
     fn date(&self) -> i64 {
-        self.context.date()
+        self.context.date
     }
 
     #[must_use]
     fn chat(&self) -> &Chat {
-        self.context.chat()
+        &self.context.chat
     }
 }
 
 impl<C> MediaMessage<C> for Command<Text<C>> {
     #[must_use]
     fn reply_to(&self) -> Option<&types::Message> {
-        self.context.reply_to()
+        self.context.reply_to.as_ref()
     }
 
     #[must_use]
     fn author_signature(&self) -> Option<&str> {
-        self.context.author_signature()
+        self.context.author_signature.as_ref().map(String::as_str)
     }
 
     #[must_use]
     fn reply_markup(&self) -> Option<&inline_markup::Keyboard> {
-        self.context.reply_markup()
+        self.context.reply_markup.as_ref()
     }
 }
 
@@ -116,53 +116,53 @@ impl<'a, C: 'static> Pinnable<'a, C> for Command<Text<C>> {}
 
 impl<C> Context<C> for Command<EditedText<C>> {
     fn bot(&self) -> &Bot<C> {
-        self.context.bot()
+        &self.context.bot
     }
 }
 
 impl<C> Message<C> for Command<EditedText<C>> {
     #[must_use]
     fn message_id(&self) -> message::Id {
-        self.context.message_id()
+        self.context.message_id
     }
 
     #[must_use]
     fn from(&self) -> Option<&User> {
-        self.context.from()
+        self.context.from.as_ref()
     }
 
     #[must_use]
     fn date(&self) -> i64 {
-        self.context.date()
+        self.context.date
     }
 
     #[must_use]
     fn chat(&self) -> &Chat {
-        self.context.chat()
+        &self.context.chat
     }
 }
 
 impl<C> MediaMessage<C> for Command<EditedText<C>> {
     #[must_use]
     fn reply_to(&self) -> Option<&types::Message> {
-        self.context.reply_to()
+        self.context.reply_to.as_ref()
     }
 
     #[must_use]
     fn author_signature(&self) -> Option<&str> {
-        self.context.author_signature()
+        self.context.author_signature.as_ref().map(String::as_str)
     }
 
     #[must_use]
     fn reply_markup(&self) -> Option<&inline_markup::Keyboard> {
-        self.context.reply_markup()
+        self.context.reply_markup.as_ref()
     }
 }
 
 impl<C> EditedMessage<C> for Command<EditedText<C>> {
     #[must_use]
     fn edit_date(&self) -> i64 {
-        self.context.edit_date()
+        self.context.edit_date
     }
 }
 
