@@ -41,7 +41,7 @@ impl<C> Command<C> {
 
 // Prepare for hell.
 
-impl<C> Sealed for Command<Text<C>> {}
+impl<T> Sealed for Command<T> {}
 
 impl<C> Context<C> for Command<Text<C>> {
     fn bot(&self) -> &Bot<C> {
@@ -113,8 +113,6 @@ impl<'a, C: 'static> Forwardable<'a, C> for Command<Text<C>> {}
 impl<'a, C: 'static> Pinnable<'a, C> for Command<Text<C>> {}
 
 // Once again.
-
-impl<C> Sealed for Command<EditedText<C>> {}
 
 impl<C> Context<C> for Command<EditedText<C>> {
     fn bot(&self) -> &Bot<C> {
