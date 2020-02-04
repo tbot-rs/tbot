@@ -1207,39 +1207,15 @@ impl<C> EventLoop<C> {
                 self.run_edited_video_handlers(Arc::new(context));
             }
 
-            message::Kind::Contact(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited contact. \
-                 Skipping the update."
-            ),
-            message::Kind::Game(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited game. \
-                 Skipping the update."
-            ),
-            message::Kind::Invoice(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited invoice. \
-                 Skipping the update."
-            ),
-            message::Kind::Poll(..) => eprintln!(
-                "[tbot] Did not expect to receive a poll as an edited message. \
-                Skipping the update."
-            ),
-            message::Kind::Sticker(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited sticker. \
-                 Skipping the update."
-            ),
-            message::Kind::Venue(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited venue. \
-                 Skipping the update."
-            ),
-            message::Kind::VideoNote(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited video note. \
-                 Skipping the update."
-            ),
-            message::Kind::Voice(..) => eprintln!(
-                "[tbot] Did not expect to receive an edited voice. \
-                 Skipping the update."
-            ),
-            message::Kind::ChannelCreated
+            message::Kind::Contact(..)
+            | message::Kind::Game(..)
+            | message::Kind::Invoice(..)
+            | message::Kind::Poll(..)
+            | message::Kind::Sticker(..)
+            | message::Kind::Venue(..)
+            | message::Kind::VideoNote(..)
+            | message::Kind::Voice(..)
+            | message::Kind::ChannelCreated
             | message::Kind::ChatPhotoDeleted
             | message::Kind::ConnectedWebsite(..)
             | message::Kind::GroupCreated
@@ -1253,8 +1229,8 @@ impl<C> EventLoop<C> {
             | message::Kind::Pinned(..)
             | message::Kind::SuccessfulPayment(..)
             | message::Kind::SupergroupCreated => eprintln!(
-                "[tbot] Did not expect to receive a service message as an \
-                 edited message. Skipping the update."
+                "[tbot] Skipping this edited message as it was not expected: {:#?}",
+                kind
             ),
 
             kind if self.will_handle_unhandled() => {
