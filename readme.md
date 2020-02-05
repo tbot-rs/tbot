@@ -1,4 +1,4 @@
-# `tbot`
+# [`tbot`](https://tbot.rs)
 
 Make cool Telegram bots with Rust easily. For example, here's a simple echo bot:
 
@@ -24,8 +24,8 @@ async fn main() {
 }
 ```
 
-There are many examples in the [`examples`] directory to see `tbot` in action.
-If you want to see real-world use of `tbot`, check out [this list][projects].
+There are many [examples] to see `tbot` in action. If you want to see real-world
+use of `tbot`, check out [this list][projects].
 
 If you're a newcomer, we recommend you go through the [tutorial] first. We also
 have several [How-to guides][how-to] to help you use `tbot`. You can always
@@ -35,7 +35,7 @@ are available [here][master-docs]).
 If you have a question, ask it in [our group] on Telegram. If you find a bug,
 file an issue on either our [GitLab] or [GitHub] repository.
 
-[`examples`]: ./examples/
+[examples]: ./examples/
 [projects]: https://gitlab.com/SnejUgal/tbot/-/wikis/Projects-built-with-tbot
 
 [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
@@ -49,8 +49,8 @@ file an issue on either our [GitLab] or [GitHub] repository.
 
 ## Features
 
-- Full Bot API v4.4 support, including media download/upload, polling
-  and [webhooks];
+- Full Bot API v4.6 support, including Polls v2.0, media download/upload,
+  polling and [webhooks];
 - `async`/`.await` support, built upon `tokio`;
 - Type-safe and idiomatic API;
 - Easy to use, while scalable and configurable.
@@ -63,7 +63,7 @@ Add `tbot` and `tokio` to your Cargo.toml:
 
 ```toml
 [dependencies]
-tbot = "0.4"
+tbot = "0.5"
 tokio = { version = "0.2", features = ["macros"] }
 ```
 
