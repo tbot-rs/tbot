@@ -26,18 +26,28 @@
 //! }
 //! ```
 //!
-//! If you're new to `tbot`, we recommend you go through the [tutorial] first.
-//! We also have several [How-to guides][how-to] with snippets to solve your
-//! problems.
+//! There are many [examples] to see `tbot` in action. If you want to see
+//! real-world use of `tbot`, check out [this list][projects].
 //!
-//! If you have a question, ask it in [our group] on Telegram. If you find
-//! a bug, fill an issue on either our [GitLab] or [GitHub] repository.
+//! If you're a newcomer, we recommend you go through the [tutorial] first.
+//! We also have several [How-to guides][how-to] to help you use `tbot`.
+//! You can always refer to our API docs on [_docs.rs_][api-docs]
+//! (also, docs for `master` are available [here][master-docs]).
 //!
-//! [our group]: https://t.me/tbot_group
+//! If you have a question, ask it in [our group] on Telegram. If you find a bug,
+//! file an issue on either our [GitLab] or [GitHub] repository.
+//!
+//! [examples]: https://gitlab.com/SnejUgal/tbot/-/tree/master/examples
+//! [projects]: https://gitlab.com/SnejUgal/tbot/-/wikis/Projects-built-with-tbot
+//!
 //! [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 //! [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
-//! [GitLab]: https://gitlab.com/SnejUgal/tbot
-//! [GitHub]: https://github.com/SnejUgal/tbot
+//! [api-docs]: https://docs.rs/tbot
+//! [master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
+//!
+//! [our group]: https://t.me/tbot_group
+//! [gitlab]: https://gitlab.com/SnejUgal/tbot
+//! [github]: https://github.com/SnejUgal/tbot
 
 #![deny(
     future_incompatible,
