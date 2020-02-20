@@ -1,5 +1,5 @@
 use std::{collections::HashMap, sync::Arc};
-use tbot::{errors, prelude::*};
+use tbot::{errors, prelude::*, Bot};
 use tokio::sync::Mutex;
 
 const GAME: &str = "";
@@ -15,7 +15,7 @@ async fn main() {
     let chats = Arc::new(Mutex::new(HashMap::new()));
     let game_chats_ref = Arc::clone(&chats);
 
-    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("game", move |context| {
         let chats = Arc::clone(&game_chats_ref);

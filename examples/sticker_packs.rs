@@ -1,4 +1,4 @@
-use tbot::types::input_file::PngSticker;
+use tbot::{types::input_file::PngSticker, Bot};
 
 const USER: i64 = 0;
 // Must end with `_by_<bot_username>`
@@ -11,7 +11,7 @@ const STICKERS: [(&[u8], &str); 2] = [
 
 #[tokio::main]
 async fn main() -> Result<(), tbot::errors::MethodCall> {
-    let bot = tbot::from_env!("BOT_TOKEN");
+    let bot = Bot::from_env("BOT_TOKEN");
 
     let user_id = USER.into();
     let mut stickers = STICKERS.iter();

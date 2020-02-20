@@ -1,6 +1,7 @@
 use tbot::{
     prelude::*,
     types::keyboard::inline::{Button, ButtonKind},
+    Bot,
 };
 
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
@@ -17,34 +18,30 @@ const KEYBOARD: &[&[Button]] = &[
 
 #[tokio::main]
 async fn main() {
-    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
-    bot.command("keyboard", |context| {
-        async move {
-            let call_result = context
-                .send_message("This is a keyboard done with tbot!")
-                .reply_markup(KEYBOARD)
-                .call()
-                .await;
+    bot.command("keyboard", |context| async move {
+        let call_result = context
+            .send_message("This is a keyboard done with tbot!")
+            .reply_markup(KEYBOARD)
+            .call()
+            .await;
 
-            if let Err(err) = call_result {
-                dbg!(err);
-            }
+        if let Err(err) = call_result {
+            dbg!(err);
         }
     });
 
-    bot.data_callback(|context| {
-        async move {
-            let message = match context.data.as_str() {
-                "cool" => "You're cool too!",
-                "amazing" => "Thanks, I'm trying!",
-                _ => "Are you trying to hack me?",
-            };
+    bot.data_callback(|context| async move {
+        let message = match context.data.as_str() {
+            "cool" => "You're cool too!",
+            "amazing" => "Thanks, I'm trying!",
+            _ => "Are you trying to hack me?",
+        };
 
-            let call_result = context.notify(message).call().await;
-            if let Err(err) = call_result {
-                dbg!(err);
-            }
+        let call_result = context.notify(message).call().await;
+        if let Err(err) = call_result {
+            dbg!(err);
         }
     });
 

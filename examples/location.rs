@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::Duration};
 use tbot::{
-    connectors::Connector, contexts::Command, contexts::Text, prelude::*,
+    connectors::Connector, contexts::Command, contexts::Text, prelude::*, Bot,
 };
 use tokio::time::delay_for;
 
@@ -18,7 +18,7 @@ const UPDATE_PERIOD: u32 = 3600 * 24;
 
 #[tokio::main]
 async fn main() {
-    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("location", handle_location);
 

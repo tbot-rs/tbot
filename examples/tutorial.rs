@@ -6,27 +6,26 @@ use tbot::{
         input_message_content::Text,
         parameters::Text as ParseMode,
     },
+    Bot,
 };
 use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() {
-    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
-    bot.text(|context| {
-        async move {
-            let calc_result = meval::eval_str(&context.text.value);
-            let message = if let Ok(answer) = calc_result {
-                format!("= `{}`", answer)
-            } else {
-                "Whops, I couldn't evaluate your expression :(".into()
-            };
-            let reply = ParseMode::markdown(&message);
+    bot.text(|context| async move {
+        let calc_result = meval::eval_str(&context.text.value);
+        let message = if let Ok(answer) = calc_result {
+            format!("= `{}`", answer)
+        } else {
+            "Whops, I couldn't evaluate your expression :(".into()
+        };
+        let reply = ParseMode::markdown(&message);
 
-            let call_result = context.send_message_in_reply(reply).call().await;
-            if let Err(err) = call_result {
-                dbg!(err);
-            }
+        let call_result = context.send_message_in_reply(reply).call().await;
+        if let Err(err) = call_result {
+            dbg!(err);
         }
     });
 
