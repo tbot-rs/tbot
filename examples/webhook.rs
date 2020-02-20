@@ -1,20 +1,18 @@
-use tbot::prelude::*;
+use tbot::{prelude::*, Bot};
 
 const URL: &str = "https://example.com";
 const PORT: u16 = 2000;
 
 #[tokio::main]
 async fn main() {
-    let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
-    bot.text(|context| {
-        async move {
-            let echo = &context.text.value;
-            let call_result = context.send_message_in_reply(echo).call().await;
+    bot.text(|context| async move {
+        let echo = &context.text.value;
+        let call_result = context.send_message_in_reply(echo).call().await;
 
-            if let Err(err) = call_result {
-                dbg!(err);
-            }
+        if let Err(err) = call_result {
+            dbg!(err);
         }
     });
 
