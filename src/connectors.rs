@@ -39,7 +39,7 @@ pub fn proxy(proxy: proxy::Proxy) -> Proxy {
 
 pub(crate) fn create_client<C: Connector>(connector: C) -> internal::Client<C> {
     Client::builder()
-        .keep_alive(false)
+        .pool_max_idle_per_host(0)
         .build::<C, Body>(connector)
 }
 

@@ -44,7 +44,7 @@ pub enum EntityKind {
     /// String of monowidth text.
     Code,
     /// Block of monowidth text.
-    Pre(String),
+    Pre(Option<String>),
     /// A clickable text url.
     TextLink(String),
     /// A mention for users without username.
@@ -141,10 +141,7 @@ impl<'v> Visitor<'v> for EntityVisitor {
             UNDERLINE => EntityKind::Underline,
             STRIKETHROUGH => EntityKind::Strikethrough,
             CODE => EntityKind::Code,
-            PRE => EntityKind::Pre(
-                language
-                    .ok_or_else(|| serde::de::Error::missing_field(LANGUAGE))?,
-            ),
+            PRE => EntityKind::Pre(language),
             _ => {
                 return Err(Error::unknown_variant(
                     &kind,
