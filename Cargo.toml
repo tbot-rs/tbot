@@ -83,6 +83,10 @@ name = "proxy"
 required-features = ["tokio/macros"]
 
 [[example]]
+name = "messenger"
+required-features = ["tokio/macros", "tokio/sync"]
+
+[[example]]
 name = "sticker_packs"
 required-features = ["tokio/macros"]
 

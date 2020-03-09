@@ -21,9 +21,10 @@ use tracing::{error, instrument, trace, warn};
 mod handlers_macros;
 
 mod polling;
+mod stateful;
 pub mod webhook;
 
-pub use {polling::Polling, webhook::Webhook};
+pub use {polling::Polling, stateful::Stateful, webhook::Webhook};
 
 type Handlers<T> = Vec<Box<T>>;
 type Map<T> = HashMap<String, Handlers<T>>;

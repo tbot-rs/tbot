@@ -1,7 +1,7 @@
 use crate::{
     connectors::{self, Connector},
     download_file, errors,
-    event_loop::EventLoop,
+    event_loop::{self, EventLoop},
     methods::*,
     types::{
         callback, chat,
@@ -78,6 +78,14 @@ impl<C> Bot<C> {
     /// Constructs an `EventLoop`.
     pub fn event_loop(self) -> EventLoop<C> {
         EventLoop::new(self)
+    }
+
+    /// Constructs a stateful event loop.
+    pub fn stateful_event_loop<S>(self, state: S) -> event_loop::Stateful<C, S>
+    where
+        S: Send + Sync + 'static,
+    {
+        event_loop::Stateful::new(EventLoop::new(self), state)
     }
 
     /// Adds a new sticker to an existing sticker set.
