@@ -66,6 +66,17 @@ impl<C, S: Send + Sync + 'static> Stateful<C, S> {
     {
         self.command("start", handler);
     }
+
+    /// Adds a new handler for text messages.
+    pub fn text<H, F>(&mut self, handler: H)
+    where
+        H: (Fn(Arc<contexts::Text<C>>, Arc<S>) -> F) + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        let state = Arc::clone(&self.state);
+        self.inner
+            .text(move |context| handler(context, Arc::clone(&state)));
+    }
 }
 
 impl<C: Connector, S> Stateful<C, S> {
