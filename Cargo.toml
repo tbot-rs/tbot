@@ -12,8 +12,9 @@ authors = [
 edition = "2018"
 keywords = [
     "telegram",
+    "telegram-bot",
+    "telegram-bot-api",
     "bot",
-    "api",
     "chat",
 ]
 categories = [
@@ -90,3 +91,6 @@ required-features = ["tokio/macros", "tokio/sync"]
 [[example]]
 name = "webhook"
 required-features = ["tokio/macros"]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
