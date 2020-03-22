@@ -4,6 +4,7 @@ use super::handle;
 use crate::{connectors::Connector, errors, event_loop::Webhook};
 use hyper::{server::conn::Http, service::service_fn};
 use hyper::{Body, Request};
+use tracing::instrument;
 
 #[cfg(feature = "tls")]
 pub use native_tls::Identity;
@@ -45,6 +46,7 @@ impl<'a, C> Https<'a, C> {
 
 impl<'a, C: Connector + Clone> Https<'a, C> {
     /// Starts the event loop.
+    #[instrument(name = "https_webhook", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::HttpsWebhook> {
         let Webhook {
             event_loop,

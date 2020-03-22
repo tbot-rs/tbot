@@ -7,6 +7,23 @@ use hyper::{
     Method, Request, Uri,
 };
 use serde::{de::DeserializeOwned, Deserialize};
+use std::{
+    fmt::{self, Debug, Formatter},
+    str::from_utf8,
+};
+use tracing::{error, instrument, trace};
+
+struct DebugBytes<'a>(&'a [u8]);
+
+impl Debug for DebugBytes<'_> {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        if let Ok(string) = from_utf8(self.0) {
+            write!(formatter, "{}", string)
+        } else {
+            write!(formatter, "{:?}", self.0)
+        }
+    }
+}
 
 #[derive(Deserialize)]
 struct ResponseParameters {
@@ -22,6 +39,7 @@ struct Response<T> {
     parameters: Option<ResponseParameters>,
 }
 
+#[instrument(name = "call_method", skip(client, token, boundary, body))]
 pub async fn send_method<'a, T, C>(
     client: &'a Client<C>,
     token: token::Ref<'a>,
@@ -30,9 +48,11 @@ pub async fn send_method<'a, T, C>(
     body: Vec<u8>,
 ) -> Result<T, errors::MethodCall>
 where
-    T: DeserializeOwned,
+    T: DeserializeOwned + Debug,
     C: Connector,
 {
+    trace!(body = debug(DebugBytes(&body)), boundary = debug(&boundary));
+
     let url = Uri::builder()
         .scheme("https")
         .authority("api.telegram.org")
@@ -57,7 +77,15 @@ where
         .headers_mut()
         .insert(hyper::header::CONTENT_TYPE, content_type);
 
-    let (parts, mut body) = client.request(request).await?.into_parts();
+    let (parts, mut body) = client
+        .request(request)
+        .await
+        .map_err(|error| {
+            let error: errors::MethodCall = error.into();
+            error!(error = debug(&error));
+            error
+        })?
+        .into_parts();
 
     let mut response = parts
         .headers
@@ -66,19 +94,30 @@ where
         .map_or_else(Vec::new, Vec::with_capacity);
 
     while let Some(chunk) = body.data().await {
-        response.extend(chunk?);
+        response.extend(chunk.map_err(|error| {
+            let error: errors::MethodCall = error.into();
+            error!(error = debug(&error));
+            error
+        })?);
     }
 
     if response.starts_with(b"<") {
-        // If so, then Bots API is down and returns an HTML.
+        // If so, then Bots API is down and returns HTML.
         // Handling this case specially.
+
+        error!(error = debug(&errors::MethodCall::OutOfService));
         return Err(errors::MethodCall::OutOfService);
     }
 
-    let response: Response<T> = serde_json::from_slice(&response[..])
-        .map_err(|error| errors::MethodCall::Parse { response, error })?;
+    let response: Response<T> =
+        serde_json::from_slice(&response[..]).map_err(|error| {
+            let error = errors::MethodCall::Parse { response, error };
+            error!(error = debug(&error));
+            error
+        })?;
 
     if let Some(result) = response.result {
+        trace!(result = debug(&result));
         return Ok(result);
     }
 
@@ -89,13 +128,17 @@ where
         None => (None, None),
     };
 
-    // If result is empty, then it's a error. In this case, description and
+    // If result is empty, then it's an error. In this case, description and
     // error_code are guaranteed to be specified in the response, so we can
     // unwrap it.
-    Err(errors::MethodCall::RequestError {
+    let error = errors::MethodCall::RequestError {
         description: response.description.unwrap(),
         error_code: response.error_code.unwrap(),
         migrate_to_chat_id,
         retry_after,
-    })
+    };
+
+    trace!(error = debug(&error));
+
+    Err(error)
 }

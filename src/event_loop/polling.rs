@@ -7,6 +7,7 @@ use std::{
     time::Duration,
 };
 use tokio::time::{delay_for, timeout as timeout_future};
+use tracing::instrument;
 
 type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
 
@@ -111,6 +112,7 @@ impl<C> Polling<C> {
 
 impl<C: Connector + Clone> Polling<C> {
     /// Starts the event loop.
+    #[instrument(name = "polling", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::PollingSetup> {
         let Self {
             event_loop,

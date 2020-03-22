@@ -6,6 +6,7 @@ use hyper::{
 };
 use std::{convert::Infallible, net::SocketAddr, sync::Arc};
 use tokio::time::timeout;
+use tracing::instrument;
 
 /// Configures the HTTP webhook server.
 #[must_use = "webhook server needs to be `start`ed to run the event loop"]
@@ -21,6 +22,7 @@ impl<'a, C> Http<'a, C> {
 
 impl<'a, C: Connector + Clone> Http<'a, C> {
     /// Starts the server.
+    #[instrument(name = "http_webhook", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::HttpWebhook> {
         let Webhook {
             event_loop,
