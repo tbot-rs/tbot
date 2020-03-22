@@ -15,6 +15,7 @@ use crate::{
     Bot,
 };
 use std::{collections::HashMap, future::Future, sync::Arc};
+use tracing::{error, instrument, trace, warn};
 
 #[macro_use]
 mod handlers_macros;
@@ -781,7 +782,10 @@ impl<C> EventLoop<C> {
         will_handle_voice,
     }
 
+    #[instrument(skip(self, bot, update))]
     fn handle_update(&self, bot: Arc<Bot<C>>, update: types::Update) {
+        trace!(update = debug(&update));
+
         let update_context =
             Arc::new(contexts::Update::new(Arc::clone(&bot), update.id));
 
@@ -1059,14 +1063,10 @@ impl<C> EventLoop<C> {
                 let context = contexts::Voice::new(bot, data, voice, caption);
                 self.run_voice_handlers(Arc::new(context));
             }
-            message::Kind::SupergroupCreated => eprintln!(
-                "[tbot] Did not expect to receive a `supergroup_created` \
-                 update. Skipping the update."
-            ),
-            message::Kind::ChannelCreated => eprintln!(
-                "[tbot] Did not expect to receive a `channel_created` \
-                 update. Skipping the update."
-            ),
+            message::Kind::SupergroupCreated
+            | message::Kind::ChannelCreated => {
+                warn!("Update not expected; skipping it")
+            }
             kind if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = update::Kind::Message(message);
@@ -1112,10 +1112,7 @@ impl<C> EventLoop<C> {
         let edit_date = if let Some(edit_date) = data.edit_date {
             edit_date
         } else {
-            eprintln!(
-                "[tbot] Expected `edit_date` to exist on an edited message \
-                 update. Skipping the update.",
-            );
+            error!("No `edit_date` on an edited message; skipping it");
             return;
         };
 
@@ -1228,9 +1225,9 @@ impl<C> EventLoop<C> {
             | message::Kind::PassportData(..)
             | message::Kind::Pinned(..)
             | message::Kind::SuccessfulPayment(..)
-            | message::Kind::SupergroupCreated => eprintln!(
-                "[tbot] Skipping this edited message as it was not expected: {:#?}",
-                kind
+            | message::Kind::SupergroupCreated => warn!(
+                "Unexpected message kind received as an edited message; \
+                skipping it"
             ),
 
             kind if self.will_handle_unhandled() => {
