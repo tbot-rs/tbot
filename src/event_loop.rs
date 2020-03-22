@@ -1283,7 +1283,7 @@ fn parse_command(text: &Text) -> (String, Option<&str>) {
     let mut iter =
         // As this function is only run when a message starts with `/`,
         // the first value will always be yielded.
-        text.value.split_whitespace().nth(0).unwrap()[1..].split('@');
+        text.value.split_whitespace().next().unwrap()[1..].split('@');
 
     // `split` always yields the first value.
     let command = iter.next().unwrap();

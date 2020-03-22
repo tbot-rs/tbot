@@ -79,7 +79,7 @@ impl<C> MediaMessage<C> for Command<Text<C>> {
 
     #[must_use]
     fn author_signature(&self) -> Option<&str> {
-        self.context.author_signature.as_ref().map(String::as_str)
+        self.context.author_signature.as_deref()
     }
 
     #[must_use]
@@ -150,7 +150,7 @@ impl<C> MediaMessage<C> for Command<EditedText<C>> {
 
     #[must_use]
     fn author_signature(&self) -> Option<&str> {
-        self.context.author_signature.as_ref().map(String::as_str)
+        self.context.author_signature.as_deref()
     }
 
     #[must_use]
