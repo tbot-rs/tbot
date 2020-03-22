@@ -14,6 +14,7 @@ pub struct Location {
 
 impl Location {
     /// Constructs a `Location`.
+    #[allow(clippy::unused_self)] // https://github.com/rust-lang/rust-clippy/issues/5351
     pub const fn new((latitude, longitude): (f64, f64)) -> Self {
         Self {
             latitude,

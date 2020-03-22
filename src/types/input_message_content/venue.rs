@@ -18,6 +18,7 @@ pub struct Venue<'a> {
 
 impl<'a> Venue<'a> {
     /// Constructs a `Venue`.
+    #[allow(clippy::unused_self)] // https://github.com/rust-lang/rust-clippy/issues/5351
     pub const fn new(
         (latitude, longitude): (f64, f64),
         title: &'a str,
