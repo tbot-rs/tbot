@@ -134,7 +134,7 @@ impl<C: Connector + Clone> Polling<C> {
         let bot = Arc::new(event_loop.bot.clone());
 
         loop {
-            let next_tick = delay_for(poll_interval);
+            let mut next_tick = delay_for(poll_interval);
 
             let get_updates = bot
                 .get_updates(offset, limit, timeout, allowed_updates)
@@ -150,7 +150,17 @@ impl<C: Connector + Clone> Polling<C> {
                         event_loop.handle_update(Arc::clone(&bot), update);
                     }
                 }
-                Ok(Err(error)) => error_handler(error.into()),
+                Ok(Err(error)) => {
+                    if let errors::MethodCall::RequestError {
+                        retry_after: Some(retry_after),
+                        ..
+                    } = error
+                    {
+                        next_tick = delay_for(Duration::from_secs(retry_after));
+                    }
+
+                    error_handler(error.into());
+                }
                 Err(error) => error_handler(error.into()),
             }
 
