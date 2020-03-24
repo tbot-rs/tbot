@@ -1,14 +1,15 @@
-use super::{EventLoop, Polling, Webhook};
+use crate::event_loop::{EventLoop, Polling, Webhook};
 use crate::{connectors::Connector, contexts, errors};
 use std::{future::Future, sync::Arc};
 
 /// A stateful event loop.
-pub struct Stateful<C, S> {
+#[allow(clippy::module_name_repetitions)]
+pub struct StatefulEventLoop<C, S> {
     inner: EventLoop<C>,
     state: Arc<S>,
 }
 
-impl<C, S> Stateful<C, S> {
+impl<C, S> StatefulEventLoop<C, S> {
     pub(crate) fn new(inner: EventLoop<C>, state: S) -> Self {
         Self {
             inner,
@@ -39,7 +40,7 @@ impl<C, S> Stateful<C, S> {
     }
 }
 
-impl<C, S: Send + Sync + 'static> Stateful<C, S> {
+impl<C, S: Send + Sync + 'static> StatefulEventLoop<C, S> {
     /// Adds a new handler for a command.
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
@@ -79,7 +80,7 @@ impl<C, S: Send + Sync + 'static> Stateful<C, S> {
     }
 }
 
-impl<C: Connector, S> Stateful<C, S> {
+impl<C: Connector, S> StatefulEventLoop<C, S> {
     /// Fetches the bot's username.
     pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
         self.inner.fetch_username().await

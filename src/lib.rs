@@ -78,6 +78,7 @@ pub mod event_loop;
 pub mod markup;
 pub mod methods;
 pub mod types;
+pub mod state;
 
 use {download_file::download_file, multipart::Multipart, token::Token};
 
