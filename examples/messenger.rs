@@ -1,138 +1,236 @@
-use std::collections::HashMap;
+use rand::{distributions::Alphanumeric, prelude::*};
+use std::sync::Arc;
 use tbot::{
+    connectors::Connector,
+    contexts::fields,
     prelude::*,
-    types::{
-        chat,
-        message::text::{Entity, EntityKind},
-        parameters::{ChatId, Text},
-    },
+    state::Chats,
+    types::{chat, parameters::Text},
     Bot,
 };
 use tokio::sync::RwLock;
 
-#[derive(PartialEq, Eq, Hash)]
-enum Recipient {
-    Id(chat::Id),
-    Username(String),
-}
+#[derive(Default)]
+struct State(RwLock<Chats<String>>);
 
-impl<'a> From<ChatId<'a>> for Recipient {
-    fn from(chat_id: ChatId<'a>) -> Self {
-        match chat_id {
-            ChatId::Id(id) => Self::Id(id),
-            ChatId::Username(username) => Self::Username(username.to_owned()),
-            _ => unreachable!(),
+impl State {
+    async fn participants(&self, room: &str) -> Vec<chat::Id> {
+        self.0
+            .read()
+            .await
+            .iter()
+            .filter_map(
+                |(id, chat_room)| {
+                    if chat_room == room {
+                        Some(id)
+                    } else {
+                        None
+                    }
+                },
+            )
+            .collect::<Vec<_>>()
+    }
+
+    async fn join<C: Connector>(
+        &self,
+        bot: &Bot<C>,
+        participant: chat::Id,
+        room: String,
+    ) {
+        self.notify(
+            bot,
+            &room,
+            Text::markdown_v2("_A participant has joined the room\\._"),
+        )
+        .await;
+
+        let previous_room =
+            self.0.write().await.insert_by_id(participant, room);
+
+        if let Some(room) = previous_room {
+            self.notify(
+                bot,
+                &room,
+                Text::markdown_v2("_A participant has left the room\\._"),
+            )
+            .await;
+        }
+    }
+
+    async fn notify<C: Connector>(
+        &self,
+        bot: &Bot<C>,
+        room: &str,
+        message: Text<'_>,
+    ) {
+        let participants = self.participants(room).await;
+
+        for id in participants {
+            let call_result = bot.send_message(id, message).call().await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     }
 }
 
-#[derive(Default)]
-struct State {
-    messages: RwLock<HashMap<Recipient, Vec<String>>>,
+async fn broadcast<Ctx, Con>(context: Arc<Ctx>, state: Arc<State>)
+where
+    Ctx: fields::Text<Con>,
+    Con: Connector,
+{
+    let chats = state.0.read().await;
+    let room = chats.get(&*context);
+    let sender_id = context.chat().id;
+
+    if let Some(room) = room {
+        let recipients = state.participants(room).await;
+
+        for id in recipients {
+            if id == sender_id {
+                continue;
+            }
+            let call_result = context
+                .bot()
+                .send_message(id, &context.text().value)
+                .call()
+                .await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
+        }
+    } else {
+        let call_result = context
+            .send_message(
+                "You have not joined a room to send messages. \
+                 Join one or create a room with /create_room.",
+            )
+            .call()
+            .await;
+
+        if let Err(err) = call_result {
+            dbg!(err);
+        }
+    }
 }
 
 #[tokio::main]
 async fn main() {
-    let mut bot =
-        Bot::from_env("BOT_TOKEN").stateful_event_loop(State::default());
+    let bot = Bot::from_env("BOT_TOKEN");
+    let me = bot.get_me().call().await.ok();
+    let username = me
+        .and_then(|me| me.user.username)
+        .expect("Could not get username");
 
-    bot.start(|context, _| async move {
-        context
-            .send_message_in_reply(
-                "Hello! I'm a bot that can transfer messages between people. \
-                Use /send_message to send messages and /last_message to see \
-                the last message sent to you.",
-            )
-            .call()
-            .await
-            .unwrap();
-    });
+    let mut bot = bot.stateful_event_loop(State::default());
 
-    bot.command("send_message", |context, state| async move {
-        let recipient;
-        let message;
-
-        match context.text.entities.get(0) {
-            Some(Entity {
-                kind: EntityKind::Mention,
-                offset: 0,
-                length,
-                ..
-            }) => {
-                recipient = ChatId::Username(&context.text.value[1..*length]);
-                message = context.text.value[*length..].trim();
-            }
-            Some(Entity {
-                kind: EntityKind::TextMention(user),
-                offset: 0,
-                length,
-                ..
-            }) => {
-                recipient = ChatId::Id(chat::Id(user.id.0));
-                message = context.text.value[*length..].trim();
-            }
-            _ => {
-                let message = Text::markdown_v2(
-                    "Please specify the recipient like this: \
-                    `/send_message @username <text>`",
-                );
-                context.send_message_in_reply(message).call().await.unwrap();
-                return;
-            }
-        };
-
-        state
-            .messages
-            .write()
-            .await
-            .entry(recipient.into())
-            .or_insert_with(Vec::new)
-            .push(message.to_owned());
-
-        context
-            .send_message_in_reply(
-                "Good! Now tell the recipient about me, and they'll see \
-                 your message using the /last_message command.",
-            )
-            .call()
-            .await
-            .unwrap();
-    });
-
-    bot.command("last_message", |context, state| async move {
-        let from = match &context.from {
-            Some(from) => from,
-            None => return,
-        };
-        let mut state = state.messages.write().await;
-        let mut messages = match &from.username {
-            None => {
-                let id = chat::Id(from.id.0);
-                state.get_mut(&Recipient::Id(id))
-            }
-            Some(username) => {
-                state.get_mut(&Recipient::Username(username.clone()))
-            }
-        };
-
-        let last_message =
-            messages.as_mut().and_then(|messages| messages.pop());
-
-        if let Some(message) = last_message {
-            let message = format!("The last message to you:\n\n{}", message);
-            context
-                .send_message_in_reply(&message)
-                .call()
-                .await
-                .unwrap();
-        } else {
-            context
-                .send_message_in_reply(
-                    "You have not received any messages yet.",
+    bot.start(|context, state| async move {
+        if context.text.value.is_empty() {
+            let call_result = context
+                .send_message(
+                    "Hello! I'm a bot for anonymous messaging in rooms. \
+                     Use the /create_room command to create a new room.",
                 )
                 .call()
-                .await
-                .unwrap();
+                .await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
+        } else {
+            state
+                .join(
+                    &context.bot,
+                    context.chat.id,
+                    context.text.value.to_owned(),
+                )
+                .await;
+
+            let call_result = context
+                .send_message(Text::markdown_v2(
+                    "_You have joined the room\\._",
+                ))
+                .call()
+                .await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
+        }
+    });
+
+    bot.help(|context, _| async move {
+        let call_result = context
+            .send_message(
+                "Here are the commands I know:\n\n\
+
+                — /create_room — create rooms;\n\
+                — /send — send messages (you can omit the command if you don't \
+                need to send a command in the beginning of your message);\n\
+                — /leave — leave the current room;\n\
+                — /help — send this message.",
+            )
+            .call()
+            .await;
+
+        if let Err(err) = call_result {
+            dbg!(err);
+        }
+    });
+
+    bot.command("send", broadcast);
+    bot.text(broadcast);
+
+    bot.command("leave", |context, state| async move {
+        let room = state.0.write().await.remove(&*context);
+
+        if let Some(room) = room {
+            state
+                .notify(
+                    &context.bot,
+                    &room,
+                    Text::markdown_v2("_A participant has left the room\\._"),
+                )
+                .await;
+        }
+
+        let call_result = context
+            .send_message(Text::markdown_v2("_You have left the room\\._"))
+            .call()
+            .await;
+
+        if let Err(err) = call_result {
+            dbg!(err);
+        }
+    });
+
+    bot.command("create_room", move |context, state| {
+        let username = username.clone();
+        async move {
+            let room = rand::thread_rng()
+                .sample_iter(&Alphanumeric)
+                .take(10)
+                .collect::<String>();
+
+            let message = format!(
+                "_You have created a new room\\. Share this link so others \
+                 can join your room:_ t\\.me/{}?start\\={}",
+                username.replace("_", "\\_"),
+                room
+            );
+
+            state.join(&context.bot, context.chat.id, room).await;
+
+            let call_result = context
+                .send_message(Text::markdown_v2(&message))
+                .call()
+                .await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     });
 

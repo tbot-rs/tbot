@@ -39,6 +39,7 @@ tracing-futures = "0.2"
 
 [dev-dependencies]
 meval = "0.2"
+rand = "0.7"
 
 [features]
 proxy = []
