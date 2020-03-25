@@ -1,7 +1,7 @@
 use crate::{
     connectors::{self, Connector},
     download_file, errors,
-    event_loop::{EventLoop},
+    event_loop::EventLoop,
     methods::*,
     state::StatefulEventLoop,
     types::{

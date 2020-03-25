@@ -71,6 +71,10 @@ name = "location"
 required-features = ["tokio/macros"]
 
 [[example]]
+name = "messenger"
+required-features = ["tokio/macros", "tokio/sync"]
+
+[[example]]
 name = "payment"
 required-features = ["tokio/macros"]
 
@@ -83,7 +87,7 @@ name = "proxy"
 required-features = ["tokio/macros"]
 
 [[example]]
-name = "messenger"
+name = "questionary"
 required-features = ["tokio/macros", "tokio/sync"]
 
 [[example]]

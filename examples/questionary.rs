@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use tbot::{prelude::*, types::user, Bot};
+use tbot::{prelude::*, state::Chats, Bot};
 use tokio::sync::Mutex;
 
 #[derive(Debug, Default)]
@@ -34,25 +33,16 @@ impl Questionary {
     }
 }
 
-#[derive(Default)]
-struct State {
-    questionaries: Mutex<HashMap<user::Id, Questionary>>,
-}
-
 #[tokio::main]
 async fn main() {
-    let mut bot =
-        Bot::from_env("BOT_TOKEN").stateful_event_loop(State::default());
+    let mut bot = Bot::from_env("BOT_TOKEN")
+        .stateful_event_loop(Mutex::new(Chats::new()));
 
     bot.start(|context, state| async move {
-        let from = match &context.from {
-            Some(from) => from.id,
-            None => return,
-        };
         let questionary = Questionary::default();
         let first_question = questionary.next_question();
 
-        state.questionaries.lock().await.insert(from, questionary);
+        state.lock().await.insert(&*context, questionary);
 
         context
             .send_message_in_reply(first_question)
@@ -62,19 +52,15 @@ async fn main() {
     });
 
     bot.text(|context, state| async move {
-        let from = match &context.from {
-            Some(from) => from.id,
-            None => return,
-        };
-        let mut questionaries = state.questionaries.lock().await;
+        let mut questionaries = state.lock().await;
         let questionary =
-            if let Some(questionary) = questionaries.get_mut(&from) {
+            if let Some(questionary) = questionaries.get_mut(&*context) {
                 questionary
             } else {
                 let questionary = Questionary::default();
                 let first_question = questionary.next_question();
 
-                questionaries.insert(from, questionary);
+                questionaries.insert(&*context, questionary);
 
                 context
                     .send_message_in_reply(first_question)
