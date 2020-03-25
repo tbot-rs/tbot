@@ -1,4 +1,99 @@
 //! A store for state per chat.
+//!
+//! The [`Chats`] store can be used to store some state for each chat
+//! separately. An example of it is a questionary bot when the bot collects
+//! some data from the user step-by-step:
+//!
+//! ```
+//! enum Questionary {
+//!     AskName,
+//!     AskIfPraisedTheBorrowChecker {
+//!         name: String,
+//!     },
+//!     Done {
+//!         name: String,
+//!         has_praised_the_borrow_checker: bool,
+//!     },
+//! }
+//! ```
+//!
+//! [`Chats`] stores its states in a hash map where the key is the chat ID and
+//! the value is the state for the chat. As explained in docs for [`state`],
+//! if you want to mutate state, you need to manually wrap it in a lock,
+//! and this applies to [`Chats`] as well. Let's wrap our state in a [`Mutex`]:
+//!
+//! ```
+//! use tbot::state::Chats;
+//! # use std::sync::Mutex; /*
+//! use tokio::sync::Mutex;
+//! # */
+//!
+//! let mut bot = tbot::from_env!("BOT_TOKEN")
+//!     .stateful_event_loop(Mutex::new(Chats::new()));
+//! # let _: std::sync::Arc<Mutex<Chats<()>>> = bot.get_state();
+//! ```
+//!
+//! [`Chats`]: ./struct.Chats.html
+//! [`state`]: ../index.html
+//! [`Mutex`]: https://docs.rs/tokio/0.2.*/tokio/sync/struct.Mutex.html
+//!
+//! Let's start our questionary once the bot starts the bot:
+//!
+//! ```
+//! # use {std::sync, tbot::state::Chats};
+//! # enum Questionary { AskName };
+//! # struct Mutex(sync::Mutex<Chats<Questionary>>);
+//! # impl Mutex {
+//! #     async fn lock(&self) -> sync::MutexGuard<'_, Chats<Questionary>> {
+//! #         self.0.lock().unwrap()
+//! #     }
+//! # }
+//! # let mut bot = tbot::Bot::new(String::new())
+//! #     .stateful_event_loop(Mutex(sync::Mutex::new(Chats::new())));
+//! use tbot::prelude::*;
+//!
+//! bot.start(|context, state| async move {
+//!     state.lock().await.insert(&*context, Questionary::AskName);
+//!     let call_result =
+//!         context.send_message("Hello! What's your name?").call().await;
+//!
+//!     if let Err(err) = call_result {
+//!         dbg!(err);
+//!     }
+//! });
+//! ```
+//!
+//!
+//! You can see that the [`insert`] method can figure out the chat ID from
+//! the context, but there's still [`insert_by_id`] if you need to. In fact,
+//! [`Chats`]'s API is very similar to the API of `std`'s [`HashMap`],
+//! but instead of the key you need to provide the context or use the equivalent
+//! method with the `_by_id` postfix.
+//!
+//! [`insert`]: ./struct.Chats.html#method.insert
+//! [`insert_by_id`]: ./struct.Chats.html#method.insert_by_id
+//! [`HashMap`]: https://doc.rust-lang.org/std/collections/struct.HashMap.html
+//!
+//! If you need to, you can combine [`Chats`] with other state stores like this:
+//!
+//! ```
+//! # #[derive(Default)]
+//! # struct SomeOtherState;
+//! # use std::sync::RwLock;
+//! use tbot::state::Chats;
+//! # /*
+//! use tokio::sync::RwLock;
+//! # */
+//!
+//! #[derive(Default)]
+//! struct State {
+//!     chats: RwLock<Chats<String>>,
+//!     some_other_state: SomeOtherState,
+//! }
+//!
+//! let mut bot = tbot::from_env!("BOT_TOKEN")
+//!     .stateful_event_loop(State::default());
+//! ```
 
 use crate::{contexts::fields::Message, types::chat};
 use std::{
@@ -7,7 +102,9 @@ use std::{
     ops::Index,
 };
 
-/// A store for state per chat.
+/// A store for state per chat. See [module docs] to learn how to use it.
+///
+/// [module docs]: ./index.html
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Chats<S> {
     chats: HashMap<chat::Id, S>,
