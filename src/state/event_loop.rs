@@ -18,6 +18,7 @@ impl<C, S> StatefulEventLoop<C, S> {
     }
 
     /// Returns an `Arc` to the state.
+    #[must_use]
     pub fn get_state(&self) -> Arc<S> {
         Arc::clone(&self.state)
     }
