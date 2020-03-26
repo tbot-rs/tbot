@@ -45,6 +45,24 @@ impl<C, S> StatefulEventLoop<C, S> {
         Arc::clone(&self.state)
     }
 
+    /// Turns this event loop into a stateless one. Handlers added on this event
+    /// loop are still kept.
+    pub fn into_stateless(self) -> EventLoop<C> {
+        self.inner
+    }
+
+    /// Turns this event loop into another with other state. Handlers added on
+    /// this event loop are still kept and will receive the previous state.
+    pub fn with_other_state<T>(self, other_state: T) -> StatefulEventLoop<C, T>
+    where
+        T: Send + Sync + 'static,
+    {
+        StatefulEventLoop {
+            inner: self.inner,
+            state: Arc::new(other_state),
+        }
+    }
+
     /// Sets the bot's username.
     ///
     /// The username is used when checking if a command such as
