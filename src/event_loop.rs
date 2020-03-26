@@ -208,7 +208,9 @@ impl<C> EventLoop<C> {
     /// Turns this event loop into a stateful one. Handlers added on this event
     /// loop are kept.
     pub fn into_stateful<S>(self, state: S) -> StatefulEventLoop<C, S>
-    where S: Send + Sync + 'static {
+    where
+        S: Send + Sync + 'static,
+    {
         StatefulEventLoop::new(self, state)
     }
 
