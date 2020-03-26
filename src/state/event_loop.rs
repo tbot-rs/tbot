@@ -2,6 +2,28 @@ use crate::event_loop::{EventLoop, Polling, Webhook};
 use crate::{connectors::Connector, contexts, errors};
 use std::{future::Future, sync::Arc};
 
+macro_rules! handler {
+    (
+        #[doc = $doc:literal]
+        $name:ident,
+        $context:path,
+    ) => {
+        #[doc = $doc]
+        pub fn $name<H, F>(&mut self, handler: H)
+        where
+            H: (Fn(Arc<$context>, Arc<S>) -> F)
+                + Send
+                + Sync
+                + 'static,
+            F: Future<Output = ()> + Send + 'static,
+        {
+            let state = Arc::clone(&self.state);
+            self.inner
+                .$name(move |context| handler(context, Arc::clone(&state)));
+        }
+    };
+}
+
 /// A stateful event loop.
 #[allow(clippy::module_name_repetitions)]
 pub struct StatefulEventLoop<C, S> {
@@ -145,29 +167,268 @@ impl<C, S: Send + Sync + 'static> StatefulEventLoop<C, S> {
         });
     }
 
-    /// Adds a new handler for text messages.
-    pub fn text<H, F>(&mut self, handler: H)
-    where
-        H: (Fn(Arc<contexts::Text<C>>, Arc<S>) -> F) + Send + Sync + 'static,
-        F: Future<Output = ()> + Send + 'static,
-    {
-        let state = Arc::clone(&self.state);
-        self.inner
-            .text(move |context| handler(context, Arc::clone(&state)));
+    handler! {
+        /// Adds a new handler which is run after handling an update.
+        after_update,
+        contexts::Update<C>,
     }
 
-    /// Adds a new handler for edited text messages.
-    pub fn edited_text<H, F>(&mut self, handler: H)
-    where
-        H: (Fn(Arc<contexts::EditedText<C>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
-        F: Future<Output = ()> + Send + 'static,
-    {
-        let state = Arc::clone(&self.state);
-        self.inner
-            .edited_text(move |context| handler(context, Arc::clone(&state)));
+    handler! {
+        /// Adds a new handler for animations.
+        animation,
+        contexts::Animation<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for audio.
+        audio,
+        contexts::Audio<C>,
+    }
+
+    handler! {
+        /// Adds a new handler which is run before handling an update.
+        before_update,
+        contexts::Update<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for chosen inline results.
+        chosen_inline,
+        contexts::ChosenInline<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for contacts.
+        contact,
+        contexts::Contact<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for connected websites.
+        connected_website,
+        contexts::ConnectedWebsite<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for created groups.
+        created_group,
+        contexts::CreatedGroup<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for data callbacks.
+        data_callback,
+        contexts::DataCallback<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for deleted chat photos.
+        deleted_chat_photo,
+        contexts::DeletedChatPhoto<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for documents.
+        document,
+        contexts::Document<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited animations.
+        edited_animation,
+        contexts::EditedAnimation<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited audio.
+        edited_audio,
+        contexts::EditedAudio<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited documents.
+        edited_document,
+        contexts::EditedDocument<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited locations.
+        edited_location,
+        contexts::EditedLocation<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited photos.
+        edited_photo,
+        contexts::EditedPhoto<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited text messages.
+        edited_text,
+        contexts::EditedText<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for edited videos.
+        edited_video,
+        contexts::EditedVideo<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for game callbacks.
+        game_callback,
+        contexts::GameCallback<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for game messages.
+        game,
+        contexts::Game<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for inline queries.
+        inline,
+        contexts::Inline<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for invoices.
+        invoice,
+        contexts::Invoice<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for left members.
+        left_member,
+        contexts::LeftMember<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for locations.
+        location,
+        contexts::Location<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for migrations.
+        migration,
+        contexts::Migration<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for new chat photos.
+        new_chat_photo,
+        contexts::NewChatPhoto<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for new chat titles.
+        new_chat_title,
+        contexts::NewChatTitle<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for new members.
+        new_members,
+        contexts::NewMembers<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for passport data.
+        passport,
+        contexts::Passport<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for successful payments.
+        payment,
+        contexts::Payment<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for photos.
+        photo,
+        contexts::Photo<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for pinned messages.
+        pinned_message,
+        contexts::PinnedMessage<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for poll messages.
+        poll,
+        contexts::Poll<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for pre-checkout queries.
+        pre_checkout,
+        contexts::PreCheckout<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for shipping queries.
+        shipping,
+        contexts::Shipping<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for stickers.
+        sticker,
+        contexts::Sticker<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for text messages.
+        text,
+        contexts::Text<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for unhandled updates.
+        unhandled,
+        contexts::Unhandled<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for new states of polls.
+        updated_poll,
+        contexts::UpdatedPoll<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for new answers in the poll.
+        poll_answer,
+        contexts::PollAnswer<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for venues.
+        venue,
+        contexts::Venue<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for videos.
+        video,
+        contexts::Video<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for video notes.
+        video_note,
+        contexts::VideoNote<C>,
+    }
+
+    handler! {
+        /// Adds a new handler for voice messages.
+        voice,
+        contexts::Voice<C>,
     }
 }
 
