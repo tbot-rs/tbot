@@ -91,8 +91,8 @@ where
     let sender_id = context.chat().id;
 
     if let Some(room) = room {
-        let recipients =
-            state.participants(room).await.retain(|id| id != sender_id);
+        let mut recipients = state.participants(room).await;
+        recipients.retain(|&id| id != sender_id);
         let mut sent_messages = Vec::with_capacity(recipients.len());
 
         for id in recipients {
