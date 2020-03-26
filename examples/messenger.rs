@@ -92,7 +92,7 @@ where
 
     if let Some(room) = room {
         let recipients =
-            state.participants(room).await.filter(|id| id != sender_id);
+            state.participants(room).await.retain(|id| id != sender_id);
         let mut sent_messages = Vec::with_capacity(recipients.len());
 
         for id in recipients {
