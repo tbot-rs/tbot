@@ -114,6 +114,37 @@ impl<C, S: Send + Sync + 'static> StatefulEventLoop<C, S> {
         self.command("settings", handler);
     }
 
+    /// Adds a new handler for an edited command.
+    pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
+    where
+        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        let state = Arc::clone(&self.state);
+        self.inner.edited_command(command, move |context| {
+            handler(context, Arc::clone(&state))
+        });
+    }
+
+    /// Adds a new handler for a sequence of edited commands.
+    pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
+    where
+        Cm: IntoIterator<Item = &'static str>,
+        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        let state = Arc::clone(&self.state);
+        self.inner.edited_commands(commands, move |context| {
+            handler(context, Arc::clone(&state))
+        });
+    }
+
     /// Adds a new handler for text messages.
     pub fn text<H, F>(&mut self, handler: H)
     where
@@ -123,6 +154,20 @@ impl<C, S: Send + Sync + 'static> StatefulEventLoop<C, S> {
         let state = Arc::clone(&self.state);
         self.inner
             .text(move |context| handler(context, Arc::clone(&state)));
+    }
+
+    /// Adds a new handler for edited text messages.
+    pub fn edited_text<H, F>(&mut self, handler: H)
+    where
+        H: (Fn(Arc<contexts::EditedText<C>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        let state = Arc::clone(&self.state);
+        self.inner
+            .edited_text(move |context| handler(context, Arc::clone(&state)));
     }
 }
 
