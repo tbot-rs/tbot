@@ -95,6 +95,8 @@
 
 pub mod chats;
 mod event_loop;
+pub mod messages;
 
 pub use chats::Chats;
 pub use event_loop::StatefulEventLoop;
+pub use messages::Messages;

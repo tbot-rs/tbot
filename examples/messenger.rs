@@ -4,18 +4,24 @@ use tbot::{
     connectors::Connector,
     contexts::fields,
     prelude::*,
-    state::Chats,
+    state::{
+        messages::{MessageId, Messages},
+        Chats,
+    },
     types::{chat, parameters::Text},
     Bot,
 };
 use tokio::sync::RwLock;
 
 #[derive(Default)]
-struct State(RwLock<Chats<String>>);
+struct State {
+    chats: RwLock<Chats<String>>,
+    messages: RwLock<Messages<Vec<MessageId>>>,
+}
 
 impl State {
     async fn participants(&self, room: &str) -> Vec<chat::Id> {
-        self.0
+        self.chats
             .read()
             .await
             .iter()
@@ -45,7 +51,7 @@ impl State {
         .await;
 
         let previous_room =
-            self.0.write().await.insert_by_id(participant, room);
+            self.chats.write().await.insert_by_id(participant, room);
 
         if let Some(room) = previous_room {
             self.notify(
@@ -80,27 +86,37 @@ where
     Ctx: fields::Text<Con>,
     Con: Connector,
 {
-    let chats = state.0.read().await;
+    let chats = state.chats.read().await;
     let room = chats.get(&*context);
     let sender_id = context.chat().id;
 
     if let Some(room) = room {
-        let recipients = state.participants(room).await;
+        let recipients =
+            state.participants(room).await.filter(|id| id != sender_id);
+        let mut sent_messages = Vec::with_capacity(recipients.len());
 
         for id in recipients {
-            if id == sender_id {
-                continue;
-            }
             let call_result = context
                 .bot()
                 .send_message(id, &context.text().value)
                 .call()
                 .await;
 
-            if let Err(err) = call_result {
-                dbg!(err);
+            match call_result {
+                Ok(message) => {
+                    sent_messages.push(MessageId::from_message(&message));
+                }
+                Err(err) => {
+                    dbg!(err);
+                }
             }
         }
+
+        state
+            .messages
+            .write()
+            .await
+            .insert(&*context, sent_messages);
     } else {
         let call_result = context
             .send_message(
@@ -112,6 +128,30 @@ where
 
         if let Err(err) = call_result {
             dbg!(err);
+        }
+    }
+}
+
+async fn broadcast_edit<Ctx, Con>(context: Arc<Ctx>, state: Arc<State>)
+where
+    Ctx: fields::Text<Con>,
+    Con: Connector,
+{
+    if let Some(messages) = state.messages.read().await.get(&*context) {
+        for MessageId {
+            chat_id,
+            message_id,
+        } in messages
+        {
+            let call_result = context
+                .bot()
+                .edit_message_text(*chat_id, *message_id, &context.text().value)
+                .call()
+                .await;
+
+            if let Err(err) = call_result {
+                dbg!(err);
+            }
         }
     }
 }
@@ -183,8 +223,11 @@ async fn main() {
     bot.command("send", broadcast);
     bot.text(broadcast);
 
+    bot.edited_command("send", broadcast_edit);
+    bot.edited_text(broadcast_edit);
+
     bot.command("leave", |context, state| async move {
-        let room = state.0.write().await.remove(&*context);
+        let room = state.chats.write().await.remove(&*context);
 
         if let Some(room) = room {
             state
