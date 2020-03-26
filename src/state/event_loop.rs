@@ -31,6 +31,7 @@ pub struct StatefulEventLoop<C, S> {
     state: Arc<S>,
 }
 
+#[allow(clippy::use_self)] // https://github.com/rust-lang/rust-clippy/issues/4143
 impl<C, S> StatefulEventLoop<C, S> {
     pub(crate) fn new(inner: EventLoop<C>, state: S) -> Self {
         Self {
@@ -47,6 +48,7 @@ impl<C, S> StatefulEventLoop<C, S> {
 
     /// Turns this event loop into a stateless one. Handlers added on this event
     /// loop are still kept.
+    #[allow(clippy::missing_const_for_fn)] // https://github.com/rust-lang/rust-clippy/issues/4979
     pub fn into_stateless(self) -> EventLoop<C> {
         self.inner
     }
