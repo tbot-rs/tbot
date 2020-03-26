@@ -5,12 +5,12 @@ use std::{future::Future, sync::Arc};
 macro_rules! handler {
     (
         $context:path,
-        #[doc = $doc:literal]
+        $(#[doc = $doc:literal])+
         $name:ident,
-        #[doc = $doc_if:literal]
+        $(#[doc = $doc_if:literal])+
         $name_if:ident,
     ) => {
-        #[doc = $doc]
+        $(#[doc = $doc])+
         pub fn $name<H, F>(&mut self, handler: H)
         where
             H: (Fn(Arc<$context>, Arc<S>) -> F)
@@ -24,7 +24,7 @@ macro_rules! handler {
                 .$name(move |context| handler(context, Arc::clone(&state)));
         }
 
-        #[doc = $doc_if]
+        $(#[doc = $doc_if])+
         pub fn $name_if<H, HF, P, PF>(
             &mut self,
             predicate: P,
@@ -140,7 +140,8 @@ where
         });
     }
 
-    /// Adds a new handler for a command which is run if the predicate returns true.
+    /// Adds a new handler for a command which is run if the predicate
+    /// returns true.
     pub fn command_if<H, HF, P, PF>(
         &mut self,
         command: &'static str,
@@ -187,7 +188,8 @@ where
         });
     }
 
-    /// Adds a new handler for a sequence of commands which is run if the predicate returns true.
+    /// Adds a new handler for a sequence of commands which is run
+    /// if the predicate returns true.
     pub fn commands_if<Cm, H, HF, P, PF>(
         &mut self,
         commands: Cm,
@@ -231,7 +233,8 @@ where
         self.command("start", handler);
     }
 
-    /// Adds a new handler for the `/start` command which is run if the predicate returns true.
+    /// Adds a new handler for the `/start` command which is run
+    /// if the predicate returns true.
     pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
         H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
@@ -270,7 +273,8 @@ where
         self.command("help", handler);
     }
 
-    /// Adds a new handler for the `/help` command which is run if the predicate returns true.
+    /// Adds a new handler for the `/help` command which is run if the predicate
+    /// returns true.
     pub fn help_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
         H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
@@ -309,7 +313,8 @@ where
         self.command("settings", handler);
     }
 
-    /// Adds a new handler for the `/settings` command which is run if the predicate returns true.
+    /// Adds a new handler for the `/settings` command which is run
+    /// if the predicate returns true.
     pub fn settings_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
         H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
@@ -351,7 +356,8 @@ where
         });
     }
 
-    /// Adds a new handler for an edited command which is run if the predicate returns true.
+    /// Adds a new handler for an edited command which is run if the predicate
+    /// returns true.
     pub fn edited_command_if<H, HF, P, PF>(
         &mut self,
         command: &'static str,
@@ -398,7 +404,8 @@ where
         });
     }
 
-    /// Adds a new handler for a sequence of edited commands which is run if the predicate returns true.
+    /// Adds a new handler for a sequence of edited commands which is run
+    /// if the predicate returns true.
     pub fn edited_commands_if<Cm, H, HF, P, PF>(
         &mut self,
         commands: Cm,
@@ -434,7 +441,8 @@ where
         contexts::Update<C>,
         /// Adds a new handler which is run after handling an update.
         after_update,
-        /// Adds a new handler which is run after handling an update and if the predicate returns true.
+        /// Adds a new handler which is run after handling an update and
+        /// if the predicate returns true.
         after_update_if,
     }
 
@@ -442,7 +450,8 @@ where
         contexts::Animation<C>,
         /// Adds a new handler for animations.
         animation,
-        /// Adds a new handler for animations which is run if the predicate returns true.
+        /// Adds a new handler for animations which is run if the predicate
+        /// returns true.
         animation_if,
     }
 
@@ -450,7 +459,8 @@ where
         contexts::Audio<C>,
         /// Adds a new handler for audio.
         audio,
-        /// Adds a new handler for audio which is run if the predicate returns true.
+        /// Adds a new handler for audio which is run if the predicate
+        /// returns true.
         audio_if,
     }
 
@@ -458,7 +468,8 @@ where
         contexts::Update<C>,
         /// Adds a new handler which is run before handling an update.
         before_update,
-        /// Adds a new handler which is run before handling an update and if the predicate returns true.
+        /// Adds a new handler which is run before handling an update and
+        /// if the predicate returns true.
         before_update_if,
     }
 
@@ -466,7 +477,8 @@ where
         contexts::ChosenInline<C>,
         /// Adds a new handler for chosen inline results.
         chosen_inline,
-        /// Adds a new handler for chosen inline results which is run if the predicate returns true.
+        /// Adds a new handler for chosen inline results which is run
+        /// if the predicate returns true.
         chosen_inline_if,
     }
 
@@ -474,7 +486,8 @@ where
         contexts::Contact<C>,
         /// Adds a new handler for contacts.
         contact,
-        /// Adds a new handler for contacts which is run if the predicate returns true.
+        /// Adds a new handler for contacts which is run if the predicate
+        /// returns true.
         contact_if,
     }
 
@@ -482,7 +495,8 @@ where
         contexts::ConnectedWebsite<C>,
         /// Adds a new handler for connected websites.
         connected_website,
-        /// Adds a new handler for connected websites which is run if the predicate returns true.
+        /// Adds a new handler for connected websites which is run
+        /// if the predicate returns true.
         connected_website_if,
     }
 
@@ -490,7 +504,8 @@ where
         contexts::CreatedGroup<C>,
         /// Adds a new handler for created groups.
         created_group,
-        /// Adds a new handler for created groups which is run if the predicate returns true.
+        /// Adds a new handler for created groups which is run if the predicate
+        /// returns true.
         created_group_if,
     }
 
@@ -498,7 +513,8 @@ where
         contexts::DataCallback<C>,
         /// Adds a new handler for data callbacks.
         data_callback,
-        /// Adds a new handler for data callbacks which is run if the predicate returns true.
+        /// Adds a new handler for data callbacks which is run if the predicate
+        /// returns true.
         data_callback_if,
     }
 
@@ -506,7 +522,8 @@ where
         contexts::DeletedChatPhoto<C>,
         /// Adds a new handler for deleted chat photos.
         deleted_chat_photo,
-        /// Adds a new handler for deleted chat photos which is run if the predicate returns true.
+        /// Adds a new handler for deleted chat photos which is run
+        /// if the predicate returns true.
         deleted_chat_photo_if,
     }
 
@@ -514,7 +531,8 @@ where
         contexts::Document<C>,
         /// Adds a new handler for documents.
         document,
-        /// Adds a new handler for documents which is run if the predicate returns true.
+        /// Adds a new handler for documents which is run if the predicate
+        /// returns true.
         document_if,
     }
 
@@ -522,7 +540,8 @@ where
         contexts::EditedAnimation<C>,
         /// Adds a new handler for edited animations.
         edited_animation,
-        /// Adds a new handler for edited animations which is run if the predicate returns true.
+        /// Adds a new handler for edited animations which is run
+        /// if the predicate returns true.
         edited_animation_if,
     }
 
@@ -530,7 +549,8 @@ where
         contexts::EditedAudio<C>,
         /// Adds a new handler for edited audio.
         edited_audio,
-        /// Adds a new handler for edited audio which is run if the predicate returns true.
+        /// Adds a new handler for edited audio which is run if the predicate
+        /// returns true.
         edited_audio_if,
     }
 
@@ -538,7 +558,8 @@ where
         contexts::EditedDocument<C>,
         /// Adds a new handler for edited documents.
         edited_document,
-        /// Adds a new handler for edited documents which is run if the predicate returns true.
+        /// Adds a new handler for edited documents which is run
+        /// if the predicate returns true.
         edited_document_if,
     }
 
@@ -546,7 +567,8 @@ where
         contexts::EditedLocation<C>,
         /// Adds a new handler for edited locations.
         edited_location,
-        /// Adds a new handler for edited locations which is run if the predicate returns true.
+        /// Adds a new handler for edited locations which is run
+        /// if the predicate returns true.
         edited_location_if,
     }
 
@@ -554,7 +576,8 @@ where
         contexts::EditedPhoto<C>,
         /// Adds a new handler for edited photos.
         edited_photo,
-        /// Adds a new handler for edited photos which is run if the predicate returns true.
+        /// Adds a new handler for edited photos which is run if the predicate
+        /// returns true.
         edited_photo_if,
     }
 
@@ -562,7 +585,8 @@ where
         contexts::EditedText<C>,
         /// Adds a new handler for edited text messages.
         edited_text,
-        /// Adds a new handler for edited text messages which is run if the predicate returns true.
+        /// Adds a new handler for edited text messages which is run
+        /// if the predicate returns true.
         edited_text_if,
     }
 
@@ -570,7 +594,8 @@ where
         contexts::EditedVideo<C>,
         /// Adds a new handler for edited videos.
         edited_video,
-        /// Adds a new handler for edited videos which is run if the predicate returns true.
+        /// Adds a new handler for edited videos which is run if the predicate
+        /// returns true.
         edited_video_if,
     }
 
@@ -578,7 +603,8 @@ where
         contexts::GameCallback<C>,
         /// Adds a new handler for game callbacks.
         game_callback,
-        /// Adds a new handler for game callbacks which is run if the predicate returns true.
+        /// Adds a new handler for game callbacks which is run if the predicate
+        /// returns true.
         game_callback_if,
     }
 
@@ -586,7 +612,8 @@ where
         contexts::Game<C>,
         /// Adds a new handler for game messages.
         game,
-        /// Adds a new handler for game messages which is run if the predicate returns true.
+        /// Adds a new handler for game messages which is run if the predicate
+        /// returns true.
         game_if,
     }
 
@@ -594,7 +621,8 @@ where
         contexts::Inline<C>,
         /// Adds a new handler for inline queries.
         inline,
-        /// Adds a new handler for inline queries which is run if the predicate returns true.
+        /// Adds a new handler for inline queries which is run if the predicate
+        /// returns true.
         inline_if,
     }
 
@@ -602,7 +630,8 @@ where
         contexts::Invoice<C>,
         /// Adds a new handler for invoices.
         invoice,
-        /// Adds a new handler for invoices which is run if the predicate returns true.
+        /// Adds a new handler for invoices which is run if the predicate
+        /// returns true.
         invoice_if,
     }
 
@@ -610,7 +639,8 @@ where
         contexts::LeftMember<C>,
         /// Adds a new handler for left members.
         left_member,
-        /// Adds a new handler for left members which is run if the predicate returns true.
+        /// Adds a new handler for left members which is run if the predicate
+        /// returns true.
         left_member_if,
     }
 
@@ -618,7 +648,8 @@ where
         contexts::Location<C>,
         /// Adds a new handler for locations.
         location,
-        /// Adds a new handler for locations which is run if the predicate returns true.
+        /// Adds a new handler for locations which is run if the predicate
+        /// returns true.
         location_if,
     }
 
@@ -626,7 +657,8 @@ where
         contexts::Migration<C>,
         /// Adds a new handler for migrations.
         migration,
-        /// Adds a new handler for migrations which is run if the predicate returns true.
+        /// Adds a new handler for migrations which is run if the predicate
+        /// returns true.
         migration_if,
     }
 
@@ -634,7 +666,8 @@ where
         contexts::NewChatPhoto<C>,
         /// Adds a new handler for new chat photos.
         new_chat_photo,
-        /// Adds a new handler for new chat photos which is run if the predicate returns true.
+        /// Adds a new handler for new chat photos which is run if the predicate
+        /// returns true.
         new_chat_photo_if,
     }
 
@@ -642,7 +675,8 @@ where
         contexts::NewChatTitle<C>,
         /// Adds a new handler for new chat titles.
         new_chat_title,
-        /// Adds a new handler for new chat titles which is run if the predicate returns true.
+        /// Adds a new handler for new chat titles which is run if the predicate
+        /// returns true.
         new_chat_title_if,
     }
 
@@ -650,7 +684,8 @@ where
         contexts::NewMembers<C>,
         /// Adds a new handler for new members.
         new_members,
-        /// Adds a new handler for new members which is run if the predicate returns true.
+        /// Adds a new handler for new members which is run if the predicate
+        /// returns true.
         new_members_if,
     }
 
@@ -658,7 +693,8 @@ where
         contexts::Passport<C>,
         /// Adds a new handler for passport data.
         passport,
-        /// Adds a new handler for passport data which is run if the predicate returns true.
+        /// Adds a new handler for passport data which is run if the predicate
+        /// returns true.
         passport_if,
     }
 
@@ -666,7 +702,8 @@ where
         contexts::Payment<C>,
         /// Adds a new handler for successful payments.
         payment,
-        /// Adds a new handler for successful payments which is run if the predicate returns true.
+        /// Adds a new handler for successful payments which is run
+        /// if the predicate returns true.
         payment_if,
     }
 
@@ -674,7 +711,8 @@ where
         contexts::Photo<C>,
         /// Adds a new handler for photos.
         photo,
-        /// Adds a new handler for photos which is run if the predicate returns true.
+        /// Adds a new handler for photos which is run if the predicate
+        /// returns true.
         photo_if,
     }
 
@@ -682,7 +720,8 @@ where
         contexts::PinnedMessage<C>,
         /// Adds a new handler for pinned messages.
         pinned_message,
-        /// Adds a new handler for pinned messages which is run if the predicate returns true.
+        /// Adds a new handler for pinned messages which is run if the predicate
+        /// returns true.
         pinned_message_if,
     }
 
@@ -690,7 +729,8 @@ where
         contexts::Poll<C>,
         /// Adds a new handler for poll messages.
         poll,
-        /// Adds a new handler for poll messages which is run if the predicate returns true.
+        /// Adds a new handler for poll messages which is run if the predicate
+        /// returns true.
         poll_if,
     }
 
@@ -698,7 +738,8 @@ where
         contexts::PreCheckout<C>,
         /// Adds a new handler for pre-checkout queries.
         pre_checkout,
-        /// Adds a new handler for pre-checkout queries which is run if the predicate returns true.
+        /// Adds a new handler for pre-checkout queries which is run
+        /// if the predicate returns true.
         pre_checkout_if,
     }
 
@@ -706,7 +747,8 @@ where
         contexts::Shipping<C>,
         /// Adds a new handler for shipping queries.
         shipping,
-        /// Adds a new handler for shipping queries which is run if the predicate returns true.
+        /// Adds a new handler for shipping queries which is run
+        /// if the predicate returns true.
         shipping_if,
     }
 
@@ -714,7 +756,8 @@ where
         contexts::Sticker<C>,
         /// Adds a new handler for stickers.
         sticker,
-        /// Adds a new handler for stickers which is run if the predicate returns true.
+        /// Adds a new handler for stickers which is run if the predicate
+        /// returns true.
         sticker_if,
     }
 
@@ -722,7 +765,8 @@ where
         contexts::Text<C>,
         /// Adds a new handler for text messages.
         text,
-        /// Adds a new handler for text messages which is run if the predicate returns true.
+        /// Adds a new handler for text messages which is run if the predicate
+        /// returns true.
         text_if,
     }
 
@@ -730,7 +774,8 @@ where
         contexts::Unhandled<C>,
         /// Adds a new handler for unhandled updates.
         unhandled,
-        /// Adds a new handler for unhandled updates which is run if the predicate returns true.
+        /// Adds a new handler for unhandled updates which is run
+        /// if the predicate returns true.
         unhandled_if,
     }
 
@@ -738,7 +783,8 @@ where
         contexts::UpdatedPoll<C>,
         /// Adds a new handler for new states of polls.
         updated_poll,
-        /// Adds a new handler for new states of polls which is run if the predicate returns true.
+        /// Adds a new handler for new states of polls which is run
+        /// if the predicate returns true.
         updated_poll_if,
     }
 
@@ -746,7 +792,8 @@ where
         contexts::PollAnswer<C>,
         /// Adds a new handler for new answers in the poll.
         poll_answer,
-        /// Adds a new handler for new answers in the poll which is run if the predicate returns true.
+        /// Adds a new handler for new answers in the poll which is run
+        /// if the predicate returns true.
         poll_answer_if,
     }
 
@@ -754,7 +801,8 @@ where
         contexts::Venue<C>,
         /// Adds a new handler for venues.
         venue,
-        /// Adds a new handler for venues which is run if the predicate returns true.
+        /// Adds a new handler for venues which is run if the predicate
+        /// returns true.
         venue_if,
     }
 
@@ -762,7 +810,8 @@ where
         contexts::Video<C>,
         /// Adds a new handler for videos.
         video,
-        /// Adds a new handler for videos which is run if the predicate returns true.
+        /// Adds a new handler for videos which is run if the predicate
+        /// returns true.
         video_if,
     }
 
@@ -770,7 +819,8 @@ where
         contexts::VideoNote<C>,
         /// Adds a new handler for video notes.
         video_note,
-        /// Adds a new handler for video notes which is run if the predicate returns true.
+        /// Adds a new handler for video notes which is run if the predicate
+        /// returns true.
         video_note_if,
     }
 
@@ -778,7 +828,8 @@ where
         contexts::Voice<C>,
         /// Adds a new handler for voice messages.
         voice,
-        /// Adds a new handler for voice messages which is run if the predicate returns true.
+        /// Adds a new handler for voice messages which is run if the predicate
+        /// returns true.
         voice_if,
     }
 }
