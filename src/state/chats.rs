@@ -96,6 +96,7 @@
 //! ```
 
 use crate::{contexts::fields::Message, types::chat};
+use serde::{Deserialize, Serialize};
 use std::{
     collections::hash_map::{self, Entry, HashMap, IntoIter},
     iter::FromIterator,
@@ -105,7 +106,8 @@ use std::{
 /// A store for state per chat. See [module docs] to learn how to use it.
 ///
 /// [module docs]: ./index.html
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Chats<S> {
     chats: HashMap<chat::Id, S>,
 }

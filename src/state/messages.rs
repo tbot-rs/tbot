@@ -27,6 +27,7 @@ use crate::{
     contexts::fields::Message,
     types::{chat, message},
 };
+use serde::{Deserialize, Serialize};
 use std::{
     collections::hash_map::{self, Entry, HashMap, IntoIter},
     iter::FromIterator,
@@ -34,7 +35,7 @@ use std::{
 };
 
 /// A struct containing the message's and its chat's IDs.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[must_use]
 pub struct MessageId {
     /// The ID of the message's chat.
@@ -67,7 +68,8 @@ impl MessageId {
 /// A store for state per message. See [module docs] to learn how to use it.
 ///
 /// [module docs]: ./index.html
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Messages<S> {
     messages: HashMap<MessageId, S>,
 }
