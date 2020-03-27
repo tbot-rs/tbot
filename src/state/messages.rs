@@ -374,7 +374,7 @@ impl<S> Messages<S> {
 
     /// Checks if there's state for a message from the context.
     #[must_use]
-    pub fn has<Ctx, Con>(&mut self, context: &Ctx) -> bool
+    pub fn has<Ctx, Con>(&self, context: &Ctx) -> bool
     where
         Ctx: Message<Con>,
     {

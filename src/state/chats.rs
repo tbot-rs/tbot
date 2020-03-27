@@ -243,7 +243,7 @@ impl<S> Chats<S> {
 
     /// Checks if there's state for a chat by the context.
     #[must_use]
-    pub fn has<Ctx, Con>(&mut self, context: &Ctx) -> bool
+    pub fn has<Ctx, Con>(&self, context: &Ctx) -> bool
     where
         Ctx: Message<Con>,
     {
