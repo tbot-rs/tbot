@@ -28,6 +28,7 @@ impl<'a, C: Connector + Clone> Http<'a, C> {
             event_loop,
             ip,
             port,
+            updates_url,
             url,
             certificate,
             max_connections,
@@ -45,18 +46,21 @@ impl<'a, C: Connector + Clone> Http<'a, C> {
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
         let addr = SocketAddr::new(ip, port);
+        let updates_url = Arc::new(updates_url);
 
         Server::bind(&addr)
             .serve(make_service_fn(move |_| {
                 let bot = Arc::clone(&bot);
                 let event_loop = Arc::clone(&event_loop);
+                let updates_url = Arc::clone(&updates_url);
 
-                async {
+                async move {
                     let service = service_fn(move |request| {
                         handle(
                             Arc::clone(&bot),
                             Arc::clone(&event_loop),
                             request,
+                            Arc::clone(&updates_url),
                         )
                     });
 
