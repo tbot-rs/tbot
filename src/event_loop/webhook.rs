@@ -29,6 +29,7 @@ pub struct Webhook<'a, C> {
     ip: IpAddr,
     port: u16,
     request_timeout: Duration,
+    updates_url: String,
 
     url: &'a str,
     certificate: Option<&'a str>,
@@ -47,6 +48,7 @@ impl<'a, C> Webhook<'a, C> {
             ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
             port,
             request_timeout: Duration::from_secs(60),
+            updates_url: String::from("/"),
 
             url,
             certificate: None,
@@ -58,6 +60,24 @@ impl<'a, C> Webhook<'a, C> {
     /// Configures the IP `tbot` will bind to.
     pub const fn ip(mut self, ip: IpAddr) -> Self {
         self.ip = ip;
+        self
+    }
+
+    /// Configures the URL that `tbot` will accept connections to.
+    /// `/` by default.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the URL doesn't starts with `/`.
+    pub fn accept_updates_on(mut self, url: String) -> Self {
+        if !url.starts_with('/') {
+            panic!(
+                "[tbot] `Webhook::accept_connections_to` takes URLs starting \
+                only with `/`"
+            );
+        }
+
+        self.updates_url = url;
         self
     }
 
@@ -113,11 +133,11 @@ impl<'a, C> Webhook<'a, C> {
     }
 }
 
-fn is_request_correct(request: &Request<Body>) -> bool {
+fn is_request_correct(request: &Request<Body>, updates_url: &str) -> bool {
     let content_type = request.headers().get("Content-Type");
 
     request.method() == Method::POST
-        && request.uri() == "/"
+        && request.uri() == updates_url
         && content_type.map(|x| x == "application/json") == Some(true)
 }
 
@@ -125,11 +145,12 @@ async fn handle<C>(
     bot: Arc<Bot<C>>,
     event_loop: Arc<EventLoop<C>>,
     request: Request<Body>,
+    updates_url: Arc<String>,
 ) -> Result<Response<Body>, hyper::Error>
 where
     C: Send + Sync + 'static,
 {
-    if is_request_correct(&request) {
+    if is_request_correct(&request, &*updates_url) {
         let (parts, mut body) = request.into_parts();
         let mut request = parts
             .headers

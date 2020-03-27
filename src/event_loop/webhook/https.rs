@@ -52,6 +52,7 @@ impl<'a, C: Connector + Clone> Https<'a, C> {
             event_loop,
             ip,
             port,
+            updates_url,
             url,
             certificate,
             max_connections,
@@ -69,6 +70,7 @@ impl<'a, C: Connector + Clone> Https<'a, C> {
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
         let addr = SocketAddr::new(ip, port);
+        let updates_url = Arc::new(updates_url);
 
         #[cfg(feature = "tls")]
         let tls_acceptor = {
@@ -88,9 +90,15 @@ impl<'a, C: Connector + Clone> Https<'a, C> {
 
             let bot = Arc::clone(&bot);
             let event_loop = Arc::clone(&event_loop);
+            let updates_url = Arc::clone(&updates_url);
 
             let service = service_fn(move |request: Request<Body>| {
-                handle(Arc::clone(&bot), Arc::clone(&event_loop), request)
+                handle(
+                    Arc::clone(&bot),
+                    Arc::clone(&event_loop),
+                    request,
+                    Arc::clone(&updates_url),
+                )
             });
 
             let conn = http_proto.serve_connection(tls_stream, service);
