@@ -58,6 +58,7 @@ macro_rules! handler {
 
 /// A stateful event loop.
 #[allow(clippy::module_name_repetitions)]
+#[must_use]
 pub struct StatefulEventLoop<C, S> {
     inner: EventLoop<C>,
     state: Arc<S>,
