@@ -40,16 +40,20 @@ pub mod markdown_v2;
 pub use markdown_v2::markdown_v2;
 
 mod bold;
+mod code_block;
+mod inline_code;
 mod italic;
-mod underline;
-mod strikethrough;
 mod raw;
+mod strikethrough;
+mod underline;
 
 pub use bold::{bold, Bold};
+pub use code_block::{code_block, CodeBlock};
+pub use inline_code::{inline_code, InlineCode};
 pub use italic::{italic, Italic};
-pub use underline::{underline, Underline};
-pub use strikethrough::{strikethrough, Strikethrough};
 pub use raw::{raw, Raw};
+pub use strikethrough::{strikethrough, Strikethrough};
+pub use underline::{underline, Underline};
 
 /// A value that can be formatted in all markups.
 pub trait Formattable: markdown_v2::Formattable {}
