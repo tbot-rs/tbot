@@ -18,12 +18,23 @@ pub struct Raw<T>(T);
 /// unchecked user-provided input may insert its own formatting, which may be
 /// undesrirable. Note that all other utilities automatically escape provided
 /// strings as needed.
-pub fn raw<T: Deref<Target = str>>(string: T) -> Raw<T> {
-    Raw(string)
+pub fn raw<I, T>(iterator: I) -> Raw<I>
+where
+    for<'a> &'a I: IntoIterator<Item = &'a T>,
+    T: Deref<Target = str>,
+{
+    Raw(iterator)
 }
 
-impl<T: Deref<Target = str>> markdown_v2::Formattable for Raw<T> {
+impl<I, T> markdown_v2::Formattable for Raw<I>
+where
+    for<'a> &'a I: IntoIterator<Item = &'a T>,
+    T: Deref<Target = str>,
+{
     fn format(&self, formatter: &mut Formatter) -> fmt::Result {
-        formatter.write_str(&*self.0)
+        (&self.0)
+            .into_iter()
+            .map(|x| formatter.write_str(&*x))
+            .collect()
     }
 }
