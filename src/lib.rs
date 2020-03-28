@@ -72,6 +72,7 @@ pub mod connectors;
 pub mod contexts;
 pub mod errors;
 pub mod event_loop;
+pub mod markup;
 pub mod methods;
 pub mod types;
 
