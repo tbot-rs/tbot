@@ -17,6 +17,7 @@ pub const ESCAPED_CODE_ENTITIES: [char; 2] = ['`', '\\'];
 /// Represents a value that can be formatted for MarkdownV2.
 pub trait Formattable {
     /// Writes formatted value to the formatter.
+    #[allow(clippy::missing_errors_doc)]
     fn format(&self, formatter: &mut Formatter) -> fmt::Result;
 }
 

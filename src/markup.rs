@@ -25,7 +25,7 @@
 //! # let bold = bold(vec!["*This will <b>e in </b>old", ", and this too!"]);
 //! use tbot::markup::markdown_v2;
 //! let message = format!("{}", markdown_v2(bold));
-//! assert_eq!(message, "*\\*This will <b>e in </b>old, and this too!*");
+//! assert_eq!(message, r#"*\*This will <b\>e in </b\>old, and this too!*"#);
 //! ```
 //!
 //! As you can see, you can fearlessly pass any strings to formatters and they'll

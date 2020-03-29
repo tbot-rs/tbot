@@ -28,8 +28,7 @@ where
         formatter.write_char('`')?;
         (&self.0)
             .into_iter()
-            .map(|x| x.deref().chars())
-            .flatten()
+            .flat_map(|x| x.deref().chars())
             .map(|x| {
                 if markdown_v2::ESCAPED_CODE_ENTITIES.contains(&x) {
                     formatter.write_char('\\')?;

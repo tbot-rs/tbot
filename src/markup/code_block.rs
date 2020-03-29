@@ -20,7 +20,7 @@ impl<C, L: Deref<Target = str>> CodeBlock<C, L> {
     ///
     /// Panics if the language contains a line break.
     pub fn language(mut self, language: L) -> Self {
-        if language.deref().contains("\n") {
+        if language.deref().contains('\n') {
             panic!(
                 "[tbot] A code block's language may not contain line breaks: {}",
                 language.deref(),
@@ -69,8 +69,7 @@ where
 
         (&self.code)
             .into_iter()
-            .map(|x| x.deref().chars())
-            .flatten()
+            .flat_map(|x| x.deref().chars())
             .map(|x| {
                 if markdown_v2::ESCAPED_CODE_ENTITIES.contains(&x) {
                     formatter.write_char('\\')?;
