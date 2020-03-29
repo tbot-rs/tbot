@@ -1,4 +1,5 @@
 use tbot::{
+    markup::{inline_code, markdown_v2},
     prelude::*,
     types::{
         parameters::{Flexibility::Flexible, Photo, Text},
@@ -44,9 +45,13 @@ async fn main() {
 
             invoice.call().await
         } else {
-            let error_message =
-                format!("Send `/start {}` to get started", START_PARAMETER);
-            let text = Text::markdown(&error_message);
+            let error_message = markdown_v2((
+                "Send ",
+                inline_code(["/start ", START_PARAMETER]),
+                " to get started",
+            ))
+            .to_string();
+            let text = Text::markdown_v2(&error_message);
             context.send_message(text).call().await
         };
 

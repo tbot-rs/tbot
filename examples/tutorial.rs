@@ -1,5 +1,6 @@
 use std::sync::Arc;
 use tbot::{
+    markup::{inline_code, markdown_v2},
     prelude::*,
     types::{
         inline_query::{self, result::Article},
@@ -17,11 +18,12 @@ async fn main() {
     bot.text(|context| async move {
         let calc_result = meval::eval_str(&context.text.value);
         let message = if let Ok(answer) = calc_result {
-            format!("= `{}`", answer)
+            markdown_v2(("= ", inline_code([answer.to_string()]))).to_string()
         } else {
-            "Whops, I couldn't evaluate your expression :(".into()
+            markdown_v2("Whops, I couldn't evaluate your expression :(")
+                .to_string()
         };
-        let reply = ParseMode::markdown(&message);
+        let reply = ParseMode::markdown_v2(&message);
 
         let call_result = context.send_message_in_reply(reply).call().await;
         if let Err(err) = call_result {
@@ -35,12 +37,19 @@ async fn main() {
         async move {
             let calc_result = meval::eval_str(&context.query);
             let (title, message) = if let Ok(answer) = calc_result {
-                let title = answer.to_string();
-                let message = format!("`{} = {}`", context.query, answer);
-                (title, message)
+                let answer = answer.to_string();
+                let message = markdown_v2(inline_code([
+                    context.query.as_str(),
+                    " = ",
+                    answer.as_str(),
+                ]))
+                .to_string();
+                (answer, message)
             } else {
                 let title = "Whops...".into();
-                let message = "I couldn't evaluate your expression :(".into();
+                let message =
+                    markdown_v2("I couldn't evaluate your expression :(")
+                        .to_string();
                 (title, message)
             };
 
@@ -49,7 +58,7 @@ async fn main() {
                 *id += 1;
                 id.to_string()
             };
-            let content = Text::new(ParseMode::markdown(&message));
+            let content = Text::new(ParseMode::markdown_v2(&message));
             let article = Article::new(&title, content).description(&message);
             let result = inline_query::Result::new(&id, article);
 
