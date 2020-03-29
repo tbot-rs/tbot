@@ -1,4 +1,4 @@
-use super::{html, markdown_v2, Formattable};
+use super::{html, markdown_v2, Formattable, Nesting};
 use crate::types::user;
 use std::{
     fmt::{self, Formatter, Write},
@@ -46,9 +46,13 @@ where
     T: Formattable,
     L: Deref<Target = str>,
 {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_char('[')?;
-        markdown_v2::Formattable::format(&self.text, formatter)?;
+        markdown_v2::Formattable::format(&self.text, formatter, nesting)?;
         formatter.write_str("](")?;
 
         match &self.link {
@@ -75,7 +79,11 @@ where
     T: Formattable,
     L: Deref<Target = str>,
 {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_str("<a href=\"")?;
 
         match &self.link {
@@ -95,7 +103,7 @@ where
         }
 
         formatter.write_str("\">")?;
-        html::Formattable::format(&self.text, formatter)?;
+        html::Formattable::format(&self.text, formatter, nesting)?;
         formatter.write_str("</a>")
     }
 }

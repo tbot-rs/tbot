@@ -1,4 +1,4 @@
-use super::{html, markdown_v2, Formattable};
+use super::{html, markdown_v2, Formattable, Nesting};
 use std::fmt::{self, Formatter, Write};
 
 /// Formats text with strikethrough. Can be created with [`strikethrough`].
@@ -13,17 +13,37 @@ pub fn strikethrough<T: Formattable>(text: T) -> Strikethrough<T> {
 }
 
 impl<T: Formattable> markdown_v2::Formattable for Strikethrough<T> {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
-        formatter.write_char('~')?;
-        markdown_v2::Formattable::format(&self.0, formatter)?;
-        formatter.write_char('~')
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
+        if !nesting.strikethrough {
+            formatter.write_char('~')?;
+        }
+        markdown_v2::Formattable::format(
+            &self.0,
+            formatter,
+            Nesting {
+                strikethrough: true,
+                ..nesting
+            },
+        )?;
+        if !nesting.strikethrough {
+            formatter.write_char('~')?;
+        }
+        Ok(())
     }
 }
 
 impl<T: Formattable> html::Formattable for Strikethrough<T> {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_str("<s>")?;
-        html::Formattable::format(&self.0, formatter)?;
+        html::Formattable::format(&self.0, formatter, nesting)?;
         formatter.write_str("</s>")
     }
 }

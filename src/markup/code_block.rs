@@ -1,4 +1,4 @@
-use super::{html, markdown_v2};
+use super::{html, markdown_v2, Nesting};
 use std::{
     fmt::{self, Formatter, Write},
     ops::Deref,
@@ -58,7 +58,7 @@ where
     T: Deref<Target = str>,
     L: Deref<Target = str>,
 {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
         formatter.write_str("```")?;
         if let Some(language) = &self.language {
             language
@@ -94,7 +94,11 @@ where
     T: Deref<Target = str>,
     L: Deref<Target = str>,
 {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_str("<pre>")?;
 
         if let Some(language) = &self.language {
@@ -107,7 +111,7 @@ where
 
         (&self.code)
             .into_iter()
-            .map(|x| html::Formattable::format(&&**x, formatter))
+            .map(|x| html::Formattable::format(&&**x, formatter, nesting))
             .collect::<Result<(), _>>()?;
 
         if self.language.is_some() {

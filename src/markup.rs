@@ -44,7 +44,11 @@
 macro_rules! impl_primitive {
     ($trait:ty, $($primitive:ty)+) => {
         $(impl $trait for $primitive {
-            fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+            fn format(
+                &self,
+                formatter: &mut Formatter,
+                _: Nesting,
+            ) -> fmt::Result {
                 write!(formatter, "{}", self)
             }
         })+
@@ -66,10 +70,14 @@ macro_rules! impl_tuple {
         where
             $($type: $trait,)+
         {
-            fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+            fn format(
+                &self,
+                formatter: &mut Formatter,
+                nesting: Nesting,
+            ) -> fmt::Result {
                 #[allow(non_snake_case)]
                 let ($($type,)+) = self;
-                $($type.format(formatter)?;)+
+                $($type.format(formatter, nesting)?;)+
                 Ok(())
             }
         }
@@ -119,3 +127,12 @@ pub use underline::{underline, Underline};
 /// A value that can be formatted in all markups.
 pub trait Formattable: markdown_v2::Formattable + html::Formattable {}
 impl<T: markdown_v2::Formattable + html::Formattable> Formattable for T {}
+
+#[doc(hidden)]
+#[derive(Clone, Copy, Default)]
+pub struct Nesting {
+    bold: bool,
+    italic: bool,
+    strikethrough: bool,
+    underline: bool,
+}

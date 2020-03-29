@@ -1,4 +1,4 @@
-use super::{html, markdown_v2, Formattable};
+use super::{html, markdown_v2, Formattable, Nesting};
 use std::fmt::{self, Formatter};
 
 /// Formats text underlined. Can be created with [`underline`].
@@ -13,17 +13,37 @@ pub fn underline<T: Formattable>(text: T) -> Underline<T> {
 }
 
 impl<T: Formattable> markdown_v2::Formattable for Underline<T> {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
-        formatter.write_str("\r__")?;
-        markdown_v2::Formattable::format(&self.0, formatter)?;
-        formatter.write_str("\r__")
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
+        if !nesting.underline {
+            formatter.write_str("\r__")?;
+        }
+        markdown_v2::Formattable::format(
+            &self.0,
+            formatter,
+            Nesting {
+                underline: true,
+                ..nesting
+            },
+        )?;
+        if !nesting.underline {
+            formatter.write_str("\r__")?;
+        }
+        Ok(())
     }
 }
 
 impl<T: Formattable> html::Formattable for Underline<T> {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_str("<u>")?;
-        html::Formattable::format(&self.0, formatter)?;
+        html::Formattable::format(&self.0, formatter, nesting)?;
         formatter.write_str("</u>")
     }
 }

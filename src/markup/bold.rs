@@ -1,4 +1,4 @@
-use super::{html, markdown_v2, Formattable};
+use super::{html, markdown_v2, Formattable, Nesting};
 use std::fmt::{self, Formatter, Write};
 
 /// Formats text in bold. Can be created with [`bold`].
@@ -13,17 +13,37 @@ pub fn bold<T: Formattable>(text: T) -> Bold<T> {
 }
 
 impl<T: Formattable> markdown_v2::Formattable for Bold<T> {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
-        formatter.write_char('*')?;
-        markdown_v2::Formattable::format(&self.0, formatter)?;
-        formatter.write_char('*')
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
+        if !nesting.bold {
+            formatter.write_char('*')?;
+        }
+        markdown_v2::Formattable::format(
+            &self.0,
+            formatter,
+            Nesting {
+                bold: true,
+                ..nesting
+            },
+        )?;
+        if !nesting.bold {
+            formatter.write_char('*')?;
+        }
+        Ok(())
     }
 }
 
 impl<T: Formattable> html::Formattable for Bold<T> {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_str("<b>")?;
-        html::Formattable::format(&self.0, formatter)?;
+        html::Formattable::format(&self.0, formatter, nesting)?;
         formatter.write_str("</b>")
     }
 }

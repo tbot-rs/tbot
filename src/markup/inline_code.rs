@@ -1,4 +1,4 @@
-use super::{html, markdown_v2};
+use super::{html, markdown_v2, Nesting};
 use std::{
     fmt::{self, Formatter, Write},
     ops::Deref,
@@ -24,7 +24,7 @@ where
     for<'a> &'a I: IntoIterator<Item = &'a T>,
     T: Deref<Target = str>,
 {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
         formatter.write_char('`')?;
         (&self.0)
             .into_iter()
@@ -45,11 +45,15 @@ where
     for<'a> &'a I: IntoIterator<Item = &'a T>,
     T: Deref<Target = str>,
 {
-    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+    fn format(
+        &self,
+        formatter: &mut Formatter,
+        nesting: Nesting,
+    ) -> fmt::Result {
         formatter.write_str("<code>")?;
         (&self.0)
             .into_iter()
-            .map(|x| html::Formattable::format(&&**x, formatter))
+            .map(|x| html::Formattable::format(&&**x, formatter, nesting))
             .collect::<Result<(), _>>()?;
         formatter.write_str("</code>")
     }
