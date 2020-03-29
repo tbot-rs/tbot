@@ -15,32 +15,29 @@ use crate::{
 };
 
 /// Provides methods appliable to all messages.
-pub trait ChatMethods<'a, C: 'static>: Message<C> {
+pub trait ChatMethods<'b, C: 'static>: Message<C> {
     /// Deletes the photo of this chat.
-    fn delete_chat_photo(&'a self) -> DeleteChatPhoto<'a, C> {
+    fn delete_chat_photo(&self) -> DeleteChatPhoto<'_, C> {
         self.bot().delete_chat_photo(self.chat().id)
     }
 
     /// Deletes the sticker set of this chat.
-    fn delete_chat_sticker_set(&'a self) -> DeleteChatStickerSet<'a, C> {
+    fn delete_chat_sticker_set(&self) -> DeleteChatStickerSet<'_, C> {
         self.bot().delete_chat_sticker_set(self.chat().id)
     }
 
     /// Deletes a message in this chat.
-    fn delete_message(
-        &'a self,
-        message_id: message::Id,
-    ) -> DeleteMessage<'a, C> {
+    fn delete_message(&self, message_id: message::Id) -> DeleteMessage<'_, C> {
         self.bot().delete_message(self.chat().id, message_id)
     }
 
     /// Deletes the incoming message.
-    fn delete_this_message(&'a self) -> DeleteMessage<'a, C> {
+    fn delete_this_message(&self) -> DeleteMessage<'_, C> {
         self.delete_message(self.message_id())
     }
 
     /// Updates the caption of a message in this group.
-    fn edit_message_caption(
+    fn edit_message_caption<'a>(
         &'a self,
         message_id: message::Id,
         caption: impl Into<Text<'a>>,
@@ -51,16 +48,16 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
 
     /// Updates a live location in this group.
     fn edit_message_location(
-        &'a self,
+        &self,
         message_id: message::Id,
         location: (f64, f64),
-    ) -> EditMessageLocation<'a, C> {
+    ) -> EditMessageLocation<'_, C> {
         self.bot()
             .edit_message_location(self.chat().id, message_id, location)
     }
 
     /// Updates the media of a message in this group.
-    fn edit_message_media(
+    fn edit_message_media<'a>(
         &'a self,
         message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
@@ -70,7 +67,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Updates the reply markup of a message in this group.
-    fn edit_message_reply_markup(
+    fn edit_message_reply_markup<'a>(
         &'a self,
         message_id: message::Id,
         reply_markup: inline::Keyboard<'a>,
@@ -83,7 +80,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Updates the text of a message in this group.
-    fn edit_message_text(
+    fn edit_message_text<'a>(
         &'a self,
         message_id: message::Id,
         text: impl Into<Text<'a>>,
@@ -93,12 +90,12 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Exports the invite link of this chat.
-    fn export_chat_invite_link(&'a self) -> ExportChatInviteLink<'a, C> {
+    fn export_chat_invite_link(&self) -> ExportChatInviteLink<'_, C> {
         self.bot().export_chat_invite_link(self.chat().id)
     }
 
     /// Forwards a message to this chat.
-    fn forward_here(
+    fn forward_here<'a>(
         &'a self,
         from_chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
@@ -108,31 +105,31 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Gets information about this chat.
-    fn get_chat(&'a self) -> GetChat<'a, C> {
+    fn get_chat(&self) -> GetChat<'_, C> {
         self.bot().get_chat(self.chat().id)
     }
 
     /// Gets a list of admins of this chat.
-    fn get_chat_administrators(&'a self) -> GetChatAdministrators<'a, C> {
+    fn get_chat_administrators(&self) -> GetChatAdministrators<'_, C> {
         self.bot().get_chat_administrators(self.chat().id)
     }
 
     /// Gets information about a member of this chat.
-    fn get_chat_member(&'a self, user_id: user::Id) -> GetChatMember<'a, C> {
+    fn get_chat_member(&self, user_id: user::Id) -> GetChatMember<'_, C> {
         self.bot().get_chat_member(self.chat().id, user_id)
     }
 
     /// Gets the number of members in this chat.
-    fn get_chat_members_count(&'a self) -> GetChatMembersCount<'a, C> {
+    fn get_chat_members_count(&self) -> GetChatMembersCount<'_, C> {
         self.bot().get_chat_members_count(self.chat().id)
     }
 
     /// Gets infomation about high scores in a game sent in this chat.
     fn get_message_game_high_scores(
-        &'a self,
+        &self,
         message_id: message::Id,
         user_id: user::Id,
-    ) -> GetMessageGameHighScores<'a, C> {
+    ) -> GetMessageGameHighScores<'_, C> {
         self.bot().get_message_game_high_scores(
             self.chat().id,
             message_id,
@@ -141,43 +138,43 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Kicks a member of this chat.
-    fn kick_chat_member(&'a self, user_id: user::Id) -> KickChatMember<'a, C> {
+    fn kick_chat_member(&self, user_id: user::Id) -> KickChatMember<'_, C> {
         self.bot().kick_chat_member(self.chat().id, user_id)
     }
 
     /// Leaves this chat.
-    fn leave_chat(&'a self) -> LeaveChat<'a, C> {
+    fn leave_chat(&self) -> LeaveChat<'_, C> {
         self.bot().leave_chat(self.chat().id)
     }
 
     /// Pins a message in this chat.
     fn pin_chat_message(
-        &'a self,
+        &self,
         message_id: message::Id,
-    ) -> PinChatMessage<'a, C> {
+    ) -> PinChatMessage<'_, C> {
         self.bot().pin_chat_message(self.chat().id, message_id)
     }
 
     /// Promotes a member of this chat.
     fn promote_chat_member(
-        &'a self,
+        &self,
         user_id: user::Id,
-    ) -> PromoteChatMember<'a, C> {
+    ) -> PromoteChatMember<'_, C> {
         self.bot().promote_chat_member(self.chat().id, user_id)
     }
 
     /// Restricts a member of this chat.
     fn restrict_chat_member(
-        &'a self,
+        &self,
         user_id: user::Id,
         permissions: chat::Permissions,
-    ) -> RestrictChatMember<'a, C> {
+    ) -> RestrictChatMember<'_, C> {
         self.bot()
             .restrict_chat_member(self.chat().id, user_id, permissions)
     }
 
     /// Send an animation to this chat.
-    fn send_animation(
+    fn send_animation<'a>(
         &'a self,
         animation: Animation<'a>,
     ) -> SendAnimation<'a, C> {
@@ -185,7 +182,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends an animation in reply to this message.
-    fn send_animation_in_reply(
+    fn send_animation_in_reply<'a>(
         &'a self,
         animation: Animation<'a>,
     ) -> SendAnimation<'a, C> {
@@ -194,23 +191,23 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends an audio to this chat.
-    fn send_audio(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
+    fn send_audio<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
         self.bot().send_audio(self.chat().id, audio)
     }
 
     /// Sends an audio in reply to this message.
-    fn send_audio_in_reply(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
+    fn send_audio_in_reply<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a, C> {
         self.send_audio(audio)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends an action to this group.
-    fn send_chat_action(&'a self, action: chat::Action) -> SendChatAction<C> {
+    fn send_chat_action(&self, action: chat::Action) -> SendChatAction<C> {
         self.bot().send_chat_action(self.chat().id, action)
     }
 
     /// Sends a contact to this group.
-    fn send_contact(
+    fn send_contact<'a>(
         &'a self,
         phone_number: &'a str,
         first_name: &'a str,
@@ -220,7 +217,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a contact in reply to this message.
-    fn send_contact_in_reply(
+    fn send_contact_in_reply<'a>(
         &'a self,
         phone_number: &'a str,
         first_name: &'a str,
@@ -230,12 +227,12 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a game to this chat.
-    fn send_game(&'a self, game_short_name: &'a str) -> SendGame<'a, C> {
+    fn send_game<'a>(&'a self, game_short_name: &'a str) -> SendGame<'a, C> {
         self.bot().send_game(self.chat().id, game_short_name)
     }
 
     /// Sends a game in reply to this message.
-    fn send_game_in_reply(
+    fn send_game_in_reply<'a>(
         &'a self,
         game_short_name: &'a str,
     ) -> SendGame<'a, C> {
@@ -244,12 +241,15 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a document to this chat.
-    fn send_document(&'a self, document: Document<'a>) -> SendDocument<'a, C> {
+    fn send_document<'a>(
+        &'a self,
+        document: Document<'a>,
+    ) -> SendDocument<'a, C> {
         self.bot().send_document(self.chat().id, document)
     }
 
     /// Sends a document in reply to this message.
-    fn send_document_in_reply(
+    fn send_document_in_reply<'a>(
         &'a self,
         document: Document<'a>,
     ) -> SendDocument<'a, C> {
@@ -259,7 +259,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
 
     /// Sends an invoice to this chat.
     #[allow(clippy::too_many_arguments)]
-    fn send_invoice(
+    fn send_invoice<'a>(
         &'a self,
         title: &'a str,
         description: &'a str,
@@ -283,7 +283,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
 
     /// Sends an invoice in reply to this message.
     #[allow(clippy::too_many_arguments)]
-    fn send_invoice_in_reply(
+    fn send_invoice_in_reply<'a>(
         &'a self,
         title: &'a str,
         description: &'a str,
@@ -306,21 +306,18 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a location to this chat.
-    fn send_location(&'a self, location: (f64, f64)) -> SendLocation<C> {
+    fn send_location(&self, location: (f64, f64)) -> SendLocation<C> {
         self.bot().send_location(self.chat().id, location)
     }
 
     /// Sends a location in reply to this message.
-    fn send_location_in_reply(
-        &'a self,
-        location: (f64, f64),
-    ) -> SendLocation<C> {
+    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation<C> {
         self.send_location(location)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends an album to this chat.
-    fn send_media_group(
+    fn send_media_group<'a>(
         &'a self,
         media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
@@ -328,7 +325,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends an album in reply to this message.
-    fn send_media_group_in_reply(
+    fn send_media_group_in_reply<'a>(
         &'a self,
         media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a, C> {
@@ -337,12 +334,15 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a message to this chat.
-    fn send_message(&'a self, text: impl Into<Text<'a>>) -> SendMessage<'a, C> {
+    fn send_message<'a>(
+        &'a self,
+        text: impl Into<Text<'a>>,
+    ) -> SendMessage<'a, C> {
         self.bot().send_message(self.chat().id, text)
     }
 
     /// Sends a message in reply to this message.
-    fn send_message_in_reply(
+    fn send_message_in_reply<'a>(
         &'a self,
         text: impl Into<Text<'a>>,
     ) -> SendMessage<'a, C> {
@@ -351,33 +351,33 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a photo to this chat.
-    fn send_photo(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
+    fn send_photo<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
         self.bot().send_photo(self.chat().id, photo)
     }
 
     /// Sends a photo in reply to this message.
-    fn send_photo_in_reply(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
+    fn send_photo_in_reply<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a, C> {
         self.send_photo(photo)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a poll to this chat.
-    fn send_poll(&'a self, poll: &'a Poll<'a>) -> SendPoll<'a, C> {
+    fn send_poll<'a>(&'a self, poll: &'a Poll<'a>) -> SendPoll<'a, C> {
         self.bot().send_poll(self.chat().id, poll)
     }
 
     /// Sends a poll in reply to this message.
-    fn send_poll_in_reply(&'a self, poll: &'a Poll<'a>) -> SendPoll<'a, C> {
+    fn send_poll_in_reply<'a>(&'a self, poll: &'a Poll<'a>) -> SendPoll<'a, C> {
         self.send_poll(poll).reply_to_message_id(self.message_id())
     }
 
     /// Sends a sticker to this chat.
-    fn send_sticker(&'a self, sticker: Sticker<'a>) -> SendSticker<'a, C> {
+    fn send_sticker<'a>(&'a self, sticker: Sticker<'a>) -> SendSticker<'a, C> {
         self.bot().send_sticker(self.chat().id, sticker)
     }
 
     /// Sends a sticker in reply to this message.
-    fn send_sticker_in_reply(
+    fn send_sticker_in_reply<'a>(
         &'a self,
         sticker: Sticker<'a>,
     ) -> SendSticker<'a, C> {
@@ -386,7 +386,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a venue to this chat.
-    fn send_venue(
+    fn send_venue<'a>(
         &'a self,
         location: (f64, f64),
         title: &'a str,
@@ -397,7 +397,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a venue in reply to this message.
-    fn send_venue_in_reply(
+    fn send_venue_in_reply<'a>(
         &'a self,
         location: (f64, f64),
         title: &'a str,
@@ -408,18 +408,18 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a video to this chat.
-    fn send_video(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
+    fn send_video<'a>(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
         self.bot().send_video(self.chat().id, video)
     }
 
     /// Sends a video in reply to this message.
-    fn send_video_in_reply(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
+    fn send_video_in_reply<'a>(&'a self, video: Video<'a>) -> SendVideo<'a, C> {
         self.send_video(video)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a video note to this chat.
-    fn send_video_note(
+    fn send_video_note<'a>(
         &'a self,
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a, C> {
@@ -427,7 +427,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a video note in reply to this message.
-    fn send_video_note_in_reply(
+    fn send_video_note_in_reply<'a>(
         &'a self,
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a, C> {
@@ -436,18 +436,18 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sends a voice to this chat.
-    fn send_voice(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
+    fn send_voice<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
         self.bot().send_voice(self.chat().id, voice)
     }
 
     /// Sends a voice in reply to this message.
-    fn send_voice_in_reply(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
+    fn send_voice_in_reply<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a, C> {
         self.send_voice(voice)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sets a custom title for an admin in this chat.
-    fn set_chat_administrator_custom_title(
+    fn set_chat_administrator_custom_title<'a>(
         &'a self,
         user_id: user::Id,
         custom_title: &'a str,
@@ -460,7 +460,7 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sets a new description of this chat.
-    fn set_chat_description(
+    fn set_chat_description<'a>(
         &'a self,
         description: &'a str,
     ) -> SetChatDescription<'a, C> {
@@ -469,19 +469,22 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
 
     /// Sets new permissions of this chat.
     fn set_chat_permissions(
-        &'a self,
+        &self,
         permissions: chat::Permissions,
-    ) -> SetChatPermissions<'a, C> {
+    ) -> SetChatPermissions<'_, C> {
         self.bot().set_chat_permissions(self.chat().id, permissions)
     }
 
     /// Sets a new photo of this chat.
-    fn set_chat_photo(&'a self, photo: ChatPhoto<'a>) -> SetChatPhoto<'a, C> {
+    fn set_chat_photo<'a>(
+        &'a self,
+        photo: ChatPhoto<'a>,
+    ) -> SetChatPhoto<'a, C> {
         self.bot().set_chat_photo(self.chat().id, photo)
     }
 
     /// Sets a new sticker set of this chat.
-    fn set_chat_sticker_set(
+    fn set_chat_sticker_set<'a>(
         &'a self,
         sticker_set_name: &'a str,
     ) -> SetChatStickerSet<'a, C> {
@@ -490,17 +493,17 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Sets a new chat title of this chat.
-    fn set_chat_title(&'a self, title: &'a str) -> SetChatTitle<'a, C> {
+    fn set_chat_title<'a>(&'a self, title: &'a str) -> SetChatTitle<'a, C> {
         self.bot().set_chat_title(self.chat().id, title)
     }
 
     /// Sets a new high score for a player who played a game in this chat.
     fn set_message_game_score(
-        &'a self,
+        &self,
         message_id: message::Id,
         user_id: user::Id,
         score: u32,
-    ) -> SetMessageGameScore<'a, C> {
+    ) -> SetMessageGameScore<'_, C> {
         self.bot().set_message_game_score(
             self.chat().id,
             message_id,
@@ -510,17 +513,14 @@ pub trait ChatMethods<'a, C: 'static>: Message<C> {
     }
 
     /// Unbans a member of this chat.
-    fn unban_chat_member(
-        &'a self,
-        user_id: user::Id,
-    ) -> UnbanChatMember<'a, C> {
+    fn unban_chat_member(&self, user_id: user::Id) -> UnbanChatMember<'_, C> {
         self.bot().unban_chat_member(self.chat().id, user_id)
     }
 
     /// Unpins the pinned message in this chat.
-    fn unpin_chat_message(&'a self) -> UnpinChatMessage<'a, C> {
+    fn unpin_chat_message(&self) -> UnpinChatMessage<'_, C> {
         self.bot().unpin_chat_message(self.chat().id)
     }
 }
 
-impl<'a, C: 'static, T: Message<C>> ChatMethods<'a, C> for T {}
+impl<C: 'static, T: Message<C>> ChatMethods<'_, C> for T {}
