@@ -60,6 +60,11 @@ pub use strikethrough::{strikethrough, Strikethrough};
 pub use underline::{underline, Underline};
 
 /// A value that can be formatted in all markups.
-pub trait Formattable: markdown_v2::Formattable + html::Formattable {}
+pub trait Formattable: markdown_v2::Formattable + html::Formattable {
+    /// Puts the value in a `Box` to ease joining different formattable values.
+    fn box_dyn(self) -> Box<dyn Formattable> where Self: Sized + 'static {
+        Box::new(self)
+    }
+}
 
 impl<T> Formattable for T where T: markdown_v2::Formattable + html::Formattable {}
