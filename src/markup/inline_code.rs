@@ -1,4 +1,4 @@
-use super::markdown_v2;
+use super::{html, markdown_v2};
 use std::{
     fmt::{self, Formatter, Write},
     ops::Deref,
@@ -37,5 +37,20 @@ where
             })
             .collect::<Result<(), _>>()?;
         formatter.write_char('`')
+    }
+}
+
+impl<I, T> html::Formattable for InlineCode<I>
+where
+    for<'a> &'a I: IntoIterator<Item = &'a T>,
+    T: Deref<Target = str>,
+{
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        formatter.write_str("<code>")?;
+        (&self.0)
+            .into_iter()
+            .map(|x| html::Formattable::format(&x, formatter))
+            .collect::<Result<(), _>>()?;
+        formatter.write_str("</code>")
     }
 }

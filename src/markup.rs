@@ -35,8 +35,10 @@
 //! [`markdown`]: ./markdown/fn.markdown.html
 //! [`markdown_v2`]: ./markdown_v2/fn.markdown_v2.html
 
+pub mod html;
 pub mod markdown_v2;
 
+pub use html::html;
 pub use markdown_v2::markdown_v2;
 
 mod bold;
@@ -58,6 +60,6 @@ pub use strikethrough::{strikethrough, Strikethrough};
 pub use underline::{underline, Underline};
 
 /// A value that can be formatted in all markups.
-pub trait Formattable: markdown_v2::Formattable {}
+pub trait Formattable: markdown_v2::Formattable + html::Formattable {}
 
-impl<T> Formattable for T where T: markdown_v2::Formattable {}
+impl<T> Formattable for T where T: markdown_v2::Formattable + html::Formattable {}

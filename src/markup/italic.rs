@@ -1,4 +1,4 @@
-use super::{markdown_v2, Formattable};
+use super::{html, markdown_v2, Formattable};
 use std::fmt::{self, Formatter, Write};
 
 /// Formats text in italic. Can be created with [`italic`].
@@ -17,5 +17,13 @@ impl<T: Formattable> markdown_v2::Formattable for Italic<T> {
         formatter.write_char('_')?;
         markdown_v2::Formattable::format(&self.0, formatter)?;
         formatter.write_char('_')
+    }
+}
+
+impl<T: Formattable> html::Formattable for Italic<T> {
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        formatter.write_str("<i>")?;
+        html::Formattable::format(&self.0, formatter)?;
+        formatter.write_str("</i>")
     }
 }

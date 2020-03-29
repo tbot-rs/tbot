@@ -1,4 +1,4 @@
-use super::markdown_v2;
+use super::{html, markdown_v2};
 use std::{
     fmt::{self, Formatter, Write},
     ops::Deref,
@@ -18,11 +18,18 @@ impl<C, L: Deref<Target = str>> CodeBlock<C, L> {
     ///
     /// # Panics
     ///
-    /// Panics if the language contains a line break.
+    /// Panics if the language contains a line break or a quote.
     pub fn language(mut self, language: L) -> Self {
         if language.deref().contains('\n') {
             panic!(
                 "[tbot] A code block's language may not contain line breaks: {}",
+                language.deref(),
+            );
+        }
+
+        if language.deref().contains('"') {
+            panic!(
+                "[tbot] A code block's language may not contain quotes: {}",
                 language.deref(),
             );
         }
@@ -78,5 +85,35 @@ where
             })
             .collect::<Result<(), _>>()?;
         formatter.write_str("\n```")
+    }
+}
+
+impl<I, T, L> html::Formattable for CodeBlock<I, L>
+where
+    for<'a> &'a I: IntoIterator<Item = &'a T>,
+    T: Deref<Target = str>,
+    L: Deref<Target = str>,
+{
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        formatter.write_str("<pre>")?;
+
+        if let Some(language) = &self.language {
+            write!(
+                formatter,
+                "<code class=\"language-{}\">",
+                language.deref()
+            )?;
+        }
+
+        (&self.code)
+            .into_iter()
+            .map(|x| html::Formattable::format(x, formatter))
+            .collect::<Result<(), _>>()?;
+
+        if self.language.is_some() {
+            formatter.write_str("</code>")?;
+        }
+
+        formatter.write_str("</pre>")
     }
 }

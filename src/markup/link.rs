@@ -1,4 +1,4 @@
-use super::{markdown_v2, Formattable};
+use super::{html, markdown_v2, Formattable};
 use crate::types::user;
 use std::{
     fmt::{self, Formatter, Write},
@@ -67,5 +67,35 @@ where
             }
         }
         formatter.write_char(')')
+    }
+}
+
+impl<T, L> html::Formattable for Link<T, L>
+where
+    T: Formattable,
+    L: Deref<Target = str>,
+{
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        formatter.write_str("<a href=\"")?;
+
+        match &self.link {
+            Kind::Link(link) => link
+                .deref()
+                .chars()
+                .map(|x| {
+                    if x == '"' {
+                        formatter.write_char('\\')?;
+                    }
+                    formatter.write_char(x)
+                })
+                .collect::<Result<(), _>>()?,
+            Kind::Mention(user::Id(id)) => {
+                write!(formatter, "tg://user?id={}", id)?
+            }
+        }
+
+        formatter.write_str("\">")?;
+        html::Formattable::format(&self.text, formatter)?;
+        formatter.write_str("</a>")
     }
 }

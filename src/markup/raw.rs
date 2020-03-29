@@ -1,4 +1,4 @@
-use super::markdown_v2;
+use super::{html, markdown_v2};
 use std::{
     fmt::{self, Formatter},
     ops::Deref,
@@ -36,5 +36,15 @@ where
             .into_iter()
             .map(|x| formatter.write_str(&*x))
             .collect()
+    }
+}
+
+impl<I, T> html::Formattable for Raw<I>
+where
+    for<'a> &'a I: IntoIterator<Item = &'a T>,
+    T: Deref<Target = str>,
+{
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        markdown_v2::Formattable::format(self, formatter)
     }
 }
