@@ -49,7 +49,7 @@ where
         formatter.write_str("<code>")?;
         (&self.0)
             .into_iter()
-            .map(|x| html::Formattable::format(&x, formatter))
+            .map(|x| html::Formattable::format(&&**x, formatter))
             .collect::<Result<(), _>>()?;
         formatter.write_str("</code>")
     }

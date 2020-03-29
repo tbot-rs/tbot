@@ -83,5 +83,4 @@ pub use {bot::Bot, event_loop::EventLoop};
 pub mod prelude {
     //! Traits needed when working with `tbot`.
     pub use super::contexts::traits::*;
-    pub use super::markup::Formattable as _;
 }

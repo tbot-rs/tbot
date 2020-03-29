@@ -16,34 +16,48 @@ pub trait Formattable {
     fn format(&self, formatter: &mut Formatter) -> fmt::Result;
 }
 
-impl Formattable for str {
+impl_primitives!(Formattable);
+impl_tuples!(Formattable);
+
+impl Formattable for char {
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        if let Some((_, escaped)) =
+            ESCAPED_TEXT_CHARACTERS.iter().find(|(c, _)| *c == *self)
+        {
+            formatter.write_str(escaped)
+        } else {
+            formatter.write_char(*self)
+        }
+    }
+}
+
+impl Formattable for &'_ str {
     fn format(&self, formatter: &mut Formatter) -> fmt::Result {
         self.chars()
-            .map(|character| {
-                if let Some((_, escaped)) = ESCAPED_TEXT_CHARACTERS
-                    .iter()
-                    .find(|(c, _)| *c == character)
-                {
-                    formatter.write_str(escaped)
-                } else {
-                    formatter.write_char(character)
-                }
-            })
+            .map(|character| character.format(formatter))
             .collect()
     }
 }
 
-impl<T: Formattable> Formattable for [T] {
+impl Formattable for String {
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        self.as_str().format(formatter)
+    }
+}
+
+impl<T: Formattable> Formattable for &'_ [T] {
     fn format(&self, formatter: &mut Formatter) -> fmt::Result {
         self.iter().map(|x| x.format(formatter)).collect()
     }
 }
 
-impl<T> Formattable for T
-where
-    T: Deref,
-    T::Target: Formattable,
-{
+impl<T: Formattable> Formattable for Vec<T> {
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        self.as_slice().format(formatter)
+    }
+}
+
+impl<T: Formattable> Formattable for Box<T> {
     fn format(&self, formatter: &mut Formatter) -> fmt::Result {
         self.deref().format(formatter)
     }

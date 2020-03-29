@@ -107,7 +107,7 @@ where
 
         (&self.code)
             .into_iter()
-            .map(|x| html::Formattable::format(x, formatter))
+            .map(|x| html::Formattable::format(&&**x, formatter))
             .collect::<Result<(), _>>()?;
 
         if self.language.is_some() {
