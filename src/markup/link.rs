@@ -56,7 +56,7 @@ where
                 .deref()
                 .chars()
                 .map(|x| {
-                    if markdown_v2::ESCAPED_LINK_ENTITIES.contains(&x) {
+                    if markdown_v2::ESCAPED_LINK_CHARACTERS.contains(&x) {
                         formatter.write_char('\\')?;
                     }
                     formatter.write_char(x)

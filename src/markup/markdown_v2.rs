@@ -6,16 +6,16 @@ use std::{
 };
 
 /// Characters that need to be escaped to be interpreted as text.
-pub const ESCAPED_TEXT_ENTITIES: [char; 19] = [
+pub const ESCAPED_TEXT_CHARACTERS: [char; 19] = [
     '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{',
     '}', '.', '!', '\\',
 ];
 
 /// Characters that need to be escaped to be interpreted as code.
-pub const ESCAPED_CODE_ENTITIES: [char; 2] = ['`', '\\'];
+pub const ESCAPED_CODE_CHARACTERS: [char; 2] = ['`', '\\'];
 
 /// Characters that need to be escaped to be interpreted as a link.
-pub const ESCAPED_LINK_ENTITIES: [char; 2] = [')', '\\'];
+pub const ESCAPED_LINK_CHARACTERS: [char; 2] = [')', '\\'];
 
 /// Represents a value that can be formatted for MarkdownV2.
 pub trait Formattable {
@@ -28,7 +28,7 @@ impl Formattable for str {
     fn format(&self, formatter: &mut Formatter) -> fmt::Result {
         self.chars()
             .map(|character| {
-                if ESCAPED_TEXT_ENTITIES.contains(&character) {
+                if ESCAPED_TEXT_CHARACTERS.contains(&character) {
                     formatter.write_char('\\')?;
                 }
 

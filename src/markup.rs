@@ -15,10 +15,10 @@
 //! [`link`]: ./fn.link.html
 //!
 //! However, you can't use their return values directly — indeed, how do they
-//! know if they need to formt their inputs as HTML, Markdown or MarkdownV2?
-//! That's where markup formatters [`html`], [`markdown`] and [`markdown_v2`]
-//! come into play. They take the return values from the abstract utilities and
-//! returns values that can finally be turned into strings:
+//! know if they need to formt their inputs as HTML or MarkdownV2? That's where
+//! markup formatters [`html`] and [`markdown_v2`] come into play. They take
+//! the return values from the abstract utilities and returns values that can
+//! finally be turned into strings:
 //!
 //! ```
 //! # use tbot::markup::bold;
@@ -28,11 +28,10 @@
 //! assert_eq!(message, r#"*\*This will <b\>e in </b\>old, and this too!*"#);
 //! ```
 //!
-//! As you can see, you can fearlessly pass any strings to formatters and they'll
-//! be automatically properly escaped. Magic!
+//! As you can see, you can fearlessly pass any strings to formatters
+//! and they'll be automatically properly escaped. Magic!
 //!
 //! [`html`]: ./html/fn.html.html
-//! [`markdown`]: ./markdown/fn.markdown.html
 //! [`markdown_v2`]: ./markdown_v2/fn.markdown_v2.html
 
 pub mod html;
@@ -62,7 +61,10 @@ pub use underline::{underline, Underline};
 /// A value that can be formatted in all markups.
 pub trait Formattable: markdown_v2::Formattable + html::Formattable {
     /// Puts the value in a `Box` to ease joining different formattable values.
-    fn box_dyn(self) -> Box<dyn Formattable> where Self: Sized + 'static {
+    fn box_dyn(self) -> Box<dyn Formattable>
+    where
+        Self: Sized + 'static,
+    {
         Box::new(self)
     }
 }

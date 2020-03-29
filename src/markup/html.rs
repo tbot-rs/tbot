@@ -49,13 +49,13 @@ where
     }
 }
 
-/// Represents Html text. Can be created with [`html`].
+/// Represents HTML text. Can be created with [`html`].
 ///
 /// [`html`]: ./fn.html.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Html<T>(T);
 
-/// Creates MarkdownV2 text.
+/// Creates HTML text.
 pub fn html<T: Formattable>(content: T) -> Html<T> {
     Html(content)
 }

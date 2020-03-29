@@ -65,7 +65,7 @@ where
                 .deref()
                 .chars()
                 .map(|x| {
-                    if markdown_v2::ESCAPED_CODE_ENTITIES.contains(&x) {
+                    if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
                         formatter.write_char('\\')?;
                     }
                     formatter.write_char(x)
@@ -78,7 +78,7 @@ where
             .into_iter()
             .flat_map(|x| x.deref().chars())
             .map(|x| {
-                if markdown_v2::ESCAPED_CODE_ENTITIES.contains(&x) {
+                if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
                     formatter.write_char('\\')?;
                 }
                 formatter.write_char(x)
