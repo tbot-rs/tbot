@@ -14,6 +14,9 @@ pub const ESCAPED_TEXT_ENTITIES: [char; 19] = [
 /// Characters that need to be escaped to be interpreted as code.
 pub const ESCAPED_CODE_ENTITIES: [char; 2] = ['`', '\\'];
 
+/// Characters that need to be escaped to be interpreted as a link.
+pub const ESCAPED_LINK_ENTITIES: [char; 2] = [')', '\\'];
+
 /// Represents a value that can be formatted for MarkdownV2.
 pub trait Formattable {
     /// Writes formatted value to the formatter.

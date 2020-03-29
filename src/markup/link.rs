@@ -1,0 +1,71 @@
+use super::{markdown_v2, Formattable};
+use crate::types::user;
+use std::{
+    fmt::{self, Formatter, Write},
+    ops::Deref,
+};
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+enum Kind<T> {
+    Link(T),
+    Mention(user::Id),
+}
+
+/// Formats a link. Can be created with [`link`] or [`mention`].
+///
+/// [`link`]: ./fn.link.html
+/// [`mention`]: ./fn.mention.html
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct Link<T, L = &'static str> {
+    text: T,
+    link: Kind<L>,
+}
+
+/// Creates a link.
+pub fn link<T, L>(text: T, link: L) -> Link<T, L>
+where
+    T: Formattable,
+    L: Deref<Target = str>,
+{
+    Link {
+        text,
+        link: Kind::Link(link),
+    }
+}
+
+/// Creates a mention by ID.
+pub fn mention<T: Formattable>(text: T, user: user::Id) -> Link<T> {
+    Link {
+        text,
+        link: Kind::Mention(user),
+    }
+}
+
+impl<T, L> markdown_v2::Formattable for Link<T, L>
+where
+    T: Formattable,
+    L: Deref<Target = str>,
+{
+    fn format(&self, formatter: &mut Formatter) -> fmt::Result {
+        formatter.write_char('[')?;
+        markdown_v2::Formattable::format(&self.text, formatter)?;
+        formatter.write_str("](")?;
+
+        match &self.link {
+            Kind::Link(link) => link
+                .deref()
+                .chars()
+                .map(|x| {
+                    if markdown_v2::ESCAPED_LINK_ENTITIES.contains(&x) {
+                        formatter.write_char('\\')?;
+                    }
+                    formatter.write_char(x)
+                })
+                .collect::<Result<(), _>>()?,
+            Kind::Mention(user::Id(id)) => {
+                write!(formatter, "tg://user?id={}", id)?
+            }
+        }
+        formatter.write_char(')')
+    }
+}
