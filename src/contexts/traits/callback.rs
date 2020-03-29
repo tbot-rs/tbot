@@ -4,7 +4,7 @@ use crate::{
 };
 
 /// Provides methods appliable to callback queries.
-pub trait Callback<'a, C: 'static>: fields::Callback<C> {
+pub trait Callback<'b, C: 'static>: fields::Callback<C> {
     /// Answers the callback query.
     ///
     /// If you don't need to choose the action dynamically, using dedicated
@@ -15,7 +15,7 @@ pub trait Callback<'a, C: 'static>: fields::Callback<C> {
     /// [`open_url`]: #method.open_url
     /// [`notify`]: #method.notify
     /// [`alert`]: #method.alert
-    fn answer(
+    fn answer<'a>(
         &'a self,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a, C> {
@@ -23,22 +23,22 @@ pub trait Callback<'a, C: 'static>: fields::Callback<C> {
     }
 
     /// Answers the query without any action.
-    fn ignore(&'a self) -> AnswerCallbackQuery<'a, C> {
+    fn ignore(&self) -> AnswerCallbackQuery<'_, C> {
         self.answer(CallbackAction::with_no_action())
     }
 
     /// Opens a URL.
-    fn open_url(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {
+    fn open_url<'a>(&'a self, url: &'a str) -> AnswerCallbackQuery<'a, C> {
         self.answer(CallbackAction::with_url(url))
     }
 
     /// Shows a notification to the user.
-    fn notify(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
+    fn notify<'a>(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
         self.answer(CallbackAction::with_notification(text))
     }
 
     /// Shows an alert to the user.
-    fn alert(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
+    fn alert<'a>(&'a self, text: &'a str) -> AnswerCallbackQuery<'a, C> {
         self.answer(CallbackAction::with_alert(text))
     }
 }
