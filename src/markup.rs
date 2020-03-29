@@ -26,12 +26,12 @@
 //! ```
 //! # let message = tbot::markup::bold((
 //! #     "*This is <b>old, ",
-//! #     italic("and this is bold and italic!"),
+//! #     tbot::markup::italic("and this is bold and italic!"),
 //! # ));
 //! use tbot::markup::markdown_v2;
 //! assert_eq!(
 //!     markdown_v2(message).to_string(),
-//!     r#"*\*This is <b\>old, _and this is bold and italic!_*"#,
+//!     r#"*\*This is <b\>old, _and this is bold and italic\!_*"#,
 //! );
 //! ```
 //!
