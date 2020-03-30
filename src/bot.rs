@@ -14,7 +14,9 @@ use crate::{
         },
         keyboard::inline,
         message,
-        parameters::{CallbackAction, ImplicitChatId, Poll, Text, UpdateKind},
+        parameters::{
+            BotCommand, CallbackAction, ImplicitChatId, Poll, Text, UpdateKind,
+        },
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
     Token,
@@ -473,6 +475,11 @@ impl<C> Bot<C> {
         GetMe::new(&self.client, self.token.as_ref())
     }
 
+    /// Gets the list of the bot's commands.
+    pub fn get_my_commands(&self) -> GetMyCommands<'_, C> {
+        GetMyCommands::new(&self.client, self.token.as_ref())
+    }
+
     /// Gets a sticker set by its name.
     pub fn get_sticker_set<'a>(
         &'a self,
@@ -890,6 +897,14 @@ impl<C> Bot<C> {
             user_id,
             score,
         )
+    }
+
+    /// Sets the list of the bot's commands.
+    pub fn set_my_commands<'a>(
+        &'a self,
+        commands: &'a [BotCommand<'a>],
+    ) -> SetMyCommands<'a, C> {
+        SetMyCommands::new(&self.client, self.token.as_ref(), commands)
     }
 
     /// Reports passport errors to the user.
