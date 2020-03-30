@@ -9,6 +9,7 @@ mod group_media;
 mod photo;
 mod png_sticker;
 mod sticker;
+mod sticker_set_thumb;
 mod thumb;
 mod video;
 mod video_note;
@@ -18,8 +19,9 @@ pub(crate) use group_media::Album;
 pub use {
     animation::Animation, audio::Audio, chat_photo::ChatPhoto,
     document::Document, editable_media::EditableMedia, group_media::GroupMedia,
-    photo::Photo, png_sticker::PngSticker, sticker::Sticker, thumb::Thumb,
-    video::Video, video_note::VideoNote, voice::Voice,
+    photo::Photo, png_sticker::PngSticker, sticker::Sticker,
+    sticker_set_thumb::StickerSetThumb, thumb::Thumb, video::Video,
+    video_note::VideoNote, voice::Voice,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]

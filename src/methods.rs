@@ -113,6 +113,7 @@ mod set_message_game_score;
 mod set_my_commands;
 mod set_passport_data_errors;
 mod set_sticker_position_in_set;
+mod set_sticker_set_thumb;
 mod set_webhook;
 mod stop_inline_location;
 mod stop_message_location;
@@ -171,6 +172,7 @@ pub use {
     set_my_commands::SetMyCommands,
     set_passport_data_errors::SetPassportDataErrors,
     set_sticker_position_in_set::SetStickerPositionInSet,
+    set_sticker_set_thumb::SetStickerSetThumb,
     stop_inline_location::StopInlineLocation,
     stop_message_location::StopMessageLocation, stop_poll::StopPoll,
     unban_chat_member::UnbanChatMember, unpin_chat_message::UnpinChatMessage,
