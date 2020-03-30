@@ -529,6 +529,15 @@ where
     }
 
     handler! {
+        contexts::Dice<C>,
+        /// Adds a new handler for dice.
+        dice,
+        /// Adds a new handler for dice which is run if the predicate
+        /// returns true.
+        dice_if,
+    }
+
+    handler! {
         contexts::Document<C>,
         /// Adds a new handler for documents.
         document,
