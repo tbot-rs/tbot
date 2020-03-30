@@ -1,6 +1,6 @@
 use super::{Message, Text};
 use crate::types::{
-    chat, passport, Animation, Audio, Contact, Document, Game, Invoice,
+    chat, passport, Animation, Audio, Contact, Dice, Document, Game, Invoice,
     Location, PhotoSize, Poll, Sticker, SuccessfulPayment, User, Venue, Video,
     VideoNote, Voice,
 };
@@ -16,6 +16,8 @@ pub enum Kind {
     Audio(Box<Audio>, Text),
     /// A document. The second item is the caption.
     Document(Box<Document>, Text),
+    /// A dice.
+    Dice(Dice),
     /// An invitation to play a game.
     Game(Box<Game>),
     /// A photo. The second item is the caption, the third one is

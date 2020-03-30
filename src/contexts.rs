@@ -73,6 +73,7 @@ mod contact;
 mod created_group;
 mod data_callback;
 mod deleted_chat_photo;
+mod dice;
 mod document;
 mod edited_animation;
 mod edited_audio;
@@ -116,7 +117,7 @@ pub use {
     animation::Animation, audio::Audio, chosen_inline::ChosenInline,
     command::Command, connected_website::ConnectedWebsite, contact::Contact,
     created_group::CreatedGroup, data_callback::DataCallback,
-    deleted_chat_photo::DeletedChatPhoto, document::Document,
+    deleted_chat_photo::DeletedChatPhoto, dice::Dice, document::Document,
     edited_animation::EditedAnimation, edited_audio::EditedAudio,
     edited_document::EditedDocument, edited_location::EditedLocation,
     edited_photo::EditedPhoto, edited_text::EditedText,

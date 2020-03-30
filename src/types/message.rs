@@ -108,6 +108,7 @@ const TEXT: &str = "text";
 const ENTITIES: &str = "entities";
 const CAPTION_ENTITIES: &str = "caption_entities";
 const AUDIO: &str = "audio";
+const DICE: &str = "dice";
 const DOCUMENT: &str = "document";
 const ANIMATION: &str = "animation";
 const GAME: &str = "game";
@@ -171,6 +172,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         let mut entities = None;
         let mut caption_entities = None;
         let mut audio = None;
+        let mut dice = None;
         let mut document = None;
         let mut animation = None;
         let mut game = None;
@@ -229,6 +231,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 ENTITIES => entities = Some(map.next_value()?),
                 CAPTION_ENTITIES => caption_entities = Some(map.next_value()?),
                 AUDIO => audio = Some(map.next_value()?),
+                DICE => dice = Some(map.next_value()?),
                 DOCUMENT => document = Some(map.next_value()?),
                 ANIMATION => animation = Some(map.next_value()?),
                 GAME => game = Some(map.next_value()?),
@@ -371,6 +374,8 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::ConnectedWebsite(connected_website)
         } else if let Some(passport_data) = passport_data {
             Kind::PassportData(passport_data)
+        } else if let Some(dice) = dice {
+            Kind::Dice(dice)
         } else {
             Kind::Unknown
         };
@@ -418,6 +423,7 @@ impl<'de> serde::Deserialize<'de> for Message {
                 ENTITIES,
                 CAPTION_ENTITIES,
                 AUDIO,
+                DICE,
                 DOCUMENT,
                 ANIMATION,
                 GAME,
