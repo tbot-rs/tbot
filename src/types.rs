@@ -6,6 +6,7 @@ pub mod callback;
 pub mod chat;
 mod chosen_inline_result;
 mod contact;
+mod dice;
 mod document;
 pub mod file;
 pub mod game;
@@ -38,7 +39,7 @@ pub mod webhook_info;
 
 pub use {
     animation::Animation, audio::Audio, chat::Chat,
-    chosen_inline_result::ChosenInlineResult, contact::Contact,
+    chosen_inline_result::ChosenInlineResult, contact::Contact, dice::Dice,
     document::Document, file::File, game::Game,
     inline_message_id::InlineMessageId, inline_query::InlineQuery,
     input_message_content::InputMessageContent, invoice::Invoice,

@@ -41,6 +41,7 @@ type ContactHandler<C> = Handler<contexts::Contact<C>>;
 type CreatedGroupHandler<C> = Handler<contexts::CreatedGroup<C>>;
 type DataCallbackHandler<C> = Handler<contexts::DataCallback<C>>;
 type DeletedChatPhotoHandler<C> = Handler<contexts::DeletedChatPhoto<C>>;
+type DiceHandler<C> = Handler<contexts::Dice<C>>;
 type DocumentHandler<C> = Handler<contexts::Document<C>>;
 type EditedAnimationHandler<C> = Handler<contexts::EditedAnimation<C>>;
 type EditedAudioHandler<C> = Handler<contexts::EditedAudio<C>>;
@@ -115,6 +116,7 @@ pub struct EventLoop<C> {
     created_group_handlers: Handlers<CreatedGroupHandler<C>>,
     data_callback_handlers: Handlers<DataCallbackHandler<C>>,
     deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler<C>>,
+    dice_handlers: Handlers<DiceHandler<C>>,
     document_handlers: Handlers<DocumentHandler<C>>,
     edited_animation_handlers: Handlers<EditedAnimationHandler<C>>,
     edited_audio_handlers: Handlers<EditedAudioHandler<C>>,
@@ -168,6 +170,7 @@ impl<C> EventLoop<C> {
             created_group_handlers: Vec::new(),
             data_callback_handlers: Vec::new(),
             deleted_chat_photo_handlers: Vec::new(),
+            dice_handlers: Vec::new(),
             document_handlers: Vec::new(),
             edited_animation_handlers: Vec::new(),
             edited_audio_handlers: Vec::new(),
@@ -470,6 +473,15 @@ impl<C> EventLoop<C> {
         contexts::DeletedChatPhoto<C>,
         run_deleted_chat_photo_handlers,
         will_handle_deleted_chat_photo,
+    }
+
+    handler! {
+        /// Adds a new handler for dice.
+        dice_handlers,
+        dice,
+        contexts::Dice<C>,
+        run_dice_handlers,
+        will_handle_dice,
     }
 
     handler! {
@@ -926,6 +938,10 @@ impl<C> EventLoop<C> {
                 let context = contexts::Contact::new(bot, data, contact);
                 self.run_contact_handlers(Arc::new(context));
             }
+            message::Kind::Dice(dice) if self.will_handle_dice() => {
+                let context = contexts::Dice::new(bot, data, dice);
+                self.run_dice_handlers(Arc::new(context));
+            }
             message::Kind::Document(document, caption)
                 if self.will_handle_document() =>
             {
@@ -1087,6 +1103,7 @@ impl<C> EventLoop<C> {
             | message::Kind::ChatPhotoDeleted
             | message::Kind::ConnectedWebsite(..)
             | message::Kind::Contact(..)
+            | message::Kind::Dice(..)
             | message::Kind::Document(..)
             | message::Kind::Game(..)
             | message::Kind::GroupCreated
@@ -1215,6 +1232,7 @@ impl<C> EventLoop<C> {
             }
 
             message::Kind::Contact(..)
+            | message::Kind::Dice(..)
             | message::Kind::Game(..)
             | message::Kind::Invoice(..)
             | message::Kind::Poll(..)
