@@ -62,6 +62,9 @@
 #[cfg(all(feature = "tls", feature = "rustls"))]
 compile_error!("`tls` and `rustls` features are mutually exclusive. You should enable only one of them");
 
+#[cfg(not(any(feature = "tls", feature = "rustls")))]
+compile_error!("Either `tls` or `rustls` feature needs to be enabled");
+
 mod bot;
 mod download_file;
 mod internal;
