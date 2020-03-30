@@ -2,6 +2,7 @@
 
 mod animation;
 mod audio;
+mod bot_command;
 pub mod callback;
 pub mod chat;
 mod chosen_inline_result;
@@ -38,7 +39,7 @@ mod voice;
 pub mod webhook_info;
 
 pub use {
-    animation::Animation, audio::Audio, chat::Chat,
+    animation::Animation, audio::Audio, bot_command::BotCommand, chat::Chat,
     chosen_inline_result::ChosenInlineResult, contact::Contact, dice::Dice,
     document::Document, file::File, game::Game,
     inline_message_id::InlineMessageId, inline_query::InlineQuery,

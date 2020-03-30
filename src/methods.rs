@@ -74,6 +74,7 @@ mod get_file;
 mod get_inline_game_high_scores;
 mod get_me;
 mod get_message_game_high_scores;
+mod get_my_commands;
 mod get_sticker_set;
 mod get_updates;
 mod get_user_profile_photos;
@@ -109,6 +110,7 @@ mod set_chat_sticker_set;
 mod set_chat_title;
 mod set_inline_game_score;
 mod set_message_game_score;
+mod set_my_commands;
 mod set_passport_data_errors;
 mod set_sticker_position_in_set;
 mod set_webhook;
@@ -146,7 +148,7 @@ pub use {
     get_chat_members_count::GetChatMembersCount, get_file::GetFile,
     get_inline_game_high_scores::GetInlineGameHighScores, get_me::GetMe,
     get_message_game_high_scores::GetMessageGameHighScores,
-    get_sticker_set::GetStickerSet,
+    get_my_commands::GetMyCommands, get_sticker_set::GetStickerSet,
     get_user_profile_photos::GetUserProfilePhotos,
     get_webhook_info::GetWebhookInfo, kick_chat_member::KickChatMember,
     leave_chat::LeaveChat, pin_chat_message::PinChatMessage,
@@ -166,6 +168,7 @@ pub use {
     set_chat_sticker_set::SetChatStickerSet, set_chat_title::SetChatTitle,
     set_inline_game_score::SetInlineGameScore,
     set_message_game_score::SetMessageGameScore,
+    set_my_commands::SetMyCommands,
     set_passport_data_errors::SetPassportDataErrors,
     set_sticker_position_in_set::SetStickerPositionInSet,
     stop_inline_location::StopInlineLocation,
