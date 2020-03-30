@@ -87,6 +87,7 @@ mod send_animation;
 mod send_audio;
 mod send_chat_action;
 mod send_contact;
+mod send_dice;
 mod send_document;
 mod send_game;
 mod send_invoice;
@@ -152,11 +153,12 @@ pub use {
     promote_chat_member::PromoteChatMember,
     restrict_chat_member::RestrictChatMember, send_animation::SendAnimation,
     send_audio::SendAudio, send_chat_action::SendChatAction,
-    send_contact::SendContact, send_document::SendDocument,
-    send_game::SendGame, send_invoice::SendInvoice,
-    send_location::SendLocation, send_media_group::SendMediaGroup,
-    send_message::SendMessage, send_photo::SendPhoto, send_poll::SendPoll,
-    send_sticker::SendSticker, send_venue::SendVenue, send_video::SendVideo,
+    send_contact::SendContact, send_dice::SendDice,
+    send_document::SendDocument, send_game::SendGame,
+    send_invoice::SendInvoice, send_location::SendLocation,
+    send_media_group::SendMediaGroup, send_message::SendMessage,
+    send_photo::SendPhoto, send_poll::SendPoll, send_sticker::SendSticker,
+    send_venue::SendVenue, send_video::SendVideo,
     send_video_note::SendVideoNote, send_voice::SendVoice,
     set_chat_administrator_custom_title::SetChatAdministratorCustomTitle,
     set_chat_description::SetChatDescription,

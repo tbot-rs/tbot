@@ -634,6 +634,14 @@ impl<C> Bot<C> {
         )
     }
 
+    /// Sends a dice.
+    pub fn send_dice<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+    ) -> SendDice<'a, C> {
+        SendDice::new(&self.client, self.token.as_ref(), chat_id)
+    }
+
     /// Sends a document.
     pub fn send_document<'a>(
         &'a self,
