@@ -3,6 +3,7 @@
 use crate::{
     connectors::Connector,
     contexts, errors,
+    state::StatefulEventLoop,
     types::{
         self, callback,
         message::{
@@ -202,6 +203,15 @@ impl<C> EventLoop<C> {
             video_note_handlers: Vec::new(),
             voice_handlers: Vec::new(),
         }
+    }
+
+    /// Turns this event loop into a stateful one. Handlers added on this event
+    /// loop are kept.
+    pub fn into_stateful<S>(self, state: S) -> StatefulEventLoop<C, S>
+    where
+        S: Send + Sync + 'static,
+    {
+        StatefulEventLoop::new(self, state)
     }
 
     /// Sets the bot's username.

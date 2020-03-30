@@ -39,6 +39,7 @@ tracing-futures = "0.2"
 
 [dev-dependencies]
 meval = "0.2"
+rand = "0.7"
 
 [features]
 proxy = []
@@ -71,6 +72,10 @@ name = "location"
 required-features = ["tokio/macros"]
 
 [[example]]
+name = "messenger"
+required-features = ["tokio/macros", "tokio/sync"]
+
+[[example]]
 name = "payment"
 required-features = ["tokio/macros"]
 
@@ -81,6 +86,10 @@ required-features = ["tokio/macros"]
 [[example]]
 name = "proxy"
 required-features = ["tokio/macros"]
+
+[[example]]
+name = "questionary"
+required-features = ["tokio/macros", "tokio/sync"]
 
 [[example]]
 name = "sticker_packs"

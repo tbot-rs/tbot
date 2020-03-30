@@ -77,6 +77,7 @@ pub mod errors;
 pub mod event_loop;
 pub mod markup;
 pub mod methods;
+pub mod state;
 pub mod types;
 
 use {download_file::download_file, multipart::Multipart, token::Token};
