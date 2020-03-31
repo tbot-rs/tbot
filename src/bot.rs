@@ -936,7 +936,7 @@ impl<C> Bot<C> {
         )
     }
 
-    /// Sets the thumb of sticker set.
+    /// Sets the thumb of a sticker set.
     pub fn set_sticker_set_thumb<'a>(
         &'a self,
         user_id: user::Id,
