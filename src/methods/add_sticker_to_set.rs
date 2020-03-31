@@ -5,7 +5,7 @@ use crate::{
     internal::Client,
     token,
     types::{
-        input_file::{InputFile, PngSticker},
+        input_file::{InputFile, StickerForStickerSet},
         sticker::MaskPosition,
         user,
     },
@@ -24,18 +24,18 @@ pub struct AddStickerToSet<'a, C> {
     token: token::Ref<'a>,
     user_id: user::Id,
     name: &'a str,
-    png_sticker: PngSticker<'a>,
+    sticker: StickerForStickerSet<'a>,
     emojis: &'a str,
     mask_position: Option<MaskPosition>,
 }
 
 impl<'a, C> AddStickerToSet<'a, C> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client<C>,
         token: token::Ref<'a>,
         user_id: user::Id,
         name: &'a str,
-        png_sticker: PngSticker<'a>,
+        sticker: impl Into<StickerForStickerSet<'a>>,
         emojis: &'a str,
     ) -> Self {
         Self {
@@ -43,7 +43,7 @@ impl<'a, C> AddStickerToSet<'a, C> {
             token,
             user_id,
             name,
-            png_sticker,
+            sticker: sticker.into(),
             emojis,
             mask_position: None,
         }
@@ -65,12 +65,21 @@ impl<C: Connector> AddStickerToSet<'_, C> {
             .str("emojis", self.emojis)
             .maybe_json("mask_position", self.mask_position);
 
-        match self.png_sticker.media {
+        let (field, media) = match self.sticker {
+            StickerForStickerSet::Png(sticker) => {
+                ("png_sticker", sticker.media)
+            }
+            StickerForStickerSet::Tgs(sticker) => {
+                ("tgs_sticker", sticker.media)
+            }
+        };
+
+        match media {
             InputFile::File {
                 filename, bytes, ..
-            } => multipart = multipart.file("png_sticker", filename, bytes),
+            } => multipart = multipart.file(field, filename, bytes),
             InputFile::Id(sticker) | InputFile::Url(sticker) => {
-                multipart = multipart.str("png_sticker", sticker);
+                multipart = multipart.str(field, sticker);
             }
         }
 

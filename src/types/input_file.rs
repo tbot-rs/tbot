@@ -9,7 +9,9 @@ mod group_media;
 mod photo;
 mod png_sticker;
 mod sticker;
+mod sticker_for_sticker_set;
 mod sticker_set_thumb;
+mod tgs_sticker;
 mod thumb;
 mod video;
 mod video_note;
@@ -20,8 +22,9 @@ pub use {
     animation::Animation, audio::Audio, chat_photo::ChatPhoto,
     document::Document, editable_media::EditableMedia, group_media::GroupMedia,
     photo::Photo, png_sticker::PngSticker, sticker::Sticker,
-    sticker_set_thumb::StickerSetThumb, thumb::Thumb, video::Video,
-    video_note::VideoNote, voice::Voice,
+    sticker_for_sticker_set::StickerForStickerSet,
+    sticker_set_thumb::StickerSetThumb, tgs_sticker::TgsSticker, thumb::Thumb,
+    video::Video, video_note::VideoNote, voice::Voice,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]

@@ -10,8 +10,8 @@ use crate::{
         inline_message_id, inline_query,
         input_file::{
             Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
-            Photo, PngSticker, Sticker, StickerSetThumb, Video, VideoNote,
-            Voice,
+            Photo, Sticker, StickerForStickerSet, StickerSetThumb, Video,
+            VideoNote, Voice,
         },
         keyboard::inline,
         message,
@@ -97,7 +97,7 @@ impl<C> Bot<C> {
         &'a self,
         user_id: user::Id,
         name: &'a str,
-        png_sticker: PngSticker<'a>,
+        png_sticker: impl Into<StickerForStickerSet<'a>>,
         emojis: &'a str,
     ) -> AddStickerToSet<'a, C> {
         AddStickerToSet::new(
@@ -168,7 +168,7 @@ impl<C> Bot<C> {
         user_id: user::Id,
         name: &'a str,
         title: &'a str,
-        png_sticker: PngSticker<'a>,
+        png_sticker: impl Into<StickerForStickerSet<'a>>,
         emojis: &'a str,
     ) -> CreateNewStickerSet<'a, C> {
         CreateNewStickerSet::new(

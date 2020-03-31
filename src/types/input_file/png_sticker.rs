@@ -1,7 +1,6 @@
 use super::InputFile;
-use serde::ser::SerializeMap;
 
-/// Represents a sticker to be sent.
+/// Represents a PNG sticker to be uploaded in a sticker set.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use]
 pub struct PngSticker<'a> {
@@ -47,16 +46,5 @@ impl<'a> PngSticker<'a> {
         );
 
         Self::new(InputFile::Url(url))
-    }
-}
-
-impl<'a> serde::Serialize for PngSticker<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let mut map = s.serialize_map(None)?;
-
-        map.serialize_entry("type", "png_sticker")?;
-        map.serialize_entry("media", &self.media.with_name("sticker"))?;
-
-        map.end()
     }
 }
