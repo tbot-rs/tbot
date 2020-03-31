@@ -47,8 +47,8 @@ file an issue on either our [GitLab] or [GitHub] repository.
 
 ## Features
 
-- Full Bot API v4.6 support, including Polls v2.0, media download/upload,
-  polling and [webhooks];
+- Full Bot API 4.7 support, as well as media download/upload, polling
+  and [webhooks];
 - `async`/`.await` support, built upon `tokio`;
 - Type-safe and idiomatic API;
 - Easy to use, while scalable and configurable.
