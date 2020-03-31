@@ -240,6 +240,13 @@ impl<C> EventLoop<C> {
     }
 
     /// Adds a new handler for a command.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
@@ -257,6 +264,13 @@ impl<C> EventLoop<C> {
     }
 
     /// Adds a new handler for a sequence of commands.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
     pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
@@ -1285,6 +1299,9 @@ impl<C> EventLoop<C> {
 
 impl<C: Connector> EventLoop<C> {
     /// Fetches the bot's username.
+    ///
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
     pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
         let me = self.bot.get_me().call().await?;
 
