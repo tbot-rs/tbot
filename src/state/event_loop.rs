@@ -127,6 +127,13 @@ where
     S: Send + Sync + 'static,
 {
     /// Adds a new handler for a command.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> F)
@@ -143,6 +150,13 @@ where
 
     /// Adds a new handler for a command which is run if the predicate
     /// returns true.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
     pub fn command_if<H, HF, P, PF>(
         &mut self,
         command: &'static str,
@@ -174,6 +188,13 @@ where
     }
 
     /// Adds a new handler for a sequence of commands.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
     pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
@@ -191,6 +212,13 @@ where
 
     /// Adds a new handler for a sequence of commands which is run
     /// if the predicate returns true.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
     pub fn commands_if<Cm, H, HF, P, PF>(
         &mut self,
         commands: Cm,
@@ -846,6 +874,9 @@ where
 
 impl<C: Connector, S> StatefulEventLoop<C, S> {
     /// Fetches the bot's username.
+    ///
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
     pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
         self.inner.fetch_username().await
     }
