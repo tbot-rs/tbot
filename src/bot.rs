@@ -10,7 +10,8 @@ use crate::{
         inline_message_id, inline_query,
         input_file::{
             Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
-            Photo, PngSticker, Sticker, Video, VideoNote, Voice,
+            Photo, PngSticker, Sticker, StickerSetThumb, Video, VideoNote,
+            Voice,
         },
         keyboard::inline,
         message,
@@ -932,6 +933,22 @@ impl<C> Bot<C> {
             self.token.as_ref(),
             sticker,
             position,
+        )
+    }
+
+    /// Sets the thumb of a sticker set.
+    pub fn set_sticker_set_thumb<'a>(
+        &'a self,
+        user_id: user::Id,
+        name: &'a str,
+        thumb: Option<&'a StickerSetThumb<'a>>,
+    ) -> SetStickerSetThumb<'a, C> {
+        SetStickerSetThumb::new(
+            &self.client,
+            self.token.as_ref(),
+            user_id,
+            name,
+            thumb,
         )
     }
 

@@ -1,6 +1,7 @@
 //! Types related to sticker sets.
 
 use super::Sticker;
+use crate::types::PhotoSize;
 use is_macro::Is;
 use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
 use std::fmt::{self, Formatter};
@@ -33,6 +34,8 @@ pub struct Set {
     pub kind: Kind,
     /// The stickers from this set.
     pub stickers: Vec<Sticker>,
+    /// The thumb of the sticker set.
+    pub thumb: Option<PhotoSize>,
 }
 
 const NAME: &str = "name";
@@ -40,6 +43,7 @@ const TITLE: &str = "title";
 const IS_ANIMATED: &str = "is_animated";
 const CONTAINS_MASKS: &str = "contains_masks";
 const STICKERS: &str = "stickers";
+const THUMB: &str = "thumb";
 
 struct SetVisitor;
 
@@ -59,6 +63,7 @@ impl<'v> Visitor<'v> for SetVisitor {
         let mut is_animated = None;
         let mut contains_masks = None;
         let mut stickers = None;
+        let mut thumb = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -67,6 +72,7 @@ impl<'v> Visitor<'v> for SetVisitor {
                 IS_ANIMATED => is_animated = Some(map.next_value()?),
                 CONTAINS_MASKS => contains_masks = Some(map.next_value()?),
                 STICKERS => stickers = Some(map.next_value()?),
+                THUMB => thumb = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<IgnoredAny>()?;
                 }
@@ -87,6 +93,7 @@ impl<'v> Visitor<'v> for SetVisitor {
                 .ok_or_else(|| serde::de::Error::missing_field(TITLE))?,
             stickers: stickers
                 .ok_or_else(|| serde::de::Error::missing_field(STICKERS))?,
+            thumb,
             kind,
         })
     }
@@ -99,7 +106,7 @@ impl<'de> Deserialize<'de> for Set {
     {
         deserializer.deserialize_struct(
             "sticker::Set",
-            &[NAME, TITLE, IS_ANIMATED, CONTAINS_MASKS, STICKERS],
+            &[NAME, TITLE, IS_ANIMATED, CONTAINS_MASKS, STICKERS, THUMB],
             SetVisitor,
         )
     }
