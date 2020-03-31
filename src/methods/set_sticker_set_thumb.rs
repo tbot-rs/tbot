@@ -11,7 +11,7 @@ use crate::{
     Multipart,
 };
 
-/// Sets the thumb of sticker set.
+/// Sets the thumb of a sticker set.
 ///
 /// Reflects the [`setStickerSetThumb`][docs] method.
 ///
