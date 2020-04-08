@@ -211,8 +211,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 can_restrict_members: can_restrict_members.ok_or_else(
                     || Error::missing_field(CAN_RESTRICT_MEMBERS),
                 )?,
-                can_pin_messages: can_pin_messages
-                    .ok_or_else(|| Error::missing_field(CAN_PIN_MESSAGES))?,
+                can_pin_messages: can_pin_messages.unwrap_or(true),
                 can_promote_members: can_promote_members
                     .ok_or_else(|| Error::missing_field(CAN_PROMOTE_MEMBERS))?,
             },
