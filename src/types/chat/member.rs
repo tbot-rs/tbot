@@ -36,7 +36,7 @@ pub enum Status {
         /// `true` if the admin can restruct users.
         can_restrict_members: bool,
         /// `true` if the admin can pin messages.
-        can_pin_messages: bool,
+        can_pin_messages: Option<bool>,
         /// `true` if the admin can promote members.
         can_promote_members: bool,
     },
@@ -211,7 +211,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 can_restrict_members: can_restrict_members.ok_or_else(
                     || Error::missing_field(CAN_RESTRICT_MEMBERS),
                 )?,
-                can_pin_messages: can_pin_messages.unwrap_or(true),
+                can_pin_messages,
                 can_promote_members: can_promote_members
                     .ok_or_else(|| Error::missing_field(CAN_PROMOTE_MEMBERS))?,
             },
