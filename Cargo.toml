@@ -56,6 +56,10 @@ name = "download"
 required-features = ["tokio/macros"]
 
 [[example]]
+name = "entities"
+required-features = ["tokio/macros"]
+
+[[example]]
 name = "game"
 required-features = ["tokio/macros", "tokio/sync"]
 

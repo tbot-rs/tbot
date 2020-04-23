@@ -79,6 +79,7 @@ pub mod markup;
 pub mod methods;
 pub mod state;
 pub mod types;
+pub mod util;
 
 use {download_file::download_file, multipart::Multipart, token::Token};
 
