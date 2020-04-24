@@ -1,6 +1,6 @@
 //! Types related to polls.
 
-use super::User;
+use super::{message::Text, User};
 use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
 use std::fmt;
@@ -21,6 +21,8 @@ pub enum Kind {
     Quiz {
         /// The index of the correct option.
         correct_option_id: option::Option<usize>,
+        /// The explanation of the quiz.
+        explanation: option::Option<Text>,
     },
 }
 
@@ -80,6 +82,8 @@ const IS_ANONYMOUS: &str = "is_anonymous";
 const KIND: &str = "type";
 const ALLOWS_MULTIPLE_ANSWERS: &str = "allows_multiple_answers";
 const CORRECT_OPTION_ID: &str = "correct_option_id";
+const EXPLANATION: &str = "explanation";
+const EXPLANATION_ENTITIES: &str = "explanation_entities";
 
 const REGULAR: &str = "regular";
 const QUIZ: &str = "quiz";
@@ -106,6 +110,8 @@ impl<'v> Visitor<'v> for PollVisitor {
         let mut kind = None;
         let mut allows_multiple_answers = None;
         let mut correct_option_id = None;
+        let mut explanation = None;
+        let mut explanation_entities = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -124,11 +130,23 @@ impl<'v> Visitor<'v> for PollVisitor {
                 CORRECT_OPTION_ID => {
                     correct_option_id = Some(map.next_value()?)
                 }
+                EXPLANATION => explanation = Some(map.next_value()?),
+                EXPLANATION_ENTITIES => {
+                    explanation_entities = Some(map.next_value()?)
+                }
                 _ => {
                     let _ = map.next_value::<de::IgnoredAny>();
                 }
             }
         }
+
+        let explanation = match explanation {
+            Some(explanation) => Some(Text {
+                value: explanation,
+                entities: explanation_entities.unwrap_or_default(),
+            }),
+            None => None,
+        };
 
         let kind = match kind {
             Some(REGULAR) => Kind::Regular {
@@ -136,7 +154,10 @@ impl<'v> Visitor<'v> for PollVisitor {
                     || de::Error::missing_field(ALLOWS_MULTIPLE_ANSWERS),
                 )?,
             },
-            Some(QUIZ) => Kind::Quiz { correct_option_id },
+            Some(QUIZ) => Kind::Quiz {
+                correct_option_id,
+                explanation,
+            },
             None => return Err(de::Error::missing_field(KIND)),
             Some(unknown_kind) => {
                 return Err(de::Error::unknown_variant(
@@ -180,6 +201,8 @@ impl<'de> Deserialize<'de> for Poll {
                 KIND,
                 ALLOWS_MULTIPLE_ANSWERS,
                 CORRECT_OPTION_ID,
+                EXPLANATION,
+                EXPLANATION_ENTITIES,
             ],
             PollVisitor,
         )

@@ -1,5 +1,6 @@
 //! Types related to polls.
 
+use super::{ParseMode, Text};
 use serde::Serialize;
 
 /// Configures whether multiple answers are allowed in a poll.
@@ -13,16 +14,24 @@ pub enum Answer {
 
 #[derive(Debug, Clone, Copy, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-enum Kind {
-    Quiz { correct_option_id: usize },
-    Regular { allows_multiple_answers: bool },
+enum Kind<'a> {
+    Quiz {
+        correct_option_id: usize,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        explanation: Option<&'a str>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        explanation_parse_mode: Option<ParseMode>,
+    },
+    Regular {
+        allows_multiple_answers: bool,
+    },
 }
 
 /// Represents a poll that will be sent to a user.
 #[derive(Debug, Clone, Copy, Serialize)]
 pub struct Poll<'a> {
     #[serde(flatten)]
-    kind: Kind,
+    kind: Kind<'a>,
     question: &'a str,
     options: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,9 +47,23 @@ impl<'a> Poll<'a> {
         question: &'a str,
         options: &'a [&'a str],
         correct_option_id: usize,
+        explanation: Option<impl Into<Text<'a>>>,
     ) -> Self {
+        let (explanation, explanation_parse_mode) = match explanation {
+            Some(explanation) => {
+                let explanation = explanation.into();
+
+                (Some(explanation.text), explanation.parse_mode)
+            }
+            None => (None, None),
+        };
+
         Self {
-            kind: Kind::Quiz { correct_option_id },
+            kind: Kind::Quiz {
+                correct_option_id,
+                explanation,
+                explanation_parse_mode,
+            },
             question,
             options,
             is_closed: None,
