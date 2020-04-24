@@ -7,7 +7,9 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{ChatId, ImplicitChatId, NotificationState, Poll, poll::AutoClose},
+        parameters::{
+            poll::AutoClose, ChatId, ImplicitChatId, NotificationState, Poll,
+        },
     },
 };
 use serde::Serialize;

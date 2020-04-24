@@ -2,7 +2,7 @@
 
 use super::{message::Text, User};
 use serde::de::{self, Deserializer, MapAccess, Visitor};
-use serde::{Deserialize};
+use serde::Deserialize;
 use std::fmt;
 use std::option;
 
@@ -186,7 +186,8 @@ impl<'v> Visitor<'v> for PollVisitor {
         let auto_close = match open_period {
             Some(open_period) => Some(AutoClose {
                 open_period,
-                close_date: close_date.ok_or_else(|| de::Error::missing_field(CLOSE_DATE))?,
+                close_date: close_date
+                    .ok_or_else(|| de::Error::missing_field(CLOSE_DATE))?,
             }),
             None => None,
         };

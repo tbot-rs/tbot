@@ -65,7 +65,7 @@ impl<'a> Poll<'a> {
                 let explanation = explanation.into();
 
                 (Some(explanation.text), explanation.parse_mode)
-            },
+            }
             None => (None, None),
         };
 

@@ -1,7 +1,8 @@
 use tbot::{
     prelude::*,
-    types::{
-        parameters::{poll::{Answer, AutoClose}, Poll},
+    types::parameters::{
+        poll::{Answer, AutoClose},
+        Poll,
     },
     Bot,
 };
