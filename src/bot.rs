@@ -16,7 +16,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{
-            BotCommand, CallbackAction, ImplicitChatId, Poll, Text, UpdateKind,
+            Any, BotCommand, CallbackAction, ImplicitChatId, Text, UpdateKind,
         },
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
@@ -726,7 +726,7 @@ impl<C> Bot<C> {
     pub fn send_poll<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        poll: &'a Poll<'a>,
+        poll: &'a Any<'a>,
     ) -> SendPoll<'a, C> {
         SendPoll::new(&self.client, self.token.as_ref(), chat_id, poll)
     }
