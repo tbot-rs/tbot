@@ -12,6 +12,17 @@ pub enum Answer {
     Multiple,
 }
 
+/// Tells when the poll will be automatically closed.
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[non_exhaustive]
+#[serde(rename_all = "snake_case")]
+pub enum AutoClose {
+    /// Reflects the `open_period` field.
+    OpenPeriod(u16),
+    /// Reflects the `close_date` field.
+    CloseDate(i64),
+}
+
 #[derive(Debug, Clone, Copy, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum Kind<'a> {
@@ -54,7 +65,7 @@ impl<'a> Poll<'a> {
                 let explanation = explanation.into();
 
                 (Some(explanation.text), explanation.parse_mode)
-            }
+            },
             None => (None, None),
         };
 

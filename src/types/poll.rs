@@ -2,7 +2,7 @@
 
 use super::{message::Text, User};
 use serde::de::{self, Deserializer, MapAccess, Visitor};
-use serde::Deserialize;
+use serde::{Deserialize};
 use std::fmt;
 use std::option;
 
@@ -24,6 +24,14 @@ pub enum Kind {
         /// The explanation of the quiz.
         explanation: option::Option<Text>,
     },
+}
+
+/// Tells when the poll will be automatically closed.
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[non_exhaustive]
+pub struct AutoClose {
+    open_period: u16,
+    close_date: i64,
 }
 
 /// Represents a [`PollOption`].
@@ -58,6 +66,8 @@ pub struct Poll {
     pub is_closed: bool,
     /// `true` if the poll is anonymous.
     pub is_anonymous: bool,
+    /// Tells when the poll will be automatically closed.
+    pub auto_close: option::Option<AutoClose>,
 }
 
 /// Represents a [`PollAnswer`].
@@ -84,6 +94,8 @@ const ALLOWS_MULTIPLE_ANSWERS: &str = "allows_multiple_answers";
 const CORRECT_OPTION_ID: &str = "correct_option_id";
 const EXPLANATION: &str = "explanation";
 const EXPLANATION_ENTITIES: &str = "explanation_entities";
+const OPEN_PERIOD: &str = "open_period";
+const CLOSE_DATE: &str = "close_date";
 
 const REGULAR: &str = "regular";
 const QUIZ: &str = "quiz";
@@ -112,6 +124,8 @@ impl<'v> Visitor<'v> for PollVisitor {
         let mut correct_option_id = None;
         let mut explanation = None;
         let mut explanation_entities = None;
+        let mut open_period = None;
+        let mut close_date = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -134,6 +148,8 @@ impl<'v> Visitor<'v> for PollVisitor {
                 EXPLANATION_ENTITIES => {
                     explanation_entities = Some(map.next_value()?)
                 }
+                OPEN_PERIOD => open_period = Some(map.next_value()?),
+                CLOSE_DATE => close_date = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<de::IgnoredAny>();
                 }
@@ -167,6 +183,14 @@ impl<'v> Visitor<'v> for PollVisitor {
             }
         };
 
+        let auto_close = match open_period {
+            Some(open_period) => Some(AutoClose {
+                open_period,
+                close_date: close_date.ok_or_else(|| de::Error::missing_field(CLOSE_DATE))?,
+            }),
+            None => None,
+        };
+
         Ok(Poll {
             kind,
             id: id.ok_or_else(|| de::Error::missing_field(ID))?,
@@ -180,6 +204,7 @@ impl<'v> Visitor<'v> for PollVisitor {
                 .ok_or_else(|| de::Error::missing_field(IS_CLOSED))?,
             is_anonymous: is_anonymous
                 .ok_or_else(|| de::Error::missing_field(IS_ANONYMOUS))?,
+            auto_close,
         })
     }
 }

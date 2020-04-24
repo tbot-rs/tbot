@@ -7,7 +7,7 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{ChatId, ImplicitChatId, NotificationState, Poll},
+        parameters::{ChatId, ImplicitChatId, NotificationState, Poll, poll::AutoClose},
     },
 };
 use serde::Serialize;
@@ -28,6 +28,9 @@ pub struct SendPoll<'a, C> {
     #[serde(flatten)]
     poll: &'a Poll<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(flatten)]
+    auto_close: Option<AutoClose>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
@@ -47,10 +50,18 @@ impl<'a, C> SendPoll<'a, C> {
             token,
             chat_id: chat_id.into(),
             poll,
+            auto_close: None,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
         }
+    }
+
+    /// Configures when the poll will be automatically closed.
+    /// Reflects the `open_period` and `close_date` parameters.
+    pub fn auto_close(mut self, auto_close: AutoClose) -> Self {
+        self.auto_close = Some(auto_close);
+        self
     }
 
     /// Configures if the message will be sent silently.

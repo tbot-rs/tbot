@@ -1,6 +1,8 @@
 use tbot::{
     prelude::*,
-    types::parameters::{poll::Answer, Poll},
+    types::{
+        parameters::{poll::{Answer, AutoClose}, Poll},
+    },
     Bot,
 };
 
@@ -30,7 +32,11 @@ async fn main() {
     .anonymous(false);
 
     bot.command("poll", move |context| async move {
-        let call_result = context.send_poll(&regular).call().await;
+        let call_result = context
+            .send_poll(&regular)
+            .auto_close(AutoClose::OpenPeriod(60))
+            .call()
+            .await;
         if let Err(err) = call_result {
             dbg!(err);
         }
