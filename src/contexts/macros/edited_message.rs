@@ -45,8 +45,8 @@ macro_rules! edited_message {
             }
         }
 
-        impl<'a, C: 'static> super::traits::Forwardable<'a, C> for $name<C> {}
-        impl<'a, C: 'static> super::traits::Pinnable<'a, C> for $name<C> {}
+        impl<C: 'static> super::traits::Forwardable<C> for $name<C> {}
+        impl<C: 'static> super::traits::Pinnable<C> for $name<C> {}
 
         impl<C> crate::contexts::fields::MediaMessage<C> for $name<C> {
             #[must_use]

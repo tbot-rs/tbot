@@ -2,7 +2,7 @@ use super::ChatMethods;
 use crate::methods::PinChatMessage;
 
 /// Provides methods for pinnable messages.
-pub trait Pinnable<'b, C: 'static>: ChatMethods<'b, C> {
+pub trait Pinnable<C: 'static>: ChatMethods<C> {
     /// Pins this message.
     fn pin_this_message(&self) -> PinChatMessage<'_, C> {
         self.bot()

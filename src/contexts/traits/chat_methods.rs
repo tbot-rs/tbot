@@ -15,7 +15,7 @@ use crate::{
 };
 
 /// Provides methods appliable to all messages.
-pub trait ChatMethods<'b, C: 'static>: Message<C> {
+pub trait ChatMethods<C: 'static>: Message<C> {
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&self) -> DeleteChatPhoto<'_, C> {
         self.bot().delete_chat_photo(self.chat().id)
@@ -528,4 +528,4 @@ pub trait ChatMethods<'b, C: 'static>: Message<C> {
     }
 }
 
-impl<C: 'static, T: Message<C>> ChatMethods<'_, C> for T {}
+impl<C: 'static, T: Message<C>> ChatMethods<C> for T {}
