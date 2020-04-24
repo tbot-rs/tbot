@@ -245,6 +245,11 @@ pub trait ChatMethods<C: 'static>: Message<C> {
         self.bot().send_dice(self.chat().id)
     }
 
+    /// Sends a dice in reply to this message.
+    fn send_dice_in_reply(&self) -> SendDice<'_, C> {
+        self.send_dice().reply_to_message_id(self.message_id())
+    }
+
     /// Sends a document to this chat.
     fn send_document<'a>(
         &'a self,
