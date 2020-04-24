@@ -9,7 +9,7 @@ use crate::{
         },
         keyboard::inline,
         message,
-        parameters::{ImplicitChatId, Poll, Text},
+        parameters::{Any, ImplicitChatId, Text},
         user, LabeledPrice,
     },
 };
@@ -372,12 +372,12 @@ pub trait ChatMethods<C: 'static>: Message<C> {
     }
 
     /// Sends a poll to this chat.
-    fn send_poll<'a>(&'a self, poll: &'a Poll<'a>) -> SendPoll<'a, C> {
+    fn send_poll<'a>(&'a self, poll: &'a Any<'a>) -> SendPoll<'a, C> {
         self.bot().send_poll(self.chat().id, poll)
     }
 
     /// Sends a poll in reply to this message.
-    fn send_poll_in_reply<'a>(&'a self, poll: &'a Poll<'a>) -> SendPoll<'a, C> {
+    fn send_poll_in_reply<'a>(&'a self, poll: &'a Any<'a>) -> SendPoll<'a, C> {
         self.send_poll(poll).reply_to_message_id(self.message_id())
     }
 

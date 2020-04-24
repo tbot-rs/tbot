@@ -1,6 +1,6 @@
 //! Types related to polls.
 
-use super::User;
+use super::{message::Text, User};
 use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
 use std::fmt;
@@ -21,7 +21,19 @@ pub enum Kind {
     Quiz {
         /// The index of the correct option.
         correct_option_id: option::Option<usize>,
+        /// The explanation of the quiz.
+        explanation: option::Option<Text>,
     },
+}
+
+/// Tells when the poll is automatically closed.
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[non_exhaustive]
+pub struct AutoClose {
+    /// The period in seconds while the poll is open.
+    pub open_period: u16,
+    /// The time instant when the poll is closed.
+    pub close_date: i64,
 }
 
 /// Represents a [`PollOption`].
@@ -56,6 +68,8 @@ pub struct Poll {
     pub is_closed: bool,
     /// `true` if the poll is anonymous.
     pub is_anonymous: bool,
+    /// Tells when the poll is automatically closed.
+    pub auto_close: option::Option<AutoClose>,
 }
 
 /// Represents a [`PollAnswer`].
@@ -80,6 +94,10 @@ const IS_ANONYMOUS: &str = "is_anonymous";
 const KIND: &str = "type";
 const ALLOWS_MULTIPLE_ANSWERS: &str = "allows_multiple_answers";
 const CORRECT_OPTION_ID: &str = "correct_option_id";
+const EXPLANATION: &str = "explanation";
+const EXPLANATION_ENTITIES: &str = "explanation_entities";
+const OPEN_PERIOD: &str = "open_period";
+const CLOSE_DATE: &str = "close_date";
 
 const REGULAR: &str = "regular";
 const QUIZ: &str = "quiz";
@@ -106,6 +124,10 @@ impl<'v> Visitor<'v> for PollVisitor {
         let mut kind = None;
         let mut allows_multiple_answers = None;
         let mut correct_option_id = None;
+        let mut explanation = None;
+        let mut explanation_entities = None;
+        let mut open_period = None;
+        let mut close_date = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -124,11 +146,25 @@ impl<'v> Visitor<'v> for PollVisitor {
                 CORRECT_OPTION_ID => {
                     correct_option_id = Some(map.next_value()?)
                 }
+                EXPLANATION => explanation = Some(map.next_value()?),
+                EXPLANATION_ENTITIES => {
+                    explanation_entities = Some(map.next_value()?)
+                }
+                OPEN_PERIOD => open_period = Some(map.next_value()?),
+                CLOSE_DATE => close_date = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<de::IgnoredAny>();
                 }
             }
         }
+
+        let explanation = match explanation {
+            Some(explanation) => Some(Text {
+                value: explanation,
+                entities: explanation_entities.unwrap_or_default(),
+            }),
+            None => None,
+        };
 
         let kind = match kind {
             Some(REGULAR) => Kind::Regular {
@@ -136,7 +172,10 @@ impl<'v> Visitor<'v> for PollVisitor {
                     || de::Error::missing_field(ALLOWS_MULTIPLE_ANSWERS),
                 )?,
             },
-            Some(QUIZ) => Kind::Quiz { correct_option_id },
+            Some(QUIZ) => Kind::Quiz {
+                correct_option_id,
+                explanation,
+            },
             None => return Err(de::Error::missing_field(KIND)),
             Some(unknown_kind) => {
                 return Err(de::Error::unknown_variant(
@@ -144,6 +183,15 @@ impl<'v> Visitor<'v> for PollVisitor {
                     &[REGULAR, QUIZ],
                 ));
             }
+        };
+
+        let auto_close = match open_period {
+            Some(open_period) => Some(AutoClose {
+                open_period,
+                close_date: close_date
+                    .ok_or_else(|| de::Error::missing_field(CLOSE_DATE))?,
+            }),
+            None => None,
         };
 
         Ok(Poll {
@@ -159,6 +207,7 @@ impl<'v> Visitor<'v> for PollVisitor {
                 .ok_or_else(|| de::Error::missing_field(IS_CLOSED))?,
             is_anonymous: is_anonymous
                 .ok_or_else(|| de::Error::missing_field(IS_ANONYMOUS))?,
+            auto_close,
         })
     }
 }
@@ -180,6 +229,8 @@ impl<'de> Deserialize<'de> for Poll {
                 KIND,
                 ALLOWS_MULTIPLE_ANSWERS,
                 CORRECT_OPTION_ID,
+                EXPLANATION,
+                EXPLANATION_ENTITIES,
             ],
             PollVisitor,
         )

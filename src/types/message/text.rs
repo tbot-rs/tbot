@@ -6,7 +6,7 @@ use serde::de::{Deserialize, Deserializer, Error, Visitor};
 use std::fmt::{self, Formatter};
 
 /// Represents either a text message or a caption.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
 pub struct Text {
     /// The text/caption. If there's no text, will be empty.
