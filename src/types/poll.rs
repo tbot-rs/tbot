@@ -68,7 +68,7 @@ pub struct Poll {
     pub is_closed: bool,
     /// `true` if the poll is anonymous.
     pub is_anonymous: bool,
-    /// Tells when the poll will be automatically closed.
+    /// Tells when the poll is automatically closed.
     pub auto_close: option::Option<AutoClose>,
 }
 
