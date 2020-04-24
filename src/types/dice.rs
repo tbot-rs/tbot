@@ -1,19 +1,19 @@
 //! Types related to dice.
+#![allow(clippy::non_ascii_literal)]
 
 use serde::{
-    de::{self, Deserializer, MapAccess, Visitor},
+    de::{self, Deserializer, MapAccess, Visitor, IgnoredAny},
     ser::Serializer,
-    Deserialize,
-    Serialize,
+    Deserialize, Serialize,
 };
 
 /// Represents the kind of a thrown dice.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[non_exhaustive]
 pub enum Kind {
-    /// 🎯.
+    /// 🎯
     Darts,
-    /// 🎲.
+    /// 🎲
     Dice,
 }
 
@@ -53,7 +53,7 @@ impl<'v> Visitor<'v> for DiceVisitor {
                 VALUE => value = Some(map.next_value()?),
                 EMOJI => emoji = Some(map.next_value()?),
                 _ => {
-                    let _ = map.next_value::<serde_json::Value>();
+                    let _ = map.next_value::<IgnoredAny>();
                 }
             }
         }

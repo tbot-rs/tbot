@@ -5,7 +5,8 @@ use crate::{
     internal::Client,
     token,
     types::{
-        keyboard, message, dice::Kind,
+        dice::Kind,
+        keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
         Message,
     },
@@ -53,7 +54,7 @@ impl<'a, C> SendDice<'a, C> {
     }
 
     /// Chooses the kind of a thrown dice.
-    pub fn kind(mut self, kind: Kind) -> Self {
+    pub const fn kind(mut self, kind: Kind) -> Self {
         self.kind = kind;
         self
     }
