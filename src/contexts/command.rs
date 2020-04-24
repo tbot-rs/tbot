@@ -109,8 +109,8 @@ impl<C> AnyText<C> for Command<Text<C>> {
     }
 }
 
-impl<'a, C: 'static> Forwardable<'a, C> for Command<Text<C>> {}
-impl<'a, C: 'static> Pinnable<'a, C> for Command<Text<C>> {}
+impl<'a, C: 'static> Forwardable<C> for Command<Text<C>> {}
+impl<'a, C: 'static> Pinnable<C> for Command<Text<C>> {}
 
 // Once again.
 
@@ -180,5 +180,5 @@ impl<C> AnyText<C> for Command<EditedText<C>> {
     }
 }
 
-impl<'a, C: 'static> Forwardable<'a, C> for Command<EditedText<C>> {}
-impl<'a, C: 'static> Pinnable<'a, C> for Command<EditedText<C>> {}
+impl<'a, C: 'static> Forwardable<C> for Command<EditedText<C>> {}
+impl<'a, C: 'static> Pinnable<C> for Command<EditedText<C>> {}

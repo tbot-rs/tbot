@@ -2,7 +2,7 @@ use super::ChatMethods;
 use crate::{methods::ForwardMessage, types::parameters::ImplicitChatId};
 
 /// Provides methods for forwardable messages.
-pub trait Forwardable<'b, C: 'static>: ChatMethods<'b, C> {
+pub trait Forwardable<C: 'static>: ChatMethods<C> {
     /// Forwards this message to another chat.
     fn forward_to<'a>(
         &'a self,

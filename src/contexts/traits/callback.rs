@@ -4,7 +4,7 @@ use crate::{
 };
 
 /// Provides methods appliable to callback queries.
-pub trait Callback<'b, C: 'static>: fields::Callback<C> {
+pub trait Callback<C: 'static>: fields::Callback<C> {
     /// Answers the callback query.
     ///
     /// If you don't need to choose the action dynamically, using dedicated
@@ -43,4 +43,4 @@ pub trait Callback<'b, C: 'static>: fields::Callback<C> {
     }
 }
 
-impl<'a, C: 'static, T: fields::Callback<C>> Callback<'a, C> for T {}
+impl<C: 'static, T: fields::Callback<C>> Callback<C> for T {}
