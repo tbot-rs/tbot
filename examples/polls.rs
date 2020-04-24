@@ -12,6 +12,8 @@ const SEND_IN_REPLY_ERROR: &str = "Please send the command in reply to a poll";
 const QUIZ_QUESTION: &str = "The best Telegram bot library is...";
 const QUIZ_OPTIONS: &[&str] = &["aiogram", "tbot", "python-telegram-bot"];
 const QUIZ_CORRECT_OPTION: usize = 1;
+const QUIZ_EXPLANATION: &str =
+    "Why would you want to use something else than tbot for writing bots?";
 
 #[tokio::main]
 async fn main() {
@@ -19,8 +21,13 @@ async fn main() {
 
     let regular = Poll::regular(QUESTION, OPTIONS, Answer::Single);
 
-    let quiz = Poll::quiz(QUIZ_QUESTION, QUIZ_OPTIONS, QUIZ_CORRECT_OPTION)
-        .anonymous(false);
+    let quiz = Poll::quiz(
+        QUIZ_QUESTION,
+        QUIZ_OPTIONS,
+        QUIZ_CORRECT_OPTION,
+        Some(QUIZ_EXPLANATION),
+    )
+    .anonymous(false);
 
     bot.command("poll", move |context| async move {
         let call_result = context.send_poll(&regular).call().await;
