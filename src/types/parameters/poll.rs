@@ -5,7 +5,7 @@ use serde::Serialize;
 use std::convert::From;
 
 /// Configures whether multiple answers are allowed in a poll.
-#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub enum Answer {
     /// Only a single answer is allowed.
     Single,
@@ -25,7 +25,7 @@ pub enum AutoClose {
 }
 
 /// Represents a quiz.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Quiz<'a> {
     correct_option_id: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,13 +35,13 @@ pub struct Quiz<'a> {
 }
 
 /// Represents a poll.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Poll {
     allows_multiple_answers: bool,
 }
 
 /// Represents either a quiz or a poll.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Kind<'a> {
     /// Represents a quiz.
@@ -52,7 +52,7 @@ pub enum Kind<'a> {
 }
 
 /// Represents a poll that will be sent to a user.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 pub struct Any<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
