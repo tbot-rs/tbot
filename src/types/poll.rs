@@ -26,7 +26,7 @@ pub enum Kind {
     },
 }
 
-/// Tells when the poll will be automatically closed.
+/// Tells when the poll is automatically closed.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
 pub struct AutoClose {

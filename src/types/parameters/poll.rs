@@ -13,7 +13,7 @@ pub enum Answer {
     Multiple,
 }
 
-/// Tells when the poll will be automatically closed.
+/// Tells when the poll is automatically closed.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
 #[non_exhaustive]
 #[serde(rename_all = "snake_case")]
