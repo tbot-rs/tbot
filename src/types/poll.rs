@@ -30,8 +30,10 @@ pub enum Kind {
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
 pub struct AutoClose {
-    open_period: u16,
-    close_date: i64,
+    /// The period in seconds while the poll is open.
+    pub open_period: u16,
+    /// The time instant when the poll is closed.
+    pub close_date: i64,
 }
 
 /// Represents a [`PollOption`].
