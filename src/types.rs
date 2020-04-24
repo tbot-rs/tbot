@@ -7,7 +7,7 @@ pub mod callback;
 pub mod chat;
 mod chosen_inline_result;
 mod contact;
-mod dice;
+pub mod dice;
 mod document;
 pub mod file;
 pub mod game;

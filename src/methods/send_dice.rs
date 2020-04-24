@@ -5,6 +5,7 @@ use crate::{
     internal::Client,
     token,
     types::{
+        dice::Kind,
         keyboard, message,
         parameters::{ChatId, ImplicitChatId, NotificationState},
         Message,
@@ -25,6 +26,8 @@ pub struct SendDice<'a, C> {
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
+    #[serde(rename = "emoji")]
+    kind: Kind,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -43,10 +46,17 @@ impl<'a, C> SendDice<'a, C> {
             client,
             token,
             chat_id: chat_id.into(),
+            kind: Kind::Dice,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
         }
+    }
+
+    /// Сonfigures the dice's kind. Reflects the `emoji` parameter.
+    pub const fn kind(mut self, kind: Kind) -> Self {
+        self.kind = kind;
+        self
     }
 
     /// Configures if the message will be sent silently.
