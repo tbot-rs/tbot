@@ -69,7 +69,8 @@ pub struct Any<'a> {
 
 impl<'a> Quiz<'a> {
     /// Constructs a new quiz.
-    pub fn new(correct_option_id: usize) -> Self {
+    #[must_use]
+    pub const fn new(correct_option_id: usize) -> Self {
         Self {
             correct_option_id,
             explanation: None,
@@ -78,7 +79,7 @@ impl<'a> Quiz<'a> {
     }
 
     /// Sets the poll's explanation.
-    ///  Configures the explanation and explanation_parse_mode fields.
+    /// Configures the `explanation` and `explanation_parse_mode` fields.
     pub fn explanation(mut self, explanation: impl Into<Text<'a>>) -> Self {
         let explanation = explanation.into();
 
