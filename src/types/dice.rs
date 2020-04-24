@@ -2,7 +2,7 @@
 #![allow(clippy::non_ascii_literal)]
 
 use serde::{
-    de::{self, Deserializer, MapAccess, Visitor, IgnoredAny},
+    de::{self, Deserializer, IgnoredAny, MapAccess, Visitor},
     ser::Serializer,
     Deserialize, Serialize,
 };
