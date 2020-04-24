@@ -25,7 +25,7 @@ pub enum Kind {
 pub struct Dice {
     /// The value of the dice in the range [1, 6].
     pub value: u8,
-    /// The kind of a thrown dice.
+    /// The kind of the thrown dice.
     pub kind: Kind,
 }
 
