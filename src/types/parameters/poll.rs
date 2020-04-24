@@ -130,7 +130,7 @@ impl<'a> Any<'a> {
         self
     }
 
-    /// Configures when the poll will be automatically closed.
+    /// Configures when the poll is automatically closed.
     /// Reflects the `open_period` and `close_date` parameters.
     #[must_use]
     pub fn auto_close(mut self, auto_close: AutoClose) -> Self {
