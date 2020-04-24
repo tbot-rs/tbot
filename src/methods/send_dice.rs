@@ -53,7 +53,7 @@ impl<'a, C> SendDice<'a, C> {
         }
     }
 
-    /// Chooses the kind of the dice.
+    /// Сonfigures the dice's kind. Reflects the `emoji` parameter.
     pub const fn kind(mut self, kind: Kind) -> Self {
         self.kind = kind;
         self
