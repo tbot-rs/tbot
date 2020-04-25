@@ -185,4 +185,4 @@ pub(crate) use {
 };
 
 mod call_method;
-use call_method::send_method;
+use call_method::call_method;

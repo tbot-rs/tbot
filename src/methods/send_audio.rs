@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -103,7 +103,7 @@ impl SendAudio<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.client, self.token, "sendAudio", Some(boundary), body)
+        call_method(self.client, self.token, "sendAudio", Some(boundary), body)
             .await
     }
 }

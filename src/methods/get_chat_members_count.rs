@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -38,7 +38,7 @@ impl<'a> GetChatMembersCount<'a> {
 impl GetChatMembersCount<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<u32, errors::MethodCall> {
-        send_method(
+        call_method(
             self.client,
             self.token,
             "getChatMembersCount",

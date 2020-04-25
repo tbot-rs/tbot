@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -44,7 +44,7 @@ impl UploadStickerFile<'_> {
             .file("png_sticker", "sticker.png", self.png_sticker)
             .finish();
 
-        send_method(
+        call_method(
             self.client,
             self.token,
             "uploadStickerFile",

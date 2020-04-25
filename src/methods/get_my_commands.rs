@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{connectors::Client, errors, token, types::BotCommand};
 
 /// Gets the list of the bot's commands.
@@ -22,7 +22,7 @@ impl<'a> GetMyCommands<'a> {
 impl GetMyCommands<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<BotCommand>, errors::MethodCall> {
-        send_method(self.client, self.token, "getMyCommands", None, Vec::new())
+        call_method(self.client, self.token, "getMyCommands", None, Vec::new())
             .await
     }
 }

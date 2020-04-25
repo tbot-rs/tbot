@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -98,7 +98,7 @@ impl CreateNewStickerSet<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method::<bool>(
+        call_method::<bool>(
             self.client,
             self.token,
             "createNewStickerSet",

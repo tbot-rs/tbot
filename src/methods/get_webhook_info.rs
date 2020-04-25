@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{connectors::Client, errors, token, types};
 
 /// Gets information about the bot's webhook.
@@ -22,7 +22,7 @@ impl<'a> GetWebhookInfo<'a> {
 impl GetWebhookInfo<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<types::WebhookInfo, errors::MethodCall> {
-        send_method(self.client, self.token, "getWebhookInfo", None, Vec::new())
+        call_method(self.client, self.token, "getWebhookInfo", None, Vec::new())
             .await
     }
 }
