@@ -2,7 +2,7 @@
 
 use hyper::{
     client::{HttpConnector, ResponseFuture},
-    Body, Client as HyperClient, Request, Uri,
+    Body, self, Request, Uri,
 };
 
 #[cfg(feature = "rustls")]
@@ -21,8 +21,8 @@ pub type Proxy = ProxyConnector<Https>;
 
 #[derive(Debug)]
 pub(crate) enum Client {
-    Https(HyperClient<Https>),
-    Proxy(HyperClient<Proxy>),
+    Https(hyper::Client<Https>),
+    Proxy(hyper::Client<Proxy>),
 }
 
 impl Client {
@@ -37,7 +37,7 @@ impl Client {
                 });
 
         Self::Proxy(
-            HyperClient::builder()
+            hyper::Client::builder()
                 .pool_max_idle_per_host(0)
                 .build::<Proxy, Body>(connector),
         )
@@ -48,7 +48,7 @@ impl Client {
         let connector = HttpsConnector::new();
 
         Self::Https(
-            HyperClient::builder()
+            hyper::Client::builder()
                 .pool_max_idle_per_host(0)
                 .build::<Https, Body>(connector),
         )
@@ -67,8 +67,4 @@ impl Client {
             Self::Proxy(proxy) => proxy.request(req),
         }
     }
-}
-
-pub(crate) fn default() -> Client {
-    Client::https()
 }

@@ -54,7 +54,7 @@ impl Bot {
     pub fn new(token: String) -> Self {
         Self {
             token: Token::new(token),
-            client: Arc::new(connectors::default()),
+            client: Arc::new(Client::https()),
         }
     }
 

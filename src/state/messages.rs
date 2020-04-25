@@ -46,9 +46,9 @@ pub struct MessageId {
 
 impl MessageId {
     /// Constructs a `MessageId` from the provided context.
-    pub fn from_context<Ctx>(context: &Ctx) -> Self
+    pub fn from_context<C>(context: &C) -> Self
     where
-        Ctx: Message,
+        C: Message,
     {
         Self {
             chat_id: context.chat().id,
@@ -111,12 +111,12 @@ impl<S> Messages<S> {
     }
 
     /// Returns an iterator over stored message IDs for a chat from the context.
-    pub fn messages_in_chat<Ctx>(
+    pub fn messages_in_chat<C>(
         &self,
-        context: &Ctx,
+        context: &C,
     ) -> impl Iterator<Item = message::Id> + '_
     where
-        Ctx: Message,
+        C: Message,
     {
         self.messages_in_chat_by_id(context.chat().id)
     }
@@ -137,9 +137,9 @@ impl<S> Messages<S> {
 
     /// Returns an iterator over stored states for messages in a chat
     /// from the context.
-    pub fn states_in_chat<Ctx>(&self, context: &Ctx) -> impl Iterator<Item = &S>
+    pub fn states_in_chat<C>(&self, context: &C) -> impl Iterator<Item = &S>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.states_in_chat_by_id(context.chat().id)
     }
@@ -166,12 +166,12 @@ impl<S> Messages<S> {
 
     /// Returns an iterator over stored messages and their states in a chat
     /// from the context.
-    pub fn iter_in_chat<Ctx>(
+    pub fn iter_in_chat<C>(
         &self,
-        context: &Ctx,
+        context: &C,
     ) -> impl Iterator<Item = (message::Id, &S)>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.iter_in_chat_by_id(context.chat().id)
     }
@@ -198,12 +198,12 @@ impl<S> Messages<S> {
 
     /// Returns a mutable iterator over stored messages and their states
     /// in a chat from the context.
-    pub fn iter_mut_in_chat<Ctx>(
+    pub fn iter_mut_in_chat<C>(
         &mut self,
-        context: &Ctx,
+        context: &C,
     ) -> impl Iterator<Item = (message::Id, &mut S)>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.iter_mut_in_chat_by_id(context.chat().id)
     }
@@ -225,12 +225,12 @@ impl<S> Messages<S> {
 
     /// Returns an owning iterator over stored messages and their states
     /// in a chat from the context.
-    pub fn into_iter_in_chat<Ctx>(
+    pub fn into_iter_in_chat<C>(
         self,
-        context: &Ctx,
+        context: &C,
     ) -> impl Iterator<Item = (message::Id, S)>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.into_iter_in_chat_by_id(context.chat().id)
     }
@@ -249,9 +249,9 @@ impl<S> Messages<S> {
 
     /// Returns how many messages from a chat from the context are stored.
     #[must_use]
-    pub fn len_in_chat<Ctx>(&self, context: &Ctx) -> usize
+    pub fn len_in_chat<C>(&self, context: &C) -> usize
     where
-        Ctx: Message,
+        C: Message,
     {
         self.iter_in_chat(context).count()
     }
@@ -277,9 +277,9 @@ impl<S> Messages<S> {
     /// Returns if the store does *not* have messages from the chat
     /// from the context.
     #[must_use]
-    pub fn is_empty_in_chat<Ctx>(&self, context: &Ctx) -> bool
+    pub fn is_empty_in_chat<C>(&self, context: &C) -> bool
     where
-        Ctx: Message,
+        C: Message,
     {
         self.is_empty_in_chat_by_id(context.chat().id)
     }
@@ -301,9 +301,9 @@ impl<S> Messages<S> {
     }
 
     /// Deletes state for all messages from the specific chat from the context.
-    pub fn clear_in_chat<Ctx>(&mut self, context: &Ctx)
+    pub fn clear_in_chat<C>(&mut self, context: &C)
     where
-        Ctx: Message,
+        C: Message,
     {
         self.clear_in_chat_by_id(context.chat().id);
     }
@@ -326,9 +326,9 @@ impl<S> Messages<S> {
 
     /// Gets a message's state from the context.
     #[must_use]
-    pub fn get<Ctx>(&self, context: &Ctx) -> Option<&S>
+    pub fn get<C>(&self, context: &C) -> Option<&S>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.get_by_id(MessageId::from_context(context))
     }
@@ -341,9 +341,9 @@ impl<S> Messages<S> {
 
     /// Gets a mutable reference to a message's state from the context.
     #[must_use]
-    pub fn get_mut<Ctx>(&mut self, context: &Ctx) -> Option<&mut S>
+    pub fn get_mut<C>(&mut self, context: &C) -> Option<&mut S>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.get_mut_by_id(MessageId::from_context(context))
     }
@@ -356,9 +356,9 @@ impl<S> Messages<S> {
 
     /// Gets an entry for a message's state from the context.
     #[must_use]
-    pub fn entry<Ctx>(&mut self, context: &Ctx) -> Entry<MessageId, S>
+    pub fn entry<C>(&mut self, context: &C) -> Entry<MessageId, S>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.entry_by_id(MessageId::from_context(context))
     }
@@ -371,9 +371,9 @@ impl<S> Messages<S> {
 
     /// Checks if there's state for a message from the context.
     #[must_use]
-    pub fn has<Ctx>(&self, context: &Ctx) -> bool
+    pub fn has<C>(&self, context: &C) -> bool
     where
-        Ctx: Message,
+        C: Message,
     {
         self.has_by_id(MessageId::from_context(context))
     }
@@ -384,9 +384,9 @@ impl<S> Messages<S> {
     }
 
     /// Inserts state for a message from the context. Returns the previous state.
-    pub fn insert<Ctx>(&mut self, context: &Ctx, value: S) -> Option<S>
+    pub fn insert<C>(&mut self, context: &C, value: S) -> Option<S>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.insert_by_id(MessageId::from_context(context), value)
     }
@@ -397,9 +397,9 @@ impl<S> Messages<S> {
     }
 
     /// Removes and returns a message's state from the context.
-    pub fn remove<Ctx>(&mut self, context: &Ctx) -> Option<S>
+    pub fn remove<C>(&mut self, context: &C) -> Option<S>
     where
-        Ctx: Message,
+        C: Message,
     {
         self.remove_by_id(MessageId::from_context(context))
     }

@@ -70,9 +70,9 @@ impl State {
     }
 }
 
-async fn broadcast<Ctx>(context: Arc<Ctx>, state: Arc<State>)
+async fn broadcast<C>(context: Arc<C>, state: Arc<State>)
 where
-    Ctx: fields::Text,
+    C: fields::Text,
 {
     let chats = state.chats.read().await;
     let room = chats.get(&*context);
@@ -120,9 +120,9 @@ where
     }
 }
 
-async fn broadcast_edit<Ctx>(context: Arc<Ctx>, state: Arc<State>)
+async fn broadcast_edit<C>(context: Arc<C>, state: Arc<State>)
 where
-    Ctx: fields::Text,
+    C: fields::Text,
 {
     if let Some(messages) = state.messages.read().await.get(&*context) {
         for MessageId {
