@@ -11,7 +11,7 @@ media_message! {
     }
 }
 
-impl<C> fields::Location<C> for Location<C> {
+impl fields::Location for Location {
     #[must_use]
     fn location(&self) -> &types::Location {
         &self.location

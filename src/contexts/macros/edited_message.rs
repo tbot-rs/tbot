@@ -45,10 +45,10 @@ macro_rules! edited_message {
             }
         }
 
-        impl<C: 'static> super::traits::Forwardable<C> for $name<C> {}
-        impl<C: 'static> super::traits::Pinnable<C> for $name<C> {}
+        impl super::traits::Forwardable for $name {}
+        impl super::traits::Pinnable for $name {}
 
-        impl<C> crate::contexts::fields::MediaMessage<C> for $name<C> {
+        impl crate::contexts::fields::MediaMessage for $name {
             #[must_use]
             fn reply_to(&self) -> Option<&crate::types::Message> {
                 self.reply_to.as_ref()
@@ -67,7 +67,7 @@ macro_rules! edited_message {
             }
         }
 
-        impl<C> crate::contexts::fields::EditedMessage<C> for $name<C> {
+        impl crate::contexts::fields::EditedMessage for $name {
             #[must_use]
             fn edit_date(&self) -> i64 {
                 self.edit_date

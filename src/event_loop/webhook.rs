@@ -24,8 +24,8 @@ pub use https::Https;
 ///
 /// [`Bot::webhook`]: ./struct.Bot.html#method.webhook
 #[must_use = "webhook does not start unless `start` is called"]
-pub struct Webhook<'a, C> {
-    event_loop: EventLoop<C>,
+pub struct Webhook<'a> {
+    event_loop: EventLoop,
     ip: IpAddr,
     port: u16,
     request_timeout: Duration,
@@ -37,12 +37,8 @@ pub struct Webhook<'a, C> {
     allowed_updates: Option<&'a [UpdateKind]>,
 }
 
-impl<'a, C> Webhook<'a, C> {
-    pub(crate) fn new(
-        event_loop: EventLoop<C>,
-        url: &'a str,
-        port: u16,
-    ) -> Self {
+impl<'a> Webhook<'a> {
+    pub(crate) fn new(event_loop: EventLoop, url: &'a str, port: u16) -> Self {
         Self {
             event_loop,
             ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
@@ -110,7 +106,7 @@ impl<'a, C> Webhook<'a, C> {
     /// method.
     ///
     /// [`https`]: #method.https
-    pub const fn http(self) -> Http<'a, C> {
+    pub const fn http(self) -> Http<'a> {
         Http::new(self)
     }
 
@@ -122,7 +118,7 @@ impl<'a, C> Webhook<'a, C> {
         self,
         #[cfg(feature = "tls")] identity: https::Identity,
         #[cfg(feature = "rustls")] config: https::ServerConfig,
-    ) -> Https<'a, C> {
+    ) -> Https<'a> {
         Https::new(
             self,
             #[cfg(feature = "tls")]
@@ -141,15 +137,12 @@ fn is_request_correct(request: &Request<Body>, updates_url: &str) -> bool {
         && content_type.map(|x| x == "application/json") == Some(true)
 }
 
-async fn handle<C>(
-    bot: Arc<Bot<C>>,
-    event_loop: Arc<EventLoop<C>>,
+async fn handle(
+    bot: Arc<Bot>,
+    event_loop: Arc<EventLoop>,
     request: Request<Body>,
     updates_url: Arc<String>,
-) -> Result<Response<Body>, hyper::Error>
-where
-    C: Send + Sync + 'static,
-{
+) -> Result<Response<Body>, hyper::Error> {
     if is_request_correct(&request, &*updates_url) {
         let (parts, mut body) = request.into_parts();
         let mut request = parts

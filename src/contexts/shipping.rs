@@ -21,10 +21,10 @@ common! {
     }
 }
 
-impl<C> Shipping<C> {
+impl Shipping {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(bot: Arc<Bot<C>>, query: shipping::Query) -> Self {
+    pub(crate) fn new(bot: Arc<Bot>, query: shipping::Query) -> Self {
         Self {
             bot,
             id: query.id,
@@ -45,7 +45,7 @@ impl<C> Shipping<C> {
     pub fn answer<'a>(
         &'a self,
         result: Result<&'a [shipping::Option<'a>], &'a str>,
-    ) -> AnswerShippingQuery<'a, C> {
+    ) -> AnswerShippingQuery<'a> {
         self.bot.answer_shipping_query(self.id.as_ref(), result)
     }
 
@@ -53,12 +53,12 @@ impl<C> Shipping<C> {
     pub fn ok<'a>(
         &'a self,
         options: &'a [shipping::Option<'a>],
-    ) -> AnswerShippingQuery<'a, C> {
+    ) -> AnswerShippingQuery<'a> {
         self.answer(Ok(options))
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(&'a self, err: &'a str) -> AnswerShippingQuery<'a, C> {
+    pub fn err<'a>(&'a self, err: &'a str) -> AnswerShippingQuery<'a> {
         self.answer(Err(err))
     }
 }

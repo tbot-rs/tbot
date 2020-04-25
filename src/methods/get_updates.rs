@@ -1,18 +1,16 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{parameters::UpdateKind, Update},
 };
 use serde::Serialize;
 
 #[derive(Serialize, Debug, Clone)]
 #[must_use]
-pub(crate) struct GetUpdates<'a, C> {
+pub(crate) struct GetUpdates<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,9 +23,9 @@ pub(crate) struct GetUpdates<'a, C> {
     allowed_updates: Option<&'a [UpdateKind]>,
 }
 
-impl<'a, C> GetUpdates<'a, C> {
+impl<'a> GetUpdates<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         offset: Option<isize>,
         limit: Option<u8>,
@@ -45,7 +43,7 @@ impl<'a, C> GetUpdates<'a, C> {
     }
 }
 
-impl<C: Connector> GetUpdates<'_, C> {
+impl GetUpdates<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<Update>, errors::MethodCall> {
         send_method(

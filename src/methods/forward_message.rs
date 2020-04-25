@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
@@ -18,9 +16,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#forwardmessage
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct ForwardMessage<'a, C> {
+pub struct ForwardMessage<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
@@ -30,9 +28,9 @@ pub struct ForwardMessage<'a, C> {
     disable_notification: Option<bool>,
 }
 
-impl<'a, C> ForwardMessage<'a, C> {
+impl<'a> ForwardMessage<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         from_chat_id: impl ImplicitChatId<'a>,
@@ -56,7 +54,7 @@ impl<'a, C> ForwardMessage<'a, C> {
     }
 }
 
-impl<C: Connector> ForwardMessage<'_, C> {
+impl ForwardMessage<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(

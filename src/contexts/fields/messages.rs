@@ -6,7 +6,7 @@ use crate::types::{
 };
 
 /// A general trait for all message contexts.
-pub trait Message<C>: Context<C> {
+pub trait Message: Context {
     /// ID of the message.
     fn message_id(&self) -> message::Id;
     /// The author of the message.
@@ -18,7 +18,7 @@ pub trait Message<C>: Context<C> {
 }
 
 /// A general trait for all non-service messages.
-pub trait MediaMessage<C>: Message<C> {
+pub trait MediaMessage: Message {
     /// The replied message.
     fn reply_to(&self) -> Option<&types::Message>;
     /// The author's signature, if enabled for the channel.
@@ -28,13 +28,13 @@ pub trait MediaMessage<C>: Message<C> {
 }
 
 /// A general trait for messages that _can_ be a forward.
-pub trait Forward<C>: MediaMessage<C> {
+pub trait Forward: MediaMessage {
     /// The origin of the message if it's a forward.
     fn forward(&self) -> Option<&message::Forward>;
 }
 
 /// A general trait for edited messages.
-pub trait EditedMessage<C>: MediaMessage<C> {
+pub trait EditedMessage: MediaMessage {
     /// The last time when the message was edited.
     fn edit_date(&self) -> i64;
 }

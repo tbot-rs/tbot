@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         chat,
         keyboard::inline,
@@ -24,9 +22,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#sendinvoice
 #[derive(Debug, Clone, Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendInvoice<'a, C> {
+pub struct SendInvoice<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: chat::Id,
@@ -63,10 +61,10 @@ pub struct SendInvoice<'a, C> {
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
-impl<'a, C> SendInvoice<'a, C> {
+impl<'a> SendInvoice<'a> {
     #[allow(clippy::too_many_arguments)] // I know, brother
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl Into<chat::Id>,
         title: &'a str,
@@ -194,7 +192,7 @@ impl<'a, C> SendInvoice<'a, C> {
     }
 }
 
-impl<C: Connector> SendInvoice<'_, C> {
+impl SendInvoice<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(

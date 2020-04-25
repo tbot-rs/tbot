@@ -1,5 +1,5 @@
 use crate::event_loop::{EventLoop, Polling, Webhook};
-use crate::{connectors::Connector, contexts, errors};
+use crate::{contexts, errors};
 use std::{future::Future, sync::Arc};
 
 macro_rules! handler {
@@ -59,14 +59,14 @@ macro_rules! handler {
 /// A stateful event loop.
 #[allow(clippy::module_name_repetitions)]
 #[must_use]
-pub struct StatefulEventLoop<C, S> {
-    inner: EventLoop<C>,
+pub struct StatefulEventLoop<S> {
+    inner: EventLoop,
     state: Arc<S>,
 }
 
 #[allow(clippy::use_self)] // https://github.com/rust-lang/rust-clippy/issues/4143
-impl<C, S> StatefulEventLoop<C, S> {
-    pub(crate) fn new(inner: EventLoop<C>, state: S) -> Self {
+impl<S> StatefulEventLoop<S> {
+    pub(crate) fn new(inner: EventLoop, state: S) -> Self {
         Self {
             inner,
             state: Arc::new(state),
@@ -82,13 +82,13 @@ impl<C, S> StatefulEventLoop<C, S> {
     /// Turns this event loop into a stateless one. Handlers added on this event
     /// loop are still kept.
     #[allow(clippy::missing_const_for_fn)] // https://github.com/rust-lang/rust-clippy/issues/4979
-    pub fn into_stateless(self) -> EventLoop<C> {
+    pub fn into_stateless(self) -> EventLoop {
         self.inner
     }
 
     /// Turns this event loop into another with other state. Handlers added on
     /// this event loop are still kept and will receive the previous state.
-    pub fn with_other_state<T>(self, other_state: T) -> StatefulEventLoop<C, T>
+    pub fn with_other_state<T>(self, other_state: T) -> StatefulEventLoop<T>
     where
         T: Send + Sync + 'static,
     {
@@ -107,7 +107,7 @@ impl<C, S> StatefulEventLoop<C, S> {
     }
 
     /// Starts polling configuration.
-    pub fn polling(self) -> Polling<C> {
+    pub fn polling(self) -> Polling {
         self.inner.polling()
     }
 
@@ -116,14 +116,13 @@ impl<C, S> StatefulEventLoop<C, S> {
     /// See our [wiki] to learn how to use webhook with `tbot`.
     ///
     /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
-    pub fn webhook(self, url: &str, port: u16) -> Webhook<'_, C> {
+    pub fn webhook(self, url: &str, port: u16) -> Webhook<'_> {
         self.inner.webhook(url, port)
     }
 }
 
-impl<C, S> StatefulEventLoop<C, S>
+impl<S> StatefulEventLoop<S>
 where
-    C: Connector,
     S: Send + Sync + 'static,
 {
     /// Adds a new handler for a command.
@@ -136,7 +135,7 @@ where
     /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -163,12 +162,12 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -198,7 +197,7 @@ where
     pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -226,12 +225,12 @@ where
         handler: H,
     ) where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -253,7 +252,7 @@ where
     /// Adds a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -266,12 +265,12 @@ where
     /// if the predicate returns true.
     pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -293,7 +292,7 @@ where
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -306,12 +305,12 @@ where
     /// returns true.
     pub fn help_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -333,7 +332,7 @@ where
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -346,12 +345,12 @@ where
     /// if the predicate returns true.
     pub fn settings_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -373,7 +372,7 @@ where
     /// Adds a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -393,12 +392,12 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -421,7 +420,7 @@ where
     pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -442,12 +441,12 @@ where
         handler: H,
     ) where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -467,7 +466,7 @@ where
     }
 
     handler! {
-        contexts::Update<C>,
+        contexts::Update,
         /// Adds a new handler which is run after handling an update.
         after_update,
         /// Adds a new handler which is run after handling an update and
@@ -476,7 +475,7 @@ where
     }
 
     handler! {
-        contexts::Animation<C>,
+        contexts::Animation,
         /// Adds a new handler for animations.
         animation,
         /// Adds a new handler for animations which is run if the predicate
@@ -485,7 +484,7 @@ where
     }
 
     handler! {
-        contexts::Audio<C>,
+        contexts::Audio,
         /// Adds a new handler for audio.
         audio,
         /// Adds a new handler for audio which is run if the predicate
@@ -494,7 +493,7 @@ where
     }
 
     handler! {
-        contexts::Update<C>,
+        contexts::Update,
         /// Adds a new handler which is run before handling an update.
         before_update,
         /// Adds a new handler which is run before handling an update and
@@ -503,7 +502,7 @@ where
     }
 
     handler! {
-        contexts::ChosenInline<C>,
+        contexts::ChosenInline,
         /// Adds a new handler for chosen inline results.
         chosen_inline,
         /// Adds a new handler for chosen inline results which is run
@@ -512,7 +511,7 @@ where
     }
 
     handler! {
-        contexts::Contact<C>,
+        contexts::Contact,
         /// Adds a new handler for contacts.
         contact,
         /// Adds a new handler for contacts which is run if the predicate
@@ -521,7 +520,7 @@ where
     }
 
     handler! {
-        contexts::ConnectedWebsite<C>,
+        contexts::ConnectedWebsite,
         /// Adds a new handler for connected websites.
         connected_website,
         /// Adds a new handler for connected websites which is run
@@ -530,7 +529,7 @@ where
     }
 
     handler! {
-        contexts::CreatedGroup<C>,
+        contexts::CreatedGroup,
         /// Adds a new handler for created groups.
         created_group,
         /// Adds a new handler for created groups which is run if the predicate
@@ -539,7 +538,7 @@ where
     }
 
     handler! {
-        contexts::DataCallback<C>,
+        contexts::DataCallback,
         /// Adds a new handler for data callbacks.
         data_callback,
         /// Adds a new handler for data callbacks which is run if the predicate
@@ -548,7 +547,7 @@ where
     }
 
     handler! {
-        contexts::DeletedChatPhoto<C>,
+        contexts::DeletedChatPhoto,
         /// Adds a new handler for deleted chat photos.
         deleted_chat_photo,
         /// Adds a new handler for deleted chat photos which is run
@@ -557,7 +556,7 @@ where
     }
 
     handler! {
-        contexts::Dice<C>,
+        contexts::Dice,
         /// Adds a new handler for dice.
         dice,
         /// Adds a new handler for dice which is run if the predicate
@@ -566,7 +565,7 @@ where
     }
 
     handler! {
-        contexts::Document<C>,
+        contexts::Document,
         /// Adds a new handler for documents.
         document,
         /// Adds a new handler for documents which is run if the predicate
@@ -575,7 +574,7 @@ where
     }
 
     handler! {
-        contexts::EditedAnimation<C>,
+        contexts::EditedAnimation,
         /// Adds a new handler for edited animations.
         edited_animation,
         /// Adds a new handler for edited animations which is run
@@ -584,7 +583,7 @@ where
     }
 
     handler! {
-        contexts::EditedAudio<C>,
+        contexts::EditedAudio,
         /// Adds a new handler for edited audio.
         edited_audio,
         /// Adds a new handler for edited audio which is run if the predicate
@@ -593,7 +592,7 @@ where
     }
 
     handler! {
-        contexts::EditedDocument<C>,
+        contexts::EditedDocument,
         /// Adds a new handler for edited documents.
         edited_document,
         /// Adds a new handler for edited documents which is run
@@ -602,7 +601,7 @@ where
     }
 
     handler! {
-        contexts::EditedLocation<C>,
+        contexts::EditedLocation,
         /// Adds a new handler for edited locations.
         edited_location,
         /// Adds a new handler for edited locations which is run
@@ -611,7 +610,7 @@ where
     }
 
     handler! {
-        contexts::EditedPhoto<C>,
+        contexts::EditedPhoto,
         /// Adds a new handler for edited photos.
         edited_photo,
         /// Adds a new handler for edited photos which is run if the predicate
@@ -620,7 +619,7 @@ where
     }
 
     handler! {
-        contexts::EditedText<C>,
+        contexts::EditedText,
         /// Adds a new handler for edited text messages.
         edited_text,
         /// Adds a new handler for edited text messages which is run
@@ -629,7 +628,7 @@ where
     }
 
     handler! {
-        contexts::EditedVideo<C>,
+        contexts::EditedVideo,
         /// Adds a new handler for edited videos.
         edited_video,
         /// Adds a new handler for edited videos which is run if the predicate
@@ -638,7 +637,7 @@ where
     }
 
     handler! {
-        contexts::GameCallback<C>,
+        contexts::GameCallback,
         /// Adds a new handler for game callbacks.
         game_callback,
         /// Adds a new handler for game callbacks which is run if the predicate
@@ -647,7 +646,7 @@ where
     }
 
     handler! {
-        contexts::Game<C>,
+        contexts::Game,
         /// Adds a new handler for game messages.
         game,
         /// Adds a new handler for game messages which is run if the predicate
@@ -656,7 +655,7 @@ where
     }
 
     handler! {
-        contexts::Inline<C>,
+        contexts::Inline,
         /// Adds a new handler for inline queries.
         inline,
         /// Adds a new handler for inline queries which is run if the predicate
@@ -665,7 +664,7 @@ where
     }
 
     handler! {
-        contexts::Invoice<C>,
+        contexts::Invoice,
         /// Adds a new handler for invoices.
         invoice,
         /// Adds a new handler for invoices which is run if the predicate
@@ -674,7 +673,7 @@ where
     }
 
     handler! {
-        contexts::LeftMember<C>,
+        contexts::LeftMember,
         /// Adds a new handler for left members.
         left_member,
         /// Adds a new handler for left members which is run if the predicate
@@ -683,7 +682,7 @@ where
     }
 
     handler! {
-        contexts::Location<C>,
+        contexts::Location,
         /// Adds a new handler for locations.
         location,
         /// Adds a new handler for locations which is run if the predicate
@@ -692,7 +691,7 @@ where
     }
 
     handler! {
-        contexts::Migration<C>,
+        contexts::Migration,
         /// Adds a new handler for migrations.
         migration,
         /// Adds a new handler for migrations which is run if the predicate
@@ -701,7 +700,7 @@ where
     }
 
     handler! {
-        contexts::NewChatPhoto<C>,
+        contexts::NewChatPhoto,
         /// Adds a new handler for new chat photos.
         new_chat_photo,
         /// Adds a new handler for new chat photos which is run if the predicate
@@ -710,7 +709,7 @@ where
     }
 
     handler! {
-        contexts::NewChatTitle<C>,
+        contexts::NewChatTitle,
         /// Adds a new handler for new chat titles.
         new_chat_title,
         /// Adds a new handler for new chat titles which is run if the predicate
@@ -719,7 +718,7 @@ where
     }
 
     handler! {
-        contexts::NewMembers<C>,
+        contexts::NewMembers,
         /// Adds a new handler for new members.
         new_members,
         /// Adds a new handler for new members which is run if the predicate
@@ -728,7 +727,7 @@ where
     }
 
     handler! {
-        contexts::Passport<C>,
+        contexts::Passport,
         /// Adds a new handler for passport data.
         passport,
         /// Adds a new handler for passport data which is run if the predicate
@@ -737,7 +736,7 @@ where
     }
 
     handler! {
-        contexts::Payment<C>,
+        contexts::Payment,
         /// Adds a new handler for successful payments.
         payment,
         /// Adds a new handler for successful payments which is run
@@ -746,7 +745,7 @@ where
     }
 
     handler! {
-        contexts::Photo<C>,
+        contexts::Photo,
         /// Adds a new handler for photos.
         photo,
         /// Adds a new handler for photos which is run if the predicate
@@ -755,7 +754,7 @@ where
     }
 
     handler! {
-        contexts::PinnedMessage<C>,
+        contexts::PinnedMessage,
         /// Adds a new handler for pinned messages.
         pinned_message,
         /// Adds a new handler for pinned messages which is run if the predicate
@@ -764,7 +763,7 @@ where
     }
 
     handler! {
-        contexts::Poll<C>,
+        contexts::Poll,
         /// Adds a new handler for poll messages.
         poll,
         /// Adds a new handler for poll messages which is run if the predicate
@@ -773,7 +772,7 @@ where
     }
 
     handler! {
-        contexts::PreCheckout<C>,
+        contexts::PreCheckout,
         /// Adds a new handler for pre-checkout queries.
         pre_checkout,
         /// Adds a new handler for pre-checkout queries which is run
@@ -782,7 +781,7 @@ where
     }
 
     handler! {
-        contexts::Shipping<C>,
+        contexts::Shipping,
         /// Adds a new handler for shipping queries.
         shipping,
         /// Adds a new handler for shipping queries which is run
@@ -791,7 +790,7 @@ where
     }
 
     handler! {
-        contexts::Sticker<C>,
+        contexts::Sticker,
         /// Adds a new handler for stickers.
         sticker,
         /// Adds a new handler for stickers which is run if the predicate
@@ -800,7 +799,7 @@ where
     }
 
     handler! {
-        contexts::Text<C>,
+        contexts::Text,
         /// Adds a new handler for text messages.
         text,
         /// Adds a new handler for text messages which is run if the predicate
@@ -809,7 +808,7 @@ where
     }
 
     handler! {
-        contexts::Unhandled<C>,
+        contexts::Unhandled,
         /// Adds a new handler for unhandled updates.
         unhandled,
         /// Adds a new handler for unhandled updates which is run
@@ -818,7 +817,7 @@ where
     }
 
     handler! {
-        contexts::UpdatedPoll<C>,
+        contexts::UpdatedPoll,
         /// Adds a new handler for new states of polls.
         updated_poll,
         /// Adds a new handler for new states of polls which is run
@@ -827,7 +826,7 @@ where
     }
 
     handler! {
-        contexts::PollAnswer<C>,
+        contexts::PollAnswer,
         /// Adds a new handler for new answers in the poll.
         poll_answer,
         /// Adds a new handler for new answers in the poll which is run
@@ -836,7 +835,7 @@ where
     }
 
     handler! {
-        contexts::Venue<C>,
+        contexts::Venue,
         /// Adds a new handler for venues.
         venue,
         /// Adds a new handler for venues which is run if the predicate
@@ -845,7 +844,7 @@ where
     }
 
     handler! {
-        contexts::Video<C>,
+        contexts::Video,
         /// Adds a new handler for videos.
         video,
         /// Adds a new handler for videos which is run if the predicate
@@ -854,7 +853,7 @@ where
     }
 
     handler! {
-        contexts::VideoNote<C>,
+        contexts::VideoNote,
         /// Adds a new handler for video notes.
         video_note,
         /// Adds a new handler for video notes which is run if the predicate
@@ -863,7 +862,7 @@ where
     }
 
     handler! {
-        contexts::Voice<C>,
+        contexts::Voice,
         /// Adds a new handler for voice messages.
         voice,
         /// Adds a new handler for voice messages which is run if the predicate
@@ -872,7 +871,7 @@ where
     }
 }
 
-impl<C: Connector, S> StatefulEventLoop<C, S> {
+impl<S> StatefulEventLoop<S> {
     /// Fetches the bot's username.
     ///
     /// The username is used when checking if a command such as

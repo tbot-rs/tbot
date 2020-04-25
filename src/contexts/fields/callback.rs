@@ -2,7 +2,7 @@ use super::Context;
 use crate::types::{callback, User};
 
 /// A general trait for callback updates.
-pub trait Callback<C>: Context<C> {
+pub trait Callback: Context {
     /// The ID of the callback.
     fn id(&self) -> &callback::query::Id;
     /// The user who initiated the callback.

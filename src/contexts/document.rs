@@ -18,21 +18,21 @@ media_message! {
     }
 }
 
-impl<C> fields::Document<C> for Document<C> {
+impl fields::Document for Document {
     #[must_use]
     fn document(&self) -> &types::Document {
         &self.document
     }
 }
 
-impl<C> Caption<C> for Document<C> {
+impl Caption for Document {
     #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> AnyText<C> for Document<C> {
+impl AnyText for Document {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption

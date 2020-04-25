@@ -18,21 +18,21 @@ media_message! {
     }
 }
 
-impl<C> fields::Audio<C> for Audio<C> {
+impl fields::Audio for Audio {
     #[must_use]
     fn audio(&self) -> &types::Audio {
         &self.audio
     }
 }
 
-impl<C> Caption<C> for Audio<C> {
+impl Caption for Audio {
     #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> AnyText<C> for Audio<C> {
+impl AnyText for Audio {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption

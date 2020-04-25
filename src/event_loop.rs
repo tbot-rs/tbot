@@ -1,7 +1,6 @@
 //! The event loop for handling bot updates.
 
 use crate::{
-    connectors::Connector,
     contexts, errors,
     state::StatefulEventLoop,
     types::{
@@ -32,53 +31,52 @@ type Map<T> = HashMap<String, Handlers<T>>;
 // Wish trait alises came out soon
 type Handler<T> = dyn Fn(Arc<T>) + Send + Sync;
 
-type AnimationHandler<C> = Handler<contexts::Animation<C>>;
-type AudioHandler<C> = Handler<contexts::Audio<C>>;
-type ChosenInlineHandler<C> = Handler<contexts::ChosenInline<C>>;
-type CommandHandler<C> = Handler<contexts::Command<contexts::Text<C>>>;
-type ConnectedWebsiteHandler<C> = Handler<contexts::ConnectedWebsite<C>>;
-type ContactHandler<C> = Handler<contexts::Contact<C>>;
-type CreatedGroupHandler<C> = Handler<contexts::CreatedGroup<C>>;
-type DataCallbackHandler<C> = Handler<contexts::DataCallback<C>>;
-type DeletedChatPhotoHandler<C> = Handler<contexts::DeletedChatPhoto<C>>;
-type DiceHandler<C> = Handler<contexts::Dice<C>>;
-type DocumentHandler<C> = Handler<contexts::Document<C>>;
-type EditedAnimationHandler<C> = Handler<contexts::EditedAnimation<C>>;
-type EditedAudioHandler<C> = Handler<contexts::EditedAudio<C>>;
-type EditedCommandHandler<C> =
-    Handler<contexts::Command<contexts::EditedText<C>>>;
-type EditedDocumentHandler<C> = Handler<contexts::EditedDocument<C>>;
-type EditedLocationHandler<C> = Handler<contexts::EditedLocation<C>>;
-type EditedPhotoHandler<C> = Handler<contexts::EditedPhoto<C>>;
-type EditedTextHandler<C> = Handler<contexts::EditedText<C>>;
-type EditedVideoHandler<C> = Handler<contexts::EditedVideo<C>>;
-type GameCallbackHandler<C> = Handler<contexts::GameCallback<C>>;
-type GameHandler<C> = Handler<contexts::Game<C>>;
-type InlineHandler<C> = Handler<contexts::Inline<C>>;
-type InvoiceHandler<C> = Handler<contexts::Invoice<C>>;
-type LeftMemberHandler<C> = Handler<contexts::LeftMember<C>>;
-type LocationHandler<C> = Handler<contexts::Location<C>>;
-type MigrationHandler<C> = Handler<contexts::Migration<C>>;
-type NewChatPhotoHandler<C> = Handler<contexts::NewChatPhoto<C>>;
-type NewChatTitleHandler<C> = Handler<contexts::NewChatTitle<C>>;
-type NewMembersHandler<C> = Handler<contexts::NewMembers<C>>;
-type PassportHandler<C> = Handler<contexts::Passport<C>>;
-type PaymentHandler<C> = Handler<contexts::Payment<C>>;
-type PhotoHandler<C> = Handler<contexts::Photo<C>>;
-type PinnedMessageHandler<C> = Handler<contexts::PinnedMessage<C>>;
-type PollHandler<C> = Handler<contexts::Poll<C>>;
-type PollAnswerHandler<C> = Handler<contexts::PollAnswer<C>>;
-type PreCheckoutHandler<C> = Handler<contexts::PreCheckout<C>>;
-type ShippingHandler<C> = Handler<contexts::Shipping<C>>;
-type StickerHandler<C> = Handler<contexts::Sticker<C>>;
-type TextHandler<C> = Handler<contexts::Text<C>>;
-type UnhandledHandler<C> = Handler<contexts::Unhandled<C>>;
-type UpdatedPollHandler<C> = Handler<contexts::UpdatedPoll<C>>;
-type UpdateHandler<C> = Handler<contexts::Update<C>>;
-type VenueHandler<C> = Handler<contexts::Venue<C>>;
-type VideoHandler<C> = Handler<contexts::Video<C>>;
-type VideoNoteHandler<C> = Handler<contexts::VideoNote<C>>;
-type VoiceHandler<C> = Handler<contexts::Voice<C>>;
+type AnimationHandler = Handler<contexts::Animation>;
+type AudioHandler = Handler<contexts::Audio>;
+type ChosenInlineHandler = Handler<contexts::ChosenInline>;
+type CommandHandler = Handler<contexts::Command<contexts::Text>>;
+type ConnectedWebsiteHandler = Handler<contexts::ConnectedWebsite>;
+type ContactHandler = Handler<contexts::Contact>;
+type CreatedGroupHandler = Handler<contexts::CreatedGroup>;
+type DataCallbackHandler = Handler<contexts::DataCallback>;
+type DeletedChatPhotoHandler = Handler<contexts::DeletedChatPhoto>;
+type DiceHandler = Handler<contexts::Dice>;
+type DocumentHandler = Handler<contexts::Document>;
+type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
+type EditedAudioHandler = Handler<contexts::EditedAudio>;
+type EditedCommandHandler = Handler<contexts::Command<contexts::EditedText>>;
+type EditedDocumentHandler = Handler<contexts::EditedDocument>;
+type EditedLocationHandler = Handler<contexts::EditedLocation>;
+type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
+type EditedTextHandler = Handler<contexts::EditedText>;
+type EditedVideoHandler = Handler<contexts::EditedVideo>;
+type GameCallbackHandler = Handler<contexts::GameCallback>;
+type GameHandler = Handler<contexts::Game>;
+type InlineHandler = Handler<contexts::Inline>;
+type InvoiceHandler = Handler<contexts::Invoice>;
+type LeftMemberHandler = Handler<contexts::LeftMember>;
+type LocationHandler = Handler<contexts::Location>;
+type MigrationHandler = Handler<contexts::Migration>;
+type NewChatPhotoHandler = Handler<contexts::NewChatPhoto>;
+type NewChatTitleHandler = Handler<contexts::NewChatTitle>;
+type NewMembersHandler = Handler<contexts::NewMembers>;
+type PassportHandler = Handler<contexts::Passport>;
+type PaymentHandler = Handler<contexts::Payment>;
+type PhotoHandler = Handler<contexts::Photo>;
+type PinnedMessageHandler = Handler<contexts::PinnedMessage>;
+type PollHandler = Handler<contexts::Poll>;
+type PollAnswerHandler = Handler<contexts::PollAnswer>;
+type PreCheckoutHandler = Handler<contexts::PreCheckout>;
+type ShippingHandler = Handler<contexts::Shipping>;
+type StickerHandler = Handler<contexts::Sticker>;
+type TextHandler = Handler<contexts::Text>;
+type UnhandledHandler = Handler<contexts::Unhandled>;
+type UpdatedPollHandler = Handler<contexts::UpdatedPoll>;
+type UpdateHandler = Handler<contexts::Update>;
+type VenueHandler = Handler<contexts::Venue>;
+type VideoHandler = Handler<contexts::Video>;
+type VideoNoteHandler = Handler<contexts::VideoNote>;
+type VoiceHandler = Handler<contexts::Voice>;
 
 /// Provides an event loop for handling Telegram updates.
 ///
@@ -100,61 +98,61 @@ type VoiceHandler<C> = Handler<contexts::Voice<C>>;
 /// [webhook]: #method.webhook
 /// [`text`]: #method.text
 #[must_use]
-pub struct EventLoop<C> {
-    bot: Bot<C>,
+pub struct EventLoop {
+    bot: Bot,
     username: Option<String>,
 
-    command_handlers: Map<CommandHandler<C>>,
-    edited_command_handlers: Map<EditedCommandHandler<C>>,
-    after_update_handlers: Handlers<UpdateHandler<C>>,
-    animation_handlers: Handlers<AnimationHandler<C>>,
-    audio_handlers: Handlers<AudioHandler<C>>,
-    before_update_handlers: Handlers<UpdateHandler<C>>,
-    chosen_inline_handlers: Handlers<ChosenInlineHandler<C>>,
-    contact_handlers: Handlers<ContactHandler<C>>,
-    connected_website_handlers: Handlers<ConnectedWebsiteHandler<C>>,
-    created_group_handlers: Handlers<CreatedGroupHandler<C>>,
-    data_callback_handlers: Handlers<DataCallbackHandler<C>>,
-    deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler<C>>,
-    dice_handlers: Handlers<DiceHandler<C>>,
-    document_handlers: Handlers<DocumentHandler<C>>,
-    edited_animation_handlers: Handlers<EditedAnimationHandler<C>>,
-    edited_audio_handlers: Handlers<EditedAudioHandler<C>>,
-    edited_document_handlers: Handlers<EditedDocumentHandler<C>>,
-    edited_location_handlers: Handlers<EditedLocationHandler<C>>,
-    edited_photo_handlers: Handlers<EditedPhotoHandler<C>>,
-    edited_text_handlers: Handlers<EditedTextHandler<C>>,
-    edited_video_handlers: Handlers<EditedVideoHandler<C>>,
-    game_callback_handlers: Handlers<GameCallbackHandler<C>>,
-    game_handlers: Handlers<GameHandler<C>>,
-    inline_handlers: Handlers<InlineHandler<C>>,
-    invoice_handlers: Handlers<InvoiceHandler<C>>,
-    left_member_handlers: Handlers<LeftMemberHandler<C>>,
-    location_handlers: Handlers<LocationHandler<C>>,
-    migration_handlers: Handlers<MigrationHandler<C>>,
-    new_chat_photo_handlers: Handlers<NewChatPhotoHandler<C>>,
-    new_chat_title_handlers: Handlers<NewChatTitleHandler<C>>,
-    new_members_handlers: Handlers<NewMembersHandler<C>>,
-    passport_handlers: Handlers<PassportHandler<C>>,
-    payment_handlers: Handlers<PaymentHandler<C>>,
-    photo_handlers: Handlers<PhotoHandler<C>>,
-    pinned_message_handlers: Handlers<PinnedMessageHandler<C>>,
-    poll_handlers: Handlers<PollHandler<C>>,
-    poll_answer_handlers: Handlers<PollAnswerHandler<C>>,
-    pre_checkout_handlers: Handlers<PreCheckoutHandler<C>>,
-    shipping_handlers: Handlers<ShippingHandler<C>>,
-    sticker_handlers: Handlers<StickerHandler<C>>,
-    text_handlers: Handlers<TextHandler<C>>,
-    unhandled_handlers: Handlers<UnhandledHandler<C>>,
-    updated_poll_handlers: Handlers<UpdatedPollHandler<C>>,
-    venue_handlers: Handlers<VenueHandler<C>>,
-    video_handlers: Handlers<VideoHandler<C>>,
-    video_note_handlers: Handlers<VideoNoteHandler<C>>,
-    voice_handlers: Handlers<VoiceHandler<C>>,
+    command_handlers: Map<CommandHandler>,
+    edited_command_handlers: Map<EditedCommandHandler>,
+    after_update_handlers: Handlers<UpdateHandler>,
+    animation_handlers: Handlers<AnimationHandler>,
+    audio_handlers: Handlers<AudioHandler>,
+    before_update_handlers: Handlers<UpdateHandler>,
+    chosen_inline_handlers: Handlers<ChosenInlineHandler>,
+    contact_handlers: Handlers<ContactHandler>,
+    connected_website_handlers: Handlers<ConnectedWebsiteHandler>,
+    created_group_handlers: Handlers<CreatedGroupHandler>,
+    data_callback_handlers: Handlers<DataCallbackHandler>,
+    deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler>,
+    dice_handlers: Handlers<DiceHandler>,
+    document_handlers: Handlers<DocumentHandler>,
+    edited_animation_handlers: Handlers<EditedAnimationHandler>,
+    edited_audio_handlers: Handlers<EditedAudioHandler>,
+    edited_document_handlers: Handlers<EditedDocumentHandler>,
+    edited_location_handlers: Handlers<EditedLocationHandler>,
+    edited_photo_handlers: Handlers<EditedPhotoHandler>,
+    edited_text_handlers: Handlers<EditedTextHandler>,
+    edited_video_handlers: Handlers<EditedVideoHandler>,
+    game_callback_handlers: Handlers<GameCallbackHandler>,
+    game_handlers: Handlers<GameHandler>,
+    inline_handlers: Handlers<InlineHandler>,
+    invoice_handlers: Handlers<InvoiceHandler>,
+    left_member_handlers: Handlers<LeftMemberHandler>,
+    location_handlers: Handlers<LocationHandler>,
+    migration_handlers: Handlers<MigrationHandler>,
+    new_chat_photo_handlers: Handlers<NewChatPhotoHandler>,
+    new_chat_title_handlers: Handlers<NewChatTitleHandler>,
+    new_members_handlers: Handlers<NewMembersHandler>,
+    passport_handlers: Handlers<PassportHandler>,
+    payment_handlers: Handlers<PaymentHandler>,
+    photo_handlers: Handlers<PhotoHandler>,
+    pinned_message_handlers: Handlers<PinnedMessageHandler>,
+    poll_handlers: Handlers<PollHandler>,
+    poll_answer_handlers: Handlers<PollAnswerHandler>,
+    pre_checkout_handlers: Handlers<PreCheckoutHandler>,
+    shipping_handlers: Handlers<ShippingHandler>,
+    sticker_handlers: Handlers<StickerHandler>,
+    text_handlers: Handlers<TextHandler>,
+    unhandled_handlers: Handlers<UnhandledHandler>,
+    updated_poll_handlers: Handlers<UpdatedPollHandler>,
+    venue_handlers: Handlers<VenueHandler>,
+    video_handlers: Handlers<VideoHandler>,
+    video_note_handlers: Handlers<VideoNoteHandler>,
+    voice_handlers: Handlers<VoiceHandler>,
 }
 
-impl<C> EventLoop<C> {
-    pub(crate) fn new(bot: Bot<C>) -> Self {
+impl EventLoop {
+    pub(crate) fn new(bot: Bot) -> Self {
         Self {
             bot,
             username: None,
@@ -210,7 +208,7 @@ impl<C> EventLoop<C> {
 
     /// Turns this event loop into a stateful one. Handlers added on this event
     /// loop are kept.
-    pub fn into_stateful<S>(self, state: S) -> StatefulEventLoop<C, S>
+    pub fn into_stateful<S>(self, state: S) -> StatefulEventLoop<S>
     where
         S: Send + Sync + 'static,
     {
@@ -226,7 +224,7 @@ impl<C> EventLoop<C> {
     }
 
     /// Starts polling configuration.
-    pub fn polling(self) -> Polling<C> {
+    pub fn polling(self) -> Polling {
         Polling::new(self)
     }
 
@@ -235,7 +233,7 @@ impl<C> EventLoop<C> {
     /// See our [wiki] to learn how to use webhook with `tbot`.
     ///
     /// [wiki]: https://gitlab.com/SnejUgal/tbot/wikis/How-to/How-to-use-webhooks
-    pub fn webhook(self, url: &str, port: u16) -> Webhook<'_, C> {
+    pub fn webhook(self, url: &str, port: u16) -> Webhook<'_> {
         Webhook::new(self, url, port)
     }
 
@@ -249,7 +247,7 @@ impl<C> EventLoop<C> {
     /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -275,7 +273,7 @@ impl<C> EventLoop<C> {
     where
         Cm: IntoIterator<Item = &'static str>,
         F: Future<Output = ()> + Send + 'static,
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -300,7 +298,7 @@ impl<C> EventLoop<C> {
     fn run_command_handlers(
         &self,
         command: &str,
-        context: &Arc<contexts::Command<contexts::Text<C>>>,
+        context: &Arc<contexts::Command<contexts::Text>>,
     ) {
         if let Some(handlers) = self.command_handlers.get(command) {
             for handler in handlers {
@@ -312,7 +310,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -324,7 +322,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -336,7 +334,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -348,7 +346,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -367,7 +365,7 @@ impl<C> EventLoop<C> {
     where
         Cm: IntoIterator<Item = &'static str>,
         F: Future<Output = ()> + Send + 'static,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText<C>>>) -> F)
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> F)
             + Send
             + Sync
             + 'static,
@@ -392,7 +390,7 @@ impl<C> EventLoop<C> {
     fn run_edited_command_handlers(
         &self,
         command: &str,
-        context: &Arc<contexts::Command<contexts::EditedText<C>>>,
+        context: &Arc<contexts::Command<contexts::EditedText>>,
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(command) {
             for handler in handlers {
@@ -405,7 +403,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler which is run after handling an update.
         after_update_handlers,
         after_update,
-        contexts::Update<C>,
+        contexts::Update,
         run_after_update_handlers,
     }
 
@@ -413,7 +411,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for animations.
         animation_handlers,
         animation,
-        contexts::Animation<C>,
+        contexts::Animation,
         run_animation_handlers,
         will_handle_animation,
     }
@@ -422,7 +420,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for audio.
         audio_handlers,
         audio,
-        contexts::Audio<C>,
+        contexts::Audio,
         run_audio_handlers,
         will_handle_audio,
     }
@@ -431,7 +429,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler which is run before handling an update.
         before_update_handlers,
         before_update,
-        contexts::Update<C>,
+        contexts::Update,
         run_before_update_handlers,
     }
 
@@ -439,7 +437,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for chosen inline results.
         chosen_inline_handlers,
         chosen_inline,
-        contexts::ChosenInline<C>,
+        contexts::ChosenInline,
         run_chosen_inline_handlers,
         will_handle_chosen_inline,
     }
@@ -448,7 +446,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for contacts.
         contact_handlers,
         contact,
-        contexts::Contact<C>,
+        contexts::Contact,
         run_contact_handlers,
         will_handle_contact,
     }
@@ -457,7 +455,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for connected websites.
         connected_website_handlers,
         connected_website,
-        contexts::ConnectedWebsite<C>,
+        contexts::ConnectedWebsite,
         run_connected_website_handlers,
         will_handle_connected_website,
     }
@@ -466,7 +464,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for created groups.
         created_group_handlers,
         created_group,
-        contexts::CreatedGroup<C>,
+        contexts::CreatedGroup,
         run_created_group_handlers,
         will_handle_created_group,
     }
@@ -475,7 +473,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for data callbacks.
         data_callback_handlers,
         data_callback,
-        contexts::DataCallback<C>,
+        contexts::DataCallback,
         run_data_callback_handlers,
         will_handle_data_callback,
     }
@@ -484,7 +482,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for deleted chat photos.
         deleted_chat_photo_handlers,
         deleted_chat_photo,
-        contexts::DeletedChatPhoto<C>,
+        contexts::DeletedChatPhoto,
         run_deleted_chat_photo_handlers,
         will_handle_deleted_chat_photo,
     }
@@ -493,7 +491,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for dice.
         dice_handlers,
         dice,
-        contexts::Dice<C>,
+        contexts::Dice,
         run_dice_handlers,
         will_handle_dice,
     }
@@ -502,7 +500,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for documents.
         document_handlers,
         document,
-        contexts::Document<C>,
+        contexts::Document,
         run_document_handlers,
         will_handle_document,
     }
@@ -511,7 +509,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited animations.
         edited_animation_handlers,
         edited_animation,
-        contexts::EditedAnimation<C>,
+        contexts::EditedAnimation,
         run_edited_animation_handlers,
         will_handle_edited_animation,
     }
@@ -520,7 +518,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited audio.
         edited_audio_handlers,
         edited_audio,
-        contexts::EditedAudio<C>,
+        contexts::EditedAudio,
         run_edited_audio_handlers,
         will_handle_edited_audio,
     }
@@ -529,7 +527,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited documents.
         edited_document_handlers,
         edited_document,
-        contexts::EditedDocument<C>,
+        contexts::EditedDocument,
         run_edited_document_handlers,
         will_handle_edited_document,
     }
@@ -538,7 +536,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited locations.
         edited_location_handlers,
         edited_location,
-        contexts::EditedLocation<C>,
+        contexts::EditedLocation,
         run_edited_location_handlers,
         will_handle_edited_location,
     }
@@ -547,7 +545,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited photos.
         edited_photo_handlers,
         edited_photo,
-        contexts::EditedPhoto<C>,
+        contexts::EditedPhoto,
         run_edited_photo_handlers,
         will_handle_edited_photo,
     }
@@ -556,7 +554,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited text messages.
         edited_text_handlers,
         edited_text,
-        contexts::EditedText<C>,
+        contexts::EditedText,
         run_edited_text_handlers,
         will_handle_edited_text,
     }
@@ -565,7 +563,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for edited videos.
         edited_video_handlers,
         edited_video,
-        contexts::EditedVideo<C>,
+        contexts::EditedVideo,
         run_edited_video_handlers,
         will_handle_edited_video,
     }
@@ -574,7 +572,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for game callbacks.
         game_callback_handlers,
         game_callback,
-        contexts::GameCallback<C>,
+        contexts::GameCallback,
         run_game_callback_handlers,
         will_handle_game_callback,
     }
@@ -583,7 +581,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for game messages.
         game_handlers,
         game,
-        contexts::Game<C>,
+        contexts::Game,
         run_game_handlers,
         will_handle_game,
     }
@@ -592,7 +590,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for inline queries.
         inline_handlers,
         inline,
-        contexts::Inline<C>,
+        contexts::Inline,
         run_inline_handlers,
         will_handle_inline,
     }
@@ -601,7 +599,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for invoices.
         invoice_handlers,
         invoice,
-        contexts::Invoice<C>,
+        contexts::Invoice,
         run_invoice_handlers,
         will_handle_invoice,
     }
@@ -610,7 +608,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for left members.
         left_member_handlers,
         left_member,
-        contexts::LeftMember<C>,
+        contexts::LeftMember,
         run_left_member_handlers,
         will_handle_left_member,
     }
@@ -619,7 +617,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for locations.
         location_handlers,
         location,
-        contexts::Location<C>,
+        contexts::Location,
         run_location_handlers,
         will_handle_location,
     }
@@ -628,7 +626,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for migrations.
         migration_handlers,
         migration,
-        contexts::Migration<C>,
+        contexts::Migration,
         run_migration_handlers,
         will_handle_migration,
     }
@@ -637,7 +635,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for new chat photos.
         new_chat_photo_handlers,
         new_chat_photo,
-        contexts::NewChatPhoto<C>,
+        contexts::NewChatPhoto,
         run_new_chat_photo_handlers,
         will_handle_new_chat_photo,
     }
@@ -646,7 +644,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for new chat titles.
         new_chat_title_handlers,
         new_chat_title,
-        contexts::NewChatTitle<C>,
+        contexts::NewChatTitle,
         run_new_chat_title_handlers,
         will_handle_new_chat_title,
     }
@@ -655,7 +653,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for new members.
         new_members_handlers,
         new_members,
-        contexts::NewMembers<C>,
+        contexts::NewMembers,
         run_new_members_handlers,
         will_handle_new_members,
     }
@@ -664,7 +662,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for passport data.
         passport_handlers,
         passport,
-        contexts::Passport<C>,
+        contexts::Passport,
         run_passport_handlers,
         will_handle_passport,
     }
@@ -673,7 +671,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for successful payments.
         payment_handlers,
         payment,
-        contexts::Payment<C>,
+        contexts::Payment,
         run_payment_handlers,
         will_handle_payment,
     }
@@ -682,7 +680,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for photos.
         photo_handlers,
         photo,
-        contexts::Photo<C>,
+        contexts::Photo,
         run_photo_handlers,
         will_handle_photo,
     }
@@ -691,7 +689,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for pinned messages.
         pinned_message_handlers,
         pinned_message,
-        contexts::PinnedMessage<C>,
+        contexts::PinnedMessage,
         run_pinned_message_handlers,
         will_handle_pinned_message,
     }
@@ -700,7 +698,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for poll messages.
         poll_handlers,
         poll,
-        contexts::Poll<C>,
+        contexts::Poll,
         run_poll_handlers,
         will_handle_poll,
     }
@@ -709,7 +707,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for pre-checkout queries.
         pre_checkout_handlers,
         pre_checkout,
-        contexts::PreCheckout<C>,
+        contexts::PreCheckout,
         run_pre_checkout_handlers,
         will_handle_pre_checkout,
     }
@@ -718,7 +716,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for shipping queries.
         shipping_handlers,
         shipping,
-        contexts::Shipping<C>,
+        contexts::Shipping,
         run_shipping_handlers,
         will_handle_shipping,
     }
@@ -727,7 +725,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for stickers.
         sticker_handlers,
         sticker,
-        contexts::Sticker<C>,
+        contexts::Sticker,
         run_sticker_handlers,
         will_handle_sticker,
     }
@@ -736,7 +734,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for text messages.
         text_handlers,
         text,
-        contexts::Text<C>,
+        contexts::Text,
         run_text_handlers,
         will_handle_text,
     }
@@ -744,7 +742,7 @@ impl<C> EventLoop<C> {
     /// Adds a new handler for unhandled updates.
     pub fn unhandled<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Unhandled<C>>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<contexts::Unhandled>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.unhandled_handlers.push(Box::new(move |context| {
@@ -756,7 +754,7 @@ impl<C> EventLoop<C> {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn run_unhandled_handlers(&self, bot: Arc<Bot<C>>, update: update::Kind) {
+    fn run_unhandled_handlers(&self, bot: Arc<Bot>, update: update::Kind) {
         let context = Arc::new(contexts::Unhandled::new(bot, update));
 
         for handler in &self.unhandled_handlers {
@@ -768,7 +766,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for new states of polls.
         updated_poll_handlers,
         updated_poll,
-        contexts::UpdatedPoll<C>,
+        contexts::UpdatedPoll,
         run_updated_poll_handlers,
         will_handle_updated_poll,
     }
@@ -777,7 +775,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for new answers in the poll.
         poll_answer_handlers,
         poll_answer,
-        contexts::PollAnswer<C>,
+        contexts::PollAnswer,
         run_poll_answer_handlers,
         will_handle_poll_answer,
     }
@@ -786,7 +784,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for venues.
         venue_handlers,
         venue,
-        contexts::Venue<C>,
+        contexts::Venue,
         run_venue_handlers,
         will_handle_venue,
     }
@@ -795,7 +793,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for videos.
         video_handlers,
         video,
-        contexts::Video<C>,
+        contexts::Video,
         run_video_handlers,
         will_handle_video,
     }
@@ -804,7 +802,7 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for video notes.
         video_note_handlers,
         video_note,
-        contexts::VideoNote<C>,
+        contexts::VideoNote,
         run_video_note_handlers,
         will_handle_video_note,
     }
@@ -813,13 +811,13 @@ impl<C> EventLoop<C> {
         /// Adds a new handler for voice messages.
         voice_handlers,
         voice,
-        contexts::Voice<C>,
+        contexts::Voice,
         run_voice_handlers,
         will_handle_voice,
     }
 
     #[instrument(skip(self, bot, update))]
-    fn handle_update(&self, bot: Arc<Bot<C>>, update: types::Update) {
+    fn handle_update(&self, bot: Arc<Bot>, update: types::Update) {
         trace!(update = debug(&update));
 
         let update_context =
@@ -918,7 +916,7 @@ impl<C> EventLoop<C> {
 
     #[allow(clippy::cognitive_complexity)]
     #[allow(clippy::too_many_lines)] // can't split the huge match
-    fn handle_message_update(&self, bot: Arc<Bot<C>>, message: types::Message) {
+    fn handle_message_update(&self, bot: Arc<Bot>, message: types::Message) {
         let (data, kind) = message.split();
 
         match kind {
@@ -1146,7 +1144,7 @@ impl<C> EventLoop<C> {
     #[allow(clippy::too_many_lines)] // can't split the huge match
     fn handle_message_edit_update(
         &self,
-        bot: Arc<Bot<C>>,
+        bot: Arc<Bot>,
         message: types::Message,
     ) {
         let (data, kind) = message.split();
@@ -1295,9 +1293,7 @@ impl<C> EventLoop<C> {
             true
         }
     }
-}
 
-impl<C: Connector> EventLoop<C> {
     /// Fetches the bot's username.
     ///
     /// The username is used when checking if a command such as

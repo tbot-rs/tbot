@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{Document, InputFile, Thumb},
         keyboard,
@@ -20,8 +18,8 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#senddocument
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendDocument<'a, C> {
-    client: &'a Client<C>,
+pub struct SendDocument<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     document: Document<'a>,
@@ -30,9 +28,9 @@ pub struct SendDocument<'a, C> {
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
-impl<'a, C> SendDocument<'a, C> {
+impl<'a> SendDocument<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         document: Document<'a>,
@@ -73,7 +71,7 @@ impl<'a, C> SendDocument<'a, C> {
     }
 }
 
-impl<C: Connector> SendDocument<'_, C> {
+impl SendDocument<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(8)

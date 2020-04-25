@@ -43,13 +43,13 @@ impl<C> Command<C> {
 
 impl<T> Sealed for Command<T> {}
 
-impl<C> Context<C> for Command<Text<C>> {
-    fn bot(&self) -> &Bot<C> {
+impl Context for Command<Text> {
+    fn bot(&self) -> &Bot {
         &self.context.bot
     }
 }
 
-impl<C> Message<C> for Command<Text<C>> {
+impl Message for Command<Text> {
     #[must_use]
     fn message_id(&self) -> message::Id {
         self.context.message_id
@@ -71,7 +71,7 @@ impl<C> Message<C> for Command<Text<C>> {
     }
 }
 
-impl<C> MediaMessage<C> for Command<Text<C>> {
+impl MediaMessage for Command<Text> {
     #[must_use]
     fn reply_to(&self) -> Option<&types::Message> {
         self.context.reply_to.as_ref()
@@ -88,39 +88,39 @@ impl<C> MediaMessage<C> for Command<Text<C>> {
     }
 }
 
-impl<C> Forward<C> for Command<Text<C>> {
+impl Forward for Command<Text> {
     #[must_use]
     fn forward(&self) -> Option<&message::Forward> {
         self.context.forward()
     }
 }
 
-impl<C> fields::Text<C> for Command<Text<C>> {
+impl fields::Text for Command<Text> {
     #[must_use]
     fn text(&self) -> &message::Text {
         &self.context.text
     }
 }
 
-impl<C> AnyText<C> for Command<Text<C>> {
+impl AnyText for Command<Text> {
     #[must_use]
     fn text(&self) -> &message::Text {
         &self.context.text
     }
 }
 
-impl<'a, C: 'static> Forwardable<C> for Command<Text<C>> {}
-impl<'a, C: 'static> Pinnable<C> for Command<Text<C>> {}
+impl Forwardable for Command<Text> {}
+impl Pinnable for Command<Text> {}
 
 // Once again.
 
-impl<C> Context<C> for Command<EditedText<C>> {
-    fn bot(&self) -> &Bot<C> {
+impl Context for Command<EditedText> {
+    fn bot(&self) -> &Bot {
         &self.context.bot
     }
 }
 
-impl<C> Message<C> for Command<EditedText<C>> {
+impl Message for Command<EditedText> {
     #[must_use]
     fn message_id(&self) -> message::Id {
         self.context.message_id
@@ -142,7 +142,7 @@ impl<C> Message<C> for Command<EditedText<C>> {
     }
 }
 
-impl<C> MediaMessage<C> for Command<EditedText<C>> {
+impl MediaMessage for Command<EditedText> {
     #[must_use]
     fn reply_to(&self) -> Option<&types::Message> {
         self.context.reply_to.as_ref()
@@ -159,26 +159,26 @@ impl<C> MediaMessage<C> for Command<EditedText<C>> {
     }
 }
 
-impl<C> EditedMessage<C> for Command<EditedText<C>> {
+impl EditedMessage for Command<EditedText> {
     #[must_use]
     fn edit_date(&self) -> i64 {
         self.context.edit_date
     }
 }
 
-impl<C> fields::Text<C> for Command<EditedText<C>> {
+impl fields::Text for Command<EditedText> {
     #[must_use]
     fn text(&self) -> &message::Text {
         &self.context.text
     }
 }
 
-impl<C> AnyText<C> for Command<EditedText<C>> {
+impl AnyText for Command<EditedText> {
     #[must_use]
     fn text(&self) -> &message::Text {
         &self.context.text
     }
 }
 
-impl<'a, C: 'static> Forwardable<C> for Command<EditedText<C>> {}
-impl<'a, C: 'static> Pinnable<C> for Command<EditedText<C>> {}
+impl Forwardable for Command<EditedText> {}
+impl Pinnable for Command<EditedText> {}

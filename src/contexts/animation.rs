@@ -18,21 +18,21 @@ media_message! {
     }
 }
 
-impl<C> fields::Animation<C> for Animation<C> {
+impl fields::Animation for Animation {
     #[must_use]
     fn animation(&self) -> &types::Animation {
         &self.animation
     }
 }
 
-impl<C> Caption<C> for Animation<C> {
+impl Caption for Animation {
     #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> AnyText<C> for Animation<C> {
+impl AnyText for Animation {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption

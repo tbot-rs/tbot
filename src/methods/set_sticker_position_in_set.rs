@@ -1,5 +1,5 @@
 use super::send_method;
-use crate::{connectors::Connector, errors, internal::Client, token};
+use crate::{connectors::Client, errors, token};
 use serde::Serialize;
 
 /// Changes a sticker's position in a sticker set.
@@ -9,18 +9,18 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#setstickerpositioninset
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SetStickerPositionInSet<'a, C> {
+pub struct SetStickerPositionInSet<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     sticker: &'a str,
     position: u32,
 }
 
-impl<'a, C> SetStickerPositionInSet<'a, C> {
+impl<'a> SetStickerPositionInSet<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         sticker: &'a str,
         position: u32,
@@ -34,10 +34,10 @@ impl<'a, C> SetStickerPositionInSet<'a, C> {
     }
 }
 
-impl<C: Connector> SetStickerPositionInSet<'_, C> {
+impl SetStickerPositionInSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "setStickerPositionInSet",

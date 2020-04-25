@@ -34,11 +34,11 @@ macro_rules! message_base {
             }
         }
 
-        impl<C> $name<C> {
+        impl $name {
             // https://github.com/rust-lang/rust-clippy/issues/4041
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: std::sync::Arc<crate::Bot<C>>,
+                bot: std::sync::Arc<crate::Bot>,
                 data: crate::types::message::Data,
                 $($param: $param_type,)*
             ) -> Self {
@@ -54,7 +54,7 @@ macro_rules! message_base {
             }
         }
 
-        impl<C> crate::contexts::fields::Message<C> for $name<C> {
+        impl crate::contexts::fields::Message for $name {
             #[must_use]
             fn message_id(&self) -> crate::types::message::Id {
                 self.message_id

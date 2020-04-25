@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         inline_message_id,
         input_file::{
@@ -21,17 +19,17 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct EditInlineMedia<'a, C> {
-    client: &'a Client<C>,
+pub struct EditInlineMedia<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     inline_message_id: inline_message_id::Ref<'a>,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
-impl<'a, C> EditInlineMedia<'a, C> {
+impl<'a> EditInlineMedia<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         inline_message_id: inline_message_id::Ref<'a>,
         media: impl Into<EditableMedia<'a>>,
@@ -53,7 +51,7 @@ impl<'a, C> EditInlineMedia<'a, C> {
     }
 }
 
-impl<C: Connector> EditInlineMedia<'_, C> {
+impl EditInlineMedia<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(4)
@@ -75,7 +73,7 @@ impl<C: Connector> EditInlineMedia<'_, C> {
 
         let (boundary, body) = multipart.json("media", self.media).finish();
 
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "editMessageMedia",

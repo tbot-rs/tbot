@@ -1,5 +1,5 @@
 use super::handle;
-use crate::{connectors::Connector, errors, event_loop::Webhook};
+use crate::{errors, event_loop::Webhook};
 use hyper::{
     service::{make_service_fn, service_fn},
     Server,
@@ -10,17 +10,17 @@ use tracing::instrument;
 
 /// Configures the HTTP webhook server.
 #[must_use = "webhook server needs to be `start`ed to run the event loop"]
-pub struct Http<'a, C> {
-    webhook: Webhook<'a, C>,
+pub struct Http<'a> {
+    webhook: Webhook<'a>,
 }
 
-impl<'a, C> Http<'a, C> {
-    pub(crate) const fn new(webhook: Webhook<'a, C>) -> Self {
+impl<'a> Http<'a> {
+    pub(crate) const fn new(webhook: Webhook<'a>) -> Self {
         Self { webhook }
     }
 }
 
-impl<'a, C: Connector + Clone> Http<'a, C> {
+impl<'a> Http<'a> {
     /// Starts the server.
     #[instrument(name = "http_webhook", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::HttpWebhook> {

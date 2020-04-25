@@ -11,8 +11,8 @@ common! {
     }
 }
 
-impl<C> UpdatedPoll<C> {
-    pub(crate) const fn new(bot: Arc<Bot<C>>, poll: Poll) -> Self {
+impl UpdatedPoll {
+    pub(crate) const fn new(bot: Arc<Bot>, poll: Poll) -> Self {
         Self { bot, poll }
     }
 }

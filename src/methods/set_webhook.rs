@@ -1,14 +1,13 @@
 use super::send_method;
 use crate::{
-    connectors::Connector, errors, internal::Client, token,
-    types::parameters::UpdateKind, Multipart,
+    connectors::Client, errors, token, types::parameters::UpdateKind, Multipart,
 };
 
 /// This method isn't meant to be used by users directly.
 #[derive(Debug, Clone)]
 #[must_use]
-pub(crate) struct SetWebhook<'a, C> {
-    client: &'a Client<C>,
+pub(crate) struct SetWebhook<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     url: &'a str,
     certificate: Option<&'a str>,
@@ -16,9 +15,9 @@ pub(crate) struct SetWebhook<'a, C> {
     allowed_updates: Option<&'a [UpdateKind]>,
 }
 
-impl<'a, C> SetWebhook<'a, C> {
+impl<'a> SetWebhook<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         url: &'a str,
         certificate: Option<&'a str>,
@@ -36,7 +35,7 @@ impl<'a, C> SetWebhook<'a, C> {
     }
 }
 
-impl<C: Connector> SetWebhook<'_, C> {
+impl SetWebhook<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(4)
@@ -54,7 +53,7 @@ impl<C: Connector> SetWebhook<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "setWebhook",

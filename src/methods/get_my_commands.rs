@@ -1,7 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector, errors, internal::Client, token, types::BotCommand,
-};
+use crate::{connectors::Client, errors, token, types::BotCommand};
 
 /// Gets the list of the bot's commands.
 ///
@@ -10,21 +8,18 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#getmycommands
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetMyCommands<'a, C> {
-    client: &'a Client<C>,
+pub struct GetMyCommands<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
 }
 
-impl<'a, C> GetMyCommands<'a, C> {
-    pub(crate) const fn new(
-        client: &'a Client<C>,
-        token: token::Ref<'a>,
-    ) -> Self {
+impl<'a> GetMyCommands<'a> {
+    pub(crate) const fn new(client: &'a Client, token: token::Ref<'a>) -> Self {
         Self { client, token }
     }
 }
 
-impl<C: Connector> GetMyCommands<'_, C> {
+impl GetMyCommands<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<BotCommand>, errors::MethodCall> {
         send_method(self.client, self.token, "getMyCommands", None, Vec::new())

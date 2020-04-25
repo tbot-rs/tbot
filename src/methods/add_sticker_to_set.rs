@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{InputFile, StickerForStickerSet},
         sticker::MaskPosition,
@@ -19,8 +17,8 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#addstickertoset
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct AddStickerToSet<'a, C> {
-    client: &'a Client<C>,
+pub struct AddStickerToSet<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     user_id: user::Id,
     name: &'a str,
@@ -29,9 +27,9 @@ pub struct AddStickerToSet<'a, C> {
     mask_position: Option<MaskPosition>,
 }
 
-impl<'a, C> AddStickerToSet<'a, C> {
+impl<'a> AddStickerToSet<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
         name: &'a str,
@@ -56,7 +54,7 @@ impl<'a, C> AddStickerToSet<'a, C> {
     }
 }
 
-impl<C: Connector> AddStickerToSet<'_, C> {
+impl AddStickerToSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(5)
@@ -85,7 +83,7 @@ impl<C: Connector> AddStickerToSet<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "addStickerToSet",

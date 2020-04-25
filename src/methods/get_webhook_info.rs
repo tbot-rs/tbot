@@ -1,5 +1,5 @@
 use super::send_method;
-use crate::{connectors::Connector, errors, internal::Client, token, types};
+use crate::{connectors::Client, errors, token, types};
 
 /// Gets information about the bot's webhook.
 ///
@@ -8,21 +8,18 @@ use crate::{connectors::Connector, errors, internal::Client, token, types};
 /// [docs]: https://core.telegram.org/bots/api#getwebhookinfo
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetWebhookInfo<'a, C> {
-    client: &'a Client<C>,
+pub struct GetWebhookInfo<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
 }
 
-impl<'a, C> GetWebhookInfo<'a, C> {
-    pub(crate) const fn new(
-        client: &'a Client<C>,
-        token: token::Ref<'a>,
-    ) -> Self {
+impl<'a> GetWebhookInfo<'a> {
+    pub(crate) const fn new(client: &'a Client, token: token::Ref<'a>) -> Self {
         Self { client, token }
     }
 }
 
-impl<C: Connector> GetWebhookInfo<'_, C> {
+impl GetWebhookInfo<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<types::WebhookInfo, errors::MethodCall> {
         send_method(self.client, self.token, "getWebhookInfo", None, Vec::new())

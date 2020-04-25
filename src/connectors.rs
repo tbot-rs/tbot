@@ -1,9 +1,9 @@
 //! A few common connectors for making requests.
 
-use crate::internal;
 use hyper::{
-    client::{connect::Connect, HttpConnector},
-    Body, Client,
+    self,
+    client::{HttpConnector, ResponseFuture},
+    Body, Request, Uri,
 };
 
 #[cfg(feature = "rustls")]
@@ -20,29 +20,52 @@ pub type Https = HttpsConnector<HttpConnector>;
 /// The default proxy connector.
 pub type Proxy = ProxyConnector<Https>;
 
-/// Constructs a HTTPS connector.
-#[must_use]
-pub fn https() -> Https {
-    HttpsConnector::new()
+#[derive(Debug)]
+pub(crate) enum Client {
+    Https(hyper::Client<Https>),
+    Proxy(hyper::Client<Proxy>),
 }
 
-/// Constructs a proxy connector.
-pub fn proxy(proxy: proxy::Proxy) -> Proxy {
-    ProxyConnector::from_proxy(https(), proxy).unwrap_or_else(|error| {
-        panic!("[tbot] Failed to construct a proxy connector: {:#?}", error)
-    })
-}
+impl Client {
+    pub(crate) fn proxy(proxy: proxy::Proxy) -> Self {
+        let connector =
+            ProxyConnector::from_proxy(HttpsConnector::new(), proxy)
+                .unwrap_or_else(|error| {
+                    panic!(
+                        "[tbot] Failed to construct a proxy connector: {:#?}",
+                        error
+                    )
+                });
 
-pub(crate) fn create_client<C: Connector>(connector: C) -> internal::Client<C> {
-    Client::builder()
-        .pool_max_idle_per_host(0)
-        .build::<C, Body>(connector)
-}
+        Self::Proxy(
+            hyper::Client::builder()
+                .pool_max_idle_per_host(0)
+                .build::<Proxy, Body>(connector),
+        )
+    }
 
-pub(crate) fn default() -> internal::Client<Https> {
-    create_client(https())
-}
+    #[must_use]
+    pub(crate) fn https() -> Self {
+        let connector = HttpsConnector::new();
 
-/// An alias for a connector usable by `hyper`.
-pub trait Connector: Connect + Clone + Send + Sync + 'static {}
-impl<T: Connect + Clone + Send + Sync + 'static> Connector for T {}
+        Self::Https(
+            hyper::Client::builder()
+                .pool_max_idle_per_host(0)
+                .build::<Https, Body>(connector),
+        )
+    }
+
+    pub(crate) fn get(&self, uri: Uri) -> ResponseFuture {
+        match self {
+            Self::Https(https) => https.get(uri),
+            Self::Proxy(proxy) => proxy.get(uri),
+        }
+    }
+
+    pub(crate) fn request(&self, req: Request<Body>) -> ResponseFuture {
+        match self {
+            Self::Https(https) => https.request(req),
+            Self::Proxy(proxy) => proxy.request(req),
+        }
+    }
+}

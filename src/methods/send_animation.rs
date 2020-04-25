@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{Animation, InputFile, Thumb},
         keyboard,
@@ -20,8 +18,8 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#sendanimation
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendAnimation<'a, C> {
-    client: &'a Client<C>,
+pub struct SendAnimation<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     animation: Animation<'a>,
@@ -30,9 +28,9 @@ pub struct SendAnimation<'a, C> {
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
-impl<'a, C> SendAnimation<'a, C> {
+impl<'a> SendAnimation<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         animation: Animation<'a>,
@@ -73,7 +71,7 @@ impl<'a, C> SendAnimation<'a, C> {
     }
 }
 
-impl<C: Connector> SendAnimation<'_, C> {
+impl SendAnimation<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(11)

@@ -21,28 +21,28 @@ media_message! {
     }
 }
 
-impl<C> fields::Photo<C> for Photo<C> {
+impl fields::Photo for Photo {
     #[must_use]
     fn photo(&self) -> &[PhotoSize] {
         &self.photo[..]
     }
 }
 
-impl<C> Caption<C> for Photo<C> {
+impl Caption for Photo {
     #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> AnyText<C> for Photo<C> {
+impl AnyText for Photo {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> Album<C> for Photo<C> {
+impl Album for Photo {
     #[must_use]
     fn media_group_id(&self) -> Option<&str> {
         self.media_group_id.as_ref().map(String::as_ref)

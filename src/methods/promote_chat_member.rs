@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         parameters::{ChatId, ImplicitChatId},
         user,
@@ -18,9 +16,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#promotechatmember
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct PromoteChatMember<'a, C> {
+pub struct PromoteChatMember<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
@@ -43,9 +41,9 @@ pub struct PromoteChatMember<'a, C> {
     can_promote_members: Option<bool>,
 }
 
-impl<'a, C> PromoteChatMember<'a, C> {
+impl<'a> PromoteChatMember<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
@@ -123,10 +121,10 @@ impl<'a, C> PromoteChatMember<'a, C> {
     }
 }
 
-impl<C: Connector> PromoteChatMember<'_, C> {
+impl PromoteChatMember<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "promoteChatMember",

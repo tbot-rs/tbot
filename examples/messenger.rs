@@ -1,7 +1,6 @@
 use rand::{distributions::Alphanumeric, prelude::*};
 use std::sync::Arc;
 use tbot::{
-    connectors::Connector,
     contexts::fields,
     prelude::*,
     state::{
@@ -37,12 +36,7 @@ impl State {
             .collect::<Vec<_>>()
     }
 
-    async fn join<C: Connector>(
-        &self,
-        bot: &Bot<C>,
-        participant: chat::Id,
-        room: String,
-    ) {
+    async fn join(&self, bot: &Bot, participant: chat::Id, room: String) {
         self.notify(
             bot,
             &room,
@@ -63,12 +57,7 @@ impl State {
         }
     }
 
-    async fn notify<C: Connector>(
-        &self,
-        bot: &Bot<C>,
-        room: &str,
-        message: Text<'_>,
-    ) {
+    async fn notify(&self, bot: &Bot, room: &str, message: Text<'_>) {
         let participants = self.participants(room).await;
 
         for id in participants {
@@ -81,10 +70,9 @@ impl State {
     }
 }
 
-async fn broadcast<Ctx, Con>(context: Arc<Ctx>, state: Arc<State>)
+async fn broadcast<C>(context: Arc<C>, state: Arc<State>)
 where
-    Ctx: fields::Text<Con>,
-    Con: Connector,
+    C: fields::Text,
 {
     let chats = state.chats.read().await;
     let room = chats.get(&*context);
@@ -132,10 +120,9 @@ where
     }
 }
 
-async fn broadcast_edit<Ctx, Con>(context: Arc<Ctx>, state: Arc<State>)
+async fn broadcast_edit<C>(context: Arc<C>, state: Arc<State>)
 where
-    Ctx: fields::Text<Con>,
-    Con: Connector,
+    C: fields::Text,
 {
     if let Some(messages) = state.messages.read().await.get(&*context) {
         for MessageId {
