@@ -36,7 +36,7 @@ pages:
     script:
         - cargo doc --release --no-deps --target-dir=../target
         - mv ../target/doc ./public
-        - echo '<meta http-equiv="refresh" content="0; url=./tbot/index.html">' > ./public/index.html
+        - mv ./public/tbot/* ./public/
     artifacts:
         paths:
             - public
