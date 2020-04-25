@@ -45,8 +45,8 @@ macro_rules! edited_message {
             }
         }
 
-        impl super::traits::Forwardable for $name {}
-        impl super::traits::Pinnable for $name {}
+        impl super::methods::Forwardable for $name {}
+        impl super::methods::Pinnable for $name {}
 
         impl crate::contexts::fields::MediaMessage for $name {
             #[must_use]

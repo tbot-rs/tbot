@@ -111,7 +111,7 @@ mod video_note;
 mod voice;
 
 pub mod fields;
-pub mod traits;
+pub mod methods;
 
 pub use {
     animation::Animation, audio::Audio, chosen_inline::ChosenInline,
