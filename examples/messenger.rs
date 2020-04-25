@@ -73,7 +73,6 @@ impl State {
 async fn broadcast<Ctx>(context: Arc<Ctx>, state: Arc<State>)
 where
     Ctx: fields::Text,
-    Con: Connector,
 {
     let chats = state.chats.read().await;
     let room = chats.get(&*context);
@@ -124,7 +123,6 @@ where
 async fn broadcast_edit<Ctx>(context: Arc<Ctx>, state: Arc<State>)
 where
     Ctx: fields::Text,
-    Con: Connector,
 {
     if let Some(messages) = state.messages.read().await.get(&*context) {
         for MessageId {
