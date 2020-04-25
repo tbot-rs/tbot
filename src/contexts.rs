@@ -113,21 +113,48 @@ mod voice;
 pub mod fields;
 pub mod methods;
 
-pub use {
-    animation::Animation, audio::Audio, chosen_inline::ChosenInline,
-    command::Command, connected_website::ConnectedWebsite, contact::Contact,
-    created_group::CreatedGroup, data_callback::DataCallback,
-    deleted_chat_photo::DeletedChatPhoto, dice::Dice, document::Document,
-    edited_animation::EditedAnimation, edited_audio::EditedAudio,
-    edited_document::EditedDocument, edited_location::EditedLocation,
-    edited_photo::EditedPhoto, edited_text::EditedText,
-    edited_video::EditedVideo, game::Game, game_callback::GameCallback,
-    inline::Inline, invoice::Invoice, left_member::LeftMember,
-    location::Location, migration::Migration, new_chat_photo::NewChatPhoto,
-    new_chat_title::NewChatTitle, new_members::NewMembers, passport::Passport,
-    payment::Payment, photo::Photo, pinned_message::PinnedMessage, poll::Poll,
-    poll_answer::PollAnswer, pre_checkout::PreCheckout, shipping::Shipping,
-    sticker::Sticker, text::Text, unhandled::Unhandled, update::Update,
-    updated_poll::UpdatedPoll, venue::Venue, video::Video,
-    video_note::VideoNote, voice::Voice,
-};
+pub use animation::Animation;
+pub use audio::Audio;
+pub use chosen_inline::ChosenInline;
+pub use command::Command;
+pub use connected_website::ConnectedWebsite;
+pub use contact::Contact;
+pub use created_group::CreatedGroup;
+pub use data_callback::DataCallback;
+pub use deleted_chat_photo::DeletedChatPhoto;
+pub use dice::Dice;
+pub use document::Document;
+pub use edited_animation::EditedAnimation;
+pub use edited_audio::EditedAudio;
+pub use edited_document::EditedDocument;
+pub use edited_location::EditedLocation;
+pub use edited_photo::EditedPhoto;
+pub use edited_text::EditedText;
+pub use edited_video::EditedVideo;
+pub use game::Game;
+pub use game_callback::GameCallback;
+pub use inline::Inline;
+pub use invoice::Invoice;
+pub use left_member::LeftMember;
+pub use location::Location;
+pub use migration::Migration;
+pub use new_chat_photo::NewChatPhoto;
+pub use new_chat_title::NewChatTitle;
+pub use new_members::NewMembers;
+pub use passport::Passport;
+pub use payment::Payment;
+pub use photo::Photo;
+pub use pinned_message::PinnedMessage;
+pub use poll::Poll;
+pub use poll_answer::PollAnswer;
+pub use pre_checkout::PreCheckout;
+pub use shipping::Shipping;
+pub use sticker::Sticker;
+pub use text::Text;
+pub use unhandled::Unhandled;
+pub use update::Update;
+pub use updated_poll::UpdatedPoll;
+pub use venue::Venue;
+pub use video::Video;
+pub use video_note::VideoNote;
+pub use voice::Voice;
