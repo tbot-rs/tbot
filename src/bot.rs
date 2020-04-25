@@ -66,7 +66,7 @@ impl Bot {
         }
     }
 
-    /// Like [`Bot::from_env`] with the provided proxy.
+    /// Like [`Bot::from_env`], but with a provided proxy.
     ///
     /// [`Bot::from_env`]: #method.from_env
     pub fn from_env_with_proxy(env_var: &'static str, proxy: Proxy) -> Self {
