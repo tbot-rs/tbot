@@ -91,6 +91,8 @@ pub mod prelude {
     pub use super::contexts::methods::ChatMethods as _;
     pub use super::contexts::methods::Forwardable as _;
     pub use super::contexts::methods::Pinnable as _;
+    pub use super::util::ChatActionLoop as _;
+    pub use super::util::ChatActionLoopBotExt as _;
 }
 
 pub use hyper_proxy as proxy;
