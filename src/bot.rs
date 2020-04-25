@@ -1086,12 +1086,12 @@ macro_rules! from_env {
     ($var:literal,) => {
         $crate::from_env!($var)
     };
-    ($var:literal, $connector:expr) => {{
+    ($var:literal, $proxy:expr) => {{
         let token = env!($var).to_string();
-        $crate::Bot::with_connector(token, $connector)
+        $crate::Bot::with_proxy(token, $proxy)
     }};
-    ($var:literal, $connector:expr,) => {
-        $crate::from_env!($var, $connector)
+    ($var:literal, $proxy:expr,) => {
+        $crate::from_env!($var, $proxy)
     };
     () => {
         compile_error!(
