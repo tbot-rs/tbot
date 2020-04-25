@@ -58,6 +58,10 @@
 )]
 #![allow(clippy::multiple_crate_versions)] // can't do much
 #![allow(clippy::needless_doctest_main)] // that's where you're wrong, kiddo
+#![doc(
+    html_logo_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg",
+    html_favicon_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg"
+)]
 
 #[cfg(all(feature = "tls", feature = "rustls"))]
 compile_error!("`tls` and `rustls` features are mutually exclusive. You should enable only one of them");
