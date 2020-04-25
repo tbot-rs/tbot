@@ -14,9 +14,9 @@ use tokio::time::delay_for;
 
 const INTERVAL: Duration = Duration::from_secs(5);
 
-async fn send_chat_action_in_loop<'a>(
+async fn send_chat_action_in_loop(
     bot: Bot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId<'_>,
     action: chat::Action,
 ) -> Result<Infallible, errors::MethodCall> {
     loop {
@@ -29,6 +29,7 @@ async fn send_chat_action_in_loop<'a>(
 /// An utility trait for [`Bot`] with a method to send a chat action in a loop.
 ///
 /// [`Bot`]: ../struct.Bot.html
+#[allow(clippy::module_name_repetitions)]
 pub trait ChatActionLoopBotExt: Sealed {
     /// Sends a chat action in an infinite loop, returning only if failed
     /// to send the action.
