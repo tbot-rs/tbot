@@ -4,7 +4,7 @@ use crate::{
             self, AnyText, Context, EditedMessage, Forward, MediaMessage,
             Message,
         },
-        traits::{Forwardable, Pinnable},
+        methods::{Forwardable, Pinnable},
         EditedText, Text,
     },
     internal::Sealed,

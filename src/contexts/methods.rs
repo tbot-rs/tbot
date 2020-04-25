@@ -1,5 +1,5 @@
-//! Contains traits for updates that infer some data from them, simplifying
-//! calling several methods.
+//! Traits for calling methods inferring as much data as possible from
+//! the context.
 
 mod callback;
 mod chat_methods;
