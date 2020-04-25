@@ -198,9 +198,9 @@ impl<S> Chats<S> {
 
     /// Gets a chat's state by the context.
     #[must_use]
-    pub fn get<Ctx, Con>(&self, context: &Ctx) -> Option<&S>
+    pub fn get<Ctx>(&self, context: &Ctx) -> Option<&S>
     where
-        Ctx: Message<Con>,
+        Ctx: Message,
     {
         self.get_by_id(context.chat().id)
     }
@@ -213,9 +213,9 @@ impl<S> Chats<S> {
 
     /// Gets a mutable reference to a chat's state by the context.
     #[must_use]
-    pub fn get_mut<Ctx, Con>(&mut self, context: &Ctx) -> Option<&mut S>
+    pub fn get_mut<Ctx>(&mut self, context: &Ctx) -> Option<&mut S>
     where
-        Ctx: Message<Con>,
+        Ctx: Message,
     {
         self.get_mut_by_id(context.chat().id)
     }
@@ -228,9 +228,9 @@ impl<S> Chats<S> {
 
     /// Gets an entry for a chat's state by the context.
     #[must_use]
-    pub fn entry<Ctx, Con>(&mut self, context: &Ctx) -> Entry<chat::Id, S>
+    pub fn entry<Ctx>(&mut self, context: &Ctx) -> Entry<chat::Id, S>
     where
-        Ctx: Message<Con>,
+        Ctx: Message,
     {
         self.entry_by_id(context.chat().id)
     }
@@ -243,9 +243,9 @@ impl<S> Chats<S> {
 
     /// Checks if there's state for a chat by the context.
     #[must_use]
-    pub fn has<Ctx, Con>(&self, context: &Ctx) -> bool
+    pub fn has<Ctx>(&self, context: &Ctx) -> bool
     where
-        Ctx: Message<Con>,
+        Ctx: Message,
     {
         self.has_by_id(context.chat().id)
     }
@@ -256,9 +256,9 @@ impl<S> Chats<S> {
     }
 
     /// Inserts state for a chat by the context. Returns the previous state.
-    pub fn insert<Ctx, Con>(&mut self, context: &Ctx, value: S) -> Option<S>
+    pub fn insert<Ctx>(&mut self, context: &Ctx, value: S) -> Option<S>
     where
-        Ctx: Message<Con>,
+        Ctx: Message,
     {
         self.insert_by_id(context.chat().id, value)
     }
@@ -269,9 +269,9 @@ impl<S> Chats<S> {
     }
 
     /// Removes and returns a chat's state by the context.
-    pub fn remove<Ctx, Con>(&mut self, context: &Ctx) -> Option<S>
+    pub fn remove<Ctx>(&mut self, context: &Ctx) -> Option<S>
     where
-        Ctx: Message<Con>,
+        Ctx: Message,
     {
         self.remove_by_id(context.chat().id)
     }

@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         parameters::{ChatId, ImplicitChatId},
         user,
@@ -18,9 +16,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#kickchatmember
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct KickChatMember<'a, C> {
+pub struct KickChatMember<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
@@ -29,9 +27,9 @@ pub struct KickChatMember<'a, C> {
     until_date: Option<i64>,
 }
 
-impl<'a, C> KickChatMember<'a, C> {
+impl<'a> KickChatMember<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
@@ -53,10 +51,10 @@ impl<'a, C> KickChatMember<'a, C> {
     }
 }
 
-impl<C: Connector> KickChatMember<'_, C> {
+impl KickChatMember<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "kickChatMember",

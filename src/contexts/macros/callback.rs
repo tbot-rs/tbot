@@ -25,11 +25,11 @@ macro_rules! callback {
             }
         }
 
-        impl<C> $name<C> {
+        impl $name {
             // https://github.com/rust-lang/rust-clippy/issues/4041
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: std::sync::Arc<crate::Bot<C>>,
+                bot: std::sync::Arc<crate::Bot>,
                 id: crate::types::callback::query::Id,
                 from: crate::types::User,
                 origin: crate::types::callback::Origin,
@@ -47,7 +47,7 @@ macro_rules! callback {
             }
         }
 
-        impl<C> crate::contexts::fields::Callback<C> for $name<C> {
+        impl crate::contexts::fields::Callback for $name {
             #[must_use]
             fn id(&self) -> &crate::types::callback::query::Id {
                 &self.id

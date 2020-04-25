@@ -8,16 +8,16 @@ macro_rules! common {
         $(#[doc = $doc])+
         #[derive(Debug, Clone)]
         #[non_exhaustive]
-        pub struct $name<C> {
+        pub struct $name {
             /// A bot for calling API without information inference.
-            pub bot: std::sync::Arc<crate::Bot<C>>,
+            pub bot: std::sync::Arc<crate::Bot>,
             $(#[doc = $field_doc] pub $field: $type,)+
         }
 
-        impl<C> crate::internal::Sealed for $name<C> { }
+        impl crate::internal::Sealed for $name { }
 
-        impl<C> crate::contexts::fields::Context<C> for $name<C> {
-            fn bot(&self) -> &crate::Bot<C> {
+        impl crate::contexts::fields::Context for $name {
+            fn bot(&self) -> &crate::Bot {
                 &self.bot
             }
         }

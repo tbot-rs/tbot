@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{ChatPhoto, InputFile},
         parameters::{ChatId, ImplicitChatId},
@@ -18,16 +16,16 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#setchatphoto
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SetChatPhoto<'a, C> {
-    client: &'a Client<C>,
+pub struct SetChatPhoto<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     photo: ChatPhoto<'a>,
 }
 
-impl<'a, C> SetChatPhoto<'a, C> {
+impl<'a> SetChatPhoto<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         photo: ChatPhoto<'a>,
@@ -41,7 +39,7 @@ impl<'a, C> SetChatPhoto<'a, C> {
     }
 }
 
-impl<C: Connector> SetChatPhoto<'_, C> {
+impl SetChatPhoto<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let chat_id = match self.chat_id {
@@ -60,7 +58,7 @@ impl<C: Connector> SetChatPhoto<'_, C> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "setChatPhoto",

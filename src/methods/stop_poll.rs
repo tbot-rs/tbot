@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         keyboard::inline,
         message,
@@ -20,9 +18,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#stoppoll
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct StopPoll<'a, C> {
+pub struct StopPoll<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
@@ -31,9 +29,9 @@ pub struct StopPoll<'a, C> {
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
-impl<'a, C> StopPoll<'a, C> {
+impl<'a> StopPoll<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
@@ -55,7 +53,7 @@ impl<'a, C> StopPoll<'a, C> {
     }
 }
 
-impl<C: Connector> StopPoll<'_, C> {
+impl StopPoll<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Poll, errors::MethodCall> {
         send_method(

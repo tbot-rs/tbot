@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
@@ -19,9 +17,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#setgamescore
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SetMessageGameScore<'a, C> {
+pub struct SetMessageGameScore<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     user_id: user::Id,
@@ -34,9 +32,9 @@ pub struct SetMessageGameScore<'a, C> {
     disable_edit_message: Option<bool>,
 }
 
-impl<'a, C> SetMessageGameScore<'a, C> {
+impl<'a> SetMessageGameScore<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
@@ -69,7 +67,7 @@ impl<'a, C> SetMessageGameScore<'a, C> {
     }
 }
 
-impl<C: Connector> SetMessageGameScore<'_, C> {
+impl SetMessageGameScore<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(

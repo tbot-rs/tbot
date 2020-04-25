@@ -1,6 +1,4 @@
-use crate::{
-    connectors::Connector, errors, internal::Client, token, types::chat,
-};
+use crate::{connectors::Client, errors, token, types::chat};
 use hyper::{
     body::{Body, HttpBody},
     header::HeaderValue,
@@ -40,8 +38,8 @@ struct Response<T> {
 }
 
 #[instrument(name = "call_method", skip(client, token, boundary, body))]
-pub async fn send_method<'a, T, C>(
-    client: &'a Client<C>,
+pub(crate) async fn send_method<'a, T>(
+    client: &'a Client,
     token: token::Ref<'a>,
     method: &'static str,
     boundary: Option<String>,
@@ -49,7 +47,6 @@ pub async fn send_method<'a, T, C>(
 ) -> Result<T, errors::MethodCall>
 where
     T: DeserializeOwned + Debug,
-    C: Connector,
 {
     trace!(body = debug(DebugBytes(&body)), boundary = debug(&boundary));
 

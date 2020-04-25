@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         dice::Kind,
         keyboard, message,
@@ -20,9 +18,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#senddice
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendDice<'a, C> {
+pub struct SendDice<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
@@ -36,9 +34,9 @@ pub struct SendDice<'a, C> {
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
-impl<'a, C> SendDice<'a, C> {
+impl<'a> SendDice<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
     ) -> Self {
@@ -84,7 +82,7 @@ impl<'a, C> SendDice<'a, C> {
     }
 }
 
-impl<C: Connector> SendDice<'_, C> {
+impl SendDice<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(

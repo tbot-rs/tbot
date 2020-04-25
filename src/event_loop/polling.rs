@@ -1,5 +1,5 @@
 use super::EventLoop;
-use crate::{connectors::Connector, errors, types::parameters::UpdateKind};
+use crate::{errors, types::parameters::UpdateKind};
 use std::{
     convert::{Infallible, TryInto},
     num::NonZeroUsize,
@@ -17,8 +17,8 @@ type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
 ///
 /// [`Bot::polling`]: ./struct.Bot.html#method.polling
 #[must_use = "polling does nothing unless `start` is called"]
-pub struct Polling<C> {
-    event_loop: EventLoop<C>,
+pub struct Polling {
+    event_loop: EventLoop,
     limit: Option<u8>,
     timeout: Option<u64>,
     allowed_updates: Option<&'static [UpdateKind]>,
@@ -28,8 +28,8 @@ pub struct Polling<C> {
     offset: Option<isize>,
 }
 
-impl<C> Polling<C> {
-    pub(crate) fn new(event_loop: EventLoop<C>) -> Self {
+impl Polling {
+    pub(crate) fn new(event_loop: EventLoop) -> Self {
         Self {
             event_loop,
             limit: None,
@@ -110,7 +110,7 @@ impl<C> Polling<C> {
     }
 }
 
-impl<C: Connector + Clone> Polling<C> {
+impl Polling {
     /// Starts the event loop.
     #[instrument(name = "polling", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::PollingSetup> {

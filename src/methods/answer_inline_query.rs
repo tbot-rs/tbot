@@ -1,7 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector, errors, internal::Client, token, types::inline_query,
-};
+use crate::{connectors::Client, errors, token, types::inline_query};
 use serde::Serialize;
 
 /// Answers an inline query.
@@ -11,9 +9,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#answerinlinequery
 #[derive(Debug, Clone, Serialize)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct AnswerInlineQuery<'a, C> {
+pub struct AnswerInlineQuery<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     inline_query_id: inline_query::id::Ref<'a>,
@@ -30,9 +28,9 @@ pub struct AnswerInlineQuery<'a, C> {
     switch_pm_parameter: Option<&'a str>,
 }
 
-impl<'a, C> AnswerInlineQuery<'a, C> {
+impl<'a> AnswerInlineQuery<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         inline_query_id: inline_query::id::Ref<'a>,
         results: &'a [inline_query::Result<'a>],
@@ -81,10 +79,10 @@ impl<'a, C> AnswerInlineQuery<'a, C> {
     }
 }
 
-impl<C: Connector> AnswerInlineQuery<'_, C> {
+impl AnswerInlineQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "answerInlineQuery",

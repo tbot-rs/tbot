@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{InputFile, Voice},
         keyboard,
@@ -20,8 +18,8 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#sendvoice
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendVoice<'a, C> {
-    client: &'a Client<C>,
+pub struct SendVoice<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     voice: Voice<'a>,
@@ -30,9 +28,9 @@ pub struct SendVoice<'a, C> {
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
-impl<'a, C> SendVoice<'a, C> {
+impl<'a> SendVoice<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         voice: Voice<'a>,
@@ -73,7 +71,7 @@ impl<'a, C> SendVoice<'a, C> {
     }
 }
 
-impl<C: Connector> SendVoice<'_, C> {
+impl SendVoice<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(8)

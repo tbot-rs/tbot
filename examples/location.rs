@@ -1,7 +1,5 @@
 use std::{sync::Arc, time::Duration};
-use tbot::{
-    connectors::Connector, contexts::Command, contexts::Text, prelude::*, Bot,
-};
+use tbot::{contexts::Command, contexts::Text, prelude::*, Bot};
 use tokio::time::delay_for;
 
 const INTERVAL: u64 = 15;
@@ -25,7 +23,7 @@ async fn main() {
     bot.polling().start().await.unwrap();
 }
 
-async fn handle_location<C: Connector>(context: Arc<Command<Text<C>>>) {
+async fn handle_location(context: Arc<Command<Text>>) {
     let mut places = PLACES.iter().cycle();
 
     let first_place = *places.next().unwrap();

@@ -1,16 +1,11 @@
-use crate::{
-    connectors::Connector, errors, internal::Client, token, types::File,
-};
+use crate::{connectors::Client, errors, token, types::File};
 use hyper::{body::HttpBody, StatusCode, Uri};
 
-pub async fn download_file<C>(
-    client: &Client<C>,
+pub(crate) async fn download_file(
+    client: &Client,
     token: token::Ref<'_>,
     file: &File,
-) -> Result<Vec<u8>, errors::Download>
-where
-    C: Connector,
-{
+) -> Result<Vec<u8>, errors::Download> {
     let path = match &file.path {
         Some(path) => path,
         None => return Err(errors::Download::NoPath),

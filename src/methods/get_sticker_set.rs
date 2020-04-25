@@ -1,7 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector, errors, internal::Client, token, types::sticker,
-};
+use crate::{connectors::Client, errors, token, types::sticker};
 use serde::Serialize;
 
 /// Gets a sticker set by its name.
@@ -11,17 +9,17 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#getstickerset
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetStickerSet<'a, C> {
+pub struct GetStickerSet<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     name: &'a str,
 }
 
-impl<'a, C> GetStickerSet<'a, C> {
+impl<'a> GetStickerSet<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         name: &'a str,
     ) -> Self {
@@ -33,7 +31,7 @@ impl<'a, C> GetStickerSet<'a, C> {
     }
 }
 
-impl<C: Connector> GetStickerSet<'_, C> {
+impl GetStickerSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<sticker::Set, errors::MethodCall> {
         send_method(

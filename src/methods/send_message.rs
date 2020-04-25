@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         keyboard,
         message::{self, Message},
@@ -22,9 +20,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#sendmessage
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendMessage<'a, C> {
+pub struct SendMessage<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
@@ -41,9 +39,9 @@ pub struct SendMessage<'a, C> {
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
-impl<'a, C> SendMessage<'a, C> {
+impl<'a> SendMessage<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         text: impl Into<Text<'a>>,
@@ -95,7 +93,7 @@ impl<'a, C> SendMessage<'a, C> {
     }
 }
 
-impl<C: Connector> SendMessage<'_, C> {
+impl SendMessage<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         send_method(

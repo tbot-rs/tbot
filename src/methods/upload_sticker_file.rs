@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{user, File},
     Multipart,
 };
@@ -15,16 +13,16 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#uploadstickerfile
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct UploadStickerFile<'a, C> {
-    client: &'a Client<C>,
+pub struct UploadStickerFile<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     user_id: user::Id,
     png_sticker: &'a [u8],
 }
 
-impl<'a, C> UploadStickerFile<'a, C> {
+impl<'a> UploadStickerFile<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
         png_sticker: &'a [u8],
@@ -38,7 +36,7 @@ impl<'a, C> UploadStickerFile<'a, C> {
     }
 }
 
-impl<C: Connector> UploadStickerFile<'_, C> {
+impl UploadStickerFile<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<File, errors::MethodCall> {
         let (boundary, body) = Multipart::new(2)

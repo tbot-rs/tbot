@@ -21,28 +21,28 @@ edited_message! {
     }
 }
 
-impl<C> fields::Video<C> for EditedVideo<C> {
+impl fields::Video for EditedVideo {
     #[must_use]
     fn video(&self) -> &Video {
         &self.video
     }
 }
 
-impl<C> Caption<C> for EditedVideo<C> {
+impl Caption for EditedVideo {
     #[must_use]
     fn caption(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> AnyText<C> for EditedVideo<C> {
+impl AnyText for EditedVideo {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption
     }
 }
 
-impl<C> Album<C> for EditedVideo<C> {
+impl Album for EditedVideo {
     #[must_use]
     fn media_group_id(&self) -> Option<&str> {
         self.media_group_id.as_ref().map(String::as_ref)

@@ -27,10 +27,10 @@ common! {
     }
 }
 
-impl<C> PreCheckout<C> {
+impl PreCheckout {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(bot: Arc<Bot<C>>, query: PreCheckoutQuery) -> Self {
+    pub(crate) fn new(bot: Arc<Bot>, query: PreCheckoutQuery) -> Self {
         Self {
             bot,
             id: query.id,
@@ -54,17 +54,17 @@ impl<C> PreCheckout<C> {
     pub fn answer<'a>(
         &'a self,
         result: Result<(), &'a str>,
-    ) -> AnswerPreCheckoutQuery<'a, C> {
+    ) -> AnswerPreCheckoutQuery<'a> {
         self.bot.answer_pre_checkout_query(self.id.as_ref(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.
-    pub fn ok(&self) -> AnswerPreCheckoutQuery<'_, C> {
+    pub fn ok(&self) -> AnswerPreCheckoutQuery<'_> {
         self.answer(Ok(()))
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(&'a self, err: &'a str) -> AnswerPreCheckoutQuery<'a, C> {
+    pub fn err<'a>(&'a self, err: &'a str) -> AnswerPreCheckoutQuery<'a> {
         self.answer(Err(err))
     }
 }

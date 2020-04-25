@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         message,
         parameters::{ChatId, ImplicitChatId},
@@ -18,18 +16,18 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#deletemessage
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct DeleteMessage<'a, C> {
+pub struct DeleteMessage<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
 }
 
-impl<'a, C> DeleteMessage<'a, C> {
+impl<'a> DeleteMessage<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
@@ -43,10 +41,10 @@ impl<'a, C> DeleteMessage<'a, C> {
     }
 }
 
-impl<C: Connector> DeleteMessage<'_, C> {
+impl DeleteMessage<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "deleteMessage",

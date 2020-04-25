@@ -1,7 +1,7 @@
 //! Types related to the HTTPS webhook server.
 
 use super::handle;
-use crate::{connectors::Connector, errors, event_loop::Webhook};
+use crate::{errors, event_loop::Webhook};
 use hyper::{server::conn::Http, service::service_fn};
 use hyper::{Body, Request};
 use tracing::instrument;
@@ -20,17 +20,17 @@ use tokio_rustls::TlsAcceptor;
 
 /// Configures the HTTPS webhook server.
 #[must_use = "webhook server needs to be `start`ed to run the event loop"]
-pub struct Https<'a, C> {
-    webhook: Webhook<'a, C>,
+pub struct Https<'a> {
+    webhook: Webhook<'a>,
     #[cfg(feature = "tls")]
     identity: Identity,
     #[cfg(feature = "rustls")]
     config: ServerConfig,
 }
 
-impl<'a, C> Https<'a, C> {
+impl<'a> Https<'a> {
     pub(crate) const fn new(
-        webhook: Webhook<'a, C>,
+        webhook: Webhook<'a>,
         #[cfg(feature = "tls")] identity: Identity,
         #[cfg(feature = "rustls")] config: ServerConfig,
     ) -> Self {
@@ -44,7 +44,7 @@ impl<'a, C> Https<'a, C> {
     }
 }
 
-impl<'a, C: Connector + Clone> Https<'a, C> {
+impl<'a> Https<'a> {
     /// Starts the event loop.
     #[instrument(name = "https_webhook", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::HttpsWebhook> {

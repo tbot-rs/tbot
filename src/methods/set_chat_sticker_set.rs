@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::parameters::{ChatId, ImplicitChatId},
 };
 use serde::Serialize;
@@ -15,18 +13,18 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#setchatstickerset
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SetChatStickerSet<'a, C> {
+pub struct SetChatStickerSet<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     sticker_set_name: &'a str,
 }
 
-impl<'a, C> SetChatStickerSet<'a, C> {
+impl<'a> SetChatStickerSet<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         sticker_set_name: &'a str,
@@ -40,10 +38,10 @@ impl<'a, C> SetChatStickerSet<'a, C> {
     }
 }
 
-impl<C: Connector> SetChatStickerSet<'_, C> {
+impl SetChatStickerSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool, _>(
+        send_method::<bool>(
             self.client,
             self.token,
             "setChatStickerSet",

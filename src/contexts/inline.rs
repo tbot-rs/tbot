@@ -23,10 +23,10 @@ common! {
     }
 }
 
-impl<C> Inline<C> {
+impl Inline {
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(bot: Arc<Bot<C>>, inline_query: InlineQuery) -> Self {
+    pub(crate) fn new(bot: Arc<Bot>, inline_query: InlineQuery) -> Self {
         Self {
             bot,
             id: inline_query.id,
@@ -41,7 +41,7 @@ impl<C> Inline<C> {
     pub fn answer<'a>(
         &'a self,
         results: &'a [inline_query::Result<'a>],
-    ) -> AnswerInlineQuery<'a, C> {
+    ) -> AnswerInlineQuery<'a> {
         self.bot.answer_inline_query(self.id.as_ref(), results)
     }
 }

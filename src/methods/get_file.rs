@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::file::{self, id::AsFileId, File},
 };
 use serde::Serialize;
@@ -15,17 +13,17 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#getfile
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetFile<'a, C> {
+pub struct GetFile<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     file_id: file::id::Ref<'a>,
 }
 
-impl<'a, C> GetFile<'a, C> {
+impl<'a> GetFile<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         file_id: &'a impl AsFileId,
     ) -> Self {
@@ -37,7 +35,7 @@ impl<'a, C> GetFile<'a, C> {
     }
 }
 
-impl<C: Connector> GetFile<'_, C> {
+impl GetFile<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<File, errors::MethodCall> {
         send_method(

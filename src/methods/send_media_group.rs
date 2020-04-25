@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{Album, GroupMedia, InputFile, Photo, Thumb, Video},
         message::{self, Message},
@@ -19,8 +17,8 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#sendmediagroup
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct SendMediaGroup<'a, C> {
-    client: &'a Client<C>,
+pub struct SendMediaGroup<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     media: &'a [GroupMedia<'a>],
@@ -28,9 +26,9 @@ pub struct SendMediaGroup<'a, C> {
     reply_to_message_id: Option<message::Id>,
 }
 
-impl<'a, C> SendMediaGroup<'a, C> {
+impl<'a> SendMediaGroup<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         media: &'a [GroupMedia<'a>],
@@ -60,7 +58,7 @@ impl<'a, C> SendMediaGroup<'a, C> {
     }
 }
 
-impl<C: Connector> SendMediaGroup<'_, C> {
+impl SendMediaGroup<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<Message>, errors::MethodCall> {
         let mut multipart = Multipart::new(4 + self.media.len())

@@ -1,9 +1,7 @@
 use super::send_method;
 use crate::{
-    connectors::Connector,
-    errors,
-    internal::Client,
-    token,
+    connectors::Client,
+    errors, token,
     types::{
         input_file::{
             Animation, Audio, Document, EditableMedia, InputFile, Photo, Video,
@@ -22,8 +20,8 @@ use crate::{
 /// [docs]: https://core.telegram.org/bots/api#editmessagemedia
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct EditMessageMedia<'a, C> {
-    client: &'a Client<C>,
+pub struct EditMessageMedia<'a> {
+    client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
@@ -31,9 +29,9 @@ pub struct EditMessageMedia<'a, C> {
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
-impl<'a, C> EditMessageMedia<'a, C> {
+impl<'a> EditMessageMedia<'a> {
     pub(crate) fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
@@ -57,7 +55,7 @@ impl<'a, C> EditMessageMedia<'a, C> {
     }
 }
 
-impl<C: Connector> EditMessageMedia<'_, C> {
+impl EditMessageMedia<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(5)

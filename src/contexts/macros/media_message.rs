@@ -44,10 +44,10 @@ macro_rules! media_message {
             }
         }
 
-        impl<C: 'static> super::traits::Forwardable<C> for $name<C> {}
-        impl<C: 'static> super::traits::Pinnable<C> for $name<C> {}
+        impl super::traits::Forwardable for $name {}
+        impl super::traits::Pinnable for $name {}
 
-        impl<C> crate::contexts::fields::MediaMessage<C> for $name<C> {
+        impl crate::contexts::fields::MediaMessage for $name {
             #[must_use]
             fn reply_to(&self) -> Option<&crate::types::Message> {
                 self.reply_to.as_ref()
@@ -66,7 +66,7 @@ macro_rules! media_message {
             }
         }
 
-        impl<C> crate::contexts::fields::Forward<C> for $name<C> {
+        impl crate::contexts::fields::Forward for $name {
             #[must_use]
             fn forward(&self) -> Option<&crate::types::message::Forward> {
                 self.forward.as_ref()

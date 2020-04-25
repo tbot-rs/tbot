@@ -1,7 +1,5 @@
 use super::send_method;
-use crate::{
-    connectors::Connector, errors, internal::Client, token, types::user,
-};
+use crate::{connectors::Client, errors, token, types::user};
 use serde::Serialize;
 
 /// Gets a user's profile photos.
@@ -11,9 +9,9 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#getuserprofilephotos
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct GetUserProfilePhotos<'a, C> {
+pub struct GetUserProfilePhotos<'a> {
     #[serde(skip)]
-    client: &'a Client<C>,
+    client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
     user_id: user::Id,
@@ -23,9 +21,9 @@ pub struct GetUserProfilePhotos<'a, C> {
     limit: Option<u8>,
 }
 
-impl<'a, C> GetUserProfilePhotos<'a, C> {
+impl<'a> GetUserProfilePhotos<'a> {
     pub(crate) const fn new(
-        client: &'a Client<C>,
+        client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
     ) -> Self {
@@ -53,7 +51,7 @@ impl<'a, C> GetUserProfilePhotos<'a, C> {
     }
 }
 
-impl<C: Connector> GetUserProfilePhotos<'_, C> {
+impl GetUserProfilePhotos<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<user::ProfilePhotos, errors::MethodCall> {
         send_method(
