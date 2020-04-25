@@ -31,7 +31,7 @@ run-tests:
         - branches
         - merge_requests
 
-generate-master-docs:
+pages:
     stage: docs
     script:
         - cargo doc --release --no-deps --target-dir=../target
