@@ -1109,3 +1109,22 @@ fn extract_token(env_var: &'static str) -> String {
         panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::proxy::{Intercept, Proxy};
+
+    #[test]
+    fn macro_compiles() {
+        let _ = from_env!("BOT_TOKEN");
+        let _ = from_env!("BOT_TOKEN",);
+
+        const PROXY: &str = "http://127.0.0.1:8080";
+
+        let proxy = Proxy::new(Intercept::All, PROXY.parse().unwrap());
+        let _ = from_env!("BOT_TOKEN", proxy);
+
+        let proxy = Proxy::new(Intercept::All, PROXY.parse().unwrap());
+        let _ = from_env!("BOT_TOKEN", proxy,);
+    }
+}
