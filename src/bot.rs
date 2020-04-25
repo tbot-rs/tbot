@@ -2,6 +2,7 @@ use crate::{
     connectors::{self, Client},
     download_file, errors,
     event_loop::EventLoop,
+    internal::Sealed,
     methods::*,
     state::StatefulEventLoop,
     types::{
@@ -1103,6 +1104,8 @@ macro_rules! from_env {
         $crate::from_env!()
     };
 }
+
+impl Sealed for Bot {}
 
 fn extract_token(env_var: &'static str) -> String {
     std::env::var(env_var).unwrap_or_else(|_| {
