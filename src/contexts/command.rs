@@ -109,8 +109,8 @@ impl AnyText for Command<Text> {
     }
 }
 
-impl<'a> Forwardable for Command<Text> {}
-impl<'a> Pinnable for Command<Text> {}
+impl Forwardable for Command<Text> {}
+impl Pinnable for Command<Text> {}
 
 // Once again.
 
@@ -180,5 +180,5 @@ impl AnyText for Command<EditedText> {
     }
 }
 
-impl<'a> Forwardable for Command<EditedText> {}
-impl<'a> Pinnable for Command<EditedText> {}
+impl Forwardable for Command<EditedText> {}
+impl Pinnable for Command<EditedText> {}
