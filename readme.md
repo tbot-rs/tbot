@@ -39,7 +39,7 @@ file an issue on either our [GitLab] or [GitHub] repository.
 [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
 [api-docs]: https://docs.rs/tbot
-[master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
+[master-docs]: https://docs.tbot.rs
 
 [our group]: https://t.me/tbot_group
 [gitlab]: https://gitlab.com/SnejUgal/tbot
@@ -47,7 +47,7 @@ file an issue on either our [GitLab] or [GitHub] repository.
 
 ## Features
 
-- Full Bot API 4.7 support, as well as media download/upload, polling
+- Full Bot API 4.8 support, as well as media download/upload, polling
   and [webhooks];
 - `async`/`.await` support, built upon `tokio`;
 - Type-safe and idiomatic API;
@@ -61,7 +61,7 @@ Add `tbot` and `tokio` to your Cargo.toml:
 
 ```toml
 [dependencies]
-tbot = "0.5"
+tbot = "0.6"
 tokio = { version = "0.2", features = ["macros"] }
 ```
 
