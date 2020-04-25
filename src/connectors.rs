@@ -1,8 +1,9 @@
 //! A few common connectors for making requests.
 
 use hyper::{
+    self,
     client::{HttpConnector, ResponseFuture},
-    Body, self, Request, Uri,
+    Body, Request, Uri,
 };
 
 #[cfg(feature = "rustls")]

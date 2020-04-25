@@ -1060,8 +1060,8 @@ impl Bot {
 /// Constructs a new [`Bot`], extracting the token from the environment at
 /// _compile time_.
 ///
-/// You can provide a connector as the second parameter,
-/// e.g. `from_env!("...", connector)`.
+/// You can provide the proxy as the second parameter,
+/// e.g. `from_env!("...", proxy)`.
 ///
 /// If you need to extract the token at _runtime_, use [`Bot::from_env`].
 ///
@@ -1096,7 +1096,7 @@ macro_rules! from_env {
     () => {
         compile_error!(
             "the macro must be invoked as `from_env!(\"<VAR_NAME>\")` or \
-             `from_env!(\"<VAR_NAME>\", connector)`"
+             `from_env!(\"<VAR_NAME>\", proxy)`"
         )
     };
     ($($x:tt)+) => {

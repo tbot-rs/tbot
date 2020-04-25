@@ -17,8 +17,8 @@
 //!
 //! ```
 //! use std::sync::Arc;
-//! use tbot::{contexts, connectors::Https};
-//! async fn process_photo(context: Arc<contexts::Photo<Https>>) {
+//! use tbot::{contexts};
+//! async fn process_photo(context: Arc<contexts::Photo>) {
 //!     let photo = &context.photo;
 //!     // ..
 //! }
@@ -29,8 +29,8 @@
 //!
 //! ```
 //! use std::sync::Arc;
-//! use tbot::{contexts::fields::Photo, connectors::Https};
-//! async fn process_photo(context: Arc<impl Photo<Https>>) {
+//! use tbot::{contexts::fields::Photo};
+//! async fn process_photo(context: Arc<impl Photo>) {
 //!     let photo = context.photo();
 //!     // ..
 //! }
