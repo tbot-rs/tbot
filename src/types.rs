@@ -38,16 +38,34 @@ mod video_note;
 mod voice;
 pub mod webhook_info;
 
-pub use {
-    animation::Animation, audio::Audio, bot_command::BotCommand, chat::Chat,
-    chosen_inline_result::ChosenInlineResult, contact::Contact, dice::Dice,
-    document::Document, file::File, game::Game,
-    inline_message_id::InlineMessageId, inline_query::InlineQuery,
-    input_message_content::InputMessageContent, invoice::Invoice,
-    labeled_price::LabeledPrice, location::Location, login_url::LoginUrl,
-    message::Message, order_info::OrderInfo, photo_size::PhotoSize, poll::Poll,
-    pre_checkout_query::PreCheckoutQuery, sticker::Sticker,
-    successful_payment::SuccessfulPayment, update::Update, user::User,
-    venue::Venue, video::Video, video_note::VideoNote, voice::Voice,
-    webhook_info::WebhookInfo,
-};
+pub use animation::Animation;
+pub use audio::Audio;
+pub use bot_command::BotCommand;
+pub use chat::Chat;
+pub use chosen_inline_result::ChosenInlineResult;
+pub use contact::Contact;
+pub use dice::Dice;
+pub use document::Document;
+pub use file::File;
+pub use game::Game;
+pub use inline_message_id::InlineMessageId;
+pub use inline_query::InlineQuery;
+pub use input_message_content::InputMessageContent;
+pub use invoice::Invoice;
+pub use labeled_price::LabeledPrice;
+pub use location::Location;
+pub use login_url::LoginUrl;
+pub use message::Message;
+pub use order_info::OrderInfo;
+pub use photo_size::PhotoSize;
+pub use poll::Poll;
+pub use pre_checkout_query::PreCheckoutQuery;
+pub use sticker::Sticker;
+pub use successful_payment::SuccessfulPayment;
+pub use update::Update;
+pub use user::User;
+pub use venue::Venue;
+pub use video::Video;
+pub use video_note::VideoNote;
+pub use voice::Voice;
+pub use webhook_info::WebhookInfo;

@@ -122,62 +122,81 @@ mod unban_chat_member;
 mod unpin_chat_message;
 mod upload_sticker_file;
 
-pub use {
-    add_sticker_to_set::AddStickerToSet,
-    answer_callback_query::AnswerCallbackQuery,
-    answer_inline_query::AnswerInlineQuery,
-    answer_pre_checkout_query::AnswerPreCheckoutQuery,
-    answer_shipping_query::AnswerShippingQuery,
-    create_new_sticker_set::CreateNewStickerSet,
-    delete_chat_photo::DeleteChatPhoto,
-    delete_chat_sticker_set::DeleteChatStickerSet,
-    delete_message::DeleteMessage,
-    delete_sticker_from_set::DeleteStickerFromSet,
-    edit_inline_caption::EditInlineCaption,
-    edit_inline_location::EditInlineLocation,
-    edit_inline_media::EditInlineMedia,
-    edit_inline_reply_markup::EditInlineReplyMarkup,
-    edit_inline_text::EditInlineText, edit_message_caption::EditMessageCaption,
-    edit_message_location::EditMessageLocation,
-    edit_message_media::EditMessageMedia,
-    edit_message_reply_markup::EditMessageReplyMarkup,
-    edit_message_text::EditMessageText,
-    export_chat_invite_link::ExportChatInviteLink,
-    forward_message::ForwardMessage, get_chat::GetChat,
-    get_chat_administrators::GetChatAdministrators,
-    get_chat_member::GetChatMember,
-    get_chat_members_count::GetChatMembersCount, get_file::GetFile,
-    get_inline_game_high_scores::GetInlineGameHighScores, get_me::GetMe,
-    get_message_game_high_scores::GetMessageGameHighScores,
-    get_my_commands::GetMyCommands, get_sticker_set::GetStickerSet,
-    get_user_profile_photos::GetUserProfilePhotos,
-    get_webhook_info::GetWebhookInfo, kick_chat_member::KickChatMember,
-    leave_chat::LeaveChat, pin_chat_message::PinChatMessage,
-    promote_chat_member::PromoteChatMember,
-    restrict_chat_member::RestrictChatMember, send_animation::SendAnimation,
-    send_audio::SendAudio, send_chat_action::SendChatAction,
-    send_contact::SendContact, send_dice::SendDice,
-    send_document::SendDocument, send_game::SendGame,
-    send_invoice::SendInvoice, send_location::SendLocation,
-    send_media_group::SendMediaGroup, send_message::SendMessage,
-    send_photo::SendPhoto, send_poll::SendPoll, send_sticker::SendSticker,
-    send_venue::SendVenue, send_video::SendVideo,
-    send_video_note::SendVideoNote, send_voice::SendVoice,
-    set_chat_administrator_custom_title::SetChatAdministratorCustomTitle,
-    set_chat_description::SetChatDescription,
-    set_chat_permissions::SetChatPermissions, set_chat_photo::SetChatPhoto,
-    set_chat_sticker_set::SetChatStickerSet, set_chat_title::SetChatTitle,
-    set_inline_game_score::SetInlineGameScore,
-    set_message_game_score::SetMessageGameScore,
-    set_my_commands::SetMyCommands,
-    set_passport_data_errors::SetPassportDataErrors,
-    set_sticker_position_in_set::SetStickerPositionInSet,
-    set_sticker_set_thumb::SetStickerSetThumb,
-    stop_inline_location::StopInlineLocation,
-    stop_message_location::StopMessageLocation, stop_poll::StopPoll,
-    unban_chat_member::UnbanChatMember, unpin_chat_message::UnpinChatMessage,
-    upload_sticker_file::UploadStickerFile,
-};
+pub use add_sticker_to_set::AddStickerToSet;
+pub use answer_callback_query::AnswerCallbackQuery;
+pub use answer_inline_query::AnswerInlineQuery;
+pub use answer_pre_checkout_query::AnswerPreCheckoutQuery;
+pub use answer_shipping_query::AnswerShippingQuery;
+pub use create_new_sticker_set::CreateNewStickerSet;
+pub use delete_chat_photo::DeleteChatPhoto;
+pub use delete_chat_sticker_set::DeleteChatStickerSet;
+pub use delete_message::DeleteMessage;
+pub use delete_sticker_from_set::DeleteStickerFromSet;
+pub use edit_inline_caption::EditInlineCaption;
+pub use edit_inline_location::EditInlineLocation;
+pub use edit_inline_media::EditInlineMedia;
+pub use edit_inline_reply_markup::EditInlineReplyMarkup;
+pub use edit_inline_text::EditInlineText;
+pub use edit_message_caption::EditMessageCaption;
+pub use edit_message_location::EditMessageLocation;
+pub use edit_message_media::EditMessageMedia;
+pub use edit_message_reply_markup::EditMessageReplyMarkup;
+pub use edit_message_text::EditMessageText;
+pub use export_chat_invite_link::ExportChatInviteLink;
+pub use forward_message::ForwardMessage;
+pub use get_chat::GetChat;
+pub use get_chat_administrators::GetChatAdministrators;
+pub use get_chat_member::GetChatMember;
+pub use get_chat_members_count::GetChatMembersCount;
+pub use get_file::GetFile;
+pub use get_inline_game_high_scores::GetInlineGameHighScores;
+pub use get_me::GetMe;
+pub use get_message_game_high_scores::GetMessageGameHighScores;
+pub use get_my_commands::GetMyCommands;
+pub use get_sticker_set::GetStickerSet;
+pub use get_user_profile_photos::GetUserProfilePhotos;
+pub use get_webhook_info::GetWebhookInfo;
+pub use kick_chat_member::KickChatMember;
+pub use leave_chat::LeaveChat;
+pub use pin_chat_message::PinChatMessage;
+pub use promote_chat_member::PromoteChatMember;
+pub use restrict_chat_member::RestrictChatMember;
+pub use send_animation::SendAnimation;
+pub use send_audio::SendAudio;
+pub use send_chat_action::SendChatAction;
+pub use send_contact::SendContact;
+pub use send_dice::SendDice;
+pub use send_document::SendDocument;
+pub use send_game::SendGame;
+pub use send_invoice::SendInvoice;
+pub use send_location::SendLocation;
+pub use send_media_group::SendMediaGroup;
+pub use send_message::SendMessage;
+pub use send_photo::SendPhoto;
+pub use send_poll::SendPoll;
+pub use send_sticker::SendSticker;
+pub use send_venue::SendVenue;
+pub use send_video::SendVideo;
+pub use send_video_note::SendVideoNote;
+pub use send_voice::SendVoice;
+pub use set_chat_administrator_custom_title::SetChatAdministratorCustomTitle;
+pub use set_chat_description::SetChatDescription;
+pub use set_chat_permissions::SetChatPermissions;
+pub use set_chat_photo::SetChatPhoto;
+pub use set_chat_sticker_set::SetChatStickerSet;
+pub use set_chat_title::SetChatTitle;
+pub use set_inline_game_score::SetInlineGameScore;
+pub use set_message_game_score::SetMessageGameScore;
+pub use set_my_commands::SetMyCommands;
+pub use set_passport_data_errors::SetPassportDataErrors;
+pub use set_sticker_position_in_set::SetStickerPositionInSet;
+pub use set_sticker_set_thumb::SetStickerSetThumb;
+pub use stop_inline_location::StopInlineLocation;
+pub use stop_message_location::StopMessageLocation;
+pub use stop_poll::StopPoll;
+pub use unban_chat_member::UnbanChatMember;
+pub use unpin_chat_message::UnpinChatMessage;
+pub use upload_sticker_file::UploadStickerFile;
 
 pub(crate) use {
     delete_webhook::DeleteWebhook, get_updates::GetUpdates,
