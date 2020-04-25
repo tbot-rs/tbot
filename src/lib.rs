@@ -71,7 +71,7 @@ mod internal;
 mod multipart;
 mod token;
 
-pub mod connectors;
+mod connectors;
 pub mod contexts;
 pub mod errors;
 pub mod event_loop;
@@ -89,3 +89,5 @@ pub mod prelude {
     //! Traits needed when working with `tbot`.
     pub use super::contexts::traits::*;
 }
+
+pub use hyper_proxy as proxy;
