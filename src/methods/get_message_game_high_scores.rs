@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -49,7 +49,7 @@ impl<'a> GetMessageGameHighScores<'a> {
 impl GetMessageGameHighScores<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<HighScore>, errors::MethodCall> {
-        send_method(
+        call_method(
             self.client,
             self.token,
             "getGameHighScores",

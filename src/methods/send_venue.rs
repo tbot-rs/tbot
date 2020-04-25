@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -106,7 +106,7 @@ impl<'a> SendVenue<'a> {
 impl SendVenue<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
-        send_method(
+        call_method(
             self.client,
             self.token,
             "sendVenue",

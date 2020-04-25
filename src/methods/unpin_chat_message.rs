@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -38,7 +38,7 @@ impl<'a> UnpinChatMessage<'a> {
 impl UnpinChatMessage<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
-        send_method::<bool>(
+        call_method::<bool>(
             self.client,
             self.token,
             "unpinChatMessage",

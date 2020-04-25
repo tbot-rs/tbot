@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -104,7 +104,7 @@ impl SendVideo<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        send_method(self.client, self.token, "sendVideo", Some(boundary), body)
+        call_method(self.client, self.token, "sendVideo", Some(boundary), body)
             .await
     }
 }

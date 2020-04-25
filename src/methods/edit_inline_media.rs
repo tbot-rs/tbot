@@ -1,4 +1,4 @@
-use super::send_method;
+use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
@@ -73,7 +73,7 @@ impl EditInlineMedia<'_> {
 
         let (boundary, body) = multipart.json("media", self.media).finish();
 
-        send_method::<bool>(
+        call_method::<bool>(
             self.client,
             self.token,
             "editMessageMedia",
