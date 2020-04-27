@@ -74,7 +74,7 @@ impl<T: Formattable> Formattable for Vec<T> {
     }
 }
 
-impl<T: Formattable> Formattable for Box<T> {
+impl<T: Formattable + ?Sized> Formattable for Box<T> {
     fn format(
         &self,
         formatter: &mut Formatter,
