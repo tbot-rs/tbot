@@ -1,91 +1,15 @@
 //! A utility for parsing message entities.
+mod entity;
 
-use crate::types::{message, User};
+use crate::types::message;
+pub use entity::*;
 use message::text::{Entity as RawEntity, EntityKind as RawEntityKind};
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-/// Represents a string with formatting options.
-pub struct FormattedText {
-    /// The text.
-    pub value: String,
-    /// `true` if bold is applied to this string.
-    pub is_bold: bool,
-    /// `true` if italic is applied to this string.
-    pub is_italic: bool,
-    /// `true` if strikethrough is applied to this string.
-    pub is_strikethrough: bool,
-    /// `true` if underline is applied to this string.
-    pub is_underline: bool,
-}
-
-impl FormattedText {
-    const fn plain(value: String) -> Self {
-        Self {
-            value,
-            is_bold: false,
-            is_italic: false,
-            is_strikethrough: false,
-            is_underline: false,
-        }
-    }
-
-    const fn from_state(value: String, state: &FormattingState) -> Self {
-        Self {
-            value,
-            is_bold: state.is_bold,
-            is_italic: state.is_italic,
-            is_strikethrough: state.is_strikethrough,
-            is_underline: state.id_underline,
-        }
-    }
-}
-
-/// Represents a parsed entity.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum Entity<'a> {
-    /// Inline code.
-    Code(String),
-    /// A code block.
-    Pre {
-        /// The code's programming language.
-        language: Option<&'a str>,
-        /// The code.
-        value: String,
-    },
-    /// Text that may have semantic meaning.
-    Semantic(SemanticEntity<'a>),
-}
-
-/// Represents a semantic entity.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct SemanticEntity<'a> {
-    /// The semantic meaning.
-    kind: Option<Kind<'a>>,
-    /// A `Vec` of formatted strings.
-    value: Vec<FormattedText>,
-}
-
-/// Represents the semantic meaning of the entity.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-pub enum Kind<'a> {
-    /// A mention.
-    Mention,
-    /// A hashtag.
-    Hashtag,
-    /// A cashtag (e.g. `$TBOT`).
-    Cashtag,
-    /// A bot command.
-    BotCommand,
-    /// An URL.
-    Url,
-    /// An email.
-    Email,
-    /// A phone number.
-    PhoneNumber,
-    /// A clickable text link.
-    TextLink(&'a str),
-    /// A mention for users without username.
-    TextMention(&'a User),
+pub(crate) struct FormattingState {
+    pub(crate) is_bold: bool,
+    pub(crate) is_italic: bool,
+    pub(crate) is_strikethrough: bool,
+    pub(crate) id_underline: bool,
 }
 
 #[derive(Debug)]
@@ -100,13 +24,6 @@ struct Token<'a> {
     kind: &'a RawEntityKind,
     position: usize,
     token_kind: TokenKind,
-}
-
-struct FormattingState {
-    is_bold: bool,
-    is_italic: bool,
-    is_strikethrough: bool,
-    id_underline: bool,
 }
 
 fn tokenize<'a>(entities: &'a [RawEntity]) -> Vec<Token<'a>> {
