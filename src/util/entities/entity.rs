@@ -213,10 +213,10 @@ impl<'a> markdown_v2::Formattable for Entity<'a> {
                 nesting,
             ),
             Self::Pre { language, value } => {
-                let code = code_block([value.as_str()]);
+                let mut code = code_block([value.as_str()]);
 
                 if let Some(language) = language {
-                    code.language(*language);
+                    code = code.language(*language);
                 }
 
                 markdown_v2::Formattable::format(&code, formatter, nesting)
