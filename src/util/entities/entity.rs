@@ -1,8 +1,8 @@
 use super::FormattingState;
 use crate::{
     markup::{
-        self, bold, code_block, inline_code, italic, link, markdown_v2,
-        mention, strikethrough, underline, html
+        self, bold, code_block, html, inline_code, italic, link, markdown_v2,
+        mention, strikethrough, underline,
     },
     types::User,
 };
@@ -71,6 +71,7 @@ pub enum Kind<'a> {
 }
 
 /// Represents a semantic entity.
+#[allow(clippy::module_name_repetitions)]
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct SemanticEntity<'a> {
     /// The semantic meaning.
@@ -96,7 +97,7 @@ pub enum Entity<'a> {
 }
 
 fn to_formattable<'a>(
-    formatted: &'a Vec<FormattedText>,
+    formatted: &'a [FormattedText],
 ) -> Vec<Box<dyn markup::Formattable + 'a>> {
     formatted
         .iter()
@@ -218,11 +219,7 @@ impl<'a> markdown_v2::Formattable for Entity<'a> {
                     code.language(*language);
                 }
 
-                markdown_v2::Formattable::format(
-                    &code,
-                    formatter,
-                    nesting,
-                )
+                markdown_v2::Formattable::format(&code, formatter, nesting)
             }
             Self::Semantic(semantic) => {
                 markdown_v2::Formattable::format(semantic, formatter, nesting)
@@ -250,11 +247,7 @@ impl<'a> html::Formattable for Entity<'a> {
                     code.language(*language);
                 }
 
-                html::Formattable::format(
-                    &code,
-                    formatter,
-                    nesting,
-                )
+                html::Formattable::format(&code, formatter, nesting)
             }
             Self::Semantic(semantic) => {
                 html::Formattable::format(semantic, formatter, nesting)
