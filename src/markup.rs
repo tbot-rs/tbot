@@ -130,6 +130,7 @@ impl<T: markdown_v2::Formattable + html::Formattable> Formattable for T {}
 
 #[doc(hidden)]
 #[derive(Clone, Copy, Default)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct Nesting {
     bold: bool,
     italic: bool,

@@ -7,8 +7,9 @@ use crate::{
     types::User,
 };
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 /// Represents a string with formatting options.
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct FormattedText {
     /// The text.
     pub value: String,
