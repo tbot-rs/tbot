@@ -415,7 +415,7 @@ impl EventLoop {
     {
         let predicate = Arc::new(predicate);
         let handler = Arc::new(handler);
-        self.command("start", move |context| {
+        self.start(move |context| {
             let predicate = Arc::clone(&predicate);
             let handler = Arc::clone(&handler);
             async move {
