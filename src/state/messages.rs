@@ -1,8 +1,8 @@
-//! A store for state per message.
+//! A storage of state per message.
 //!
-//! The [`Messages`] store can be used to store state for each message
+//! The [`Messages`] storage can be used to store state for each message
 //! separately. For example, when a chatting bot broadcasts a message from
-//! Alice to Bob, it can store the ID of the broadcasted message as the state
+//! Alice to Bob, it can store the ID of the broadcasted message in state
 //! for the original message's ID, and if Alice edits her message, the bot
 //! can edit the corresponding message on Bob's side.
 //!
@@ -34,7 +34,7 @@ use std::{
     ops::Index,
 };
 
-/// A struct containing the message's and its chat's IDs.
+/// A struct containing a message's and its chat's IDs.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Deserialize)]
 #[must_use]
 pub struct MessageId {
@@ -65,9 +65,10 @@ impl MessageId {
     }
 }
 
-/// A store for state per message. See [module docs] to learn how to use it.
+/// A storage of state per message. See [the module's docs] to learn
+/// how to use it.
 ///
-/// [module docs]: ./index.html
+/// [the module's docs]: ./index.html
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Messages<S> {
@@ -75,7 +76,7 @@ pub struct Messages<S> {
 }
 
 impl<S> Messages<S> {
-    /// Constructs a new message store.
+    /// Constructs a new message storage.
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -83,7 +84,7 @@ impl<S> Messages<S> {
         }
     }
 
-    /// Constructs a new message store with capacity for `n` chats.
+    /// Constructs a new message storage with capacity for `n` messages.
     #[must_use]
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -91,12 +92,12 @@ impl<S> Messages<S> {
         }
     }
 
-    /// Returns an iterator over stored messages.
+    /// Returns an iterator over the stored messages.
     pub fn all_messages(&self) -> impl Iterator<Item = MessageId> + '_ {
         self.messages.keys().copied()
     }
 
-    /// Returns an iterator over stored message IDs for a chat by the chat's ID.
+    /// Returns an iterator over stored message IDs for a chat by its ID.
     pub fn messages_in_chat_by_id(
         &self,
         chat_id: chat::Id,
@@ -110,7 +111,8 @@ impl<S> Messages<S> {
         })
     }
 
-    /// Returns an iterator over stored message IDs for a chat from the context.
+    /// Returns an iterator over stored message IDs for a chat, which ID is
+    /// inferred from the context.
     pub fn messages_in_chat<C>(
         &self,
         context: &C,
@@ -121,13 +123,13 @@ impl<S> Messages<S> {
         self.messages_in_chat_by_id(context.chat().id)
     }
 
-    /// Returns an iterator over stored states.
+    /// Returns an iterator over the stored states.
     pub fn all_states(&self) -> impl Iterator<Item = &S> {
         self.messages.values()
     }
 
     /// Returns an iterator over stored states for messages in a chat
-    /// by the chat's ID.
+    /// by its ID.
     pub fn states_in_chat_by_id(
         &self,
         chat_id: chat::Id,
@@ -135,8 +137,8 @@ impl<S> Messages<S> {
         self.iter_in_chat_by_id(chat_id).map(|(_, state)| state)
     }
 
-    /// Returns an iterator over stored states for messages in a chat
-    /// from the context.
+    /// Returns an iterator over stored states for messages in a chat, which ID
+    /// is inferred from the context.
     pub fn states_in_chat<C>(&self, context: &C) -> impl Iterator<Item = &S>
     where
         C: Message,
@@ -150,7 +152,7 @@ impl<S> Messages<S> {
     }
 
     /// Returns an iterator over stored messages and their states in a chat
-    /// by the chat's ID.
+    /// by its ID.
     pub fn iter_in_chat_by_id(
         &self,
         chat_id: chat::Id,
@@ -164,8 +166,8 @@ impl<S> Messages<S> {
         })
     }
 
-    /// Returns an iterator over stored messages and their states in a chat
-    /// from the context.
+    /// Returns an iterator over stored messages and their states in a chat,
+    /// which ID is inferred from the context.
     pub fn iter_in_chat<C>(
         &self,
         context: &C,
@@ -176,13 +178,13 @@ impl<S> Messages<S> {
         self.iter_in_chat_by_id(context.chat().id)
     }
 
-    /// Returns a mutable iterator over stored messages and their states.
+    /// Returns a mutable iterator over the stored messages and their states.
     pub fn iter_mut(&mut self) -> impl Iterator<Item = (MessageId, &mut S)> {
         IterMut(self.messages.iter_mut())
     }
 
-    /// Returns a mutable iterator over stored messages and their states
-    /// in a chat by the chat's ID.
+    /// Returns a mutable iterator over the stored messages and their states
+    /// in a chat by its ID.
     pub fn iter_mut_in_chat_by_id(
         &mut self,
         chat_id: chat::Id,
@@ -196,8 +198,8 @@ impl<S> Messages<S> {
         })
     }
 
-    /// Returns a mutable iterator over stored messages and their states
-    /// in a chat from the context.
+    /// Returns a mutable iterator over the stored messages and their states
+    /// in a chat, which ID is inferred from the context.
     pub fn iter_mut_in_chat<C>(
         &mut self,
         context: &C,
@@ -208,7 +210,7 @@ impl<S> Messages<S> {
         self.iter_mut_in_chat_by_id(context.chat().id)
     }
 
-    /// Returns an owning iterator over stored messages and their states
+    /// Returns an owning iterator over the stored messages and their states
     /// in a chat by its ID.
     pub fn into_iter_in_chat_by_id(
         self,
@@ -223,8 +225,8 @@ impl<S> Messages<S> {
         })
     }
 
-    /// Returns an owning iterator over stored messages and their states
-    /// in a chat from the context.
+    /// Returns an owning iterator over the stored messages and their states
+    /// in a chat, which ID is inferred from the context.
     pub fn into_iter_in_chat<C>(
         self,
         context: &C,
@@ -241,13 +243,14 @@ impl<S> Messages<S> {
         self.messages.len()
     }
 
-    /// Returns how many messages from a chat are stored by the chat's ID.
+    /// Returns how many messages from a chat are stored.
     #[must_use]
     pub fn len_in_chat_by_id(&self, chat_id: chat::Id) -> usize {
         self.iter_in_chat_by_id(chat_id).count()
     }
 
-    /// Returns how many messages from a chat from the context are stored.
+    /// Returns how many messages from a chat, which ID is inferred
+    /// from the context, are stored.
     #[must_use]
     pub fn len_in_chat<C>(&self, context: &C) -> usize
     where
@@ -256,26 +259,26 @@ impl<S> Messages<S> {
         self.iter_in_chat(context).count()
     }
 
-    /// Returns the capacity of the store.
+    /// Returns the storage's capacity.
     #[must_use]
     pub fn capacity(&self) -> usize {
         self.messages.capacity()
     }
 
-    /// Returns if the store is empty.
+    /// Returns `true` if the store is empty.
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.messages.is_empty()
     }
 
-    /// Returns if the store does *not* have messages from the chat by its ID.
+    /// Returns if the store does *not* have messages from a chat.
     #[must_use]
     pub fn is_empty_in_chat_by_id(&self, chat_id: chat::Id) -> bool {
         self.iter_in_chat_by_id(chat_id).next().is_none()
     }
 
-    /// Returns if the store does *not* have messages from the chat
-    /// from the context.
+    /// Returns if the store does *not* have messages from a chat, inferring
+    /// its ID from the context.
     #[must_use]
     pub fn is_empty_in_chat<C>(&self, context: &C) -> bool
     where
@@ -284,7 +287,7 @@ impl<S> Messages<S> {
         self.is_empty_in_chat_by_id(context.chat().id)
     }
 
-    /// Clears the store, returning each stored item in an iterator.
+    /// Clears the storage, returning each stored item in an iterator.
     #[must_use = "use `clear` if you don't need the iterator"]
     pub fn drain(&mut self) -> impl Iterator<Item = (MessageId, S)> + '_ {
         self.messages.drain()
@@ -295,12 +298,13 @@ impl<S> Messages<S> {
         self.messages.clear()
     }
 
-    /// Deletes state for all messages from the specific chat by its ID.
+    /// Deletes state for all messages from a chat.
     pub fn clear_in_chat_by_id(&mut self, chat_id: chat::Id) {
         self.retain(|id, _| id.chat_id != chat_id);
     }
 
-    /// Deletes state for all messages from the specific chat from the context.
+    /// Deletes state for all messages from a chat, inferring its ID
+    /// from the context.
     pub fn clear_in_chat<C>(&mut self, context: &C)
     where
         C: Message,
@@ -308,12 +312,12 @@ impl<S> Messages<S> {
         self.clear_in_chat_by_id(context.chat().id);
     }
 
-    /// Reserves capacity for additional `n` messages.
+    /// Reserves capacity for `n` additional messages.
     pub fn reserve(&mut self, additional: usize) {
         self.messages.reserve(additional)
     }
 
-    /// Shrinks the store to store only already stored messages.
+    /// Shrinks the capacity to already stored messages.
     pub fn shrink_to_fit(&mut self) {
         self.messages.shrink_to_fit()
     }
@@ -324,7 +328,7 @@ impl<S> Messages<S> {
         self.messages.get(&id)
     }
 
-    /// Gets a message's state from the context.
+    /// Gets a message's state, inferring its ID from the context.
     #[must_use]
     pub fn get<C>(&self, context: &C) -> Option<&S>
     where
@@ -339,7 +343,8 @@ impl<S> Messages<S> {
         self.messages.get_mut(&id)
     }
 
-    /// Gets a mutable reference to a message's state from the context.
+    /// Gets a mutable reference to a message's state, inferring its ID
+    /// from the context.
     #[must_use]
     pub fn get_mut<C>(&mut self, context: &C) -> Option<&mut S>
     where
@@ -348,13 +353,13 @@ impl<S> Messages<S> {
         self.get_mut_by_id(MessageId::from_context(context))
     }
 
-    /// Gets an entry for a message's state by its ID.
+    /// Gets an entry to a message's state by its ID.
     #[must_use]
     pub fn entry_by_id(&mut self, id: MessageId) -> Entry<MessageId, S> {
         self.messages.entry(id)
     }
 
-    /// Gets an entry for a message's state from the context.
+    /// Gets an entry to a message's state, inferring its ID from the context.
     #[must_use]
     pub fn entry<C>(&mut self, context: &C) -> Entry<MessageId, S>
     where
@@ -369,7 +374,8 @@ impl<S> Messages<S> {
         self.messages.contains_key(&id)
     }
 
-    /// Checks if there's state for a message from the context.
+    /// Checks if there's state for a message, inferring its ID
+    /// from the context.
     #[must_use]
     pub fn has<C>(&self, context: &C) -> bool
     where
@@ -383,7 +389,8 @@ impl<S> Messages<S> {
         self.messages.insert(id, value)
     }
 
-    /// Inserts state for a message from the context. Returns the previous state.
+    /// Inserts state for a message, inferring its ID from the context.
+    /// Returns the previous state.
     pub fn insert<C>(&mut self, context: &C, value: S) -> Option<S>
     where
         C: Message,
@@ -396,7 +403,8 @@ impl<S> Messages<S> {
         self.messages.remove(&id)
     }
 
-    /// Removes and returns a message's state from the context.
+    /// Removes and returns a message's state, inferring its ID
+    /// from the context.
     pub fn remove<C>(&mut self, context: &C) -> Option<S>
     where
         C: Message,

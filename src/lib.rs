@@ -32,8 +32,8 @@
 //! You can always refer to our API docs on [_docs.rs_][api-docs]
 //! (also, docs for `master` are available [here][master-docs]).
 //!
-//! If you have a question, ask it in [our group] on Telegram. If you find a bug,
-//! file an issue on either our [GitLab] or [GitHub] repository.
+//! If you have a question, ask it in [our group] on Telegram. If you find
+//! a bug, file an issue on either our [GitLab] or [GitHub] repository.
 //!
 //! [examples]: https://gitlab.com/SnejUgal/tbot/-/tree/master/examples
 //! [projects]: https://gitlab.com/SnejUgal/tbot/-/wikis/Projects-built-with-tbot

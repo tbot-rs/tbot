@@ -10,11 +10,9 @@
 //!
 //! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //!
-//! bot.text(|context| {
-//!     async move {
-//!         let reversed: String = context.text.value.chars().rev().collect();
-//!         context.send_message_in_reply(&reversed).call().await.unwrap();
-//!     }
+//! bot.text(|context| async move {
+//!     let reversed: String = context.text.value.chars().rev().collect();
+//!     context.send_message_in_reply(&reversed).call().await.unwrap();
 //! });
 //! # }
 //! ```
@@ -23,12 +21,12 @@
 //! a text message, the handler is called with a reference to
 //! a [`Text`][text-context] context that contains data about the incoming data,
 //! e.g. the text of the message. Then we call the [`send_message_in_reply`]
-//! method on the context, which does what the name says: sends a message
+//! method on the context, which does what its name says: sends a message
 //! in the same chat in reply to the incoming message, inferring your bot's
 //! token and IDs of the chat and the message.
 //!
 //! All contexts have one common field named `bot`. Through this field, you can
-//! call any API method you can call using a [`Bot`]:
+//! call any method using a [`Bot`]:
 //!
 //! ```no_run
 //! # async fn foo() {
@@ -37,15 +35,13 @@
 //! use tbot::types::chat;
 //! const ADMIN_CHAT: chat::Id = chat::Id(0);
 //!
-//! bot.text(|context| {
-//!     async move {
-//!         context
-//!             .bot
-//!             .send_message(ADMIN_CHAT, "New message!")
-//!             .call()
-//!             .await
-//!             .unwrap();
-//!     }
+//! bot.text(|context| async move {
+//!     context
+//!         .bot
+//!         .send_message(ADMIN_CHAT, "New message!")
+//!         .call()
+//!         .await
+//!         .unwrap();
 //! });
 //! # }
 //! ```

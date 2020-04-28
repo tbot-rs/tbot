@@ -9,16 +9,16 @@ use tokio::time::Elapsed;
 /// Represents possible errors that an HTTPS webhook server may return.
 #[derive(Debug, Is)]
 pub enum HttpsWebhook {
-    /// An error during setting the webhook.
+    /// An error while setting the webhook.
     SetWebhook(MethodCall),
     /// Calling the `setWebhook` method timed out.
     SetWebhookTimeout(Elapsed),
-    /// An error during initializing TLS.
+    /// An error while initializing TLS.
     Tls(
         #[cfg(feature = "tls")] native_tls::Error,
         #[cfg(feature = "rustls")] tokio_rustls::rustls::TLSError,
     ),
-    /// An error during port binding.
+    /// An error while binding to a port.
     Bind(std::io::Error),
     /// An error while running the server.
     Server(hyper::Error),
@@ -54,7 +54,7 @@ impl Display for HttpsWebhook {
             Self::Server(error) => write!(
                 formatter,
                 "The webhook event loop failed because the server returned \
-                 with an error: {}",
+                 an error: {}",
                 error,
             ),
         }

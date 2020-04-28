@@ -8,11 +8,11 @@ use std::{
 /// Represents possible errors which may occur while downloading a file.
 #[derive(Debug, Is)]
 pub enum Download {
-    /// The provided file had the `path` field set to `None`.
+    /// The provided file's `path` is `None`.
     NoPath,
     /// A network error.
     Network(hyper::Error),
-    /// Telegram returned a different from 200 status code.
+    /// Telegram returned a status code different from `200`.
     InvalidStatusCode(StatusCode),
 }
 
@@ -21,7 +21,7 @@ impl Display for Download {
         match self {
             Self::NoPath => write!(
                 formatter,
-                "A file could not be downloaded because of missing `path`.",
+                "A file could not be downloaded because of a missing `path`.",
             ),
             Self::Network(error) => write!(
                 formatter,

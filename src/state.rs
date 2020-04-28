@@ -4,20 +4,19 @@
 //! kind of state. It can be a chatting bot, a quiz bot or any other bot that
 //! needs to store data. The stateful event loop also can be used to easily
 //! share some data between all handlers, e.g. if you use a database that
-//! stores all your data, you can implement an utility struct with methods that
-//! simplify access to the database and share it across all your handlers.
+//! stores all your data, you can implement a utility struct with methods that
+//! simplify access to the database, and then share it across all your handlers.
 //!
 //! For example, let's think of a bot with a global counter, and the bot allows
-//! increasing and showing it.
-//!
-//! If we'd have gone with a stateless event loop, we'd start with this:
+//! increasing and showing it. If we'd have gone with a stateless event loop,
+//! we'd start with this:
 //!
 //! ```
 //! let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
 //! ```
 //!
-//! To go with a stateful bot, we simply call [`stateful_event_loop`] instead of
-//! [`event_loop`]:
+//! To use the stateful event loop, we simply call [`stateful_event_loop`]
+//! instead of [`event_loop`]:
 //!
 //! ```
 //! # let initial_state = ();
@@ -31,13 +30,11 @@
 //! What should `initial_state` be? It can actually be any value (that can be
 //! shared across threads). You'd think that, as we only have a counter,
 //! we would simply use any integer type. However, `tbot` won't let you mutate
-//! the state — instead, you should make use of interior mutability yourself.
-//! This design decision was made to avoid mutability if it isn't needed and
-//! for users to decide what parts of their state should be mutable — that is
-//! to prevent all the state being locked when only a part of it is actually
-//! needed to be locked.
-//!
-//! So what we need is an integer wrapped in an [`RwLock`]:
+//! the state — instead, you should use interior mutability. This design
+//! decision was made to avoid mutability if it isn't needed and for users
+//! to decide what parts of their state should be mutable — that is to prevent
+//! all the state being locked when only a part of it is actually needs to be
+//! locked. So what we need is an integer wrapped in an [`RwLock`]:
 //!
 //! ```
 //! # use std::sync::RwLock; /*
@@ -90,8 +87,9 @@
 //! });
 //! ```
 //!
-//! `tbot` also provides a few utility state stores for common patterns.
-//! You can combine them with other state stores or with your state if needed.
+//! `tbot` also provides a few utility state storages for common patterns.
+//! You can combine them with other state storages or with your own storage
+//! if needed.
 
 pub mod chats;
 mod event_loop;
