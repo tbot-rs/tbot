@@ -31,7 +31,8 @@
 //! use tbot::markup::markdown_v2;
 //! assert_eq!(
 //!     markdown_v2(message).to_string(),
-//!     r#"*\*This is <b\>old, _and this is bold and italic\!_*"#,
+//!     "*\\*This is <b\\>old, \r_and this is bold and italic\\!\r_*",
+//!     // the extra `\r`s are needed for correct parsing in edge cases
 //! );
 //! ```
 //!
