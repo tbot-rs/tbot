@@ -1,3 +1,5 @@
+// Type out about 80 method names? No, thanks
+#![allow(clippy::wildcard_imports)]
 use crate::{
     contexts::fields::Message,
     methods::*,

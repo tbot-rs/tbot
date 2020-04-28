@@ -56,6 +56,9 @@
     clippy::nursery,
     clippy::cargo
 )]
+// It's just not worth adding an `# Errors` section because the returned
+// errors clearly describe why something may fail
+#![allow(clippy::missing_errors_doc)]
 #![allow(clippy::multiple_crate_versions)] // can't do much
 #![allow(clippy::needless_doctest_main)] // that's where you're wrong, kiddo
 #![doc(

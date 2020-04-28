@@ -1,3 +1,5 @@
+// Type out about 80 method names? No, thanks
+#![allow(clippy::wildcard_imports)]
 use crate::{
     connectors::{self, Client},
     download_file, errors,
@@ -1119,10 +1121,10 @@ mod tests {
 
     #[test]
     fn macro_compiles() {
+        const PROXY: &str = "http://127.0.0.1:8080";
+
         let _ = from_env!("BOT_TOKEN");
         let _ = from_env!("BOT_TOKEN",);
-
-        const PROXY: &str = "http://127.0.0.1:8080";
 
         let proxy = Proxy::new(Intercept::All, PROXY.parse().unwrap());
         let _ = from_env!("BOT_TOKEN", proxy);

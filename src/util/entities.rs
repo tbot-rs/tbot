@@ -5,6 +5,7 @@ use crate::types::message;
 pub use entity::*;
 use message::text::{Entity as RawEntity, EntityKind as RawEntityKind};
 
+#[allow(clippy::struct_excessive_bools)]
 pub(crate) struct FormattingState {
     pub(crate) is_bold: bool,
     pub(crate) is_italic: bool,
