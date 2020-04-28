@@ -10,7 +10,7 @@ use std::{
 pub enum MethodCall {
     /// A network error.
     Network(hyper::Error),
-    /// Bots API is likely to be down.
+    /// Bot API is likely to be down.
     OutOfService,
     /// Failed to parse the response.
     Parse {

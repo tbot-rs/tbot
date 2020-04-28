@@ -1,8 +1,8 @@
 //! Structs for calling API methods.
 //!
 //! The methods from this module can't be constructed directly; instead, you
-//! construct them using a [`Bot`] instance, which infers the underlying client
-//! and your bot's token, and [contexts] that can infer even more information
+//! construct them using a [`Bot`] instance which infers the underlying client
+//! and your bot's token, or using [contexts] that infer even more information
 //! from the update, such as the chat ID.
 //!
 //! All the methods have a common pattern:
@@ -32,7 +32,7 @@
 //! parameters. For such methods, `tbot` provides two structs, e.g. for
 //! [`editMessageText`][tg-doc] there are [`EditMessageText`] which resolves to
 //! [`types::Message`] and [`EditInlineText`] which resolves to `()`. This
-//! brings a more straightforward API wrapper, unlike if we only had one method
+//! brings a type-safer API wrapper, unlike if we only had one method
 //! which would resolve to `(() | types::Message)`.
 //!
 //! [`Bot`]: ../struct.Bot.html

@@ -18,9 +18,9 @@
 //! [`link`]: ./fn.link.html
 //!
 //! However, you can't use their return values directly — indeed, how do they
-//! know if they need to formt their inputs as HTML or MarkdownV2? That's where
+//! know if they need to format their inputs as HTML or MarkdownV2? That's where
 //! markup formatters [`html`] and [`markdown_v2`] come into play. They take
-//! the return values from the abstract utilities and returns values that can
+//! the return values from the abstract utilities and return values that can
 //! finally be turned into strings:
 //!
 //! ```

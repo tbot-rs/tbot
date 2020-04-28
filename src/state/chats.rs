@@ -1,6 +1,6 @@
-//! A store for state per chat.
+//! A storage of state per chat.
 //!
-//! The [`Chats`] store can be used to store some state for each chat
+//! The [`Chats`] storage can be used to store some state for each chat
 //! separately. An example of it is a questionary bot when the bot collects
 //! some data from the user step-by-step:
 //!
@@ -37,7 +37,7 @@
 //! [`state`]: ../index.html
 //! [`Mutex`]: https://docs.rs/tokio/0.2.*/tokio/sync/struct.Mutex.html
 //!
-//! Let's start our questionary once the bot starts the bot:
+//! Let's start our questionary once the user starts the bot:
 //!
 //! ```
 //! # use {std::sync, tbot::state::Chats};
@@ -65,7 +65,7 @@
 //!
 //!
 //! You can see that the [`insert`] method can figure out the chat ID from
-//! the context, but there's still [`insert_by_id`] if you need to. In fact,
+//! the context, but there's still [`insert_by_id`] if you need it. In fact,
 //! [`Chats`]'s API is very similar to the API of `std`'s [`HashMap`],
 //! but instead of the key you need to provide the context or use the equivalent
 //! method with the `_by_id` postfix.
@@ -103,9 +103,9 @@ use std::{
     ops::Index,
 };
 
-/// A store for state per chat. See [module docs] to learn how to use it.
+/// A storage of state per chat. See [the module's docs] to learn how to use it.
 ///
-/// [module docs]: ./index.html
+/// [the module's docs]: ./index.html
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Chats<S> {
@@ -113,7 +113,7 @@ pub struct Chats<S> {
 }
 
 impl<S> Chats<S> {
-    /// Constructs a new chat store.
+    /// Constructs a new chat storage.
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -121,7 +121,7 @@ impl<S> Chats<S> {
         }
     }
 
-    /// Constructs a new chat store with capacity for `n` chats.
+    /// Constructs a new chat storage with capacity for `n` chats.
     #[must_use]
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -129,24 +129,22 @@ impl<S> Chats<S> {
         }
     }
 
-    /// Returns an iterator over stored chat IDs.
+    /// Returns an iterator over the stored chat IDs.
     pub fn chats(&self) -> impl Iterator<Item = chat::Id> + '_ {
         self.chats.keys().copied()
     }
 
-    /// Returns an iterator over stored states.
+    /// Returns an iterator over the stored states.
     pub fn states(&self) -> impl Iterator<Item = &S> {
         self.chats.values()
     }
 
-    /// Returns an iterator over stored chat IDs and their states behind
-    /// an immutable reference.
+    /// Returns an iterator over the stored chat IDs and their states.
     pub fn iter(&self) -> impl Iterator<Item = (chat::Id, &S)> {
         Iter(self.chats.iter())
     }
 
-    /// Returns an iterator over stored chat IDs and their states behind
-    /// a mutable reference.
+    /// Returns a mutable iterator over the stored chat IDs and their states.
     pub fn iter_mut(&mut self) -> impl Iterator<Item = (chat::Id, &mut S)> {
         IterMut(self.chats.iter_mut())
     }
@@ -157,13 +155,13 @@ impl<S> Chats<S> {
         self.chats.len()
     }
 
-    /// Returns the capacity of the store.
+    /// Returns the storage's capacity.
     #[must_use]
     pub fn capacity(&self) -> usize {
         self.chats.capacity()
     }
 
-    /// Returns if the store is empty.
+    /// Returns `true` if the store is empty.
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.chats.is_empty()
@@ -180,12 +178,12 @@ impl<S> Chats<S> {
         self.chats.clear()
     }
 
-    /// Reserves capacity for additional `n` chats.
+    /// Reserves capacity for `n` additional chats.
     pub fn reserve(&mut self, additional: usize) {
         self.chats.reserve(additional)
     }
 
-    /// Shrinks the store to store only already stored chats.
+    /// Shrinks the storage to already stored chats.
     pub fn shrink_to_fit(&mut self) {
         self.chats.shrink_to_fit()
     }
@@ -196,7 +194,7 @@ impl<S> Chats<S> {
         self.chats.get(&id)
     }
 
-    /// Gets a chat's state by the context.
+    /// Gets a chat's state, inferring its ID from the context.
     #[must_use]
     pub fn get<C>(&self, context: &C) -> Option<&S>
     where
@@ -211,7 +209,8 @@ impl<S> Chats<S> {
         self.chats.get_mut(&id)
     }
 
-    /// Gets a mutable reference to a chat's state by the context.
+    /// Gets a mutable reference to a chat's state, inferring its ID
+    /// from the context.
     #[must_use]
     pub fn get_mut<C>(&mut self, context: &C) -> Option<&mut S>
     where
@@ -226,7 +225,7 @@ impl<S> Chats<S> {
         self.chats.entry(id)
     }
 
-    /// Gets an entry for a chat's state by the context.
+    /// Gets an entry for a chat's state, inferring its ID from the context.
     #[must_use]
     pub fn entry<C>(&mut self, context: &C) -> Entry<chat::Id, S>
     where
@@ -241,7 +240,7 @@ impl<S> Chats<S> {
         self.chats.contains_key(&id)
     }
 
-    /// Checks if there's state for a chat by the context.
+    /// Checks if there's state for a chat, inferring its ID from the context.
     #[must_use]
     pub fn has<C>(&self, context: &C) -> bool
     where
@@ -255,7 +254,8 @@ impl<S> Chats<S> {
         self.chats.insert(id, value)
     }
 
-    /// Inserts state for a chat by the context. Returns the previous state.
+    /// Inserts state for a chat, inferring its ID from the context.
+    /// Returns the previous state.
     pub fn insert<C>(&mut self, context: &C, value: S) -> Option<S>
     where
         C: Message,
@@ -268,7 +268,7 @@ impl<S> Chats<S> {
         self.chats.remove(&id)
     }
 
-    /// Removes and returns a chat's state by the context.
+    /// Removes and returns a chat's state, inferring its ID from the context.
     pub fn remove<C>(&mut self, context: &C) -> Option<S>
     where
         C: Message,

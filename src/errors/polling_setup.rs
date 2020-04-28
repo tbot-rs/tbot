@@ -2,7 +2,7 @@ use super::MethodCall;
 use is_macro::Is;
 use tokio::time::Elapsed;
 
-/// Reperesents possible errors that may happen during preparation of the
+/// Represents possible errors that may happen during preparation of the
 /// polling event loop.
 #[derive(Debug, Is)]
 pub enum PollingSetup {

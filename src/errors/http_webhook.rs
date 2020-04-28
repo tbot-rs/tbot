@@ -9,7 +9,7 @@ use tokio::time::Elapsed;
 /// Represents possible errors that a webhook server may return.
 #[derive(Debug, Is)]
 pub enum HttpWebhook {
-    /// An error during setting the webhook.
+    /// An error while setting the webhook.
     SetWebhook(MethodCall),
     /// Calling the `setWebhook` method timed out.
     SetWebhookTimeout(Elapsed),
@@ -35,7 +35,7 @@ impl Display for HttpWebhook {
             Self::Server(error) => write!(
                 formatter,
                 "The webhook event loop failed because the server returned \
-                 with an error: {}",
+                 an error: {}",
                 error,
             ),
         }
