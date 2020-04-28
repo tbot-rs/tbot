@@ -233,16 +233,43 @@ pub fn entities(text: &message::Text) -> Vec<Entity> {
                         entities.push(Entity::Semantic(semantic));
                     }
 
+                    if let Some(start) = last_start.filter(|x| *x != position) {
+                        let text = FormattedText::from_state(
+                            String::from_utf16_lossy(&text[start..position]),
+                            &state,
+                        );
+
+                        let semantic = SemanticEntity {
+                            kind: None,
+                            value: vec![text],
+                        };
+
+                        entities.push(Entity::Semantic(semantic));
+                    }
+
                     last_start = Some(position);
                     last_semantic = None;
                 }
                 (TokenKind::Start, kind) => {
-                    last_start = Some(position);
-
                     if let Some(semantic) = last_semantic.take() {
                         entities.push(Entity::Semantic(semantic));
                     }
 
+                    if let Some(start) = last_start.filter(|x| *x != position) {
+                        let text = FormattedText::from_state(
+                            String::from_utf16_lossy(&text[start..position]),
+                            &state,
+                        );
+
+                        let semantic = SemanticEntity {
+                            kind: None,
+                            value: vec![text],
+                        };
+
+                        entities.push(Entity::Semantic(semantic));
+                    }
+
+                    last_start = Some(position);
                     last_semantic = Some(SemanticEntity {
                         kind: Some(convert_kind(kind)),
                         value: Vec::new(),
