@@ -5,6 +5,7 @@ use std::fmt::{self, Formatter};
 ///
 /// [`underline`]: ./fn.underline.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct Underline<T>(T);
 
 /// Formats text underlined.
