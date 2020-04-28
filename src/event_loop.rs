@@ -631,304 +631,342 @@ impl EventLoop {
         contexts::Update,
         /// Adds a new handler which is run after handling an update.
         after_update,
-        if: /// Adds a new handler which is run after handling an update and
+        /// Adds a new handler which is run after handling an update and
         /// if the predicate returns true.
+        after_update_if,
     }
 
     handler! {
         contexts::Animation,
         /// Adds a new handler for animations.
         animation,
-        if: /// Adds a new handler for animations which is run if the predicate
+        /// Adds a new handler for animations which is run if the predicate
         /// returns true.
+        animation_if,
     }
 
     handler! {
         contexts::Audio,
         /// Adds a new handler for audio.
         audio,
-        if: /// Adds a new handler for audio which is run if the predicate
+        /// Adds a new handler for audio which is run if the predicate
         /// returns true.
+        audio_if,
     }
 
     handler! {
         contexts::Update,
         /// Adds a new handler which is run before handling an update.
         before_update,
-        if: /// Adds a new handler which is run before handling an update and
+        /// Adds a new handler which is run before handling an update and
         /// if the predicate returns true.
+        before_update_if,
     }
 
     handler! {
         contexts::ChosenInline,
         /// Adds a new handler for chosen inline results.
         chosen_inline,
-        if: /// Adds a new handler for chosen inline results which is run
+        /// Adds a new handler for chosen inline results which is run
         /// if the predicate returns true.
+        chosen_inline_if,
     }
 
     handler! {
         contexts::Contact,
         /// Adds a new handler for contacts.
         contact,
-        if: /// Adds a new handler for contacts which is run if the predicate
+        /// Adds a new handler for contacts which is run if the predicate
         /// returns true.
+        contact_if,
     }
 
     handler! {
         contexts::ConnectedWebsite,
         /// Adds a new handler for connected websites.
         connected_website,
-        if: /// Adds a new handler for connected websites which is run
+        /// Adds a new handler for connected websites which is run
         /// if the predicate returns true.
+        connected_website_if,
     }
 
     handler! {
         contexts::CreatedGroup,
         /// Adds a new handler for created groups.
         created_group,
-        if: /// Adds a new handler for created groups which is run if the
+        /// Adds a new handler for created groups which is run if the
         /// predicate returns true.
+        created_group_if,
     }
 
     handler! {
         contexts::DataCallback,
         /// Adds a new handler for data callbacks.
         data_callback,
-        if: /// Adds a new handler for data callbacks which is run if the
+        /// Adds a new handler for data callbacks which is run if the
         /// predicate returns true.
+        data_callback_if,
     }
 
     handler! {
         contexts::DeletedChatPhoto,
         /// Adds a new handler for deleted chat photos.
         deleted_chat_photo,
-        if: /// Adds a new handler for deleted chat photos which is run
+        /// Adds a new handler for deleted chat photos which is run
         /// if the predicate returns true.
+        deleted_chat_photo_if,
     }
 
     handler! {
         contexts::Dice,
         /// Adds a new handler for dice.
         dice,
-        if: /// Adds a new handler for dice which is run if the predicate
+        /// Adds a new handler for dice which is run if the predicate
         /// returns true.
+        dice_if,
     }
 
     handler! {
         contexts::Document,
         /// Adds a new handler for documents.
         document,
-        if: /// Adds a new handler for documents which is run if the predicate
+        /// Adds a new handler for documents which is run if the predicate
         /// returns true.
+        document_if,
     }
 
     handler! {
         contexts::EditedAnimation,
         /// Adds a new handler for edited animations.
         edited_animation,
-        if: /// Adds a new handler for edited animations which is run
+        /// Adds a new handler for edited animations which is run
         /// if the predicate returns true.
+        edited_animation_if,
     }
 
     handler! {
         contexts::EditedAudio,
         /// Adds a new handler for edited audio.
         edited_audio,
-        if: /// Adds a new handler for edited audio which is run if the
+        /// Adds a new handler for edited audio which is run if the
         /// predicate returns true.
+        edited_audio_if,
     }
 
     handler! {
         contexts::EditedDocument,
         /// Adds a new handler for edited documents.
         edited_document,
-        if: /// Adds a new handler for edited documents which is run
+        /// Adds a new handler for edited documents which is run
         /// if the predicate returns true.
+        edited_document_if,
     }
 
     handler! {
         contexts::EditedLocation,
         /// Adds a new handler for edited locations.
         edited_location,
-        if: /// Adds a new handler for edited locations which is run
+        /// Adds a new handler for edited locations which is run
         /// if the predicate returns true.
+        edited_location_if,
     }
 
     handler! {
         contexts::EditedPhoto,
         /// Adds a new handler for edited photos.
         edited_photo,
-        if: /// Adds a new handler for edited photos which is run if the
+        /// Adds a new handler for edited photos which is run if the
         /// predicate returns true.
+        edited_photo_if,
     }
 
     handler! {
         contexts::EditedText,
         /// Adds a new handler for edited text messages.
         edited_text,
-        if: /// Adds a new handler for edited text messages which is run
+        /// Adds a new handler for edited text messages which is run
         /// if the predicate returns true.
+        edited_text_if,
     }
 
     handler! {
         contexts::EditedVideo,
         /// Adds a new handler for edited videos.
         edited_video,
-        if: /// Adds a new handler for edited videos which is run if the
+        /// Adds a new handler for edited videos which is run if the
         /// predicate returns true.
+        edited_video_if,
     }
 
     handler! {
         contexts::GameCallback,
         /// Adds a new handler for game callbacks.
         game_callback,
-        if: /// Adds a new handler for game callbacks which is run if the
+        /// Adds a new handler for game callbacks which is run if the
         /// predicate returns true.
+        game_callback_if,
     }
 
     handler! {
         contexts::Game,
         /// Adds a new handler for game messages.
         game,
-        if: /// Adds a new handler for game messages which is run if the
+        /// Adds a new handler for game messages which is run if the
         /// predicate returns true.
+        game_if,
     }
 
     handler! {
         contexts::Inline,
         /// Adds a new handler for inline queries.
         inline,
-        if: /// Adds a new handler for inline queries which is run if the
+        /// Adds a new handler for inline queries which is run if the
         /// predicate returns true.
+        inline_if,
     }
 
     handler! {
         contexts::Invoice,
         /// Adds a new handler for invoices.
         invoice,
-        if: /// Adds a new handler for invoices which is run if the predicate
+        /// Adds a new handler for invoices which is run if the predicate
         /// returns true.
+        invoice_if,
     }
 
     handler! {
         contexts::LeftMember,
         /// Adds a new handler for left members.
         left_member,
-        if: /// Adds a new handler for left members which is run if the
+        /// Adds a new handler for left members which is run if the
         /// predicate returns true.
+        left_member_if,
     }
 
     handler! {
         contexts::Location,
         /// Adds a new handler for locations.
         location,
-        if: /// Adds a new handler for locations which is run if the predicate
+        /// Adds a new handler for locations which is run if the predicate
         /// returns true.
+        location_if,
     }
 
     handler! {
         contexts::Migration,
         /// Adds a new handler for migrations.
         migration,
-        if: /// Adds a new handler for migrations which is run if the predicate
+        /// Adds a new handler for migrations which is run if the predicate
         /// returns true.
+        migration_if,
     }
 
     handler! {
         contexts::NewChatPhoto,
         /// Adds a new handler for new chat photos.
         new_chat_photo,
-        if: /// Adds a new handler for new chat photos which is run if the
+        /// Adds a new handler for new chat photos which is run if the
         /// predicate returns true.
+        new_chat_photo_if,
     }
 
     handler! {
         contexts::NewChatTitle,
         /// Adds a new handler for new chat titles.
         new_chat_title,
-        if: /// Adds a new handler for new chat titles which is run if the
+        /// Adds a new handler for new chat titles which is run if the
         /// predicate returns true.
+        new_chat_title_if,
     }
 
     handler! {
         contexts::NewMembers,
         /// Adds a new handler for new members.
         new_members,
-        if: /// Adds a new handler for new members which is run if the predicate
+        /// Adds a new handler for new members which is run if the predicate
         /// returns true.
+        new_members_if,
     }
 
     handler! {
         contexts::Passport,
         /// Adds a new handler for passport data.
         passport,
-        if: /// Adds a new handler for passport data which is run if the
+        /// Adds a new handler for passport data which is run if the
         /// predicate returns true.
+        passport_if,
     }
 
     handler! {
         contexts::Payment,
         /// Adds a new handler for successful payments.
         payment,
-        if: /// Adds a new handler for successful payments which is run
+        /// Adds a new handler for successful payments which is run
         /// if the predicate returns true.
+        payment_if,
     }
 
     handler! {
         contexts::Photo,
         /// Adds a new handler for photos.
         photo,
-        if: /// Adds a new handler for photos which is run if the predicate
+        /// Adds a new handler for photos which is run if the predicate
         /// returns true.
+        photo_if,
     }
 
     handler! {
         contexts::PinnedMessage,
         /// Adds a new handler for pinned messages.
         pinned_message,
-        if: /// Adds a new handler for pinned messages which is run if the
+        /// Adds a new handler for pinned messages which is run if the
         /// predicate returns true.
+        pinned_message_if,
     }
 
     handler! {
         contexts::Poll,
         /// Adds a new handler for poll messages.
         poll,
-        if: /// Adds a new handler for poll messages which is run if the
-        /// predicate returns true.
+        /// Adds a new handler for poll messages which is run if the
+        /// predicate returns true.1
+        poll_if,
     }
 
     handler! {
         contexts::PreCheckout,
         /// Adds a new handler for pre-checkout queries.
         pre_checkout,
-        if: /// Adds a new handler for pre-checkout queries which is run
+        /// Adds a new handler for pre-checkout queries which is run
         /// if the predicate returns true.
+        pre_checkout_if,
     }
 
     handler! {
         contexts::Shipping,
         /// Adds a new handler for shipping queries.
         shipping,
-        if: /// Adds a new handler for shipping queries which is run
+        /// Adds a new handler for shipping queries which is run
         /// if the predicate returns true.
+        shipping_if,
     }
 
     handler! {
         contexts::Sticker,
         /// Adds a new handler for stickers.
         sticker,
-        if: /// Adds a new handler for stickers which is run if the predicate
+        /// Adds a new handler for stickers which is run if the predicate
         /// returns true.
+        sticker_if,
     }
 
     handler! {
         contexts::Text,
         /// Adds a new handler for text messages.
         text,
-        if: /// Adds a new handler for text messages which is run if the
+        /// Adds a new handler for text messages which is run if the
         /// predicate returns true.
+        text_if,
     }
 
     /// Adds a new handler for unhandled updates.
@@ -980,48 +1018,54 @@ impl EventLoop {
         contexts::UpdatedPoll,
         /// Adds a new handler for new states of polls.
         updated_poll,
-        if: /// Adds a new handler for new states of polls which is run
+        /// Adds a new handler for new states of polls which is run
         /// if the predicate returns true.
+        updated_poll_if,
     }
 
     handler! {
         contexts::PollAnswer,
         /// Adds a new handler for new answers in the poll.
         poll_answer,
-        if: /// Adds a new handler for new answers in the poll which is run
+        /// Adds a new handler for new answers in the poll which is run
         /// if the predicate returns true.
+        poll_answer_if,
     }
 
     handler! {
         contexts::Venue,
         /// Adds a new handler for venues.
         venue,
-        if: /// Adds a new handler for venues which is run if the predicate
+        /// Adds a new handler for venues which is run if the predicate
         /// returns true.
+        venue_if,
     }
 
     handler! {
         contexts::Video,
         /// Adds a new handler for videos.
         video,
-        if: /// Adds a new handler for videos which is run if the predicate
+        /// Adds a new handler for videos which is run if the predicate
         /// returns true.
+        video_if,
     }
 
     handler! {
         contexts::VideoNote,
         /// Adds a new handler for video notes.
         video_note,
-        if: /// Adds a new handler for video notes which is run if the predicate
+        /// Adds a new handler for video notes which is run if the predicate
         /// returns true.
+        video_note_if,
     }
 
     handler! {
         contexts::Voice,
         /// Adds a new handler for voice messages.
         voice,
-        if: /// Adds a new handler for voice messages which is run if the
+        /// Adds a new handler for voice messages which is run if the
         /// predicate returns true.
+        voice_if,
     }
 
     #[instrument(skip(self, bot, update))]
