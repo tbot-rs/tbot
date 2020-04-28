@@ -401,342 +401,230 @@ impl EventLoop {
 
     handler! {
         /// Adds a new handler which is run after handling an update.
-        after_update_handlers,
         after_update,
         contexts::Update,
-        run_after_update_handlers,
     }
 
     handler! {
         /// Adds a new handler for animations.
-        animation_handlers,
         animation,
         contexts::Animation,
-        run_animation_handlers,
-        will_handle_animation,
     }
 
     handler! {
         /// Adds a new handler for audio.
-        audio_handlers,
         audio,
         contexts::Audio,
-        run_audio_handlers,
-        will_handle_audio,
     }
 
     handler! {
         /// Adds a new handler which is run before handling an update.
-        before_update_handlers,
         before_update,
         contexts::Update,
-        run_before_update_handlers,
     }
 
     handler! {
         /// Adds a new handler for chosen inline results.
-        chosen_inline_handlers,
         chosen_inline,
         contexts::ChosenInline,
-        run_chosen_inline_handlers,
-        will_handle_chosen_inline,
     }
 
     handler! {
         /// Adds a new handler for contacts.
-        contact_handlers,
         contact,
         contexts::Contact,
-        run_contact_handlers,
-        will_handle_contact,
     }
 
     handler! {
         /// Adds a new handler for connected websites.
-        connected_website_handlers,
         connected_website,
         contexts::ConnectedWebsite,
-        run_connected_website_handlers,
-        will_handle_connected_website,
     }
 
     handler! {
         /// Adds a new handler for created groups.
-        created_group_handlers,
         created_group,
         contexts::CreatedGroup,
-        run_created_group_handlers,
-        will_handle_created_group,
     }
 
     handler! {
         /// Adds a new handler for data callbacks.
-        data_callback_handlers,
         data_callback,
         contexts::DataCallback,
-        run_data_callback_handlers,
-        will_handle_data_callback,
     }
 
     handler! {
         /// Adds a new handler for deleted chat photos.
-        deleted_chat_photo_handlers,
         deleted_chat_photo,
         contexts::DeletedChatPhoto,
-        run_deleted_chat_photo_handlers,
-        will_handle_deleted_chat_photo,
     }
 
     handler! {
         /// Adds a new handler for dice.
-        dice_handlers,
         dice,
         contexts::Dice,
-        run_dice_handlers,
-        will_handle_dice,
     }
 
     handler! {
         /// Adds a new handler for documents.
-        document_handlers,
         document,
         contexts::Document,
-        run_document_handlers,
-        will_handle_document,
     }
 
     handler! {
         /// Adds a new handler for edited animations.
-        edited_animation_handlers,
         edited_animation,
         contexts::EditedAnimation,
-        run_edited_animation_handlers,
-        will_handle_edited_animation,
     }
 
     handler! {
         /// Adds a new handler for edited audio.
-        edited_audio_handlers,
         edited_audio,
         contexts::EditedAudio,
-        run_edited_audio_handlers,
-        will_handle_edited_audio,
     }
 
     handler! {
         /// Adds a new handler for edited documents.
-        edited_document_handlers,
         edited_document,
         contexts::EditedDocument,
-        run_edited_document_handlers,
-        will_handle_edited_document,
     }
 
     handler! {
         /// Adds a new handler for edited locations.
-        edited_location_handlers,
         edited_location,
         contexts::EditedLocation,
-        run_edited_location_handlers,
-        will_handle_edited_location,
     }
 
     handler! {
         /// Adds a new handler for edited photos.
-        edited_photo_handlers,
         edited_photo,
         contexts::EditedPhoto,
-        run_edited_photo_handlers,
-        will_handle_edited_photo,
     }
 
     handler! {
         /// Adds a new handler for edited text messages.
-        edited_text_handlers,
         edited_text,
         contexts::EditedText,
-        run_edited_text_handlers,
-        will_handle_edited_text,
     }
 
     handler! {
         /// Adds a new handler for edited videos.
-        edited_video_handlers,
         edited_video,
         contexts::EditedVideo,
-        run_edited_video_handlers,
-        will_handle_edited_video,
     }
 
     handler! {
         /// Adds a new handler for game callbacks.
-        game_callback_handlers,
         game_callback,
         contexts::GameCallback,
-        run_game_callback_handlers,
-        will_handle_game_callback,
     }
 
     handler! {
         /// Adds a new handler for game messages.
-        game_handlers,
         game,
         contexts::Game,
-        run_game_handlers,
-        will_handle_game,
     }
 
     handler! {
         /// Adds a new handler for inline queries.
-        inline_handlers,
         inline,
         contexts::Inline,
-        run_inline_handlers,
-        will_handle_inline,
     }
 
     handler! {
         /// Adds a new handler for invoices.
-        invoice_handlers,
         invoice,
         contexts::Invoice,
-        run_invoice_handlers,
-        will_handle_invoice,
     }
 
     handler! {
         /// Adds a new handler for left members.
-        left_member_handlers,
         left_member,
         contexts::LeftMember,
-        run_left_member_handlers,
-        will_handle_left_member,
     }
 
     handler! {
         /// Adds a new handler for locations.
-        location_handlers,
         location,
         contexts::Location,
-        run_location_handlers,
-        will_handle_location,
     }
 
     handler! {
         /// Adds a new handler for migrations.
-        migration_handlers,
         migration,
         contexts::Migration,
-        run_migration_handlers,
-        will_handle_migration,
     }
 
     handler! {
         /// Adds a new handler for new chat photos.
-        new_chat_photo_handlers,
         new_chat_photo,
         contexts::NewChatPhoto,
-        run_new_chat_photo_handlers,
-        will_handle_new_chat_photo,
     }
 
     handler! {
         /// Adds a new handler for new chat titles.
-        new_chat_title_handlers,
         new_chat_title,
         contexts::NewChatTitle,
-        run_new_chat_title_handlers,
-        will_handle_new_chat_title,
     }
 
     handler! {
         /// Adds a new handler for new members.
-        new_members_handlers,
         new_members,
         contexts::NewMembers,
-        run_new_members_handlers,
-        will_handle_new_members,
     }
 
     handler! {
         /// Adds a new handler for passport data.
-        passport_handlers,
         passport,
         contexts::Passport,
-        run_passport_handlers,
-        will_handle_passport,
     }
 
     handler! {
         /// Adds a new handler for successful payments.
-        payment_handlers,
         payment,
         contexts::Payment,
-        run_payment_handlers,
-        will_handle_payment,
     }
 
     handler! {
         /// Adds a new handler for photos.
-        photo_handlers,
         photo,
         contexts::Photo,
-        run_photo_handlers,
-        will_handle_photo,
     }
 
     handler! {
         /// Adds a new handler for pinned messages.
-        pinned_message_handlers,
         pinned_message,
         contexts::PinnedMessage,
-        run_pinned_message_handlers,
-        will_handle_pinned_message,
     }
 
     handler! {
         /// Adds a new handler for poll messages.
-        poll_handlers,
         poll,
         contexts::Poll,
-        run_poll_handlers,
-        will_handle_poll,
     }
 
     handler! {
         /// Adds a new handler for pre-checkout queries.
-        pre_checkout_handlers,
         pre_checkout,
         contexts::PreCheckout,
-        run_pre_checkout_handlers,
-        will_handle_pre_checkout,
     }
 
     handler! {
         /// Adds a new handler for shipping queries.
-        shipping_handlers,
         shipping,
         contexts::Shipping,
-        run_shipping_handlers,
-        will_handle_shipping,
     }
 
     handler! {
         /// Adds a new handler for stickers.
-        sticker_handlers,
         sticker,
         contexts::Sticker,
-        run_sticker_handlers,
-        will_handle_sticker,
     }
 
     handler! {
         /// Adds a new handler for text messages.
-        text_handlers,
         text,
         contexts::Text,
-        run_text_handlers,
-        will_handle_text,
     }
 
     /// Adds a new handler for unhandled updates.
@@ -764,56 +652,38 @@ impl EventLoop {
 
     handler! {
         /// Adds a new handler for new states of polls.
-        updated_poll_handlers,
         updated_poll,
         contexts::UpdatedPoll,
-        run_updated_poll_handlers,
-        will_handle_updated_poll,
     }
 
     handler! {
         /// Adds a new handler for new answers in the poll.
-        poll_answer_handlers,
         poll_answer,
         contexts::PollAnswer,
-        run_poll_answer_handlers,
-        will_handle_poll_answer,
     }
 
     handler! {
         /// Adds a new handler for venues.
-        venue_handlers,
         venue,
         contexts::Venue,
-        run_venue_handlers,
-        will_handle_venue,
     }
 
     handler! {
         /// Adds a new handler for videos.
-        video_handlers,
         video,
         contexts::Video,
-        run_video_handlers,
-        will_handle_video,
     }
 
     handler! {
         /// Adds a new handler for video notes.
-        video_note_handlers,
         video_note,
         contexts::VideoNote,
-        run_video_note_handlers,
-        will_handle_video_note,
     }
 
     handler! {
         /// Adds a new handler for voice messages.
-        voice_handlers,
         voice,
         contexts::Voice,
-        run_voice_handlers,
-        will_handle_voice,
     }
 
     #[instrument(skip(self, bot, update))]
