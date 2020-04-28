@@ -16,6 +16,7 @@ enum Kind<T> {
 /// [`link`]: ./fn.link.html
 /// [`mention`]: ./fn.mention.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct Link<T, L = &'static str> {
     text: T,
     link: Kind<L>,

@@ -8,6 +8,7 @@ use std::{
 ///
 /// [`code_block`]: ./fn.code_block.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct CodeBlock<C, L = &'static str> {
     code: C,
     language: Option<L>,

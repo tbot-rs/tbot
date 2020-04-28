@@ -99,6 +99,7 @@ impl<T: Formattable + ?Sized> Formattable for Box<T> {
 ///
 /// [`markdown_v2`]: ./fn.markdown_v2.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use = "MarkdownV2 needs to be turned into a String with `.to_string()`"]
 pub struct MarkdownV2<T>(T);
 
 /// Creates MarkdownV2 text.

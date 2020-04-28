@@ -5,6 +5,7 @@ use std::fmt::{self, Formatter};
 ///
 /// [`italic`]: ./fn.italic.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct Italic<T>(T);
 
 /// Formats text in italic.
