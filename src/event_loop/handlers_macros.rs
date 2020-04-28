@@ -1,11 +1,12 @@
 macro_rules! handler {
     (
-        #[doc = $doc:literal]
-        $name:ident,
         $context:path,
+        $(#[doc = $doc:literal])+
+        $name:ident,
+        if: $(#[doc = $doc_if:literal])+
     ) => {
         paste::item! {
-            #[doc = $doc]
+            $(#[doc = $doc])+
             pub fn $name<H, F>(&mut self, handler: H)
             where
                 H: (Fn(std::sync::Arc<$context>) -> F) + Send + Sync + 'static,
@@ -14,6 +15,38 @@ macro_rules! handler {
                 self.[<$name _handlers>].push(Box::new(move |context| {
                     tokio::spawn(handler(context));
                 }))
+            }
+        }
+
+        paste::item! {
+            $(#[doc = $doc_if])+
+            pub fn [<$name _if>]<H, HF, P, PF>(
+                &mut self,
+                predicate: P,
+                handler: H,
+            ) where
+                H: (Fn(Arc<$context>) -> HF)
+                    + Send
+                    + Sync
+                    + 'static,
+                HF: Future<Output = ()> + Send + 'static,
+                P: (Fn(Arc<$context>) -> PF)
+                    + Send
+                    + Sync
+                    + 'static,
+                PF: Future<Output = bool> + Send + 'static,
+            {
+                let predicate = Arc::new(predicate);
+                let handler = Arc::new(handler);
+                self.$name(move |context| {
+                    let predicate = Arc::clone(&predicate);
+                    let handler = Arc::clone(&handler);
+                    async move {
+                        if predicate(Arc::clone(&context)).await {
+                            handler(context).await
+                        }
+                    }
+                });
             }
         }
 

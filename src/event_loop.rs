@@ -261,6 +261,45 @@ impl EventLoop {
             }));
     }
 
+    /// Adds a new handler for a command which is run if the predicate
+    /// returns true.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
+    pub fn command_if<H, HF, P, PF>(
+        &mut self,
+        command: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.command(command, move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
+    }
+
     /// Adds a new handler for a sequence of commands.
     ///
     /// Note that commands such as `/command@username` will be completely
@@ -291,6 +330,46 @@ impl EventLoop {
         }
     }
 
+    /// Adds a new handler for a sequence of commands which is run
+    /// if the predicate returns true.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
+    pub fn commands_if<Cm, H, HF, P, PF>(
+        &mut self,
+        commands: Cm,
+        predicate: P,
+        handler: H,
+    ) where
+        Cm: IntoIterator<Item = &'static str>,
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.commands(commands, move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
+    }
+
     fn will_handle_command(&self, command: &str) -> bool {
         self.command_handlers.contains_key(command)
     }
@@ -319,6 +398,34 @@ impl EventLoop {
         self.command("start", handler);
     }
 
+    /// Adds a new handler for the `/start` command which is run
+    /// if the predicate returns true.
+    pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
+    where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.command("start", move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
+    }
+
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
@@ -331,6 +438,34 @@ impl EventLoop {
         self.command("settings", handler);
     }
 
+    /// Adds a new handler for the `/settings` command which is run
+    /// if the predicate returns true.
+    pub fn settings_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
+    where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.command("settings", move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
+    }
+
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
@@ -341,6 +476,34 @@ impl EventLoop {
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
+    }
+
+    /// Adds a new handler for the `/help` command which is run if the predicate
+    /// returns true.
+    pub fn help_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
+    where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.command("help", move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
     }
 
     /// Adds a new handler for an edited command.
@@ -358,6 +521,38 @@ impl EventLoop {
             .push(Box::new(move |context| {
                 tokio::spawn(handler(context));
             }));
+    }
+
+    /// Adds a new handler for an edited command which is run if the predicate
+    /// returns true.
+    pub fn edited_command_if<H, HF, P, PF>(
+        &mut self,
+        command: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.edited_command(command, move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
     }
 
     /// Adds a new handler for an edited command from sequence of commands.
@@ -383,6 +578,39 @@ impl EventLoop {
         }
     }
 
+    /// Adds a new handler for a sequence of edited commands which is run
+    /// if the predicate returns true.
+    pub fn edited_commands_if<Cm, H, HF, P, PF>(
+        &mut self,
+        commands: Cm,
+        predicate: P,
+        handler: H,
+    ) where
+        Cm: IntoIterator<Item = &'static str>,
+        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.edited_commands(commands, move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
+    }
+
     fn will_handle_edited_command(&self, command: &str) -> bool {
         self.edited_command_handlers.contains_key(command)
     }
@@ -400,231 +628,307 @@ impl EventLoop {
     }
 
     handler! {
+        contexts::Update,
         /// Adds a new handler which is run after handling an update.
         after_update,
-        contexts::Update,
+        if: /// Adds a new handler which is run after handling an update and
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Animation,
         /// Adds a new handler for animations.
         animation,
-        contexts::Animation,
+        if: /// Adds a new handler for animations which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Audio,
         /// Adds a new handler for audio.
         audio,
-        contexts::Audio,
+        if: /// Adds a new handler for audio which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Update,
         /// Adds a new handler which is run before handling an update.
         before_update,
-        contexts::Update,
+        if: /// Adds a new handler which is run before handling an update and
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::ChosenInline,
         /// Adds a new handler for chosen inline results.
         chosen_inline,
-        contexts::ChosenInline,
+        if: /// Adds a new handler for chosen inline results which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Contact,
         /// Adds a new handler for contacts.
         contact,
-        contexts::Contact,
+        if: /// Adds a new handler for contacts which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::ConnectedWebsite,
         /// Adds a new handler for connected websites.
         connected_website,
-        contexts::ConnectedWebsite,
+        if: /// Adds a new handler for connected websites which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::CreatedGroup,
         /// Adds a new handler for created groups.
         created_group,
-        contexts::CreatedGroup,
+        if: /// Adds a new handler for created groups which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::DataCallback,
         /// Adds a new handler for data callbacks.
         data_callback,
-        contexts::DataCallback,
+        if: /// Adds a new handler for data callbacks which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::DeletedChatPhoto,
         /// Adds a new handler for deleted chat photos.
         deleted_chat_photo,
-        contexts::DeletedChatPhoto,
+        if: /// Adds a new handler for deleted chat photos which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Dice,
         /// Adds a new handler for dice.
         dice,
-        contexts::Dice,
+        if: /// Adds a new handler for dice which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Document,
         /// Adds a new handler for documents.
         document,
-        contexts::Document,
+        if: /// Adds a new handler for documents which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::EditedAnimation,
         /// Adds a new handler for edited animations.
         edited_animation,
-        contexts::EditedAnimation,
+        if: /// Adds a new handler for edited animations which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::EditedAudio,
         /// Adds a new handler for edited audio.
         edited_audio,
-        contexts::EditedAudio,
+        if: /// Adds a new handler for edited audio which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::EditedDocument,
         /// Adds a new handler for edited documents.
         edited_document,
-        contexts::EditedDocument,
+        if: /// Adds a new handler for edited documents which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::EditedLocation,
         /// Adds a new handler for edited locations.
         edited_location,
-        contexts::EditedLocation,
+        if: /// Adds a new handler for edited locations which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::EditedPhoto,
         /// Adds a new handler for edited photos.
         edited_photo,
-        contexts::EditedPhoto,
+        if: /// Adds a new handler for edited photos which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::EditedText,
         /// Adds a new handler for edited text messages.
         edited_text,
-        contexts::EditedText,
+        if: /// Adds a new handler for edited text messages which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::EditedVideo,
         /// Adds a new handler for edited videos.
         edited_video,
-        contexts::EditedVideo,
+        if: /// Adds a new handler for edited videos which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::GameCallback,
         /// Adds a new handler for game callbacks.
         game_callback,
-        contexts::GameCallback,
+        if: /// Adds a new handler for game callbacks which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::Game,
         /// Adds a new handler for game messages.
         game,
-        contexts::Game,
+        if: /// Adds a new handler for game messages which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::Inline,
         /// Adds a new handler for inline queries.
         inline,
-        contexts::Inline,
+        if: /// Adds a new handler for inline queries which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::Invoice,
         /// Adds a new handler for invoices.
         invoice,
-        contexts::Invoice,
+        if: /// Adds a new handler for invoices which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::LeftMember,
         /// Adds a new handler for left members.
         left_member,
-        contexts::LeftMember,
+        if: /// Adds a new handler for left members which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::Location,
         /// Adds a new handler for locations.
         location,
-        contexts::Location,
+        if: /// Adds a new handler for locations which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Migration,
         /// Adds a new handler for migrations.
         migration,
-        contexts::Migration,
+        if: /// Adds a new handler for migrations which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::NewChatPhoto,
         /// Adds a new handler for new chat photos.
         new_chat_photo,
-        contexts::NewChatPhoto,
+        if: /// Adds a new handler for new chat photos which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::NewChatTitle,
         /// Adds a new handler for new chat titles.
         new_chat_title,
-        contexts::NewChatTitle,
+        if: /// Adds a new handler for new chat titles which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::NewMembers,
         /// Adds a new handler for new members.
         new_members,
-        contexts::NewMembers,
+        if: /// Adds a new handler for new members which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Passport,
         /// Adds a new handler for passport data.
         passport,
-        contexts::Passport,
+        if: /// Adds a new handler for passport data which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::Payment,
         /// Adds a new handler for successful payments.
         payment,
-        contexts::Payment,
+        if: /// Adds a new handler for successful payments which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Photo,
         /// Adds a new handler for photos.
         photo,
-        contexts::Photo,
+        if: /// Adds a new handler for photos which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::PinnedMessage,
         /// Adds a new handler for pinned messages.
         pinned_message,
-        contexts::PinnedMessage,
+        if: /// Adds a new handler for pinned messages which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::Poll,
         /// Adds a new handler for poll messages.
         poll,
-        contexts::Poll,
+        if: /// Adds a new handler for poll messages which is run if the
+        /// predicate returns true.
     }
 
     handler! {
+        contexts::PreCheckout,
         /// Adds a new handler for pre-checkout queries.
         pre_checkout,
-        contexts::PreCheckout,
+        if: /// Adds a new handler for pre-checkout queries which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Shipping,
         /// Adds a new handler for shipping queries.
         shipping,
-        contexts::Shipping,
+        if: /// Adds a new handler for shipping queries which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Sticker,
         /// Adds a new handler for stickers.
         sticker,
-        contexts::Sticker,
+        if: /// Adds a new handler for stickers which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Text,
         /// Adds a new handler for text messages.
         text,
-        contexts::Text,
+        if: /// Adds a new handler for text messages which is run if the
+        /// predicate returns true.
     }
 
     /// Adds a new handler for unhandled updates.
@@ -636,6 +940,28 @@ impl EventLoop {
         self.unhandled_handlers.push(Box::new(move |context| {
             tokio::spawn(handler(context));
         }))
+    }
+
+    /// Adds a new handler for unhandled updates which is run if the predicate
+    /// returns true.
+    pub fn unhandled_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
+    where
+        H: (Fn(Arc<contexts::Unhandled>) -> HF) + Send + Sync + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Unhandled>) -> PF) + Send + Sync + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.unhandled(move |context| {
+            let predicate = Arc::clone(&predicate);
+            let handler = Arc::clone(&handler);
+            async move {
+                if predicate(Arc::clone(&context)).await {
+                    handler(context).await
+                }
+            }
+        });
     }
 
     fn will_handle_unhandled(&self) -> bool {
@@ -651,39 +977,51 @@ impl EventLoop {
     }
 
     handler! {
+        contexts::UpdatedPoll,
         /// Adds a new handler for new states of polls.
         updated_poll,
-        contexts::UpdatedPoll,
+        if: /// Adds a new handler for new states of polls which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::PollAnswer,
         /// Adds a new handler for new answers in the poll.
         poll_answer,
-        contexts::PollAnswer,
+        if: /// Adds a new handler for new answers in the poll which is run
+        /// if the predicate returns true.
     }
 
     handler! {
+        contexts::Venue,
         /// Adds a new handler for venues.
         venue,
-        contexts::Venue,
+        if: /// Adds a new handler for venues which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Video,
         /// Adds a new handler for videos.
         video,
-        contexts::Video,
+        if: /// Adds a new handler for videos which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::VideoNote,
         /// Adds a new handler for video notes.
         video_note,
-        contexts::VideoNote,
+        if: /// Adds a new handler for video notes which is run if the predicate
+        /// returns true.
     }
 
     handler! {
+        contexts::Voice,
         /// Adds a new handler for voice messages.
         voice,
-        contexts::Voice,
+        if: /// Adds a new handler for voice messages which is run if the
+        /// predicate returns true.
     }
 
     #[instrument(skip(self, bot, update))]
