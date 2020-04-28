@@ -1,30 +1,67 @@
 macro_rules! handler {
     (
-        #[doc = $doc:literal]
-        $handlers:ident,
-        $name:ident,
         $context:path,
-        $run_handlers:ident,
-        $($will_handle:ident,)?
+        $(#[doc = $doc:literal])+
+        $name:ident,
+        if: $(#[doc = $doc_if:literal])+
     ) => {
-        #[doc = $doc]
-        pub fn $name<H, F>(&mut self, handler: H)
-        where
-            H: (Fn(std::sync::Arc<$context>) -> F) + Send + Sync + 'static,
-            F: std::future::Future<Output = ()> + Send + 'static,
-        {
-            self.$handlers.push(Box::new(move |context| {
-                tokio::spawn(handler(context));
-            }))
+        paste::item! {
+            $(#[doc = $doc])+
+            pub fn $name<H, F>(&mut self, handler: H)
+            where
+                H: (Fn(std::sync::Arc<$context>) -> F) + Send + Sync + 'static,
+                F: std::future::Future<Output = ()> + Send + 'static,
+            {
+                self.[<$name _handlers>].push(Box::new(move |context| {
+                    tokio::spawn(handler(context));
+                }))
+            }
         }
 
-        $(fn $will_handle(&self) -> bool {
-            !self.$handlers.is_empty()
-        })?
+        paste::item! {
+            $(#[doc = $doc_if])+
+            pub fn [<$name _if>]<H, HF, P, PF>(
+                &mut self,
+                predicate: P,
+                handler: H,
+            ) where
+                H: (Fn(Arc<$context>) -> HF)
+                    + Send
+                    + Sync
+                    + 'static,
+                HF: Future<Output = ()> + Send + 'static,
+                P: (Fn(Arc<$context>) -> PF)
+                    + Send
+                    + Sync
+                    + 'static,
+                PF: Future<Output = bool> + Send + 'static,
+            {
+                let predicate = Arc::new(predicate);
+                let handler = Arc::new(handler);
+                self.$name(move |context| {
+                    let predicate = Arc::clone(&predicate);
+                    let handler = Arc::clone(&handler);
+                    async move {
+                        if predicate(Arc::clone(&context)).await {
+                            handler(context).await
+                        }
+                    }
+                });
+            }
+        }
 
-        fn $run_handlers(&self, context: std::sync::Arc<$context>) {
-            for handler in &self.$handlers {
-                handler(context.clone());
+        paste::item! {
+            #[allow(dead_code)]
+            fn [<will_handle_ $name>](&self) -> bool {
+                !self.[<$name _handlers>].is_empty()
+            }
+        }
+
+        paste::item! {
+            fn [<run_ $name _handlers>](&self, context: std::sync::Arc<$context>) {
+                &self.[<$name _handlers>].iter().for_each(|handler| {
+                    handler(context.clone());
+                });
             }
         }
     };
