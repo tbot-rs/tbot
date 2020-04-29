@@ -5,4 +5,6 @@ pub mod media;
 pub mod message;
 mod traits;
 
-pub use traits::PredicateBooleanOperations;
+pub use traits::{
+    PredicateBooleanOperations, StatefulPredicateBooleanOperations,
+};
