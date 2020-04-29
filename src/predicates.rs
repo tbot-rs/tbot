@@ -5,18 +5,19 @@ pub mod media;
 pub mod message;
 mod traits;
 
-use futures::future::BoxFuture;
+use futures::{Future, future::BoxFuture};
 use std::sync::Arc;
 pub use traits::{
     PredicateBooleanOperations, StatefulPredicateBooleanOperations,
 };
 
 /// Allows running stateless predicates in the stateful event loop.
-pub fn without_state<'a, C, P, S>(
+pub fn without_state<'a, C, P, S, F>(
     predicate: P,
 ) -> impl Fn(Arc<C>, Arc<S>) -> BoxFuture<'a, bool> + Send + Sync + 'a
 where
-    P: Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a,
+    P: PredicateBooleanOperations<C, F>,
+    F: Future<Output = bool> + Send,
     C: Send + Sync + 'static,
     S: Send + Sync + 'static,
 {
