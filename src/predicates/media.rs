@@ -5,14 +5,14 @@ use futures::future::BoxFuture;
 use std::{ops::Deref, path::Path, sync::Arc};
 
 /// Checks if document extension matches one of given extensions.
-pub fn match_extension<'a, I: 'a, T, C: 'a>(
+pub fn match_extension<'a, I, T, C>(
     extensions: I,
 ) -> impl Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a
 where
     for<'b> &'b I: IntoIterator<Item = &'b T>,
     T: Deref<Target = str>,
-    I: Send + Sync,
-    C: Document + Send + Sync,
+    I: Send + Sync + 'a,
+    C: Document + Send + Sync + 'a,
 {
     let extensions = Arc::new(extensions);
 
