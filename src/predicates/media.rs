@@ -7,7 +7,7 @@ use std::{ops::Deref, path::Path, sync::Arc};
 /// Checks if document extension matches one of given extensions.
 pub fn match_extension<'a, I: 'a, T, C: 'a>(
     extensions: I,
-) -> Box<dyn Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a>
+) -> impl Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a
 where
     for<'b> &'b I: IntoIterator<Item = &'b T>,
     T: Deref<Target = str>,
@@ -16,7 +16,7 @@ where
 {
     let extensions = Arc::new(extensions);
 
-    Box::new(move |context| {
+    move |context: Arc<C>| {
         let extensions = Arc::clone(&extensions);
 
         Box::pin(async move {
@@ -39,5 +39,5 @@ where
 
             extensions.into_iter().any(|x| x.deref() == extension)
         })
-    })
+    }
 }
