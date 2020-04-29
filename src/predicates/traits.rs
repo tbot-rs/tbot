@@ -1,10 +1,11 @@
 use futures::{future::BoxFuture, Future};
 use std::sync::Arc;
 
-type BoxedPredicate<'a, C> =
-    Box<dyn Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a>;
-type BoxedStatefulPredicate<'a, C, S> =
-    Box<dyn Fn(Arc<C>, Arc<S>) -> BoxFuture<'a, bool> + Send + Sync + 'a>;
+type BoxedPredicate<C> =
+    Box<dyn Fn(Arc<C>) -> BoxFuture<'static, bool> + Send + Sync + 'static>;
+type BoxedStatefulPredicate<C, S> = Box<
+    dyn Fn(Arc<C>, Arc<S>) -> BoxFuture<'static, bool> + Send + Sync + 'static,
+>;
 
 /// Boolean operations on predicates.
 pub trait PredicateBooleanOperations<C, F>: Fn(Arc<C>) -> F
@@ -14,9 +15,9 @@ where
     Self: Sized + Send + Sync + 'static,
 {
     /// `self(..).await && other(..).await`
-    fn and<'a, P: 'static, PF>(self, other: P) -> BoxedPredicate<'a, C>
+    fn and<P, PF>(self, other: P) -> BoxedPredicate<C>
     where
-        P: PredicateBooleanOperations<C, PF> + 'a,
+        P: PredicateBooleanOperations<C, PF> + 'static,
         PF: Future<Output = bool> + Send,
     {
         let other = Arc::new(other);
@@ -30,9 +31,9 @@ where
     }
 
     /// `self(..).await || other(..).await`
-    fn or<'a, P: 'static, PF>(self, other: P) -> BoxedPredicate<'a, C>
+    fn or<P, PF>(self, other: P) -> BoxedPredicate<C>
     where
-        P: PredicateBooleanOperations<C, PF> + 'a,
+        P: PredicateBooleanOperations<C, PF> + 'static,
         PF: Future<Output = bool> + Send,
     {
         let other = Arc::new(other);
@@ -46,9 +47,9 @@ where
     }
 
     /// `self(..).await != other(..).await`
-    fn xor<'a, P: 'static, PF>(self, other: P) -> BoxedPredicate<'a, C>
+    fn xor<P, PF>(self, other: P) -> BoxedPredicate<C>
     where
-        P: PredicateBooleanOperations<C, PF> + 'a,
+        P: PredicateBooleanOperations<C, PF> + 'static,
         PF: Future<Output = bool> + Send,
     {
         let other = Arc::new(other);
@@ -62,7 +63,7 @@ where
     }
 
     /// `!self(..).await`
-    fn not<'a>(self) -> BoxedPredicate<'a, C> {
+    fn not(self) -> BoxedPredicate<C> {
         let this = Arc::new(self);
 
         Box::new(move |ctx| {
@@ -82,12 +83,9 @@ where
     Self: Sized + Send + Sync + 'static,
 {
     /// `self(..).await && other(..).await`
-    fn and<'a, P: 'static, PF>(
-        self,
-        other: P,
-    ) -> BoxedStatefulPredicate<'a, C, S>
+    fn and<P, PF>(self, other: P) -> BoxedStatefulPredicate<C, S>
     where
-        P: StatefulPredicateBooleanOperations<C, S, PF> + 'a,
+        P: StatefulPredicateBooleanOperations<C, S, PF> + 'static,
         PF: Future<Output = bool> + Send,
     {
         let other = Arc::new(other);
@@ -104,12 +102,9 @@ where
     }
 
     /// `self(..).await || other(..).await`
-    fn or<'a, P: 'static, PF>(
-        self,
-        other: P,
-    ) -> BoxedStatefulPredicate<'a, C, S>
+    fn or<P, PF>(self, other: P) -> BoxedStatefulPredicate<C, S>
     where
-        P: StatefulPredicateBooleanOperations<C, S, PF> + 'a,
+        P: StatefulPredicateBooleanOperations<C, S, PF> + 'static,
         PF: Future<Output = bool> + Send,
     {
         let other = Arc::new(other);
@@ -126,12 +121,9 @@ where
     }
 
     /// `self(..).await != other(..).await`
-    fn xor<'a, P: 'static, PF>(
-        self,
-        other: P,
-    ) -> BoxedStatefulPredicate<'a, C, S>
+    fn xor<P, PF>(self, other: P) -> BoxedStatefulPredicate<C, S>
     where
-        P: StatefulPredicateBooleanOperations<C, S, PF> + 'a,
+        P: StatefulPredicateBooleanOperations<C, S, PF> + 'static,
         PF: Future<Output = bool> + Send,
     {
         let other = Arc::new(other);
@@ -148,7 +140,7 @@ where
     }
 
     /// `!self(..).await`
-    fn not<'a>(self) -> BoxedStatefulPredicate<'a, C, S> {
+    fn not(self) -> BoxedStatefulPredicate<C, S> {
         let this = Arc::new(self);
 
         Box::new(move |ctx, state| {
