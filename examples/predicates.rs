@@ -22,7 +22,7 @@ async fn main() {
         // We sure that `from` is Some
         context
             .send_message_in_reply(&format!(
-                "Hello {name}",
+                "Hello {name}!",
                 name = &context.from.as_ref().unwrap().first_name
             ))
             .call()
@@ -51,7 +51,7 @@ async fn main() {
 
     bot.document_if(match_extension(["rs", "toml"]), |context| async move {
         context
-            .send_message_in_reply("I see you're a man of the culture as well")
+            .send_message_in_reply("I see you're a man of the culture as well!")
             .call()
             .await
             .unwrap();

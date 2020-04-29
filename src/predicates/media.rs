@@ -2,17 +2,12 @@
 
 use crate::contexts::fields::Document;
 use futures::future::BoxFuture;
-use std::{path::Path, sync::Arc, ops::Deref};
+use std::{ops::Deref, path::Path, sync::Arc};
 
 /// Checks if document extension matches one of given extensions.
 pub fn match_extension<'a, I: 'a, T, C: 'a>(
     extensions: I,
-) -> Box<
-    dyn Fn(Arc<C>) -> BoxFuture<'a, bool>
-        + Send
-        + Sync
-        + 'a,
->
+) -> Box<dyn Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a>
 where
     for<'b> &'b I: IntoIterator<Item = &'b T>,
     T: Deref<Target = str>,
