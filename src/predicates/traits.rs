@@ -79,7 +79,7 @@ where
     }
 }
 
-type BoxedPredicate<'a, C, S> =
+type BoxedStatefulPredicate<'a, C, S> =
     Box<dyn Fn(Arc<C>, Arc<S>) -> BoxFuture<'a, bool> + Send + Sync + 'a>;
 
 /// Boolean operations on async functions results.
