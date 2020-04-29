@@ -47,7 +47,7 @@ where
         })
     }
 
-    /// `self(..).await == other(..).await`
+    /// `self(..).await != other(..).await`
     fn xor<'a, P: 'static, PF>(
         self,
         other: P,
@@ -62,7 +62,7 @@ where
         Box::new(move |ctx| {
             let other = Arc::clone(&other);
             let this = Arc::clone(&this);
-            Box::pin(async move { this(ctx.clone()).await == other(ctx).await })
+            Box::pin(async move { this(ctx.clone()).await != other(ctx).await })
         })
     }
 
@@ -130,7 +130,7 @@ where
         })
     }
 
-    /// `self(..).await == other(..).await`
+    /// `self(..).await != other(..).await`
     fn xor<'a, P: 'static, PF>(self, other: P) -> BoxedPredicate<'a, C, S>
     where
         P: StatefulPredicateBooleanOperations<C, S, PF> + 'a,
@@ -144,7 +144,7 @@ where
             let this = Arc::clone(&this);
             Box::pin(async move {
                 this(ctx.clone(), state.clone()).await
-                    == other(ctx, state).await
+                    != other(ctx, state).await
             })
         })
     }
