@@ -4,7 +4,7 @@ use crate::contexts::fields::Document;
 use futures::future::BoxFuture;
 use std::{ops::Deref, path::Path, sync::Arc};
 
-/// Checks if document extension matches one of given extensions.
+/// Checks if the document's extension matches one of the given extensions.
 pub fn match_extension<'a, I, T, C>(
     extensions: I,
 ) -> impl Fn(Arc<C>) -> BoxFuture<'a, bool> + Send + Sync + 'a
