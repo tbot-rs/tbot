@@ -1,8 +1,7 @@
 use futures::{future::BoxFuture, Future};
 use std::sync::Arc;
 
-/// Boolean operations on async functions results.
-/// Simplifies combinating predicates.
+/// Boolean operations on predicates.
 pub trait PredicateBooleanOperations<C, F>: Fn(Arc<C>) -> F
 where
     F: Future<Output = bool> + Send,
@@ -82,8 +81,7 @@ where
 type BoxedPredicate<'a, C, S> =
     Box<dyn Fn(Arc<C>, Arc<S>) -> BoxFuture<'a, bool> + Send + Sync + 'a>;
 
-/// Boolean operations on async functions results.
-/// Simplifies combinating stateful predicates.
+/// Boolean operations on stateful predicates.
 pub trait StatefulPredicateBooleanOperations<C, S, F>:
     Fn(Arc<C>, Arc<S>) -> F
 where
