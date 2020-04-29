@@ -5,7 +5,7 @@ pub mod media;
 pub mod message;
 mod traits;
 
-use futures::{Future, future::BoxFuture};
+use futures::{future::BoxFuture, Future};
 use std::sync::Arc;
 pub use traits::{
     PredicateBooleanOperations, StatefulPredicateBooleanOperations,

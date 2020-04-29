@@ -2,7 +2,7 @@ use std::sync::Arc;
 use tbot::{
     contexts::Text,
     predicates::{
-        chat::{is_group, is_private, is_supergroup},
+        chat::{is_group, is_supergroup},
         media::match_extension,
         PredicateBooleanOperations,
     },
