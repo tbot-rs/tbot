@@ -19,7 +19,7 @@ async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.text_if(is_private, |context| async move {
-        // We sure that `from` is Some
+        // We are sure that `from` is Some
         context
             .send_message_in_reply(&format!(
                 "Hello {name}!",
