@@ -1,5 +1,9 @@
 //! A utility for parsing message entities.
+
 mod entity;
+
+#[cfg(test)]
+mod tests;
 
 use crate::types::message;
 pub use entity::*;
