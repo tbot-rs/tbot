@@ -11,7 +11,7 @@ use tbot::{
 };
 
 async fn is_message_short(context: Arc<Text>) -> bool {
-    context.text.value.len() < 5
+    context.text.value.chars().count() < 5
 }
 
 #[tokio::main]
