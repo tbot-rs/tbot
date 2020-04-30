@@ -1,6 +1,7 @@
 //! Types related to dice.
 #![allow(clippy::non_ascii_literal)]
 
+use is_macro::Is;
 use serde::{
     de::{self, Deserializer, IgnoredAny, MapAccess, Visitor},
     ser::Serializer,
@@ -8,7 +9,7 @@ use serde::{
 };
 
 /// Represents the kind of a thrown dice.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// 🎯

@@ -6,6 +6,7 @@ use crate::{
     },
     types::User,
 };
+use is_macro::Is;
 
 /// Represents a string with formatting options.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -49,7 +50,7 @@ impl FormattedText {
 }
 
 /// Represents the semantic meaning of the entity.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 pub enum Kind<'a> {
     /// A mention.
     Mention,
@@ -82,7 +83,7 @@ pub struct SemanticEntity<'a> {
 }
 
 /// Represents a parsed entity.
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 pub enum Entity<'a> {
     /// Inline code.
     Code(String),

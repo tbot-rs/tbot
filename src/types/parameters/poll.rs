@@ -1,11 +1,12 @@
 //! Types related to polls.
 
 use super::{ParseMode, Text};
+use is_macro::Is;
 use serde::Serialize;
 use std::convert::From;
 
 /// Configures whether multiple answers are allowed in a poll.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 pub enum Answer {
     /// Only a single answer is allowed.
     Single,
@@ -14,7 +15,7 @@ pub enum Answer {
 }
 
 /// Tells when the poll is automatically closed.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[non_exhaustive]
 #[serde(rename_all = "snake_case")]
 pub enum AutoClose {
@@ -41,7 +42,7 @@ pub struct Poll {
 }
 
 /// Represents either a quiz or a poll.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Kind<'a> {
     /// Represents a quiz.

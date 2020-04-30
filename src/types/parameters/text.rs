@@ -1,7 +1,8 @@
+use is_macro::Is;
 use serde::Serialize;
 use std::fmt::{self, Display};
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[must_use]
 pub enum ParseMode {
     MarkdownV2,

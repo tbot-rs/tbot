@@ -1,6 +1,7 @@
 //! Types related to polls.
 
 use super::{message::Text, User};
+use is_macro::Is;
 use serde::de::{self, Deserializer, MapAccess, Visitor};
 use serde::Deserialize;
 use std::fmt;
@@ -9,7 +10,7 @@ use std::option;
 /// Represents the kind of a [`Poll`].
 ///
 /// [`Poll`]: ./struct.Poll.html
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// A regular poll.

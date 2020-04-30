@@ -1,5 +1,6 @@
 //! Types representing reply keyboards.
 
+use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
 
 /// A shorthand for reply markup.
@@ -11,7 +12,7 @@ const QUIZ: &str = "quiz";
 /// Represents different kinds of poll that a [`Button`] can request.
 ///
 /// [`Button`]: ./struct.Button.html
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum RequestPollKind {
     /// Allows the user to create a poll of any type.
@@ -40,7 +41,7 @@ impl<'a> serde::Serialize for RequestPollKind {
 /// Represents different information that a [`Button`] can request.
 ///
 /// [`Button`]: ./struct.Button.html
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum RequestKind {
     /// Requests a location from the user.

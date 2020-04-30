@@ -1,5 +1,7 @@
+use is_macro::Is;
+
 /// Chooses if some payment data is send to the provider.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum SendToProviderState {
     /// The data will be sent.
