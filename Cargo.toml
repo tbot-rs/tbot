@@ -98,6 +98,10 @@ name = "proxy"
 required-features = ["tokio/macros"]
 
 [[example]]
+name = "predicates"
+required-features = ["tokio/macros"]
+
+[[example]]
 name = "questionary"
 required-features = ["tokio/macros", "tokio/sync"]
 
