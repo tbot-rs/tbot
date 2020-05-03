@@ -5,21 +5,22 @@
 use super::Thumb;
 use crate::types::{parameters::UrlVisibility, InputMessageContent};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultArticle`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultarticle
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Article<'a> {
-    title: &'a str,
+    title: Cow<'a, str>,
     input_message_content: InputMessageContent<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<&'a str>,
+    url: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     hide_url: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<Cow<'a, str>>,
     #[serde(flatten, skip_serializing_if = "Option::is_none")]
     thumb: Option<Thumb<'a>>,
 }
@@ -27,11 +28,11 @@ pub struct Article<'a> {
 impl<'a> Article<'a> {
     /// Constructs an `Article`.
     pub fn new(
-        title: &'a str,
+        title: impl Into<Cow<'a, str>>,
         input_message_content: impl Into<InputMessageContent<'a>>,
     ) -> Self {
         Self {
-            title,
+            title: title.into(),
             input_message_content: input_message_content.into(),
             url: None,
             hide_url: None,
@@ -41,8 +42,8 @@ impl<'a> Article<'a> {
     }
 
     /// Configures the URL of article.
-    pub fn url(mut self, url: &'a str) -> Self {
-        self.url = Some(url);
+    pub fn url(mut self, url: impl Into<Cow<'a, str>>) -> Self {
+        self.url = Some(url.into());
         self
     }
 
@@ -59,8 +60,8 @@ impl<'a> Article<'a> {
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.description = Some(description);
+    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+        self.description = Some(description.into());
         self
     }
 }

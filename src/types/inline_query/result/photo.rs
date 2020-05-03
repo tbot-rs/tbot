@@ -7,26 +7,27 @@ use crate::types::{
     InputMessageContent,
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents a non-cached photo.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Fresh<'a> {
-    thumb_url: &'a str,
+    thumb_url: Cow<'a, str>,
     #[serde(rename = "photo_url")]
-    url: &'a str,
+    url: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_width")]
     width: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_height")]
     height: Option<usize>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "photo_file_id")]
-        id: &'a str,
+        id: Cow<'a, str>,
     },
     Fresh(Fresh<'a>),
 }
@@ -35,16 +36,16 @@ enum Kind<'a> {
 ///
 /// [`InlineQueryResultPhoto`]: https://core.telegram.org/bots/api#inlinequeryresultphoto
 /// [`InlineQueryResultCachedPhoto`]: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Photo<'a> {
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    title: Option<&'a str>,
+    title: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    description: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
+    caption: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,10 +54,13 @@ pub struct Photo<'a> {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` photo.
-    pub const fn new(thumb_url: &'a str, url: &'a str) -> Self {
+    pub fn new(
+        thumb_url: impl Into<Cow<'a, str>>,
+        url: impl Into<Cow<'a, str>>,
+    ) -> Self {
         Self {
-            thumb_url,
-            url,
+            thumb_url: thumb_url.into(),
+            url: url.into(),
             width: None,
             height: None,
         }
@@ -88,8 +92,8 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a cached `Photo` result.
-    pub fn cached(id: &'a str) -> Self {
-        Self::new(Kind::Cached { id })
+    pub fn cached(id: impl Into<Cow<'a, str>>) -> Self {
+        Self::new(Kind::Cached { id: id.into() })
     }
 
     /// Constructs a fresh `Photo` result.
@@ -98,14 +102,14 @@ impl<'a> Photo<'a> {
     }
 
     /// Configures the title of the photo.
-    pub fn title(mut self, title: &'a str) -> Self {
-        self.title = Some(title);
+    pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+        self.title = Some(title.into());
         self
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
-        self.description = Some(description);
+    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+        self.description = Some(description.into());
         self
     }
 
@@ -113,7 +117,7 @@ impl<'a> Photo<'a> {
     pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
         let caption = caption.into();
 
-        self.caption = Some(caption.text);
+        self.caption = Some(caption.text.into());
         self.parse_mode = caption.parse_mode;
         self
     }

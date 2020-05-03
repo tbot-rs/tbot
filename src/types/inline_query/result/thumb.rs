@@ -1,11 +1,12 @@
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents a thumb.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Thumb<'a> {
     #[serde(rename = "thumb_url")]
-    url: &'a str,
+    url: Cow<'a, str>,
     #[serde(rename = "thumb_width", skip_serializing_if = "Option::is_none")]
     width: Option<usize>,
     #[serde(rename = "thumb_height", skip_serializing_if = "Option::is_none")]
@@ -14,9 +15,9 @@ pub struct Thumb<'a> {
 
 impl<'a> Thumb<'a> {
     /// Constructs a `Thumb`.
-    pub const fn new(url: &'a str) -> Self {
+    pub fn new(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            url,
+            url: url.into(),
             width: None,
             height: None,
         }

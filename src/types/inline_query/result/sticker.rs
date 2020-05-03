@@ -1,23 +1,24 @@
 use crate::types::InputMessageContent;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultCachedSticker`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Sticker<'a> {
     #[serde(rename = "sticker_file_id")]
-    id: &'a str,
+    id: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
 }
 
 impl<'a> Sticker<'a> {
     /// Constructs a `Sticker`.
-    pub const fn new(id: &'a str) -> Self {
+    pub fn new(id: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            id,
+            id: id.into(),
             input_message_content: None,
         }
     }

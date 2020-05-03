@@ -7,16 +7,17 @@ use crate::types::{
     InputMessageContent,
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents a non-cached audio.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Fresh<'a> {
     #[serde(rename = "audio_url")]
-    url: &'a str,
-    title: &'a str,
+    url: Cow<'a, str>,
+    title: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    performer: Option<&'a str>,
+    performer: Option<Cow<'a, str>>,
     #[serde(
         rename = "audio_duration",
         skip_serializing_if = "Option::is_none"
@@ -24,13 +25,13 @@ pub struct Fresh<'a> {
     duration: Option<usize>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "audio_file_id")]
-        id: &'a str,
+        id: Cow<'a, str>,
     },
     Fresh(Fresh<'a>),
 }
@@ -39,13 +40,13 @@ enum Kind<'a> {
 ///
 /// [`InlineQueryResultAudio`]: https://core.telegram.org/bots/api#inlinequeryresultaudio
 /// [`InlineQueryResultCachedAudio`]: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Audio<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
+    caption: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,18 +55,21 @@ pub struct Audio<'a> {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` audio.
-    pub const fn new(url: &'a str, title: &'a str) -> Self {
+    pub fn new(
+        url: impl Into<Cow<'a, str>>,
+        title: impl Into<Cow<'a, str>>,
+    ) -> Self {
         Self {
-            url,
-            title,
+            url: url.into(),
+            title: title.into(),
             performer: None,
             duration: None,
         }
     }
 
     /// Configures the performer of the audio.
-    pub fn performer(mut self, performer: &'a str) -> Self {
-        self.performer = Some(performer);
+    pub fn performer(mut self, performer: impl Into<Cow<'a, str>>) -> Self {
+        self.performer = Some(performer.into());
         self
     }
 
@@ -87,8 +91,8 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs a cached `Audio` result.
-    pub fn cached(id: &'a str) -> Self {
-        Self::new(Kind::Cached { id })
+    pub fn cached(id: impl Into<Cow<'a, str>>) -> Self {
+        Self::new(Kind::Cached { id: id.into() })
     }
 
     /// Constructs a fresh `Audio` result.
@@ -100,7 +104,7 @@ impl<'a> Audio<'a> {
     pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
         let caption = caption.into();
 
-        self.caption = Some(caption.text);
+        self.caption = Some(caption.text.into());
         self.parse_mode = caption.parse_mode;
         self
     }
