@@ -1,8 +1,9 @@
 use super::{InputFile, Thumb, WithName};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents a video note to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct VideoNote<'a> {
     pub(crate) media: WithName<'a>,
@@ -15,7 +16,7 @@ pub struct VideoNote<'a> {
 }
 
 impl<'a> VideoNote<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+    fn new(media: InputFile<'a>) -> Self {
         Self {
             media: media.with_name("video_note"),
             duration: None,
@@ -25,10 +26,10 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Constructs an `VideoNote` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "video_note.mp4",
-            bytes,
+            filename: "video_note.mp4".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -37,7 +38,8 @@ impl<'a> VideoNote<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot]: Video note's ID cannot start with `attach://`\n",
@@ -51,7 +53,8 @@ impl<'a> VideoNote<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Video note's URL cannot start with `attach://`\n",

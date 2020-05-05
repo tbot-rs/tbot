@@ -76,13 +76,13 @@ impl SendPhoto<'_> {
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(7)
             .chat_id("chat_id", self.chat_id)
-            .maybe_str("caption", self.photo.caption)
+            .maybe_str("caption", self.photo.caption.as_deref())
             .maybe_string("parse_mode", self.photo.parse_mode)
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.photo.media {
+        match &self.photo.media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("photo", filename, bytes),

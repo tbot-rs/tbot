@@ -1,7 +1,8 @@
 use super::InputFile;
+use std::borrow::Cow;
 
 /// Represents a PNG sticker to be uploaded in a sticker set.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct PngSticker<'a> {
     pub(crate) media: InputFile<'a>,
@@ -13,10 +14,10 @@ impl<'a> PngSticker<'a> {
     }
 
     /// Constructs a `PngSticker` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "sticker.png",
-            bytes,
+            filename: "sticker.png".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -25,7 +26,8 @@ impl<'a> PngSticker<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot] Sticker's ID cannot start with `attach://`\n",
@@ -39,7 +41,8 @@ impl<'a> PngSticker<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot] Sticker's URL cannot start with `attach://`\n",

@@ -1,13 +1,14 @@
 use super::InputFile;
 use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
+use std::borrow::Cow;
 
 /// Represents a photo to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Photo<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) caption: Option<&'a str>,
+    pub(crate) caption: Option<Cow<'a, str>>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -21,10 +22,10 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "photo.jpg",
-            bytes,
+            filename: "photo.jpg".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -33,7 +34,8 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot]: Photo's ID cannot start with `attach://`\n",
@@ -47,7 +49,8 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Photo's URL cannot start with `attach://`\n",
@@ -60,7 +63,7 @@ impl<'a> Photo<'a> {
     pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
         let caption = caption.into();
 
-        self.caption = Some(caption.text);
+        self.caption = Some(caption.text.into());
         self.parse_mode = caption.parse_mode;
         self
     }
@@ -78,7 +81,7 @@ impl<'a> Photo<'a> {
         map.serialize_entry("type", "photo")?;
         map.serialize_entry("media", &self.media.with_name(name))?;
 
-        if let Some(caption) = self.caption {
+        if let Some(caption) = &self.caption {
             map.serialize_entry("caption", caption)?;
         }
         if let Some(parse_mode) = self.parse_mode {

@@ -77,13 +77,13 @@ impl SendVoice<'_> {
         let mut multipart = Multipart::new(8)
             .chat_id("chat_id", self.chat_id)
             .maybe_string("duration", self.voice.duration)
-            .maybe_str("caption", self.voice.caption)
+            .maybe_str("caption", self.voice.caption.as_deref())
             .maybe_string("parse_mode", self.voice.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.voice.media.file {
+        match &self.voice.media.file {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("voice", filename, bytes),

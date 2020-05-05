@@ -50,7 +50,7 @@ impl SetStickerSetThumb<'_> {
             .str("name", self.name);
 
         if let Some(thumb) = self.thumb {
-            match thumb.media {
+            match &thumb.media {
                 InputFile::File {
                     filename, bytes, ..
                 } => multipart = multipart.file("thumb", filename, bytes),

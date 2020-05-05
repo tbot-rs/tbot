@@ -87,7 +87,7 @@ impl CreateNewStickerSet<'_> {
             }
         };
 
-        match media {
+        match &media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file(field, filename, bytes),

@@ -82,7 +82,7 @@ impl SendVideoNote<'_> {
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.video_note.media.file {
+        match &self.video_note.media.file {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("video_note", filename, bytes),
@@ -93,7 +93,7 @@ impl SendVideoNote<'_> {
 
         if let Some(Thumb(InputFile::File {
             filename, bytes, ..
-        })) = self.video_note.thumb
+        })) = &self.video_note.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

@@ -51,7 +51,7 @@ impl SetChatPhoto<'_> {
 
         if let InputFile::File {
             filename, bytes, ..
-        } = self.photo.0.file
+        } = &self.photo.0.file
         {
             multipart = multipart.file("photo", filename, bytes);
         }

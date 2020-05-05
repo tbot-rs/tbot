@@ -26,18 +26,22 @@ pub use {
     sticker_set_thumb::StickerSetThumb, tgs_sticker::TgsSticker, thumb::Thumb,
     video::Video, video_note::VideoNote, voice::Voice,
 };
+use std::borrow::Cow;
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub(crate) enum InputFile<'a> {
-    File { filename: &'a str, bytes: &'a [u8] },
-    Url(&'a str),
-    Id(&'a str),
+    File {
+        filename: Cow<'a, str>,
+        bytes: Cow<'a, [u8]>,
+    },
+    Url(Cow<'a, str>),
+    Id(Cow<'a, str>),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub(crate) struct WithName<'a> {
     pub(crate) file: InputFile<'a>,
-    pub(crate) name: &'a str,
+    pub(crate) name: Cow<'a, str>,
 }
 
 impl<'a> InputFile<'a> {
@@ -55,8 +59,11 @@ impl<'a> InputFile<'a> {
         }
     }
 
-    const fn with_name(self, name: &'a str) -> WithName<'a> {
-        WithName { file: self, name }
+    fn with_name(self, name: impl Into<Cow<'a, str>>) -> WithName<'a> {
+        WithName {
+            file: self,
+            name: name.into(),
+        }
     }
 }
 
@@ -65,6 +72,6 @@ impl<'a> serde::Serialize for WithName<'a> {
     where
         S: serde::Serializer,
     {
-        self.file.serialize(serializer, self.name)
+        self.file.serialize(serializer, &self.name)
     }
 }

@@ -3,7 +3,7 @@ use is_macro::Is;
 use serde::Serialize;
 
 /// Represents media that can be used to edit a message.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]

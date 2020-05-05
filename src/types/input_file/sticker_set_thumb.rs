@@ -1,7 +1,8 @@
 use super::InputFile;
+use std::borrow::Cow;
 
 /// Represents a sticker set thumb to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct StickerSetThumb<'a> {
     pub(crate) media: InputFile<'a>,
@@ -13,18 +14,18 @@ impl<'a> StickerSetThumb<'a> {
     }
 
     /// Constructs a `StickerSetThumb` from bytes of `.png` image.
-    pub fn png_bytes(bytes: &'a [u8]) -> Self {
+    pub fn png_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "thumb.png",
-            bytes,
+            filename: "thumb.png".into(),
+            bytes: bytes.into(),
         })
     }
 
     /// Constructs a `StickerSetThumb` from bytes of `.tgs` animation.
-    pub fn tgs_bytes(bytes: &'a [u8]) -> Self {
+    pub fn tgs_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "thumb.tgs",
-            bytes,
+            filename: "thumb.tgs".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -33,7 +34,8 @@ impl<'a> StickerSetThumb<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot] StickerSetThumb's ID cannot start with `attach://`\n",
@@ -47,7 +49,8 @@ impl<'a> StickerSetThumb<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot] StickerSetThumb's URL cannot start with `attach://`\n",
