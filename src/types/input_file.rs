@@ -39,7 +39,7 @@ pub(crate) enum InputFile<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub(crate) struct WithName<'a> {
+struct WithName<'a> {
     pub(crate) file: &'a InputFile<'a>,
     pub(crate) name: &'a str,
 }
