@@ -25,7 +25,7 @@ impl<'a> PngSticker<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the ID starts with `attach://`.
+    /// Panics if the ID starts with `attach://`.
     pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
         let id = id.into();
         assert!(
@@ -40,7 +40,7 @@ impl<'a> PngSticker<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the URL starts with `attach://`.
+    /// Panics if the URL starts with `attach://`.
     pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
         let url = url.into();
         assert!(

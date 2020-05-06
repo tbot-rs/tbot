@@ -71,7 +71,7 @@ impl EditInlineMedia<'_> {
             }
         }
 
-        let (boundary, body) = multipart.json("media", self.media).finish();
+        let (boundary, body) = multipart.json("media", &self.media).finish();
 
         call_method::<bool>(
             self.client,

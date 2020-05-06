@@ -76,7 +76,7 @@ impl EditMessageMedia<'_> {
             }
         }
 
-        let (boundary, body) = multipart.json("media", self.media).finish();
+        let (boundary, body) = multipart.json("media", &self.media).finish();
 
         call_method(
             self.client,

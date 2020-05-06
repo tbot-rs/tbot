@@ -17,7 +17,7 @@ pub enum GroupMedia<'a> {
 }
 
 struct WithIndex<'a> {
-    media: GroupMedia<'a>,
+    media: &'a GroupMedia<'a>,
     index: usize,
 }
 
@@ -69,10 +69,7 @@ impl<'a> Serialize for Album<'a> {
         let mut seq = serializer.serialize_seq(Some(self.0.len()))?;
 
         for (index, media) in self.0.iter().enumerate() {
-            let with_index = WithIndex {
-                media: *media,
-                index,
-            };
+            let with_index = WithIndex { media, index };
 
             seq.serialize_element(&with_index)?;
         }

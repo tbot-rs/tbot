@@ -83,7 +83,7 @@ impl SendVoice<'_> {
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match &self.voice.media.file {
+        match &self.voice.media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("voice", filename, bytes),

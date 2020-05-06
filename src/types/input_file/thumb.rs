@@ -18,19 +18,8 @@ impl<'a> Thumb<'a> {
         })
     }
 
-    pub(crate) fn with_name(self, name: impl Into<Cow<'a, str>>) -> WithName<'a> {
+    pub(crate) fn with_name(&self, name: &'a str) -> WithName<'_> {
         self.0.with_name(name)
-    }
-
-    pub(crate) fn serialize<S>(
-        &self,
-        serializer: S,
-        name: &str,
-    ) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        self.0.serialize(serializer, name)
     }
 }
 
@@ -39,6 +28,6 @@ impl<'a> Serialize for Thumb<'a> {
     where
         S: Serializer,
     {
-        self.serialize(serializer, "thumb")
+        self.0.serialize(serializer, "thumb")
     }
 }

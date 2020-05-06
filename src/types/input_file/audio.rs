@@ -56,7 +56,7 @@ impl<'a> Audio<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the URL starts with `attach://`.
+    /// Panics if the URL starts with `attach://`.
     pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
         let url = url.into();
         assert!(
