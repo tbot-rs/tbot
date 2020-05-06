@@ -59,8 +59,8 @@ impl<'a> InputFile<'a> {
         }
     }
 
-    fn with_name(&self, name: &'a str) -> WithName<'_> {
-        WithName { file: &self, name }
+    const fn with_name(&self, name: &'a str) -> WithName<'_> {
+        WithName { file: self, name }
     }
 }
 
@@ -69,6 +69,6 @@ impl<'a> serde::Serialize for WithName<'a> {
     where
         S: serde::Serializer,
     {
-        self.file.serialize(serializer, &self.name)
+        self.file.serialize(serializer, self.name)
     }
 }

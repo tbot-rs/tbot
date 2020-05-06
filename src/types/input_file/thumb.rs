@@ -18,7 +18,7 @@ impl<'a> Thumb<'a> {
         })
     }
 
-    pub(super) fn with_name(&self, name: &'a str) -> WithName<'_> {
+    pub(super) const fn with_name(&self, name: &'a str) -> WithName<'_> {
         self.0.with_name(name)
     }
 }
