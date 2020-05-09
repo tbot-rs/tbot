@@ -1,4 +1,0 @@
-{
-    "rust.features": ["proxy"],
-    "rust.clippy_preference": "off"
-}
