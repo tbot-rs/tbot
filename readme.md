@@ -43,7 +43,7 @@ file an issue on either our [GitLab] or [GitHub] repository.
 
 [our group]: https://t.me/tbot_group
 [gitlab]: https://gitlab.com/SnejUgal/tbot
-[github]: https://github.com/SnejUgal/tbot
+[github]: https://github.com/tbot-rs/tbot
 
 ## Features
 

@@ -45,7 +45,7 @@
 //!
 //! [our group]: https://t.me/tbot_group
 //! [gitlab]: https://gitlab.com/SnejUgal/tbot
-//! [github]: https://github.com/SnejUgal/tbot
+//! [github]: https://github.com/tbot-rs/tbot
 
 #![deny(
     future_incompatible,
