@@ -47,7 +47,7 @@ file an issue on either our [GitLab] or [GitHub] repository.
 
 ## Features
 
-- Full Bot API 4.8 support, as well as media download/upload, polling
+- Full Telegram Bot API 4.8 support, as well as media download/upload, polling
   and [webhooks];
 - `async`/`.await` support, built upon `tokio`;
 - Type-safe and idiomatic API;
