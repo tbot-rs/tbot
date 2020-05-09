@@ -67,7 +67,6 @@ impl<'a> SendContact<'a> {
     }
 
     /// Configures a VCard for the contact. Reflects the `vcard` parameter.
-    #[allow(clippy::doc_markdown)] // no, I don't need to put VCard in backticks
     pub fn vcard(mut self, vcard: &'a str) -> Self {
         self.vcard = Some(vcard);
         self

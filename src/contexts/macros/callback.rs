@@ -26,8 +26,6 @@ macro_rules! callback {
         }
 
         impl $name {
-            // https://github.com/rust-lang/rust-clippy/issues/4041
-            #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
                 bot: std::sync::Arc<crate::Bot>,
                 id: crate::types::callback::query::Id,
