@@ -11,11 +11,10 @@ authors = [
 ]
 edition = "2018"
 keywords = [
-    "telegram",
-    "telegram-bot",
-    "telegram-bot-api",
-    "bot",
     "chat",
+    "telegram",
+    "bot",
+    "api",
 ]
 categories = [
     "api-bindings",
