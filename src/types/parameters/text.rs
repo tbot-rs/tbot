@@ -1,6 +1,7 @@
 use is_macro::Is;
 use serde::Serialize;
 use std::fmt::{self, Display};
+use std::borrow::Cow;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[must_use]
@@ -12,10 +13,10 @@ pub enum ParseMode {
 }
 
 /// Represents input text.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Text<'a> {
-    pub(crate) text: &'a str,
+    pub(crate) text: Cow<'a, str>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -31,33 +32,33 @@ impl Display for ParseMode {
 
 impl<'a> Text<'a> {
     /// Consructs new `Text` without any parse mode.
-    pub const fn plain(text: &'a str) -> Self {
+    pub fn plain(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            text,
+            text: text.into(),
             parse_mode: None,
         }
     }
 
     /// Constructs new `Text` with `Markdown` parse mode.
-    pub fn markdown(text: &'a str) -> Self {
+    pub fn markdown(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            text,
+            text: text.into(),
             parse_mode: Some(ParseMode::Markdown),
         }
     }
 
     /// Constructs new `Text` with `MarkdownV2` parse mode.
-    pub fn markdown_v2(text: &'a str) -> Self {
+    pub fn markdown_v2(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            text,
+            text: text.into(),
             parse_mode: Some(ParseMode::MarkdownV2),
         }
     }
 
     /// Constructs new `Text` with `HTML` parse mode.
-    pub fn html(text: &'a str) -> Self {
+    pub fn html(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            text,
+            text: text.into(),
             parse_mode: Some(ParseMode::Html),
         }
     }

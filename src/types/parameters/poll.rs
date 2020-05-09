@@ -4,6 +4,7 @@ use super::{ParseMode, Text};
 use is_macro::Is;
 use serde::Serialize;
 use std::convert::From;
+use std::borrow::Cow;
 
 /// Configures whether multiple answers are allowed in a poll.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -26,11 +27,11 @@ pub enum AutoClose {
 }
 
 /// Represents a quiz.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Quiz<'a> {
     correct_option_id: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
-    explanation: Option<&'a str>,
+    explanation: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     explanation_parse_mode: Option<ParseMode>,
 }
@@ -42,7 +43,7 @@ pub struct Poll {
 }
 
 /// Represents either a quiz or a poll.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Kind<'a> {
     /// Represents a quiz.
@@ -53,12 +54,12 @@ pub enum Kind<'a> {
 }
 
 /// Represents a poll that will be sent to a user.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Any<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
-    question: &'a str,
-    options: &'a [&'a str],
+    question: Cow<'a, str>,
+    options: Cow<'a, [Cow<'a, str>]>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -104,14 +105,14 @@ impl<'a> Any<'a> {
     /// Constructs a poll.
     #[must_use]
     pub fn new(
-        question: &'a str,
-        options: &'a [&'a str],
+        question: impl Into<Cow<'a, str>>,
+        options: impl Into<Cow<'a, [Cow<'a, str>]>>,
         kind: impl Into<Kind<'a>>,
     ) -> Self {
         Self {
             kind: kind.into(),
-            question,
-            options,
+            question: question.into(),
+            options: options.into(),
             is_closed: None,
             is_anonymous: None,
             auto_close: None,

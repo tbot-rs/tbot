@@ -21,7 +21,7 @@ impl<'a> Text<'a> {
         let message_text = message_text.into();
 
         Self {
-            message_text: message_text.text.into(),
+            message_text: message_text.text,
             parse_mode: message_text.parse_mode,
             disable_web_page_preview: None,
         }
