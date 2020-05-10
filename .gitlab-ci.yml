@@ -1,48 +1,51 @@
 default:
   image: rust:latest
   before_script:
-  - export PATH=$PATH:/root/.cargo/bin/
-  - rustup component add clippy
-  - rustup component add rustfmt
-    
+    - export PATH=$PATH:/root/.cargo/bin/
+    - rustup component add clippy
+    - rustup component add rustfmt
+
 check-formatting:
-    stage: test
-    script:
-        - cargo fmt -- --check
-    only:
-        - branches
-        - merge_requests
+  stage: test
+  script:
+    - cargo fmt -- --check
+  only:
+    - branches
+    - merge_requests
 
 run-clippy:
-    stage: test
-    script:
-        - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros tls" -- -D warnings
-        - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros rustls" -- -D warnings
-        - cargo clippy --target-dir=../target --examples --features "tokio/macros proxy" -- -D warnings
-    only:
-        - branches
-        - merge_requests
+  stage: test
+  script:
+    - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros tls" -- -D warnings
+    - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros rustls" -- -D warnings
+    - cargo clippy --target-dir=../target --examples --features "tokio/macros proxy" -- -D warnings
+  only:
+    - branches
+    - merge_requests
 
 run-tests:
-    stage: test
-    script:
-        - cargo test --target-dir=../target --features="proxy"
-    only:
-        - branches
-        - merge_requests
+  stage: test
+  script:
+    - cargo test --target-dir=../target --features="proxy"
+  only:
+    - branches
+    - merge_requests
 
 pages:
-    stage: docs
-    script:
-        - cargo doc --release --no-deps --target-dir=../target
-        - mv ../target/doc ./public
-        - mv ./public/tbot/* ./public/
-    artifacts:
-        paths:
-            - public
-    only:
-        - master
+  stage: docs
+  script:
+    - cargo doc --release --no-deps --target-dir=../target
+    - mv ../target/doc ./public
+    - mv ./public/tbot/* ./public/
+    - cd ./public
+    - grep -rl "../tbot" * | while read f; do sed -i -e 's#\.\./tbot/#\.\./#g' "$f"; done
+    - sed -i 's#return\[displayPath,href\]#return\[displayPath,href.replace("\.\./tbot/", "\.\./")\]#g' main.js
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
 
 stages:
-    - test
-    - docs
+  - test
+  - docs
