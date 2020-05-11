@@ -25,7 +25,7 @@ async fn main() {
 
     bot.command("poll", move |context| async move {
         let options: Vec<Cow<str>> =
-            OPTIONS.into_iter().map(|&o| o.into()).collect();
+            OPTIONS.iter().map(|&o| o.into()).collect();
         let regular = Any::new(QUESTION, options, Poll::new(Answer::Single))
             .auto_close(AutoClose::OpenPeriod(60));
 
@@ -37,7 +37,7 @@ async fn main() {
 
     bot.command("quiz", move |context| async move {
         let quiz_options: Vec<Cow<str>> =
-            QUIZ_OPTIONS.into_iter().map(|&o| o.into()).collect();
+            QUIZ_OPTIONS.iter().map(|&o| o.into()).collect();
         let quiz = Any::new(
             QUIZ_QUESTION,
             quiz_options,
