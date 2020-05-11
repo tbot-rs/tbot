@@ -31,7 +31,7 @@ impl Display for ParseMode {
 }
 
 impl<'a> Text<'a> {
-    /// Consructs new `Text` without any parse mode.
+    /// Constructs new `Text` without any parse mode.
     pub fn plain(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
@@ -65,25 +65,25 @@ impl<'a> Text<'a> {
 
     /// Checks if parse mode isn't set.
     #[must_use]
-    pub fn is_plain(self) -> bool {
+    pub fn is_plain(&self) -> bool {
         self.parse_mode == None
     }
 
     /// Checks if parse mode is `MarkdownV2`.
     #[must_use]
-    pub fn is_markdown_v2(self) -> bool {
+    pub fn is_markdown_v2(&self) -> bool {
         self.parse_mode == Some(ParseMode::MarkdownV2)
     }
 
     /// Checks if parse mode is `Markdown`.
     #[must_use]
-    pub fn is_markdown(self) -> bool {
+    pub fn is_markdown(&self) -> bool {
         self.parse_mode == Some(ParseMode::Markdown)
     }
 
     /// Checks if parse mode is `Html`.
     #[must_use]
-    pub fn is_html(self) -> bool {
+    pub fn is_html(&self) -> bool {
         self.parse_mode == Some(ParseMode::Html)
     }
 }

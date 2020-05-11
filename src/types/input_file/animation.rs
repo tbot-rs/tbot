@@ -76,7 +76,7 @@ impl<'a> Animation<'a> {
     pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
         let caption = caption.into();
 
-        self.caption = Some(caption.text.into());
+        self.caption = Some(caption.text);
         self.parse_mode = caption.parse_mode;
         self
     }
