@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use tbot::{
     prelude::*,
     types::parameters::{
@@ -22,17 +23,12 @@ const QUIZ_EXPLANATION: &str =
 async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
-    let regular = Any::new(QUESTION, OPTIONS, Poll::new(Answer::Single))
-        .auto_close(AutoClose::OpenPeriod(60));
-
-    let quiz = Any::new(
-        QUIZ_QUESTION,
-        QUIZ_OPTIONS,
-        Quiz::new(QUIZ_CORRECT_OPTION).explanation(QUIZ_EXPLANATION),
-    )
-    .anonymous(false);
-
     bot.command("poll", move |context| async move {
+        let options: Vec<Cow<str>> =
+            OPTIONS.into_iter().map(|&o| o.into()).collect();
+        let regular = Any::new(QUESTION, options, Poll::new(Answer::Single))
+            .auto_close(AutoClose::OpenPeriod(60));
+
         let call_result = context.send_poll(&regular).call().await;
         if let Err(err) = call_result {
             dbg!(err);
@@ -40,6 +36,15 @@ async fn main() {
     });
 
     bot.command("quiz", move |context| async move {
+        let quiz_options: Vec<Cow<str>> =
+            QUIZ_OPTIONS.into_iter().map(|&o| o.into()).collect();
+        let quiz = Any::new(
+            QUIZ_QUESTION,
+            quiz_options,
+            Quiz::new(QUIZ_CORRECT_OPTION).explanation(QUIZ_EXPLANATION),
+        )
+        .anonymous(false);
+
         let call_result = context.send_poll(&quiz).call().await;
         if let Err(err) = call_result {
             dbg!(err);

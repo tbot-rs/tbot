@@ -11,8 +11,6 @@ use tbot::{
 const PAYLOAD: &str = "crab";
 const START_PARAMETER: &str = "crab";
 const TITLE: &str = "A crab";
-const PHOTO: Photo =
-    Photo::new("https://www.rustacean.net/assets/rustacean-flat-happy.png");
 const DESCRIPTION: &str = "Have you ever come across a heisenbug in your \
 program? No more! Our crab will take all bugs out of your program for you.";
 const CURRENCY: &str = "USD";
@@ -41,7 +39,10 @@ async fn main() {
                 CURRENCY,
                 PRICE,
             );
-            invoice = invoice.photo(PHOTO).flexibility(Flexible);
+            let photo = Photo::new(
+                "https://www.rustacean.net/assets/rustacean-flat-happy.png",
+            );
+            invoice = invoice.photo(photo).flexibility(Flexible);
 
             invoice.call().await
         } else {
