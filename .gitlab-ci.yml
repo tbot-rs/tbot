@@ -10,8 +10,14 @@ check-formatting:
   script:
     - cargo fmt -- --check
   only:
-    - branches
-    - merge_requests
+    changes:
+        - "src/**/*"
+        - "examples/**/*"
+        - Cargo.toml
+        - .gitlab-ci.yml
+    refs:
+        - branches
+        - merge_requests
 
 run-clippy:
   stage: test
@@ -20,16 +26,29 @@ run-clippy:
     - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros rustls" -- -D warnings
     - cargo clippy --target-dir=../target --examples --features "tokio/macros proxy" -- -D warnings
   only:
-    - branches
-    - merge_requests
+    changes:
+        - "src/**/*"
+        - "examples/**/*"
+        - Cargo.toml
+        - .gitlab-ci.yml
+        - clippy.toml
+    refs:
+        - branches
+        - merge_requests
 
 run-tests:
   stage: test
   script:
     - cargo test --target-dir=../target --features="proxy"
   only:
-    - branches
-    - merge_requests
+    changes:
+        - "src/**/*"
+        - "examples/**/*"
+        - Cargo.toml
+        - .gitlab-ci.yml
+    refs:
+        - branches
+        - merge_requests
 
 pages:
   stage: docs
@@ -44,7 +63,12 @@ pages:
     paths:
       - public
   only:
-    - master
+    changes:
+        - "src/**/*"
+        - Cargo.toml
+        - .gitlab-ci.yml
+    refs:
+        - master
 
 stages:
   - test
