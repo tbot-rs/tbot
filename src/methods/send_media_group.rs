@@ -62,7 +62,7 @@ impl SendMediaGroup<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<Message>, errors::MethodCall> {
         let mut multipart = Multipart::new(4 + self.media.len())
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id);
 

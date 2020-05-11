@@ -21,7 +21,7 @@ async fn send_chat_action_in_loop(
 ) -> Result<Infallible, errors::MethodCall> {
     loop {
         let delay = delay_for(INTERVAL);
-        bot.send_chat_action(chat_id, action).call().await?;
+        bot.send_chat_action(&chat_id, action).call().await?;
         delay.await;
     }
 }

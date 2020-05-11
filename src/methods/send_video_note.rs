@@ -75,7 +75,7 @@ impl SendVideoNote<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(8)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.video_note.duration)
             .maybe_string("length", self.video_note.length)
             .maybe_string("disable_notification", self.disable_notification)

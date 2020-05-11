@@ -3,8 +3,8 @@
 use super::{ParseMode, Text};
 use is_macro::Is;
 use serde::Serialize;
-use std::convert::From;
 use std::borrow::Cow;
+use std::convert::From;
 
 /// Configures whether multiple answers are allowed in a poll.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]

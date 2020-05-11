@@ -75,7 +75,7 @@ impl SendDocument<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(8)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_str("caption", self.document.caption.as_deref())
             .maybe_string("parse_mode", self.document.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)

@@ -75,7 +75,7 @@ impl SendVideo<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(12)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.video.duration)
             .maybe_string("width", self.video.width)
             .maybe_string("height", self.video.height)

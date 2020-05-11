@@ -1,9 +1,11 @@
 use crate::types::{chat, user};
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
+use std::ops::Deref;
 
 /// Represents possible ways to specify the destination chat.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
@@ -11,7 +13,7 @@ pub enum ChatId<'a> {
     /// The ID of a chat.
     Id(chat::Id),
     /// The `@username` of a chat.
-    Username(&'a str),
+    Username(Cow<'a, str>),
 }
 
 impl<'a> From<i64> for ChatId<'a> {
@@ -34,11 +36,28 @@ impl<'a> From<user::Id> for ChatId<'a> {
 
 impl<'a> From<&'a str> for ChatId<'a> {
     fn from(username: &'a str) -> Self {
-        ChatId::Username(username)
+        ChatId::Username(username.into())
     }
 }
 
-/// Allows certian types to be turned into `ChatId` implicitly.
+impl<'a> From<String> for ChatId<'a> {
+    fn from(username: String) -> Self {
+        ChatId::Username(username.into())
+    }
+}
+
+impl<'a> Into<ChatId<'a>> for &'a ChatId<'a> {
+    fn into(self) -> ChatId<'a> {
+        match self {
+            ChatId::Id(id) => ChatId::Id(*id),
+            ChatId::Username(username) => {
+                ChatId::Username(username.deref().into())
+            }
+        }
+    }
+}
+
+/// Allows certain types to be turned into `ChatId` implicitly.
 ///
 /// Implicit turning is safe for chat ID wrappers. However, turning primitives
 /// into `ChatId` implicitly is not safe, as the primitive might have a
@@ -48,7 +67,7 @@ impl<'a> From<&'a str> for ChatId<'a> {
 // `parameters::chat_id::Implicit` is a less obvious name than
 // `parameters::ImplicitChatId`
 pub trait ImplicitChatId<'a>: Into<ChatId<'a>> {}
-
 impl<'a> ImplicitChatId<'a> for ChatId<'a> {}
+impl<'a> ImplicitChatId<'a> for &'a ChatId<'a> {}
 impl ImplicitChatId<'_> for chat::Id {}
 impl ImplicitChatId<'_> for user::Id {}

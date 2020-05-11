@@ -17,7 +17,10 @@ pub struct Contact<'a> {
 
 impl<'a> Contact<'a> {
     /// Constructs a `Contact`.
-    pub fn new(phone_number: impl Into<Cow<'a, str>>, first_name: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
+    ) -> Self {
         Self {
             phone_number: phone_number.into(),
             first_name: first_name.into(),

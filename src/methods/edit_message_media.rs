@@ -59,7 +59,7 @@ impl EditMessageMedia<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(5)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .string("message_id", &self.message_id)
             .maybe_json("reply_markup", self.reply_markup);
 

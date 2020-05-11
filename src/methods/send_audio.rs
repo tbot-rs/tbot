@@ -75,7 +75,7 @@ impl SendAudio<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(11)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.audio.duration)
             .maybe_str("caption", self.audio.caption.as_deref())
             .maybe_str("performer", self.audio.performer.as_deref())

@@ -75,7 +75,7 @@ impl SendAnimation<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(11)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.animation.duration)
             .maybe_string("width", self.animation.width)
             .maybe_string("height", self.animation.height)

@@ -42,7 +42,10 @@ impl<'a> Venue<'a> {
     }
 
     /// Configures the Foursquare type.
-    pub fn foursquare_type(mut self, foursquare_type: impl Into<Cow<'a, str>>) -> Self {
+    pub fn foursquare_type(
+        mut self,
+        foursquare_type: impl Into<Cow<'a, str>>,
+    ) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
         self
     }

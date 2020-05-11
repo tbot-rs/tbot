@@ -1,4 +1,5 @@
 use is_macro::Is;
+use std::borrow::Cow;
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
@@ -10,15 +11,15 @@ use is_macro::Is;
 /// [`notification`]: #method.notification
 /// [`alert`]: #method.alert
 /// [`url`]: #method.url
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[must_use]
 pub enum CallbackAction<'a> {
     /// No action.
     None,
     /// Show text to the user. The last item configures `show_alert`.
-    Text(&'a str, bool),
+    Text(Cow<'a, str>, bool),
     /// Open a URL.
-    Url(&'a str),
+    Url(Cow<'a, str>),
 }
 
 impl<'a> CallbackAction<'a> {
@@ -28,38 +29,29 @@ impl<'a> CallbackAction<'a> {
     }
 
     /// Constructs the `Text` variant that shows a simple notification.
-    pub fn with_notification(text: &'a str) -> Self {
-        CallbackAction::Text(text, false)
+    pub fn with_notification(text: impl Into<Cow<'a, str>>) -> Self {
+        CallbackAction::Text(text.into(), false)
     }
 
     /// Constructs the `Text` variant that shows an alert.
-    pub fn with_alert(text: &'a str) -> Self {
-        CallbackAction::Text(text, true)
+    pub fn with_alert(text: impl Into<Cow<'a, str>>) -> Self {
+        CallbackAction::Text(text.into(), true)
     }
 
     /// Constructs the `Url` variant.
-    pub fn with_url(url: &'a str) -> Self {
-        CallbackAction::Url(url)
+    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+        CallbackAction::Url(url.into())
     }
 
-    pub(crate) fn to_text(self) -> Option<&'a str> {
+    pub(crate) fn unpack(
+        self,
+    ) -> (Option<Cow<'a, str>>, Option<bool>, Option<Cow<'a, str>>) {
         match self {
-            CallbackAction::Text(text, _) => Some(text),
-            _ => None,
-        }
-    }
-
-    pub(crate) fn to_show_alert(self) -> Option<bool> {
-        match self {
-            CallbackAction::Text(_, should_show) => Some(should_show),
-            _ => None,
-        }
-    }
-
-    pub(crate) fn to_url(self) -> Option<&'a str> {
-        match self {
-            CallbackAction::Url(url) => Some(url),
-            _ => None,
+            CallbackAction::Text(text, show_alert) => {
+                (Some(text), Some(show_alert), None)
+            }
+            CallbackAction::Url(url) => (None, None, Some(url)),
+            CallbackAction::None => (None, None, None),
         }
     }
 }

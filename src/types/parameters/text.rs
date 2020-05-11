@@ -1,7 +1,7 @@
 use is_macro::Is;
 use serde::Serialize;
-use std::fmt::{self, Display};
 use std::borrow::Cow;
+use std::fmt::{self, Display};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[must_use]
@@ -94,8 +94,8 @@ impl<'a> From<&'a str> for Text<'a> {
     }
 }
 
-impl<'a> From<&'a String> for Text<'a> {
-    fn from(text: &'a String) -> Self {
-        Text::plain(text.as_str())
+impl<'a> From<String> for Text<'a> {
+    fn from(text: String) -> Self {
+        Text::plain(text)
     }
 }
