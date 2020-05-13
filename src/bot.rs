@@ -1,11 +1,12 @@
 // Type out about 80 method names? No, thanks
 #![allow(clippy::wildcard_imports)]
 use crate::{
-    connectors::{self, Client},
+    connectors::Client,
     download_file, errors,
     event_loop::EventLoop,
     internal::Sealed,
     methods::*,
+    proxy::Proxy,
     state::StatefulEventLoop,
     types::{
         callback, chat,
@@ -25,7 +26,6 @@ use crate::{
     },
     Token,
 };
-use hyper_proxy::Proxy;
 use std::sync::Arc;
 
 /// Provides methods to call the Bots API.
@@ -62,17 +62,22 @@ impl Bot {
     }
 
     /// Constructs a `Bot` with the provided proxy.
-    pub fn with_proxy(token: String, proxy: Proxy) -> Self {
+    pub fn with_proxy(token: String, proxy: impl Into<Proxy>) -> Self {
+        let proxy = proxy.into();
+
         Self {
             token: Token::new(token),
-            client: Arc::new(connectors::Client::proxy(proxy)),
+            client: Arc::new(proxy.into()),
         }
     }
 
     /// Like [`Bot::from_env`], but with a provided proxy.
     ///
     /// [`Bot::from_env`]: #method.from_env
-    pub fn from_env_with_proxy(env_var: &'static str, proxy: Proxy) -> Self {
+    pub fn from_env_with_proxy(
+        env_var: &'static str,
+        proxy: impl Into<Proxy>,
+    ) -> Self {
         Self::with_proxy(extract_token(env_var), proxy)
     }
 
@@ -1117,7 +1122,7 @@ fn extract_token(env_var: &'static str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::proxy::{Intercept, Proxy};
+    use crate::proxy::https::{Intercept, Proxy};
 
     #[test]
     fn macro_compiles() {

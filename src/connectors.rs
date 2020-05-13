@@ -11,23 +11,29 @@ use hyper_rustls::HttpsConnector;
 #[cfg(feature = "tls")]
 use hyper_tls::HttpsConnector;
 
-pub use hyper_proxy as proxy;
+use hyper_proxy as proxy;
 use proxy::ProxyConnector;
+
+use hyper_socks2 as socks_proxy;
+use socks_proxy::{Auth, SocksConnector};
 
 /// The default HTTPS connector.
 pub type Https = HttpsConnector<HttpConnector>;
 
-/// The default proxy connector.
-pub type Proxy = ProxyConnector<Https>;
+/// The default HTTPS proxy connector.
+pub type HttpsProxy = ProxyConnector<Https>;
+/// The default SOCKS proxy connector.
+pub type SocksProxy = HttpsConnector<SocksConnector<Https>>;
 
 #[derive(Debug)]
 pub(crate) enum Client {
     Https(hyper::Client<Https>),
-    Proxy(hyper::Client<Proxy>),
+    HttpsProxy(hyper::Client<HttpsProxy>),
+    SocksProxy(hyper::Client<SocksProxy>),
 }
 
 impl Client {
-    pub(crate) fn proxy(proxy: proxy::Proxy) -> Self {
+    pub(crate) fn https_proxy(proxy: proxy::Proxy) -> Self {
         let connector =
             ProxyConnector::from_proxy(HttpsConnector::new(), proxy)
                 .unwrap_or_else(|error| {
@@ -37,10 +43,31 @@ impl Client {
                     )
                 });
 
-        Self::Proxy(
+        Self::HttpsProxy(
             hyper::Client::builder()
                 .pool_max_idle_per_host(0)
-                .build::<Proxy, Body>(connector),
+                .build::<HttpsProxy, Body>(connector),
+        )
+    }
+
+    pub(crate) fn socks_proxy(proxy_addr: Uri, auth: Option<Auth>) -> Self {
+        let connector = SocksConnector {
+            proxy_addr,
+            auth,
+            connector: HttpsConnector::new(),
+        };
+
+        let connector = connector.with_tls().unwrap_or_else(|error| {
+            panic!(
+                "[tbot] Failed to construct a SOCKS proxy connector: {:#?}",
+                error
+            )
+        });
+
+        Self::SocksProxy(
+            hyper::Client::builder()
+                .pool_max_idle_per_host(0)
+                .build::<SocksProxy, Body>(connector),
         )
     }
 
@@ -58,14 +85,16 @@ impl Client {
     pub(crate) fn get(&self, uri: Uri) -> ResponseFuture {
         match self {
             Self::Https(https) => https.get(uri),
-            Self::Proxy(proxy) => proxy.get(uri),
+            Self::HttpsProxy(proxy) => proxy.get(uri),
+            Self::SocksProxy(socks_proxy) => socks_proxy.get(uri),
         }
     }
 
     pub(crate) fn request(&self, req: Request<Body>) -> ResponseFuture {
         match self {
             Self::Https(https) => https.request(req),
-            Self::Proxy(proxy) => proxy.request(req),
+            Self::HttpsProxy(proxy) => proxy.request(req),
+            Self::SocksProxy(socks_proxy) => socks_proxy.request(req),
         }
     }
 }
