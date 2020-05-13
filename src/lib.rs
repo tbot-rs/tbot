@@ -85,6 +85,7 @@ pub mod event_loop;
 pub mod markup;
 pub mod methods;
 pub mod predicates;
+pub mod proxy;
 pub mod state;
 pub mod types;
 pub mod util;
@@ -102,5 +103,3 @@ pub mod prelude {
     pub use super::util::ChatActionLoop as _;
     pub use super::util::ChatActionLoopBotExt as _;
 }
-
-pub use hyper_proxy as proxy;
