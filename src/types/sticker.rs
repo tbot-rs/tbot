@@ -55,7 +55,7 @@ pub struct Sticker {
 
 impl crate::internal::Sealed for Sticker {}
 
-impl AsFileId for Sticker {
+impl<'a> AsFileId<'a> for Sticker {
     #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()

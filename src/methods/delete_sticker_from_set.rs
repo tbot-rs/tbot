@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Deletes a sticker from a sticker set.
 ///
@@ -14,19 +15,19 @@ pub struct DeleteStickerFromSet<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    sticker: &'a str,
+    sticker: Cow<'a, str>,
 }
 
 impl<'a> DeleteStickerFromSet<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        sticker: &'a str,
+        sticker: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
-            sticker,
+            sticker: sticker.into(),
         }
     }
 }

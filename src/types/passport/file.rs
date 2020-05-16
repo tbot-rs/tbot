@@ -19,7 +19,7 @@ pub struct File {
 
 impl crate::internal::Sealed for File {}
 
-impl AsFileId for File {
+impl<'a> AsFileId<'a> for File {
     #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.id.as_ref()

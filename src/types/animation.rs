@@ -30,7 +30,7 @@ pub struct Animation {
 
 impl crate::internal::Sealed for Animation {}
 
-impl AsFileId for Animation {
+impl<'a> AsFileId<'a> for Animation {
     #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()

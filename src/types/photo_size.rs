@@ -21,7 +21,7 @@ pub struct PhotoSize {
 
 impl crate::internal::Sealed for PhotoSize {}
 
-impl AsFileId for PhotoSize {
+impl<'a> AsFileId<'a> for PhotoSize {
     #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()

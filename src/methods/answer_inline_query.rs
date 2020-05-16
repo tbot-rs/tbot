@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token, types::inline_query};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Answers an inline query.
 ///
@@ -21,11 +22,11 @@ pub struct AnswerInlineQuery<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     is_personal: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    next_offset: Option<&'a str>,
+    next_offset: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_text: Option<&'a str>,
+    switch_pm_text: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_parameter: Option<&'a str>,
+    switch_pm_parameter: Option<Cow<'a, str>>,
 }
 
 impl<'a> AnswerInlineQuery<'a> {
@@ -64,17 +65,17 @@ impl<'a> AnswerInlineQuery<'a> {
 
     /// Configures the offset to be sent in the next query.
     /// Reflects the `next_offset` parameter.
-    pub fn next_offset(mut self, offset: &'a str) -> Self {
-        self.next_offset = Some(offset);
+    pub fn next_offset(mut self, offset: impl Into<Cow<'a, str>>) -> Self {
+        self.next_offset = Some(offset.into());
         self
     }
 
     /// Configures a button that switches the user to the private chat
     /// with your bot. Reflects the `switch_pm_text` and `switch_pm_parameter`
     /// parameters respectively.
-    pub fn switch_pm(mut self, text: &'a str, parameter: &'a str) -> Self {
-        self.switch_pm_text = Some(text);
-        self.switch_pm_parameter = Some(parameter);
+    pub fn switch_pm(mut self, text: impl Into<Cow<'a, str>>, parameter: impl Into<Cow<'a, str>>) -> Self {
+        self.switch_pm_text = Some(text.into());
+        self.switch_pm_parameter = Some(parameter.into());
         self
     }
 }

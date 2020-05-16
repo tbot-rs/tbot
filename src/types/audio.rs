@@ -30,7 +30,7 @@ pub struct Audio {
 
 impl crate::internal::Sealed for Audio {}
 
-impl AsFileId for Audio {
+impl<'a> AsFileId<'a> for Audio {
     #[must_use]
     fn as_file_id(&self) -> file::id::Ref<'_> {
         self.file_id.as_ref()
