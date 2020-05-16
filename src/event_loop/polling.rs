@@ -131,6 +131,9 @@ impl Polling {
         let delete_webhook = event_loop.bot.delete_webhook().call();
         timeout_future(request_timeout, delete_webhook).await??;
 
+        let set_commands = event_loop.set_commands_descriptions();
+        timeout_future(request_timeout, set_commands).await?;
+
         let bot = Arc::new(event_loop.bot.clone());
 
         loop {
