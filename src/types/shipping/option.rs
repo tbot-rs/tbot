@@ -20,6 +20,10 @@ impl<'a> Option<'a> {
         title: impl Into<Cow<'a, str>>,
         prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> Self {
-        Self { id: id.into(), title: title.into(), prices: prices.into() }
+        Self {
+            id: id.into(),
+            title: title.into(),
+            prices: prices.into(),
+        }
     }
 }

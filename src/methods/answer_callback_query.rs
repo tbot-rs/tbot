@@ -64,7 +64,7 @@ impl<'a> AnswerCallbackQuery<'a> {
                 show_alert: Some(show_alert),
                 url: None,
                 cache_time: None,
-            }
+            },
         }
     }
 

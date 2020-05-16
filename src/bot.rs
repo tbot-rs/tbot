@@ -432,7 +432,10 @@ impl Bot {
     }
 
     /// Gets information about a file.
-    pub fn get_file<'a>(&'a self, file_id: &'a impl AsFileId<'a>) -> GetFile<'a> {
+    pub fn get_file<'a>(
+        &'a self,
+        file_id: &'a impl AsFileId<'a>,
+    ) -> GetFile<'a> {
         GetFile::new(&self.client, self.token.as_ref(), file_id)
     }
 

@@ -28,7 +28,10 @@ impl<'a> AnswerShippingQuery<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         shipping_query_id: shipping::query::id::Ref<'a>,
-        result: Result<impl Into<Cow<'a, [shipping::Option<'a>]>>, impl Into<Cow<'a, str>>>,
+        result: Result<
+            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, str>>,
+        >,
     ) -> Self {
         if result.is_ok() {
             Self {
@@ -36,7 +39,7 @@ impl<'a> AnswerShippingQuery<'a> {
                 token,
                 shipping_query_id,
                 ok: true,
-                shipping_options: result.ok().map(|r| r.into()),
+                shipping_options: result.ok().map(Into::into),
                 error_message: None,
             }
         } else {
@@ -46,7 +49,7 @@ impl<'a> AnswerShippingQuery<'a> {
                 shipping_query_id,
                 ok: false,
                 shipping_options: None,
-                error_message: result.err().map(|e| e.into()),
+                error_message: result.err().map(Into::into),
             }
         }
     }

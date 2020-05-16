@@ -73,7 +73,11 @@ impl<'a> AnswerInlineQuery<'a> {
     /// Configures a button that switches the user to the private chat
     /// with your bot. Reflects the `switch_pm_text` and `switch_pm_parameter`
     /// parameters respectively.
-    pub fn switch_pm(mut self, text: impl Into<Cow<'a, str>>, parameter: impl Into<Cow<'a, str>>) -> Self {
+    pub fn switch_pm(
+        mut self,
+        text: impl Into<Cow<'a, str>>,
+        parameter: impl Into<Cow<'a, str>>,
+    ) -> Self {
         self.switch_pm_text = Some(text.into());
         self.switch_pm_parameter = Some(parameter.into());
         self

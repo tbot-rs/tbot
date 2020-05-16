@@ -15,6 +15,9 @@ pub struct LabeledPrice<'a> {
 impl<'a> LabeledPrice<'a> {
     /// Constructs a `LabeledPrice`.
     pub fn new(label: impl Into<Cow<'a, str>>, amount: u32) -> Self {
-        Self { label: label.into(), amount }
+        Self {
+            label: label.into(),
+            amount,
+        }
     }
 }

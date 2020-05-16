@@ -33,7 +33,7 @@ impl<'a> AnswerPreCheckoutQuery<'a> {
             token,
             pre_checkout_query_id,
             ok: result.is_ok(),
-            error_message: result.err().map(|e| e.into()),
+            error_message: result.err().map(Into::into),
         }
     }
 }
