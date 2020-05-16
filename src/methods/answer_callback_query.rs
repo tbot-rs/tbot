@@ -37,15 +37,34 @@ impl<'a> AnswerCallbackQuery<'a> {
         callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAction<'a>,
     ) -> Self {
-        let (text, show_alert, url) = action.unpack();
-        Self {
-            client,
-            token,
-            callback_query_id,
-            text,
-            show_alert,
-            url,
-            cache_time: None,
+        match action {
+            CallbackAction::None => Self {
+                client,
+                token,
+                callback_query_id,
+                text: None,
+                show_alert: None,
+                url: None,
+                cache_time: None,
+            },
+            CallbackAction::Url(url) => Self {
+                client,
+                token,
+                callback_query_id,
+                text: None,
+                show_alert: None,
+                url: Some(url),
+                cache_time: None,
+            },
+            CallbackAction::Text(text, show_alert) => Self {
+                client,
+                token,
+                callback_query_id,
+                text: Some(text),
+                show_alert: Some(show_alert),
+                url: None,
+                cache_time: None,
+            }
         }
     }
 

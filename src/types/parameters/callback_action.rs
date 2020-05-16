@@ -42,16 +42,4 @@ impl<'a> CallbackAction<'a> {
     pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
         CallbackAction::Url(url.into())
     }
-
-    pub(crate) fn unpack(
-        self,
-    ) -> (Option<Cow<'a, str>>, Option<bool>, Option<Cow<'a, str>>) {
-        match self {
-            CallbackAction::Text(text, show_alert) => {
-                (Some(text), Some(show_alert), None)
-            }
-            CallbackAction::Url(url) => (None, None, Some(url)),
-            CallbackAction::None => (None, None, None),
-        }
-    }
 }
