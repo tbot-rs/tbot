@@ -147,6 +147,34 @@ where
         });
     }
 
+    /// Adds a new handler for a command and sets its description.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
+    pub fn command_with_description<H, F>(
+        &mut self,
+        command: &'static str,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        let state = Arc::clone(&self.state);
+        self.inner.command_with_description(
+            command,
+            description,
+            move |context| handler(context, Arc::clone(&state)),
+        );
+    }
+
     /// Adds a new handler for a command which is run if the predicate
     /// returns true.
     ///
@@ -184,6 +212,51 @@ where
                 }
             }
         });
+    }
+
+    /// Adds a new handler for a command which is run if the predicate
+    /// returns true. Also sets the command's description.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
+    pub fn command_with_description_if<H, HF, P, PF>(
+        &mut self,
+        command: &'static str,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        let predicate = Arc::new(predicate);
+        let handler = Arc::new(handler);
+        self.command_with_description(
+            command,
+            description,
+            move |context, state| {
+                let predicate = Arc::clone(&predicate);
+                let handler = Arc::clone(&handler);
+                async move {
+                    if predicate(Arc::clone(&context), Arc::clone(&state)).await
+                    {
+                        handler(context, state).await
+                    }
+                }
+            },
+        );
     }
 
     /// Adds a new handler for a sequence of commands.
@@ -261,6 +334,21 @@ where
         self.command("start", handler);
     }
 
+    /// Adds a new handler for the `/start` command and sets its description.
+    pub fn start_with_description<H, F>(
+        &mut self,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_with_description("start", description, handler);
+    }
+
     /// Adds a new handler for the `/start` command which is run
     /// if the predicate returns true.
     pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
@@ -289,6 +377,33 @@ where
         });
     }
 
+    /// Adds a new handler for the `/start` command which is run
+    /// if the predicate returns true. Also sets the command's description.
+    pub fn start_with_description_if<H, HF, P, PF>(
+        &mut self,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_with_description_if(
+            "start",
+            description,
+            predicate,
+            handler,
+        )
+    }
+
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
@@ -299,6 +414,21 @@ where
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
+    }
+
+    /// Adds a new handler for the `/help` command and sets its description.
+    pub fn help_with_description<H, F>(
+        &mut self,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_with_description("help", description, handler);
     }
 
     /// Adds a new handler for the `/help` command which is run if the predicate
@@ -329,6 +459,33 @@ where
         });
     }
 
+    /// Adds a new handler for the `/help` command which is run if the predicate
+    /// returns true. Also sets the command's description.
+    pub fn help_with_description_if<H, HF, P, PF>(
+        &mut self,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_with_description_if(
+            "help",
+            description,
+            predicate,
+            handler,
+        )
+    }
+
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
@@ -339,6 +496,21 @@ where
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("settings", handler);
+    }
+
+    /// Adds a new handler for the `/settings` command and sets its description.
+    pub fn settings_with_description<H, F>(
+        &mut self,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_with_description("settings", description, handler);
     }
 
     /// Adds a new handler for the `/settings` command which is run
@@ -367,6 +539,33 @@ where
                 }
             }
         });
+    }
+
+    /// Adds a new handler for the `/settings` command which is run
+    /// if the predicate returns true. Also sets the command's description.
+    pub fn settings_with_description_if<H, HF, P, PF>(
+        &mut self,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_with_description_if(
+            "settings",
+            description,
+            predicate,
+            handler,
+        )
     }
 
     /// Adds a new handler for an edited command.

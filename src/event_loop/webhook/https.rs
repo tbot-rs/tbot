@@ -67,6 +67,17 @@ impl<'a> Https<'a> {
 
         timeout(request_timeout, set_webhook).await??;
 
+        let set_commands = event_loop.set_commands_descriptions();
+        match timeout(request_timeout, set_commands).await {
+            Ok(Err(method)) => {
+                return Err(errors::HttpsWebhook::SetMyCommands(method))
+            }
+            Err(timeout) => {
+                return Err(errors::HttpsWebhook::SetMyCommandsTimeout(timeout))
+            }
+            _ => (),
+        };
+
         let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
         let addr = SocketAddr::new(ip, port);

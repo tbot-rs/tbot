@@ -54,6 +54,10 @@ name = "attachments"
 required-features = ["tokio/macros"]
 
 [[example]]
+name = "commands"
+required-features = ["tokio/macros"]
+
+[[example]]
 name = "download"
 required-features = ["tokio/macros"]
 

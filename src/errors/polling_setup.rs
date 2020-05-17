@@ -10,6 +10,10 @@ pub enum PollingSetup {
     DeleteWebhook(MethodCall),
     /// Calling `DeleteWebhook` timed out.
     DeleteWebhookTimeout(Elapsed),
+    /// Calling the `setMyCommands` method resulted in an error.
+    SetMyCommands(MethodCall),
+    /// Calling the `setMyCommands` method timed out.
+    SetMyCommandsTimeout(Elapsed),
 }
 
 impl From<MethodCall> for PollingSetup {
