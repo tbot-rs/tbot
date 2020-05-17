@@ -13,9 +13,9 @@ pub enum HttpWebhook {
     SetWebhook(MethodCall),
     /// Calling the `setWebhook` method timed out.
     SetWebhookTimeout(Elapsed),
-    /// Calling `SetMyCommands` resulted in an error.
+    /// Calling the `setMyCommands` method resulted in an error.
     SetMyCommands(MethodCall),
-    /// Calling `SetMyCommands` timed out.
+    /// Calling the `setMyCommands` method timed out.
     SetMyCommandsTimeout(Elapsed),
     /// An error while running the server.
     Server(hyper::Error),
@@ -44,7 +44,7 @@ impl Display for HttpWebhook {
             ),
             Self::SetMyCommandsTimeout(timeout) => write!(
                 formatter,
-                "The webhook event loop failed because a call to `setMyCommands`
+                "The webhook event loop failed because a call to `setMyCommands` \
                 timed out: {}",
                 timeout,
             ),

@@ -215,7 +215,7 @@ where
     }
 
     /// Adds a new handler for a command which is run if the predicate
-    /// returns true. Sets command description.
+    /// returns true. Also sets the command's description.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -378,7 +378,7 @@ where
     }
 
     /// Adds a new handler for the `/start` command which is run
-    /// if the predicate returns true. Sets command description.
+    /// if the predicate returns true. Also sets the command's description.
     pub fn start_with_description_if<H, HF, P, PF>(
         &mut self,
         description: &'static str,
@@ -460,7 +460,7 @@ where
     }
 
     /// Adds a new handler for the `/help` command which is run if the predicate
-    /// returns true. Sets command description.
+    /// returns true. Also sets the command's description.
     pub fn help_with_description_if<H, HF, P, PF>(
         &mut self,
         description: &'static str,
@@ -542,7 +542,7 @@ where
     }
 
     /// Adds a new handler for the `/settings` command which is run
-    /// if the predicate returns true. Sets command description.
+    /// if the predicate returns true. Also sets the command's description.
     pub fn settings_with_description_if<H, HF, P, PF>(
         &mut self,
         description: &'static str,
