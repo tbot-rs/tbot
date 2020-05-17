@@ -132,7 +132,16 @@ impl Polling {
         timeout_future(request_timeout, delete_webhook).await??;
 
         let set_commands = event_loop.set_commands_descriptions();
-        timeout_future(request_timeout, set_commands).await?;
+
+        match timeout_future(request_timeout, set_commands).await {
+            Ok(Err(method)) => {
+                return Err(errors::PollingSetup::SetMyCommands(method))
+            }
+            Err(timeout) => {
+                return Err(errors::PollingSetup::SetMyCommandsTimeout(timeout))
+            }
+            _ => (),
+        };
 
         let bot = Arc::new(event_loop.bot.clone());
 
