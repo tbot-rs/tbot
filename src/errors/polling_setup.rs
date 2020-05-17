@@ -10,9 +10,9 @@ pub enum PollingSetup {
     DeleteWebhook(MethodCall),
     /// Calling `DeleteWebhook` timed out.
     DeleteWebhookTimeout(Elapsed),
-    /// Calling `SetMyCommands` resulted in an error.
+    /// Calling the `setMyCommands` method resulted in an error.
     SetMyCommands(MethodCall),
-    /// Calling `SetMyCommands` timed out.
+    /// Calling the `setMyCommands` method timed out.
     SetMyCommandsTimeout(Elapsed),
 }
 

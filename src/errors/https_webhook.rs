@@ -13,9 +13,9 @@ pub enum HttpsWebhook {
     SetWebhook(MethodCall),
     /// Calling the `setWebhook` method timed out.
     SetWebhookTimeout(Elapsed),
-    /// Calling `SetMyCommands` resulted in an error.
+    /// Calling the `setMyCommands` method resulted in an error.
     SetMyCommands(MethodCall),
-    /// Calling `SetMyCommands` timed out.
+    /// Calling the `setMyCommands` method timed out.
     SetMyCommandsTimeout(Elapsed),
     /// An error while initializing TLS.
     Tls(
