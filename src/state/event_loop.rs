@@ -1,4 +1,5 @@
-use crate::event_loop::{EventLoop, Polling, Webhook};
+use super::Polling;
+use crate::event_loop::{EventLoop, Webhook};
 use crate::{contexts, errors};
 use std::{future::Future, sync::Arc};
 
@@ -107,8 +108,8 @@ impl<S> StatefulEventLoop<S> {
     }
 
     /// Starts polling configuration.
-    pub fn polling(self) -> Polling {
-        self.inner.polling()
+    pub fn polling(self) -> Polling<S> {
+        Polling::new(self.inner, Arc::clone(&self.state))
     }
 
     /// Starts webhook configuration.
