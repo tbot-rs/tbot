@@ -13,6 +13,10 @@ pub enum HttpsWebhook {
     SetWebhook(MethodCall),
     /// Calling the `setWebhook` method timed out.
     SetWebhookTimeout(Elapsed),
+    /// Calling `SetMyCommands` resulted in an error.
+    SetMyCommands(MethodCall),
+    /// Calling `SetMyCommands` timed out.
+    SetMyCommandsTimeout(Elapsed),
     /// An error while initializing TLS.
     Tls(
         #[cfg(feature = "tls")] native_tls::Error,
@@ -37,6 +41,18 @@ impl Display for HttpsWebhook {
                 formatter,
                 "The webhook event loop failed because a call to `setWebhook` \
                  timed out: {}",
+                timeout,
+            ),
+            Self::SetMyCommands(error) => write!(
+                formatter,
+                "The webhook event loop failed because a call to `setMyCommands` \
+                 failed with an error: {}",
+                error,
+            ),
+            Self::SetMyCommandsTimeout(timeout) => write!(
+                formatter,
+                "The webhook event loop failed because a call to `setMyCommands`
+                timed out: {}",
                 timeout,
             ),
             Self::Tls(timeout) => write!(

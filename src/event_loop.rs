@@ -23,6 +23,7 @@ mod handlers_macros;
 mod polling;
 pub mod webhook;
 
+use errors::MethodCall;
 use types::parameters::BotCommand;
 pub use {polling::Polling, webhook::Webhook};
 
@@ -1732,9 +1733,11 @@ impl EventLoop {
         }
     }
 
-    pub(crate) async fn set_commands_descriptions(&self) {
+    pub(crate) async fn set_commands_descriptions(
+        &self,
+    ) -> Result<(), MethodCall> {
         if self.command_description.is_empty() {
-            return;
+            return Ok(());
         }
 
         let commands: Vec<_> = self
@@ -1743,11 +1746,9 @@ impl EventLoop {
             .map(|(name, description)| BotCommand::new(name, description))
             .collect();
 
-        self.bot
-            .set_my_commands(&commands)
-            .call()
-            .await
-            .expect("[tbot] Failed to set bot commands");
+        self.bot.set_my_commands(&commands).call().await?;
+
+        Ok(())
     }
 
     /// Fetches the bot's username.
