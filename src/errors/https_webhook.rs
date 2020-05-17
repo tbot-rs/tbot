@@ -51,7 +51,7 @@ impl Display for HttpsWebhook {
             ),
             Self::SetMyCommandsTimeout(timeout) => write!(
                 formatter,
-                "The webhook event loop failed because a call to `setMyCommands`
+                "The webhook event loop failed because a call to `setMyCommands` \
                 timed out: {}",
                 timeout,
             ),
