@@ -1,5 +1,5 @@
 use super::EventLoop;
-use crate::{errors, types::parameters::UpdateKind};
+use crate::{errors, state, types::parameters::UpdateKind};
 use std::{
     convert::{Infallible, TryInto},
     num::NonZeroUsize,
@@ -42,6 +42,15 @@ impl Polling {
             request_timeout: None,
             offset: None,
         }
+    }
+
+    /// Turns this polling into a stateful one. Previous configuration
+    // is preserved.
+    pub fn into_stateful<S>(self, state: S) -> state::Polling<S>
+    where
+        S: Send + Sync + 'static,
+    {
+        state::Polling::new(self.event_loop, Arc::new(state))
     }
 
     /// Configures the limit of updates per request.
