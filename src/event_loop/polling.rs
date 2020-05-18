@@ -13,9 +13,9 @@ type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
 
 /// Configures and starts polling.
 ///
-/// To construct `Polling`, use [`Bot::polling`].
+/// To construct `Polling`, use [`EventLoop::polling`].
 ///
-/// [`Bot::polling`]: ./struct.Bot.html#method.polling
+/// [`EventLoop::polling`]: ./struct.EventLoop.html#method.polling
 #[must_use = "polling does nothing unless `start` is called"]
 pub struct Polling {
     event_loop: EventLoop,
