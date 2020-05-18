@@ -4,7 +4,6 @@ use crate::{
     types::parameters::UpdateKind,
 };
 use std::{convert::Infallible, num::NonZeroUsize, sync::Arc, time::Duration};
-use tracing::instrument;
 
 /// Configures and starts polling for the stateful event loop.
 ///
@@ -78,7 +77,6 @@ impl<S> Polling<S> {
     }
 
     /// Starts the event loop.
-    #[instrument(name = "polling", skip(self))]
     pub async fn start(self) -> Result<Infallible, errors::PollingSetup> {
         self.inner.start().await
     }
