@@ -16,11 +16,30 @@ pub struct Polling<S> {
     state: Arc<S>,
 }
 
+#[allow(clippy::use_self)] // https://github.com/rust-lang/rust-clippy/issues/4143
 impl<S> Polling<S> {
     pub(crate) fn new(event_loop: EventLoop, state: Arc<S>) -> Self {
         Self {
             inner: event_loop::Polling::new(event_loop),
             state,
+        }
+    }
+
+    /// Turns this polling into a stateless one. Previous configuration
+    // is preserved.
+    #[allow(clippy::missing_const_for_fn)] // https://github.com/rust-lang/rust-clippy/issues/4979
+    pub fn into_stateless(self) -> event_loop::Polling {
+        self.inner
+    }
+
+    /// Turns this polling into another with other state.
+    pub fn with_other_state<T>(self, other_state: T) -> Polling<T>
+    where
+        T: Send + Sync + 'static,
+    {
+        Polling {
+            inner: self.inner,
+            state: Arc::new(other_state),
         }
     }
 
