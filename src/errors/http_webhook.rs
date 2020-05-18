@@ -32,7 +32,7 @@ impl Display for HttpWebhook {
             ),
             Self::SetWebhookTimeout(timeout) => write!(
                 formatter,
-                "The webhook event loop failed because a call to `setWebhook`
+                "The webhook event loop failed because a call to `setWebhook` \
                 timed out: {}",
                 timeout,
             ),
