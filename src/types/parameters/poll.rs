@@ -104,15 +104,19 @@ impl Poll {
 impl<'a> Any<'a> {
     /// Constructs a poll.
     #[must_use]
-    pub fn new(
+    pub fn new<O, C>(
         question: impl Into<Cow<'a, str>>,
-        options: impl Into<Cow<'a, [Cow<'a, str>]>>,
+        options: O,
         kind: impl Into<Kind<'a>>,
-    ) -> Self {
+    ) -> Self
+    where
+        O: IntoIterator<Item = C>,
+        C: Into<Cow<'a, str>>,
+    {
         Self {
             kind: kind.into(),
             question: question.into(),
-            options: options.into(),
+            options: options.into_iter().map(Into::into).collect(),
             is_closed: None,
             is_anonymous: None,
             auto_close: None,

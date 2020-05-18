@@ -1,4 +1,3 @@
-use std::borrow::Cow;
 use tbot::{
     prelude::*,
     types::parameters::{
@@ -24,10 +23,12 @@ async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("poll", move |context| async move {
-        let options: Vec<Cow<str>> =
-            OPTIONS.iter().map(|&o| o.into()).collect();
-        let regular = Any::new(QUESTION, options, Poll::new(Answer::Single))
-            .auto_close(AutoClose::OpenPeriod(60));
+        let regular = Any::new(
+            QUESTION,
+            OPTIONS.iter().copied(),
+            Poll::new(Answer::Single),
+        )
+        .auto_close(AutoClose::OpenPeriod(60));
 
         let call_result = context.send_poll(&regular).call().await;
         if let Err(err) = call_result {
@@ -36,11 +37,9 @@ async fn main() {
     });
 
     bot.command("quiz", move |context| async move {
-        let quiz_options: Vec<Cow<str>> =
-            QUIZ_OPTIONS.iter().map(|&o| o.into()).collect();
         let quiz = Any::new(
             QUIZ_QUESTION,
-            quiz_options,
+            QUIZ_OPTIONS.iter().copied(),
             Quiz::new(QUIZ_CORRECT_OPTION).explanation(QUIZ_EXPLANATION),
         )
         .anonymous(false);
