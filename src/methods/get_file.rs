@@ -18,7 +18,7 @@ pub struct GetFile<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    file_id: file::id::Ref<'a>,
+    file_id: file::id::Id<'a>,
 }
 
 impl<'a> GetFile<'a> {

@@ -11,7 +11,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct Video {
     /// The file ID of the video.
-    pub file_id: file::Id,
+    pub file_id: file::Id<'static>,
     /// The unique ID of the video.
     pub file_unique_id: String,
     /// The width of the video.
@@ -32,7 +32,7 @@ impl crate::internal::Sealed for Video {}
 
 impl<'a> AsFileId<'a> for Video {
     #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
+    fn as_file_id(&self) -> file::id::Id<'_> {
         self.file_id.as_ref()
     }
 }
