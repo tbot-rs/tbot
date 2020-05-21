@@ -8,6 +8,7 @@ use crate::{
     },
     Multipart,
 };
+use std::borrow::Cow;
 
 /// Sets the thumb of a sticker set.
 ///
@@ -20,23 +21,23 @@ pub struct SetStickerSetThumb<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
     user_id: user::Id,
-    name: &'a str,
+    name: Cow<'a, str>,
     thumb: Option<&'a StickerSetThumb<'a>>,
 }
 
 impl<'a> SetStickerSetThumb<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
         thumb: Option<&'a StickerSetThumb<'a>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            name,
+            name: name.into(),
             thumb,
         }
     }
@@ -47,7 +48,7 @@ impl SetStickerSetThumb<'_> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(3)
             .string("user_id", &self.user_id)
-            .str("name", self.name);
+            .str("name", &self.name);
 
         if let Some(thumb) = self.thumb {
             match &thumb.media {

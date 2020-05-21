@@ -5,6 +5,7 @@ use crate::{
     types::{user, File},
     Multipart,
 };
+use std::borrow::Cow;
 
 /// Uploads a sticker file.
 ///
@@ -17,21 +18,21 @@ pub struct UploadStickerFile<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
     user_id: user::Id,
-    png_sticker: &'a [u8],
+    png_sticker: Cow<'a, [u8]>,
 }
 
 impl<'a> UploadStickerFile<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
-        png_sticker: &'a [u8],
+        png_sticker: impl Into<Cow<'a, [u8]>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            png_sticker,
+            png_sticker: png_sticker.into(),
         }
     }
 }
@@ -41,7 +42,7 @@ impl UploadStickerFile<'_> {
     pub async fn call(self) -> Result<File, errors::MethodCall> {
         let (boundary, body) = Multipart::new(2)
             .string("user_id", &self.user_id)
-            .file("png_sticker", "sticker.png", self.png_sticker)
+            .file("png_sticker", "sticker.png", &self.png_sticker)
             .finish();
 
         call_method(

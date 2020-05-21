@@ -9,6 +9,7 @@ use crate::{
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sends a venue.
 ///
@@ -25,12 +26,12 @@ pub struct SendVenue<'a> {
     chat_id: ChatId<'a>,
     latitude: f64,
     longitude: f64,
-    title: &'a str,
-    address: &'a str,
+    title: Cow<'a, str>,
+    address: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    foursquare_id: Option<&'a str>,
+    foursquare_id: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    foursquare_type: Option<&'a str>,
+    foursquare_type: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,8 +46,8 @@ impl<'a> SendVenue<'a> {
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         (latitude, longitude): (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<Cow<'a, str>>,
+        address: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
@@ -54,8 +55,8 @@ impl<'a> SendVenue<'a> {
             chat_id: chat_id.into(),
             latitude,
             longitude,
-            title,
-            address,
+            title: title.into(),
+            address: address.into(),
             foursquare_id: None,
             foursquare_type: None,
             disable_notification: None,
@@ -66,15 +67,15 @@ impl<'a> SendVenue<'a> {
 
     /// Configures the Foursquare ID of this venue.
     /// Reflects the `foursquare_id` parameter.
-    pub fn foursquare_id(mut self, id: &'a str) -> Self {
-        self.foursquare_id = Some(id);
+    pub fn foursquare_id(mut self, id: impl Into<Cow<'a, str>>) -> Self {
+        self.foursquare_id = Some(id.into());
         self
     }
 
     /// Configures the Foursquare type of this venue.
     /// Reflects the `foursquare_type` parameter.
-    pub fn foursquare_type(mut self, fs_type: &'a str) -> Self {
-        self.foursquare_type = Some(fs_type);
+    pub fn foursquare_type(mut self, fs_type: impl Into<Cow<'a, str>>) -> Self {
+        self.foursquare_type = Some(fs_type.into());
         self
     }
 

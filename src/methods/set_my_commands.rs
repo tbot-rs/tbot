@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token, types::parameters::BotCommand};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sets the list of the bot's commands.
 ///
@@ -14,19 +15,19 @@ pub struct SetMyCommands<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    commands: &'a [BotCommand<'a>],
+    commands: Cow<'a, [BotCommand<'a>]>,
 }
 
 impl<'a> SetMyCommands<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        commands: &'a [BotCommand<'a>],
+        commands: impl Into<Cow<'a, [BotCommand<'a>]>>,
     ) -> Self {
         Self {
             client,
             token,
-            commands,
+            commands: commands.into(),
         }
     }
 }

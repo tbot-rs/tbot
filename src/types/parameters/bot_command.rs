@@ -9,12 +9,12 @@ use std::borrow::Cow;
 pub struct BotCommand<'a> {
     /// The command's text.
     command: Cow<'a, str>,
-    /// The command's decription.
+    /// The command's description.
     description: Cow<'a, str>,
 }
 
 impl<'a> BotCommand<'a> {
-    /// Construсts a new `BotCommand`.
+    /// Constructs a new `BotCommand`.
     #[must_use]
     pub fn new(
         command: impl Into<Cow<'a, str>>,

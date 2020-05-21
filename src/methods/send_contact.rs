@@ -9,6 +9,7 @@ use crate::{
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sends a contact.
 ///
@@ -23,12 +24,12 @@ pub struct SendContact<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
-    phone_number: &'a str,
-    first_name: &'a str,
+    phone_number: Cow<'a, str>,
+    first_name: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<&'a str>,
+    last_name: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<&'a str>,
+    vcard: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -42,15 +43,15 @@ impl<'a> SendContact<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            phone_number,
-            first_name,
+            phone_number: phone_number.into(),
+            first_name: first_name.into(),
             last_name: None,
             vcard: None,
             disable_notification: None,
@@ -61,15 +62,15 @@ impl<'a> SendContact<'a> {
 
     /// Configures the last name of the contact.
     /// Reflects the `last_name` parameter.
-    pub fn last_name(mut self, last_name: &'a str) -> Self {
-        self.last_name = Some(last_name);
+    pub fn last_name(mut self, last_name: impl Into<Cow<'a, str>>) -> Self {
+        self.last_name = Some(last_name.into());
         self
     }
 
     /// Configures a VCard for the contact. Reflects the `vcard` parameter.
     #[allow(clippy::doc_markdown)] // no, I don't need to put VCard in backticks
-    pub fn vcard(mut self, vcard: &'a str) -> Self {
-        self.vcard = Some(vcard);
+    pub fn vcard(mut self, vcard: impl Into<Cow<'a, str>>) -> Self {
+        self.vcard = Some(vcard.into());
         self
     }
 
