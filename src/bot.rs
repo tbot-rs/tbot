@@ -10,7 +10,8 @@ use crate::{
     types::{
         callback, chat,
         file::{id::AsFileId, File},
-        inline_message_id, inline_query,
+        inline_message_id::InlineMessageId,
+        inline_query,
         input_file::{
             Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
             Photo, Sticker, StickerForStickerSet, StickerSetThumb, Video,
@@ -252,7 +253,7 @@ impl Bot {
     /// Edits the caption of a media message sent via the inline mode.
     pub fn edit_inline_caption<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         caption: impl Into<Text<'a>>,
     ) -> EditInlineCaption<'a> {
         EditInlineCaption::new(
@@ -266,7 +267,7 @@ impl Bot {
     /// Edits a live location sent via the inline mode.
     pub fn edit_inline_location<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         position: (f64, f64),
     ) -> EditInlineLocation<'a> {
         EditInlineLocation::new(
@@ -280,7 +281,7 @@ impl Bot {
     /// Edits the media of a message sent via the inline mode.
     pub fn edit_inline_media<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditInlineMedia<'a> {
         EditInlineMedia::new(
@@ -294,7 +295,7 @@ impl Bot {
     /// Edits the inline keyboard of a message sent via the inline mode.
     pub fn edit_inline_reply_markup<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         reply_markup: inline::Keyboard<'a>,
     ) -> EditInlineReplyMarkup<'a> {
         EditInlineReplyMarkup::new(
@@ -308,7 +309,7 @@ impl Bot {
     /// Edits the text of a message sent via the inline mode.
     pub fn edit_inline_text<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         text: impl Into<Text<'a>>,
     ) -> EditInlineText<'a> {
         EditInlineText::new(
@@ -443,7 +444,7 @@ impl Bot {
     /// mode.
     pub fn get_inline_game_high_scores<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
     ) -> GetInlineGameHighScores<'a> {
         GetInlineGameHighScores::new(
@@ -891,7 +892,7 @@ impl Bot {
     /// Sets a user's new high score in a game sent via the inline mode.
     pub fn set_inline_game_score<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
         score: u32,
     ) -> SetInlineGameScore<'a> {
@@ -994,7 +995,7 @@ impl Bot {
     /// Stops a live location sent via the inline mode.
     pub fn stop_inline_location<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
     ) -> StopInlineLocation<'a> {
         StopInlineLocation::new(
             &self.client,

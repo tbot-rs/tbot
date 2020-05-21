@@ -3,7 +3,7 @@ use crate::{
     connectors::Client,
     errors, token,
     types::{
-        inline_message_id,
+        inline_message_id::InlineMessageId,
         keyboard::inline,
         parameters::{ParseMode, Text, WebPagePreviewState},
     },
@@ -23,7 +23,7 @@ pub struct EditInlineText<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
     text: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
@@ -37,7 +37,7 @@ impl<'a> EditInlineText<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         text: impl Into<Text<'a>>,
     ) -> Self {
         let text = text.into();

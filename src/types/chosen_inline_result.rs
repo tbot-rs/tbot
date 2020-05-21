@@ -14,7 +14,7 @@ pub struct ChosenInlineResult {
     /// The location of the user, if enabled and allowed.
     pub location: Option<Location>,
     /// The ID of the sent message.
-    pub inline_message_id: Option<InlineMessageId>,
+    pub inline_message_id: Option<InlineMessageId<'static>>,
     /// The query used to obtain the result.
     pub query: String,
 }
