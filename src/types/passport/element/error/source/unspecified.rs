@@ -2,6 +2,7 @@
 
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents possible element kinds for unspecified error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -40,17 +41,17 @@ pub enum Kind {
 /// Represents a [`PassportElementErrorUnspecified`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorunspecified
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Unspecified<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    element_hash: &'a str,
+    element_hash: Cow<'a, str>,
 }
 
 impl<'a> Unspecified<'a> {
     /// Constructs a new `Unspecified`.
-    pub const fn new(kind: Kind, element_hash: &'a str) -> Self {
-        Self { kind, element_hash }
+    pub fn new(kind: Kind, element_hash: impl Into<Cow<'a, str>>) -> Self {
+        Self { kind, element_hash: element_hash.into() }
     }
 }

@@ -2,6 +2,7 @@
 
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents possible element kinds for front side error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -22,17 +23,17 @@ pub enum Kind {
 /// Represents a [`PassportElementErrorFrontSide`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorfrontside
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct FrontSide<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hash: &'a str,
+    file_hash: Cow<'a, str>,
 }
 
 impl<'a> FrontSide<'a> {
     /// Constructs a new `FrontSide`.
-    pub const fn new(kind: Kind, file_hash: &'a str) -> Self {
-        Self { kind, file_hash }
+    pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
+        Self { kind, file_hash: file_hash.into() }
     }
 }

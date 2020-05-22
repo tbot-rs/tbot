@@ -2,6 +2,7 @@
 
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents possible element kinds for file error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -24,35 +25,38 @@ pub enum Kind {
 /// Represents a [`PassportElementErrorFile`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorfile
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct File<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hash: &'a str,
+    file_hash: Cow<'a, str>,
 }
 
 impl<'a> File<'a> {
     /// Constructs a new `File`.
-    pub const fn new(kind: Kind, file_hash: &'a str) -> Self {
-        Self { kind, file_hash }
+    pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
+        Self { kind, file_hash: file_hash.into() }
     }
 }
 
 /// Represents a [`PassportElementErrorFiles`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorfiles
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Files<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hashes: &'a [&'a str],
+    file_hashes: Cow<'a, [Cow<'a, str>]>,
 }
 
 impl<'a> Files<'a> {
     /// Constructs new `Files`.
-    pub const fn new(kind: Kind, file_hashes: &'a [&'a str]) -> Self {
-        Self { kind, file_hashes }
+    pub fn new<F>(kind: Kind, file_hashes: F) -> Self where
+        F: IntoIterator,
+        F::Item: Into<Cow<'a, str>>,
+    {
+        Self { kind, file_hashes: file_hashes.into_iter().map(Into::into).collect() }
     }
 }

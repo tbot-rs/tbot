@@ -2,6 +2,7 @@
 
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents possible element kinds for data error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -26,26 +27,26 @@ pub enum Kind {
 /// Represents a [`PassportElementErrorDataField`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrordatafield
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Data<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    field_name: &'a str,
-    data_hash: &'a str,
+    field_name: Cow<'a, str>,
+    data_hash: Cow<'a, str>,
 }
 
 impl<'a> Data<'a> {
     /// Constructs a new `Data`.
-    pub const fn new(
+    pub fn new(
         kind: Kind,
-        field_name: &'a str,
-        data_hash: &'a str,
+        field_name: impl Into<Cow<'a, str>>,
+        data_hash: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             kind,
-            field_name,
-            data_hash,
+            field_name: field_name.into(),
+            data_hash: data_hash.into(),
         }
     }
 }
