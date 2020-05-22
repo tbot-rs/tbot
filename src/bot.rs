@@ -177,7 +177,7 @@ impl Bot {
 
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
-        shipping_query_id: shipping::query::id::Ref<'a>,
+        shipping_query_id: shipping::query::id::Id<'a>,
         result: Result<&'a [shipping::Option<'a>], &'a str>,
     ) -> AnswerShippingQuery<'a> {
         AnswerShippingQuery::new(

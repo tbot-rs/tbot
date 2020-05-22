@@ -11,7 +11,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.shipping
     struct Shipping {
         /// The ID of the query.
-        id: shipping::query::Id,
+        id: shipping::query::Id<'static>,
         /// The user who sent the query.
         from: User,
         /// The invoice payload sent previously by the bot.

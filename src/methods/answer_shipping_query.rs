@@ -15,7 +15,7 @@ pub struct AnswerShippingQuery<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    shipping_query_id: shipping::query::id::Ref<'a>,
+    shipping_query_id: shipping::query::id::Id<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Cow<'a, [shipping::Option<'a>]>>,
@@ -27,7 +27,7 @@ impl<'a> AnswerShippingQuery<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        shipping_query_id: shipping::query::id::Ref<'a>,
+        shipping_query_id: shipping::query::id::Id<'a>,
         result: Result<
             impl Into<Cow<'a, [shipping::Option<'a>]>>,
             impl Into<Cow<'a, str>>,
