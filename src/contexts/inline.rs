@@ -11,7 +11,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.inline
     struct Inline {
         /// The ID of the query.
-        id: inline_query::Id,
+        id: inline_query::Id<'static>,
         /// The user who sent the query.
         from: User,
         /// The location of the user, if enabled and allowed.

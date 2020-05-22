@@ -151,7 +151,7 @@ impl Bot {
 
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: inline_query::id::Ref<'a>,
+        inline_query_id: inline_query::id::Id<'a>,
         results: &'a [inline_query::Result<'a>],
     ) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery::new(

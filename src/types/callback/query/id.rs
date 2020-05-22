@@ -9,7 +9,7 @@ use std::borrow::Cow;
 pub struct Id<'a>(pub Cow<'a, str>);
 
 impl<'a> Id<'a> {
-    /// Create a new reference to a file ID.
+    /// Create a new reference to a callback query ID.
     #[must_use]
     pub fn as_ref(&'a self) -> Self {
         Self(Cow::Borrowed(&self.0))
