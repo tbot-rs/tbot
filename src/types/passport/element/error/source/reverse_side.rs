@@ -30,6 +30,9 @@ pub struct ReverseSide<'a> {
 impl<'a> ReverseSide<'a> {
     /// Constructs a new `ReverseSide`.
     pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
-        Self { kind, file_hash: file_hash.into() }
+        Self {
+            kind,
+            file_hash: file_hash.into(),
+        }
     }
 }

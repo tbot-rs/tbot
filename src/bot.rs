@@ -164,7 +164,7 @@ impl Bot {
 
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
-        pre_checkout_query_id: pre_checkout_query::id::Ref<'a>,
+        pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
         result: Result<(), &'a str>,
     ) -> AnswerPreCheckoutQuery<'a> {
         AnswerPreCheckoutQuery::new(

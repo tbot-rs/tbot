@@ -34,6 +34,9 @@ pub struct Selfie<'a> {
 impl<'a> Selfie<'a> {
     /// Constructs a new `Selfie`.
     pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
-        Self { kind, file_hash: file_hash.into() }
+        Self {
+            kind,
+            file_hash: file_hash.into(),
+        }
     }
 }

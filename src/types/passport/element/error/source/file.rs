@@ -36,7 +36,10 @@ pub struct File<'a> {
 impl<'a> File<'a> {
     /// Constructs a new `File`.
     pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
-        Self { kind, file_hash: file_hash.into() }
+        Self {
+            kind,
+            file_hash: file_hash.into(),
+        }
     }
 }
 
@@ -53,10 +56,14 @@ pub struct Files<'a> {
 
 impl<'a> Files<'a> {
     /// Constructs new `Files`.
-    pub fn new<F>(kind: Kind, file_hashes: F) -> Self where
+    pub fn new<F>(kind: Kind, file_hashes: F) -> Self
+    where
         F: IntoIterator,
         F::Item: Into<Cow<'a, str>>,
     {
-        Self { kind, file_hashes: file_hashes.into_iter().map(Into::into).collect() }
+        Self {
+            kind,
+            file_hashes: file_hashes.into_iter().map(Into::into).collect(),
+        }
     }
 }

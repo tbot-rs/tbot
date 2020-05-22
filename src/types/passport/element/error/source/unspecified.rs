@@ -52,6 +52,9 @@ pub struct Unspecified<'a> {
 impl<'a> Unspecified<'a> {
     /// Constructs a new `Unspecified`.
     pub fn new(kind: Kind, element_hash: impl Into<Cow<'a, str>>) -> Self {
-        Self { kind, element_hash: element_hash.into() }
+        Self {
+            kind,
+            element_hash: element_hash.into(),
+        }
     }
 }
