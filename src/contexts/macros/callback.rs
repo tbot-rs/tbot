@@ -13,7 +13,7 @@ macro_rules! callback {
             )]
             struct $name {
                 /// The ID of the callback.
-                id: crate::types::callback::query::Id,
+                id: crate::types::callback::query::Id<'static>,
                 /// The user who initiated the callback.
                 from: crate::types::User,
                 /// The origin of the query.
@@ -30,7 +30,7 @@ macro_rules! callback {
             #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
                 bot: std::sync::Arc<crate::Bot>,
-                id: crate::types::callback::query::Id,
+                id: crate::types::callback::query::Id<'static>,
                 from: crate::types::User,
                 origin: crate::types::callback::Origin,
                 chat_instance: String,

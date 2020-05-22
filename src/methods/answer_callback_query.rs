@@ -19,7 +19,7 @@ pub struct AnswerCallbackQuery<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    callback_query_id: callback::query::id::Ref<'a>,
+    callback_query_id: callback::query::id::Id<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,7 +34,7 @@ impl<'a> AnswerCallbackQuery<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        callback_query_id: callback::query::id::Ref<'a>,
+        callback_query_id: callback::query::id::Id<'a>,
         action: CallbackAction<'a>,
     ) -> Self {
         match action {

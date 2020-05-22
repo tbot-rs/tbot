@@ -34,7 +34,7 @@ pub enum Kind {
 #[non_exhaustive]
 pub struct Query {
     /// The ID of the callback.
-    pub id: Id,
+    pub id: Id<'static>,
     /// The user who initiated the callback.
     pub from: User,
     /// The origin of the query.

@@ -138,7 +138,7 @@ impl Bot {
 
     pub(crate) fn answer_callback_query<'a>(
         &'a self,
-        callback_query_id: callback::query::id::Ref<'a>,
+        callback_query_id: callback::query::id::Id<'a>,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a> {
         AnswerCallbackQuery::new(
