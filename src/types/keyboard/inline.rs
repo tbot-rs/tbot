@@ -3,9 +3,10 @@
 use crate::types::{callback::Game, LoginUrl};
 use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
+use std::borrow::Cow;
 
 /// A shorthand for inline markup.
-pub type Markup<'a> = &'a [&'a [Button<'a>]];
+pub type Markup<'a> = Cow<'a, [Button<'a>]>;
 
 /// Represents different types an inline button can be.
 ///
@@ -17,15 +18,15 @@ pub type Markup<'a> = &'a [&'a [Button<'a>]];
 #[must_use]
 pub enum ButtonKind<'a> {
     /// Represents a URL button.
-    Url(&'a str),
+    Url(Cow<'a, str>),
     /// Represents a login button.
     LoginUrl(LoginUrl<'a>),
     /// Represents callback data.
-    CallbackData(&'a str),
+    CallbackData(Cow<'a, str>),
     /// Represents query inserted when switched to inline.
-    SwitchInlineQuery(&'a str),
+    SwitchInlineQuery(Cow<'a, str>),
     /// Represents query inserted when switched to inline in the curent chat.
-    SwitchInlineQueryCurrentChat(&'a str),
+    SwitchInlineQueryCurrentChat(Cow<'a, str>),
     /// Represent a description of the game to be laucnhed.
     CallbackGame(Game),
     /// If `true`, a pay button is sent.
@@ -39,7 +40,7 @@ pub enum ButtonKind<'a> {
 #[must_use]
 #[must_use]
 pub struct Button<'a> {
-    text: &'a str,
+    text: Cow<'a, str>,
     kind: ButtonKind<'a>,
 }
 
@@ -54,8 +55,11 @@ pub struct Keyboard<'a> {
 
 impl<'a> Button<'a> {
     /// Constructs an inline `Button`.
-    pub const fn new(text: &'a str, kind: ButtonKind<'a>) -> Self {
-        Self { text, kind }
+    pub fn new(text: impl Into<Cow<'a, str>>, kind: ButtonKind<'a>) -> Self {
+        Self {
+            text: text.into(),
+            kind,
+        }
     }
 }
 
@@ -63,7 +67,7 @@ impl Serialize for Button<'_> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(Some(2))?;
 
-        map.serialize_entry("text", self.text)?;
+        map.serialize_entry("text", &self.text)?;
 
         match &self.kind {
             ButtonKind::Url(url) => map.serialize_entry("url", url),

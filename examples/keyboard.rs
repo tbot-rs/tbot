@@ -7,12 +7,12 @@ use tbot::{
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
 const KEYBOARD: &[&[Button]] = &[
     &[
-        Button::new("Cool!", ButtonKind::CallbackData("cool")),
-        Button::new("Amazing!", ButtonKind::CallbackData("amazing")),
+        Button::new("Cool!", ButtonKind::CallbackData("cool".into())),
+        Button::new("Amazing!", ButtonKind::CallbackData("amazing".into())),
     ],
     &[Button::new(
         "I wanna get started with it!",
-        ButtonKind::Url(TUTORIAL),
+        ButtonKind::Url(TUTORIAL.into()),
     )],
 ];
 
