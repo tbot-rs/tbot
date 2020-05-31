@@ -6,7 +6,7 @@ use serde::{ser::SerializeMap, Serialize};
 use std::borrow::Cow;
 
 /// A shorthand for inline markup.
-pub type Markup<'a> = Cow<'a, [Button<'a>]>;
+pub type Markup<'a> = Cow<'a, [Cow<'a, [Button<'a>]>]>;
 
 /// Represents different types an inline button can be.
 ///
@@ -31,6 +31,49 @@ pub enum ButtonKind<'a> {
     CallbackGame(Game),
     /// If `true`, a pay button is sent.
     Pay(bool),
+}
+
+impl<'a> ButtonKind<'a> {
+    /// Constructs a `ButtonKind` of type `Url`.
+    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+        Self::Url(url.into())
+    }
+
+    /// Constructs a `ButtonKind` of type `LoginUrl`.
+    pub fn with_login_url(login_url: impl Into<Cow<'a, str>>) -> Self {
+        Self::LoginUrl(LoginUrl::new(login_url))
+    }
+
+    /// Constructs a `ButtonKind` of type `CallbackData`.
+    pub fn with_callback_data(callback_data: impl Into<Cow<'a, str>>) -> Self {
+        Self::CallbackData(callback_data.into())
+    }
+
+    /// Constructs a `ButtonKind` of type `SwitchInlineQuery`.
+    pub fn with_switch_inline_query(
+        switch_inline_query: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        Self::SwitchInlineQuery(switch_inline_query.into())
+    }
+
+    /// Constructs a `ButtonKind` of type `SwitchInlineQueryCurrentChat`.
+    pub fn with_switch_inline_query_current_chat(
+        switch_inline_query_current_chat: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        Self::SwitchInlineQueryCurrentChat(
+            switch_inline_query_current_chat.into(),
+        )
+    }
+
+    /// Constructs a `ButtonKind` of type `CallbackGame`.
+    pub const fn with_callback_game() -> Self {
+        Self::CallbackGame(Game)
+    }
+
+    /// Constructs a `ButtonKind` of type `Pay`.
+    pub const fn with_pay(pay: bool) -> Self {
+        Self::Pay(pay)
+    }
 }
 
 /// Represents an [`InlineKeyboardButton`].
@@ -102,8 +145,17 @@ impl<'a> Keyboard<'a> {
     }
 }
 
-impl<'a> From<Markup<'a>> for Keyboard<'a> {
-    fn from(markup: Markup<'a>) -> Self {
-        Self::new(markup)
+impl<'a, B> From<B> for Keyboard<'a>
+where
+    B: IntoIterator,
+    B::Item: IntoIterator<Item = Button<'a>>,
+{
+    fn from(buttons: B) -> Self {
+        Self::new(
+            buttons
+                .into_iter()
+                .map(|x| x.into_iter().collect())
+                .collect(),
+        )
     }
 }

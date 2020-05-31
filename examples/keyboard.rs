@@ -5,25 +5,29 @@ use tbot::{
 };
 
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
-const KEYBOARD: &[&[Button]] = &[
-    &[
-        Button::new("Cool!", ButtonKind::CallbackData("cool".into())),
-        Button::new("Amazing!", ButtonKind::CallbackData("amazing".into())),
-    ],
-    &[Button::new(
-        "I wanna get started with it!",
-        ButtonKind::Url(TUTORIAL.into()),
-    )],
-];
 
 #[tokio::main]
 async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", |context| async move {
+        let keyboard: &[&[Button]] = &[
+            &[
+                Button::new("Cool!", ButtonKind::with_callback_data("cool")),
+                Button::new(
+                    "Amazing!",
+                    ButtonKind::with_callback_data("amazing"),
+                ),
+            ],
+            &[Button::new(
+                "I wanna get started with it!",
+                ButtonKind::with_url(TUTORIAL),
+            )],
+        ];
+
         let call_result = context
             .send_message("This is a keyboard done with tbot!")
-            .reply_markup(KEYBOARD)
+            .reply_markup(keyboard)
             .call()
             .await;
 

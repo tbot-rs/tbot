@@ -24,12 +24,6 @@ impl<'a> From<inline::Keyboard<'a>> for Any<'a> {
     }
 }
 
-impl<'a> From<inline::Markup<'a>> for Any<'a> {
-    fn from(keyboard: inline::Markup<'a>) -> Self {
-        Any::Inline(keyboard.into())
-    }
-}
-
 impl<'a> From<reply::Keyboard<'a>> for Any<'a> {
     fn from(keyboard: reply::Keyboard<'a>) -> Self {
         Any::Reply(keyboard)
