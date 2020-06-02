@@ -1,33 +1,29 @@
 use tbot::{
     prelude::*,
-    types::keyboard::inline::{Button, ButtonKind, Keyboard},
+    types::keyboard::inline::{Button, ButtonKind},
     Bot,
 };
 
 const TUTORIAL: &str = "https://gitlab.com/SnejUgal/tbot/wikis/Tutorial";
+const KEYBOARD: &[&[Button]] = &[
+    &[
+        Button::new("Cool!", ButtonKind::CallbackData("cool")),
+        Button::new("Amazing!", ButtonKind::CallbackData("amazing")),
+    ],
+    &[Button::new(
+        "I wanna get started with it!",
+        ButtonKind::Url(TUTORIAL),
+    )],
+];
 
 #[tokio::main]
 async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", |context| async move {
-        let keyboard: &[&[Button]] = &[
-            &[
-                Button::new("Cool!", ButtonKind::with_callback_data("cool")),
-                Button::new(
-                    "Amazing!",
-                    ButtonKind::with_callback_data("amazing"),
-                ),
-            ],
-            &[Button::new(
-                "I wanna get started with it!",
-                ButtonKind::with_url(TUTORIAL),
-            )],
-        ];
-
         let call_result = context
             .send_message("This is a keyboard done with tbot!")
-            .reply_markup(Keyboard::from(keyboard))
+            .reply_markup(KEYBOARD)
             .call()
             .await;
 
