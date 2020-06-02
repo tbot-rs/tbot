@@ -55,7 +55,8 @@ impl PreCheckout {
         &'a self,
         result: Result<(), &'a str>,
     ) -> AnswerPreCheckoutQuery<'a> {
-        self.bot.answer_pre_checkout_query(self.id.as_ref(), result)
+        self.bot
+            .answer_pre_checkout_query(self.id.as_borrowed(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.

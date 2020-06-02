@@ -11,7 +11,7 @@ pub struct Id<'a>(pub Cow<'a, str>);
 impl<'a> Id<'a> {
     /// Create a new reference to an inline query ID.
     #[must_use]
-    pub fn as_ref(&'a self) -> Self {
+    pub fn as_borrowed(&'a self) -> Self {
         Self(Cow::Borrowed(&self.0))
     }
 }

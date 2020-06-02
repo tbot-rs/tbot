@@ -33,6 +33,6 @@ impl crate::internal::Sealed for Audio {}
 impl<'a> AsFileId<'a> for Audio {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
-        self.file_id.as_ref()
+        self.file_id.as_borrowed()
     }
 }

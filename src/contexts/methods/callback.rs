@@ -19,7 +19,8 @@ pub trait Callback: fields::Callback {
         &'a self,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a> {
-        self.bot().answer_callback_query(self.id().as_ref(), action)
+        self.bot()
+            .answer_callback_query(self.id().as_borrowed(), action)
     }
 
     /// Answers the query without any action.

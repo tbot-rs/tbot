@@ -42,6 +42,6 @@ impl Inline {
         &'a self,
         results: &'a [inline_query::Result<'a>],
     ) -> AnswerInlineQuery<'a> {
-        self.bot.answer_inline_query(self.id.as_ref(), results)
+        self.bot.answer_inline_query(self.id.as_borrowed(), results)
     }
 }

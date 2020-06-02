@@ -29,6 +29,6 @@ impl crate::internal::Sealed for VideoNote {}
 impl<'a> AsFileId<'a> for VideoNote {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
-        self.file_id.as_ref()
+        self.file_id.as_borrowed()
     }
 }

@@ -12,7 +12,7 @@ pub struct Id<'a>(pub Cow<'a, str>);
 impl<'a> Id<'a> {
     /// Create a new reference to a file ID.
     #[must_use]
-    pub fn as_ref(&'a self) -> Self {
+    pub fn as_borrowed(&'a self) -> Self {
         Self(Cow::Borrowed(&self.0))
     }
 }
@@ -45,6 +45,6 @@ pub trait AsFileId<'a>: Sealed {
 impl<'a> AsFileId<'a> for Id<'a> {
     #[must_use]
     fn as_file_id(&self) -> Id<'_> {
-        self.as_ref()
+        self.as_borrowed()
     }
 }

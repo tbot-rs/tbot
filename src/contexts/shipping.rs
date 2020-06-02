@@ -46,7 +46,8 @@ impl Shipping {
         &'a self,
         result: Result<&'a [shipping::Option<'a>], &'a str>,
     ) -> AnswerShippingQuery<'a> {
-        self.bot.answer_shipping_query(self.id.as_ref(), result)
+        self.bot
+            .answer_shipping_query(self.id.as_borrowed(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.

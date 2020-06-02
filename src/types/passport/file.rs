@@ -22,6 +22,6 @@ impl crate::internal::Sealed for File {}
 impl<'a> AsFileId<'a> for File {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
-        self.id.as_ref()
+        self.id.as_borrowed()
     }
 }
