@@ -27,6 +27,22 @@ impl<'a> LoginUrl<'a> {
         }
     }
 
+    /// Create an owned `LoginUrl` from a reference without cloning.
+    pub fn from_ref(&'a self) -> Self {
+        Self {
+            url: Cow::Borrowed(&self.url),
+            forward_text: self
+                .forward_text
+                .as_deref()
+                .map(|x| Cow::Borrowed(x)),
+            bot_username: self
+                .bot_username
+                .as_deref()
+                .map(|x| Cow::Borrowed(x)),
+            request_write_access: self.request_write_access,
+        }
+    }
+
     /// Configures `forward_text`.
     pub fn forward_text(mut self, text: impl Into<Cow<'a, str>>) -> Self {
         self.forward_text = Some(text.into());

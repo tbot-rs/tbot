@@ -34,6 +34,25 @@ pub enum ButtonKind<'a> {
 }
 
 impl<'a> ButtonKind<'a> {
+    /// Create an owned `ButtonKind` from a reference without cloning.
+    fn from_ref(&'a self) -> Self {
+        match self {
+            ButtonKind::Url(data) => ButtonKind::Url(Cow::Borrowed(data)),
+            ButtonKind::LoginUrl(data) => ButtonKind::LoginUrl(data.from_ref()),
+            ButtonKind::CallbackData(data) => {
+                ButtonKind::CallbackData(Cow::Borrowed(data))
+            }
+            ButtonKind::SwitchInlineQuery(data) => {
+                ButtonKind::SwitchInlineQuery(Cow::Borrowed(data))
+            }
+            ButtonKind::SwitchInlineQueryCurrentChat(data) => {
+                ButtonKind::SwitchInlineQueryCurrentChat(Cow::Borrowed(data))
+            }
+            ButtonKind::CallbackGame(Game) => ButtonKind::CallbackGame(Game),
+            ButtonKind::Pay(data) => ButtonKind::Pay(*data),
+        }
+    }
+
     /// Constructs a `ButtonKind` of type `Url`.
     pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
         Self::Url(url.into())
@@ -104,6 +123,14 @@ impl<'a> Button<'a> {
             kind,
         }
     }
+
+    /// Create an owned `Button` from a reference without cloning.
+    pub fn from_ref(&'a self) -> Self {
+        Self {
+            text: Cow::Borrowed(&self.text),
+            kind: self.kind.from_ref(),
+        }
+    }
 }
 
 impl Serialize for Button<'_> {
@@ -145,12 +172,18 @@ impl<'a> Keyboard<'a> {
     }
 }
 
-impl<'a, B> From<B> for Keyboard<'a>
-where
-    B: IntoIterator,
-    B::Item: IntoIterator<Item = Button<'a>>,
-{
-    fn from(buttons: B) -> Self {
+impl<'a> From<&'a [&'a [Button<'a>]]> for Keyboard<'a> {
+    fn from(buttons: &'a [&'a [Button<'a>]]) -> Self {
+        let markup: Markup<'a> = buttons
+            .iter()
+            .map(|button_row| button_row.iter().map(Button::from_ref).collect())
+            .collect();
+        Self::new(markup)
+    }
+}
+
+impl<'a> From<Vec<Vec<Button<'a>>>> for Keyboard<'a> {
+    fn from(buttons: Vec<Vec<Button<'a>>>) -> Self {
         Self::new(
             buttons
                 .into_iter()

@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::keyboard::inline::{Button, ButtonKind},
+    types::keyboard::inline::{Button, ButtonKind, Keyboard},
     Bot,
 };
 
@@ -27,7 +27,7 @@ async fn main() {
 
         let call_result = context
             .send_message("This is a keyboard done with tbot!")
-            .reply_markup(keyboard)
+            .reply_markup(Keyboard::from(keyboard))
             .call()
             .await;
 
