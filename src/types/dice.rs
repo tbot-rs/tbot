@@ -9,19 +9,32 @@ use serde::{
 };
 
 /// Represents the kind of a thrown dice.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum Kind {
     /// 🎯
     Darts,
     /// 🎲
     Dice,
+    /// 🏀
+    Basketball,
+    /// Some emoji `tbot` isn't aware of yet.
+    ///
+    /// Please note that this field exists only to prevent parsing errors caused
+    /// by unknown dice kinds, it is **not** meant to be matched on
+    /// or constructed unless as a _temporary_ workaround until a new version
+    /// of `tbot` with the new dice kind is released. In other words, we reserve
+    /// the right to add new kinds to this enum and release them in patch
+    /// updates, and we won't consider any breakage caused by this as a bug.
+    /// You should also not construct this variant with an emoji covered by the
+    /// above variants.
+    Unknown(String),
 }
 
 /// Represents a [`Dice`].
 ///
 /// [`Dice`]: https://core.telegram.org/bots/api#dice
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
 pub struct Dice {
     /// The value of the dice in the range [1, 6].
@@ -62,9 +75,8 @@ impl<'v> Visitor<'v> for DiceVisitor {
         let kind = match emoji.as_deref() {
             Some("🎯") => Kind::Darts,
             Some("🎲") => Kind::Dice,
-            Some(unknown) => {
-                return Err(de::Error::unknown_variant(unknown, &["🎯", "🎲"]))
-            }
+            Some("🏀") => Kind::Basketball,
+            Some(unknown) => Kind::Unknown(unknown.to_string()),
             None => return Err(de::Error::missing_field(EMOJI)),
         };
 
@@ -92,6 +104,8 @@ impl Serialize for Kind {
         serializer.serialize_str(match self {
             Self::Dice => "🎲",
             Self::Darts => "🎯",
+            Self::Basketball => "🏀",
+            Self::Unknown(emoji) => emoji,
         })
     }
 }
