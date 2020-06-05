@@ -342,10 +342,10 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::VideoNote(video_note)
         } else if let Some(contact) = contact {
             Kind::Contact(contact)
-        } else if let Some(location) = location {
-            Kind::Location(location)
         } else if let Some(venue) = venue {
             Kind::Venue(venue)
+        } else if let Some(location) = location {
+            Kind::Location(location)
         } else if let Some(poll) = poll {
             Kind::Poll(poll)
         } else if let Some(animation) = animation {
