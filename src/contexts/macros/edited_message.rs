@@ -23,6 +23,8 @@ macro_rules! edited_message {
                 edit_date: i64,
                 /// The inline keyboard attached to the message.
                 reply_markup: Option<crate::types::message::inline_markup::Keyboard>,
+                /// The bot via which the message was sent.
+                via_bot: Option<crate::types::User>,
                 #[doc = $media_doc]
                 $media: $media_type,
                 $(#[doc = $field_doc] $field: $type,)*
@@ -36,6 +38,7 @@ macro_rules! edited_message {
                 infer reply_to;
                 infer author_signature;
                 infer reply_markup;
+                infer via_bot;
 
                 Self {
                     edit_date: edit_date,
@@ -64,6 +67,11 @@ macro_rules! edited_message {
                 &self
             ) -> Option<&crate::types::message::inline_markup::Keyboard> {
                 self.reply_markup.as_ref()
+            }
+
+            #[must_use]
+            fn via_bot(&self) -> Option<&crate::types::User> {
+                self.via_bot.as_ref()
             }
         }
 
