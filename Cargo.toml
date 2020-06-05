@@ -6,8 +6,8 @@ repository = "https://gitlab.com/SnejUgal/tbot"
 readme = "./readme.md"
 license = "MIT"
 authors = [
-    "SnejUgal <snejugal@icloud.com>",
-    "AlexStrNik (t.me/AlexStrNik)",
+    "SnejUgal <contact@snejugal.ru>",
+    "AlexStrNik <contact@alexstrnik.ru>",
 ]
 edition = "2018"
 keywords = [
