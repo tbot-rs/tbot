@@ -21,7 +21,7 @@ pub struct Message {
     /// The author of the message. Note that this field is `None` for messages
     /// from channels.
     pub from: Option<User>,
-    /// The timestamp of the messagr.
+    /// The timestamp of the message.
     pub date: i64,
     /// The chat to which the message was sent.
     pub chat: Chat,
