@@ -8,6 +8,47 @@ macro_rules! doc {
     }
 }
 
+/// Represents a `Fresh` GIF's thumb.
+pub struct GifThumb<'a> {
+    url: &'a str,
+    mime: &'a str,
+}
+
+impl<'a> GifThumb<'a> {
+    /// Constructs a JPEG thumb.
+    #[must_use]
+    pub const fn jpeg(url: &'a str) -> Self {
+        Self {
+            url,
+            mime: "image/jpeg",
+        }
+    }
+
+    /// Constructs a GIF thumb.
+    #[must_use]
+    pub const fn gif(url: &'a str) -> Self {
+        Self {
+            url,
+            mime: "image/gif",
+        }
+    }
+
+    /// Constructs a MP4 thumb.
+    #[must_use]
+    pub const fn mp4(url: &'a str) -> Self {
+        Self {
+            url,
+            mime: "video/mp4",
+        }
+    }
+}
+
+impl<'a> From<&'a str> for GifThumb<'a> {
+    fn from(url: &'a str) -> Self {
+        Self::jpeg(url)
+    }
+}
+
 #[rustfmt::skip] // it messes up multiline attributes
 macro_rules! gif_base {
     (
@@ -19,6 +60,7 @@ macro_rules! gif_base {
       struct: $struct:ident,
       doc_link_part: $doc_link_part:literal,
     ) => {
+        use super::GifThumb;
         use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
         use serde::Serialize;
 
@@ -27,6 +69,7 @@ macro_rules! gif_base {
         #[must_use]
         pub struct Fresh<'a> {
             thumb_url: &'a str,
+            thumb_mime_type: &'a str,
             #[serde(rename = $url)]
             url: &'a str,
             #[serde(
@@ -87,9 +130,12 @@ macro_rules! gif_base {
 
         impl<'a> Fresh<'a> {
             /// Constructs a `Fresh` GIF.
-            pub const fn new(thumb_url: &'a str, url: &'a str) -> Self {
+            pub fn new(thumb: impl Into<GifThumb<'a>>, url: &'a str) -> Self {
+                let thumb = thumb.into();
+
                 Self {
-                    thumb_url,
+                    thumb_url: thumb.url,
+                    thumb_mime_type: thumb.mime,
                     url,
                     width: None,
                     height: None,
