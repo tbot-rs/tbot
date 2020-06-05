@@ -86,6 +86,11 @@ impl MediaMessage for Command<Text> {
     fn reply_markup(&self) -> Option<&inline_markup::Keyboard> {
         self.context.reply_markup.as_ref()
     }
+
+    #[must_use]
+    fn via_bot(&self) -> Option<&User> {
+        self.context.via_bot.as_ref()
+    }
 }
 
 impl Forward for Command<Text> {
@@ -156,6 +161,11 @@ impl MediaMessage for Command<EditedText> {
     #[must_use]
     fn reply_markup(&self) -> Option<&inline_markup::Keyboard> {
         self.context.reply_markup.as_ref()
+    }
+
+    #[must_use]
+    fn via_bot(&self) -> Option<&User> {
+        self.context.via_bot.as_ref()
     }
 }
 
