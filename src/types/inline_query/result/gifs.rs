@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 macro_rules! doc {
     (
         $doc:expr,
@@ -5,6 +7,47 @@ macro_rules! doc {
     ) => {
         #[doc = $doc]
         $($item)+
+    }
+}
+
+/// Represents a `Fresh` GIF's thumb.
+pub struct GifThumb<'a> {
+    url: Cow<'a, str>,
+    mime: Cow<'a, str>,
+}
+
+impl<'a> GifThumb<'a> {
+    /// Constructs a JPEG thumb.
+    #[must_use]
+    pub fn jpeg(url: impl Into<Cow<'a, str>>) -> Self {
+        Self {
+            url: url.into(),
+            mime: "image/jpeg".into(),
+        }
+    }
+
+    /// Constructs a GIF thumb.
+    #[must_use]
+    pub fn gif(url: impl Into<Cow<'a, str>>) -> Self {
+        Self {
+            url: url.into(),
+            mime: "image/gif".into(),
+        }
+    }
+
+    /// Constructs a MP4 thumb.
+    #[must_use]
+    pub fn mp4(url: impl Into<Cow<'a, str>>) -> Self {
+        Self {
+            url: url.into(),
+            mime: "video/mp4".into(),
+        }
+    }
+}
+
+impl<'a> From<&'a str> for GifThumb<'a> {
+    fn from(url: &'a str) -> Self {
+        Self::jpeg(url)
     }
 }
 
@@ -19,6 +62,7 @@ macro_rules! gif_base {
       struct: $struct:ident,
       doc_link_part: $doc_link_part:literal,
     ) => {
+        use super::GifThumb;
         use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
         use serde::Serialize;
         use std::borrow::Cow;
@@ -28,6 +72,7 @@ macro_rules! gif_base {
         #[must_use]
         pub struct Fresh<'a> {
             thumb_url: Cow<'a, str>,
+            thumb_mime_type: Cow<'a, str>,
             #[serde(rename = $url)]
             url: Cow<'a, str>,
             #[serde(
@@ -88,12 +133,12 @@ macro_rules! gif_base {
 
         impl<'a> Fresh<'a> {
             /// Constructs a `Fresh` GIF.
-            pub fn new(
-                thumb_url: impl Into<Cow<'a, str>>,
-                url: impl Into<Cow<'a, str>>
-            ) -> Self {
+            pub fn new(thumb: impl Into<GifThumb<'a>>, url: impl Into<Cow<'a, str>>) -> Self {
+                let thumb = thumb.into();
+
                 Self {
-                    thumb_url: thumb_url.into(),
+                    thumb_url: thumb.url,
+                    thumb_mime_type: thumb.mime,
                     url: url.into(),
                     width: None,
                     height: None,

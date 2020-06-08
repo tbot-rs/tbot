@@ -32,6 +32,7 @@ pub use {
     gifs::{
         gif::{self, Gif},
         mpeg4::{self as mpeg4_gif, Mpeg4Gif},
+        GifThumb,
     },
     location::Location,
     photo::Photo,

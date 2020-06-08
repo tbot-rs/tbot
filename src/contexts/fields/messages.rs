@@ -25,6 +25,8 @@ pub trait MediaMessage: Message {
     fn author_signature(&self) -> Option<&str>;
     /// The inline keyboard attached to the message.
     fn reply_markup(&self) -> Option<&inline_markup::Keyboard>;
+    /// The bot via which the message was sent.
+    fn via_bot(&self) -> Option<&User>;
 }
 
 /// A general trait for messages that _can_ be a forward.
