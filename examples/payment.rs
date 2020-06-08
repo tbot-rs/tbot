@@ -58,7 +58,8 @@ async fn main() {
 
     bot.shipping(|context| async move {
         let price = &[LabeledPrice::new("At your home", 1_00)][..];
-        let delivery = &[shipping::Option::new("crab", "Delivery Crab", price)][..];
+        let delivery =
+            &[shipping::Option::new("crab", "Delivery Crab", price)][..];
         let call_result = context.ok(delivery).call().await;
         if let Err(err) = call_result {
             dbg!(err);
