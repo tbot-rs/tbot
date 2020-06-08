@@ -3,6 +3,7 @@ use crate::{
     types::{inline_query, InlineQuery, Location, User},
     Bot,
 };
+use std::borrow::Cow;
 use std::sync::Arc;
 
 common! {
@@ -40,7 +41,7 @@ impl Inline {
     /// Answers the query.
     pub fn answer<'a>(
         &'a self,
-        results: &'a [inline_query::Result<'a>],
+        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
         self.bot.answer_inline_query(self.id.as_borrowed(), results)
     }

@@ -2,6 +2,7 @@ use crate::{
     contexts::fields, methods::AnswerCallbackQuery,
     types::parameters::CallbackAction,
 };
+use std::borrow::Cow;
 
 /// Provides methods appliable to callback queries.
 pub trait Callback: fields::Callback {
@@ -29,17 +30,26 @@ pub trait Callback: fields::Callback {
     }
 
     /// Opens a URL.
-    fn open_url<'a>(&'a self, url: &'a str) -> AnswerCallbackQuery<'a> {
+    fn open_url<'a>(
+        &'a self,
+        url: impl Into<Cow<'a, str>>,
+    ) -> AnswerCallbackQuery<'a> {
         self.answer(CallbackAction::with_url(url))
     }
 
     /// Shows a notification to the user.
-    fn notify<'a>(&'a self, text: &'a str) -> AnswerCallbackQuery<'a> {
+    fn notify<'a>(
+        &'a self,
+        text: impl Into<Cow<'a, str>>,
+    ) -> AnswerCallbackQuery<'a> {
         self.answer(CallbackAction::with_notification(text))
     }
 
     /// Shows an alert to the user.
-    fn alert<'a>(&'a self, text: &'a str) -> AnswerCallbackQuery<'a> {
+    fn alert<'a>(
+        &'a self,
+        text: impl Into<Cow<'a, str>>,
+    ) -> AnswerCallbackQuery<'a> {
         self.answer(CallbackAction::with_alert(text))
     }
 }

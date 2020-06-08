@@ -27,6 +27,7 @@ use crate::{
     Token,
 };
 use hyper_proxy::Proxy;
+use std::borrow::Cow;
 use std::sync::Arc;
 
 /// Provides methods to call the Bots API.
@@ -122,9 +123,9 @@ impl Bot {
     pub fn add_sticker_to_set<'a>(
         &'a self,
         user_id: user::Id,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
         png_sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: &'a str,
+        emojis: impl Into<Cow<'a, str>>,
     ) -> AddStickerToSet<'a> {
         AddStickerToSet::new(
             &self.client,
@@ -152,7 +153,7 @@ impl Bot {
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
         inline_query_id: inline_query::id::Id<'a>,
-        results: &'a [inline_query::Result<'a>],
+        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery::new(
             &self.client,
@@ -165,7 +166,7 @@ impl Bot {
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
         pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
-        result: Result<(), &'a str>,
+        result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> AnswerPreCheckoutQuery<'a> {
         AnswerPreCheckoutQuery::new(
             &self.client,
@@ -178,7 +179,10 @@ impl Bot {
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
         shipping_query_id: shipping::query::id::Id<'a>,
-        result: Result<&'a [shipping::Option<'a>], &'a str>,
+        result: Result<
+            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, str>>,
+        >,
     ) -> AnswerShippingQuery<'a> {
         AnswerShippingQuery::new(
             &self.client,
@@ -192,10 +196,10 @@ impl Bot {
     pub fn create_new_sticker_set<'a>(
         &'a self,
         user_id: user::Id,
-        name: &'a str,
-        title: &'a str,
+        name: impl Into<Cow<'a, str>>,
+        title: impl Into<Cow<'a, str>>,
         png_sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: &'a str,
+        emojis: impl Into<Cow<'a, str>>,
     ) -> CreateNewStickerSet<'a> {
         CreateNewStickerSet::new(
             &self.client,
@@ -241,7 +245,7 @@ impl Bot {
     /// Deletes a sticker from a sticker set.
     pub fn delete_sticker_from_set<'a>(
         &'a self,
-        sticker: &'a str,
+        sticker: impl Into<Cow<'a, str>>,
     ) -> DeleteStickerFromSet<'a> {
         DeleteStickerFromSet::new(&self.client, self.token.as_ref(), sticker)
     }
@@ -508,7 +512,10 @@ impl Bot {
     }
 
     /// Gets a sticker set by its name.
-    pub fn get_sticker_set<'a>(&'a self, name: &'a str) -> GetStickerSet<'a> {
+    pub fn get_sticker_set<'a>(
+        &'a self,
+        name: impl Into<Cow<'a, str>>,
+    ) -> GetStickerSet<'a> {
         GetStickerSet::new(&self.client, self.token.as_ref(), name)
     }
 
@@ -639,8 +646,8 @@ impl Bot {
     pub fn send_contact<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
     ) -> SendContact<'a> {
         SendContact::new(
             &self.client,
@@ -655,7 +662,7 @@ impl Bot {
     pub fn send_game<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        game_short_name: &'a str,
+        game_short_name: impl Into<Cow<'a, str>>,
     ) -> SendGame<'a> {
         SendGame::new(
             &self.client,
@@ -687,13 +694,13 @@ impl Bot {
     pub fn send_invoice<'a>(
         &'a self,
         chat_id: impl Into<chat::Id>,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<Cow<'a, str>>,
+        description: impl Into<Cow<'a, str>>,
+        payload: impl Into<Cow<'a, str>>,
+        provider_token: impl Into<Cow<'a, str>>,
+        start_parameter: impl Into<Cow<'a, str>>,
+        currency: impl Into<Cow<'a, str>>,
+        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> SendInvoice<'a> {
         SendInvoice::new(
             &self.client,
@@ -722,7 +729,7 @@ impl Bot {
     pub fn send_media_group<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
     ) -> SendMediaGroup<'a> {
         SendMediaGroup::new(&self.client, self.token.as_ref(), chat_id, media)
     }
@@ -768,8 +775,8 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         position: (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<Cow<'a, str>>,
+        address: impl Into<Cow<'a, str>>,
     ) -> SendVenue<'a> {
         SendVenue::new(
             &self.client,
@@ -818,7 +825,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
-        custom_title: &'a str,
+        custom_title: impl Into<Cow<'a, str>>,
     ) -> SetChatAdministratorCustomTitle<'a> {
         SetChatAdministratorCustomTitle::new(
             &self.client,
@@ -833,7 +840,7 @@ impl Bot {
     pub fn set_chat_description<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        description: &'a str,
+        description: impl Into<Cow<'a, str>>,
     ) -> SetChatDescription<'a> {
         SetChatDescription::new(
             &self.client,
@@ -870,7 +877,7 @@ impl Bot {
     pub fn set_chat_sticker_set<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        sticker_set_name: &'a str,
+        sticker_set_name: impl Into<Cow<'a, str>>,
     ) -> SetChatStickerSet<'a> {
         SetChatStickerSet::new(
             &self.client,
@@ -884,7 +891,7 @@ impl Bot {
     pub fn set_chat_title<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        title: &'a str,
+        title: impl Into<Cow<'a, str>>,
     ) -> SetChatTitle<'a> {
         SetChatTitle::new(&self.client, self.token.as_ref(), chat_id, title)
     }
@@ -926,7 +933,7 @@ impl Bot {
     /// Sets the list of the bot's commands.
     pub fn set_my_commands<'a>(
         &'a self,
-        commands: &'a [BotCommand<'a>],
+        commands: impl Into<Cow<'a, [BotCommand<'a>]>>,
     ) -> SetMyCommands<'a> {
         SetMyCommands::new(&self.client, self.token.as_ref(), commands)
     }
@@ -935,7 +942,7 @@ impl Bot {
     pub fn set_passport_data_errors<'a>(
         &'a self,
         user_id: user::Id,
-        errors: &'a [passport::element::Error<'a>],
+        errors: impl Into<Cow<'a, [passport::element::Error<'a>]>>,
     ) -> SetPassportDataErrors<'a> {
         SetPassportDataErrors::new(
             &self.client,
@@ -948,7 +955,7 @@ impl Bot {
     /// Changes a sticker's position in a sticker set.
     pub fn set_sticker_position_in_set<'a>(
         &'a self,
-        sticker: &'a str,
+        sticker: impl Into<Cow<'a, str>>,
         position: u32,
     ) -> SetStickerPositionInSet<'a> {
         SetStickerPositionInSet::new(
@@ -963,7 +970,7 @@ impl Bot {
     pub fn set_sticker_set_thumb<'a>(
         &'a self,
         user_id: user::Id,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
         thumb: Option<&'a StickerSetThumb<'a>>,
     ) -> SetStickerSetThumb<'a> {
         SetStickerSetThumb::new(
@@ -1053,7 +1060,7 @@ impl Bot {
     pub fn upload_sticker_file<'a>(
         &'a self,
         user_id: user::Id,
-        png_sticker: &'a [u8],
+        png_sticker: impl Into<Cow<'a, [u8]>>,
     ) -> UploadStickerFile<'a> {
         UploadStickerFile::new(
             &self.client,

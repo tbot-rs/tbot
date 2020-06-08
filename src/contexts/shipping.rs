@@ -3,6 +3,7 @@ use crate::{
     types::{shipping, User},
     Bot,
 };
+use std::borrow::Cow;
 use std::sync::Arc;
 
 common! {
@@ -44,7 +45,10 @@ impl Shipping {
     /// [`err`]: #method.err
     pub fn answer<'a>(
         &'a self,
-        result: Result<&'a [shipping::Option<'a>], &'a str>,
+        result: Result<
+            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, str>>,
+        >,
     ) -> AnswerShippingQuery<'a> {
         self.bot
             .answer_shipping_query(self.id.as_borrowed(), result)
@@ -53,13 +57,18 @@ impl Shipping {
     /// Reports that shipping is possible and shows possible shipping options.
     pub fn ok<'a>(
         &'a self,
-        options: &'a [shipping::Option<'a>],
+        options: impl Into<Cow<'a, [shipping::Option<'a>]>>,
     ) -> AnswerShippingQuery<'a> {
-        self.answer(Ok(options))
+        let answer: Result<_, String> = Ok(options);
+        self.answer(answer)
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(&'a self, err: &'a str) -> AnswerShippingQuery<'a> {
-        self.answer(Err(err))
+    pub fn err<'a>(
+        &'a self,
+        err: impl Into<Cow<'a, str>>,
+    ) -> AnswerShippingQuery<'a> {
+        let answer: Result<Vec<_>, _> = Err(err);
+        self.answer(answer)
     }
 }

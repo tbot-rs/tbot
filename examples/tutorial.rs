@@ -58,7 +58,7 @@ async fn main() {
         let article = Article::new(&title, content).description(&message);
         let result = inline_query::Result::new(&id, article);
 
-        let call_result = context.answer(&[result]).call().await;
+        let call_result = context.answer(&[result][..]).call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }
