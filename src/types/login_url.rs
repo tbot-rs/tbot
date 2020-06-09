@@ -28,7 +28,7 @@ impl<'a> LoginUrl<'a> {
     }
 
     /// Create an owned `LoginUrl` from a reference without cloning.
-    pub fn from_ref(&'a self) -> Self {
+    pub fn as_borrowed(&'a self) -> Self {
         Self {
             url: Cow::Borrowed(&self.url),
             forward_text: self
