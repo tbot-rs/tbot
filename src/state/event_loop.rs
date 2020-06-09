@@ -876,6 +876,8 @@ impl<S> StatefulEventLoop<S> {
     ///
     /// The username is used when checking if a command such as
     /// `/command@username` was directed to the bot.
+    // `StatefulEventLoop` can be constructed only if `S: Send + Sync`
+    #[allow(clippy::future_not_send)]
     pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
         self.inner.fetch_username().await
     }

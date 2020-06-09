@@ -38,7 +38,7 @@ struct Response<T> {
 }
 
 #[instrument(skip(client, token, boundary, body))]
-pub(crate) async fn call_method<'a, T>(
+pub async fn call_method<'a, T>(
     client: &'a Client,
     token: token::Ref<'a>,
     method: &'static str,
