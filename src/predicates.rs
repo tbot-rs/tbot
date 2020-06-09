@@ -1,5 +1,9 @@
 //! Useful predicates and utilities for them.
 
+// `tbot`'s types are `Send`, and users can't implement `tbot`'s traits anyway,
+// so adding `+ Send + Sync` will only make docs too explicit
+#![allow(clippy::future_not_send)]
+
 pub mod chat;
 pub mod media;
 pub mod message;

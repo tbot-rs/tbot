@@ -6,7 +6,7 @@ use crate::{
 /// This method isn't meant to be used by users directly.
 #[derive(Debug, Clone)]
 #[must_use]
-pub(crate) struct SetWebhook<'a> {
+pub struct SetWebhook<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
     url: &'a str,

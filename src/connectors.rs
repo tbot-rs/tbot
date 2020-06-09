@@ -21,7 +21,7 @@ pub type Https = HttpsConnector<HttpConnector>;
 pub type Proxy = ProxyConnector<Https>;
 
 #[derive(Debug)]
-pub(crate) enum Client {
+pub enum Client {
     Https(hyper::Client<Https>),
     Proxy(hyper::Client<Proxy>),
 }
