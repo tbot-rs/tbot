@@ -22,7 +22,7 @@ struct WithIndex<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub(crate) struct Album<'a>(pub &'a [GroupMedia<'a>]);
+pub struct Album<'a>(pub &'a [GroupMedia<'a>]);
 
 impl GroupMedia<'_> {
     fn serialize<S>(

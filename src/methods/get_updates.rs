@@ -8,7 +8,7 @@ use serde::Serialize;
 
 #[derive(Serialize, Debug, Clone)]
 #[must_use]
-pub(crate) struct GetUpdates<'a> {
+pub struct GetUpdates<'a> {
     #[serde(skip)]
     client: &'a Client,
     #[serde(skip)]

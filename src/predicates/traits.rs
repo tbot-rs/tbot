@@ -47,6 +47,7 @@ where
     }
 
     /// `self(..).await != other(..).await`
+    #[allow(clippy::eval_order_dependence)] // everything is clear here
     fn xor<P, PF>(self, other: P) -> BoxedPredicate<C>
     where
         P: PredicateBooleanOperations<C, PF> + 'static,
@@ -121,6 +122,7 @@ where
     }
 
     /// `self(..).await != other(..).await`
+    #[allow(clippy::eval_order_dependence)] // everything is clear here
     fn xor<P, PF>(self, other: P) -> BoxedStatefulPredicate<C, S>
     where
         P: StatefulPredicateBooleanOperations<C, S, PF> + 'static,

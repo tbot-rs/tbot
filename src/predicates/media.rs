@@ -37,7 +37,7 @@ where
 
             let extension = extension.to_string_lossy();
 
-            extensions.into_iter().any(|x| x.deref() == extension)
+            extensions.into_iter().any(|x| **x == *extension)
         })
     }
 }

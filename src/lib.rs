@@ -60,7 +60,11 @@
 // errors clearly describe why something may fail
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::multiple_crate_versions)] // can't do much
-#![allow(clippy::needless_doctest_main)] // that's where you're wrong, kiddo
+// that's where you're wrong, kiddo
+#![allow(clippy::needless_doctest_main)]
+// Can't do anything about `await` desugaring (fixed in some nightly, but
+// we test on stable)
+#![allow(clippy::used_underscore_binding)]
 #![doc(
     html_logo_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg",
     html_favicon_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg"
