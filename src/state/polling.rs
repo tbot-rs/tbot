@@ -96,6 +96,7 @@ impl<S> Polling<S> {
     }
 
     /// Starts the event loop.
+    #[allow(clippy::future_not_send)] // `S: Send + Sync` is guaranteed
     pub async fn start(self) -> Result<Infallible, errors::PollingSetup> {
         self.inner.start().await
     }
