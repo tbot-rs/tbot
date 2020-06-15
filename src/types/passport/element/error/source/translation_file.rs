@@ -59,7 +59,7 @@ impl<'a> TranslationFile<'a> {
 pub struct TranslationFiles<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hashes: Cow<'a, [Cow<'a, str>]>,
+    file_hashes: Vec<Cow<'a, str>>,
 }
 
 impl<'a> TranslationFiles<'a> {

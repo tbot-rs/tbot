@@ -59,7 +59,7 @@ pub struct Any<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
     question: Cow<'a, str>,
-    options: Cow<'a, [Cow<'a, str>]>,
+    options: Vec<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -84,7 +84,6 @@ impl<'a> Quiz<'a> {
     /// Configures the `explanation` and `explanation_parse_mode` fields.
     pub fn explanation(mut self, explanation: impl Into<Text<'a>>) -> Self {
         let explanation = explanation.into();
-
         self.explanation = Some(explanation.text);
         self.explanation_parse_mode = explanation.parse_mode;
         self
@@ -104,14 +103,14 @@ impl Poll {
 impl<'a> Any<'a> {
     /// Constructs a poll.
     #[must_use]
-    pub fn new<O, C>(
+    pub fn new<O>(
         question: impl Into<Cow<'a, str>>,
         options: O,
         kind: impl Into<Kind<'a>>,
     ) -> Self
     where
-        O: IntoIterator<Item = C>,
-        C: Into<Cow<'a, str>>,
+        O: IntoIterator,
+        O::Item: Into<Cow<'a, str>>,
     {
         Self {
             kind: kind.into(),

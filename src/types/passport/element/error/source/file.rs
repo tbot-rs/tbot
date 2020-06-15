@@ -51,7 +51,7 @@ impl<'a> File<'a> {
 pub struct Files<'a> {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hashes: Cow<'a, [Cow<'a, str>]>,
+    file_hashes: Vec<Cow<'a, str>>,
 }
 
 impl<'a> Files<'a> {
