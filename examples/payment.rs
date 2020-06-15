@@ -24,7 +24,7 @@ async fn main() {
 
     bot.start(move |context| async move {
         let call_result = if context.text.value == START_PARAMETER {
-            let price = &[LabeledPrice::new(TITLE, 1_00)][..];
+            let price: &[_] = &[LabeledPrice::new(TITLE, 1_00)];
             let mut invoice = context.send_invoice(
                 TITLE,
                 DESCRIPTION,
@@ -57,9 +57,9 @@ async fn main() {
     });
 
     bot.shipping(|context| async move {
-        let price = &[LabeledPrice::new("At your home", 1_00)][..];
-        let delivery =
-            &[shipping::Option::new("crab", "Delivery Crab", price)][..];
+        let price: &[_] = &[LabeledPrice::new("At your home", 1_00)];
+        let delivery: &[_] =
+            &[shipping::Option::new("crab", "Delivery Crab", price)];
         let call_result = context.ok(delivery).call().await;
         if let Err(err) = call_result {
             dbg!(err);

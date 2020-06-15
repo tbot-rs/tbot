@@ -30,7 +30,7 @@ pub struct Video {
 
 impl crate::internal::Sealed for Video {}
 
-impl<'a> AsFileId<'a> for Video {
+impl AsFileId<'_> for Video {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
         self.file_id.as_borrowed()

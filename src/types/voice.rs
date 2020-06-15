@@ -21,7 +21,7 @@ pub struct Voice {
 
 impl crate::internal::Sealed for Voice {}
 
-impl<'a> AsFileId<'a> for Voice {
+impl AsFileId<'_> for Voice {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
         self.file_id.as_borrowed()

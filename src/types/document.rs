@@ -26,7 +26,7 @@ pub struct Document {
 
 impl crate::internal::Sealed for Document {}
 
-impl<'a> AsFileId<'a> for Document {
+impl AsFileId<'_> for Document {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
         self.file_id.as_borrowed()

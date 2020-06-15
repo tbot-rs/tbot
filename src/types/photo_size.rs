@@ -21,7 +21,7 @@ pub struct PhotoSize {
 
 impl crate::internal::Sealed for PhotoSize {}
 
-impl<'a> AsFileId<'a> for PhotoSize {
+impl AsFileId<'_> for PhotoSize {
     #[must_use]
     fn as_file_id(&self) -> file::id::Id<'_> {
         self.file_id.as_borrowed()

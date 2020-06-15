@@ -46,9 +46,9 @@ impl<'a> From<String> for ChatId<'a> {
     }
 }
 
-impl<'a> Into<ChatId<'a>> for &'a ChatId<'a> {
-    fn into(self) -> ChatId<'a> {
-        match self {
+impl<'a> From<&'a ChatId<'a>> for ChatId<'a> {
+    fn from(chat_id: &'a Self) -> Self {
+        match chat_id {
             ChatId::Id(id) => ChatId::Id(*id),
             ChatId::Username(username) => {
                 ChatId::Username(username.deref().into())
