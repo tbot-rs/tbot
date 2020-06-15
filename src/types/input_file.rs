@@ -59,7 +59,7 @@ impl<'a> InputFile<'a> {
         }
     }
 
-    const fn with_name(&self, name: &'a str) -> WithName<'_> {
+    const fn with_name(&'a self, name: &'a str) -> WithName<'a> {
         WithName { file: self, name }
     }
 }
