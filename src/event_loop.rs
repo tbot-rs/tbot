@@ -897,8 +897,8 @@ impl EventLoop {
         contexts::MessageDataCallback,
         /// Adds a new handler for data callbacks from chat messages.
         message_data_callback,
-        /// Adds a new handler for data callbacks which is run if the
-        /// predicate returns true.
+        /// Adds a new handler for data callbacks from chat messages which is
+        /// run if the predicate returns true.
         message_data_callback_if,
     }
 
@@ -906,8 +906,8 @@ impl EventLoop {
         contexts::InlineDataCallback,
         /// Adds a new handler for data callbacks from inline messages.
         inline_data_callback,
-        /// Adds a new handler for data callbacks which is run if the
-        /// predicate returns true.
+        /// Adds a new handler for data callbacks from inline messages which is
+        /// run if the predicate returns true.
         inline_data_callback_if,
     }
 
@@ -1005,8 +1005,8 @@ impl EventLoop {
         contexts::MessageGameCallback,
         /// Adds a new handler for game callbacks from chat messages.
         message_game_callback,
-        /// Adds a new handler for game callbacks which is run if the
-        /// predicate returns true.
+        /// Adds a new handler for game callbacks from chat messages which is
+        /// run if the predicate returns true.
         message_game_callback_if,
     }
 
@@ -1014,8 +1014,8 @@ impl EventLoop {
         contexts::InlineGameCallback,
         /// Adds a new handler for game callbacks from inline messages.
         inline_game_callback,
-        /// Adds a new handler for game callbacks which is run if the
-        /// predicate returns true.
+        /// Adds a new handler for game callbacks from inline messages which is
+        /// run if the predicate returns true.
         inline_game_callback_if,
     }
 
