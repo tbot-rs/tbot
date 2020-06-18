@@ -738,12 +738,21 @@ where
     }
 
     handler! {
-        contexts::DataCallback,
-        /// Adds a new handler for data callbacks.
-        data_callback,
+        contexts::MessageDataCallback,
+        /// Adds a new handler for data callbacks from chat messages.
+        message_data_callback,
         /// Adds a new handler for data callbacks which is run if the
         /// predicate returns true.
-        data_callback_if,
+        message_data_callback_if,
+    }
+
+    handler! {
+        contexts::InlineDataCallback,
+        /// Adds a new handler for data callbacks from inline messages.
+        inline_data_callback,
+        /// Adds a new handler for data callbacks which is run if the
+        /// predicate returns true.
+        inline_data_callback_if,
     }
 
     handler! {
@@ -837,12 +846,21 @@ where
     }
 
     handler! {
-        contexts::GameCallback,
-        /// Adds a new handler for game callbacks.
-        game_callback,
+        contexts::MessageGameCallback,
+        /// Adds a new handler for game callbacks from chat messages.
+        message_game_callback,
         /// Adds a new handler for game callbacks which is run if the
         /// predicate returns true.
-        game_callback_if,
+        message_game_callback_if,
+    }
+
+    handler! {
+        contexts::InlineGameCallback,
+        /// Adds a new handler for game callbacks from inline messages.
+        inline_game_callback,
+        /// Adds a new handler for game callbacks which is run if the
+        /// predicate returns true.
+        inline_game_callback_if,
     }
 
     handler! {
