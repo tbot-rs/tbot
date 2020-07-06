@@ -3,7 +3,7 @@
 use crate::types::{Location, User};
 use serde::Deserialize;
 
-pub mod id;
+mod id;
 pub mod result;
 
 pub use {id::Id, result::Result};

@@ -3,8 +3,7 @@
 use crate::types::{Message, User};
 use is_macro::Is;
 
-pub mod id;
-
+mod id;
 pub use id::Id;
 
 /// Represents the origin of the callback.

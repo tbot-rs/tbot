@@ -3,7 +3,7 @@
 use super::{OrderInfo, User};
 use serde::Deserialize;
 
-pub mod id;
+mod id;
 
 pub use id::Id;
 
