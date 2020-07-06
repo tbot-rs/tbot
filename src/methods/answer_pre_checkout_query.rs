@@ -15,7 +15,7 @@ pub struct AnswerPreCheckoutQuery<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
+    pre_checkout_query_id: pre_checkout_query::Id<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     error_message: Option<Cow<'a, str>>,
@@ -25,7 +25,7 @@ impl<'a> AnswerPreCheckoutQuery<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
+        pre_checkout_query_id: pre_checkout_query::Id<'a>,
         result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> Self {
         Self {

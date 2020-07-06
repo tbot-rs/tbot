@@ -144,7 +144,7 @@ impl Bot {
 
     pub(crate) fn answer_callback_query<'a>(
         &'a self,
-        callback_query_id: callback::query::id::Id<'a>,
+        callback_query_id: callback::query::Id<'a>,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a> {
         AnswerCallbackQuery::new(
@@ -157,7 +157,7 @@ impl Bot {
 
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: inline_query::id::Id<'a>,
+        inline_query_id: inline_query::Id<'a>,
         results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery::new(
@@ -170,7 +170,7 @@ impl Bot {
 
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
-        pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
+        pre_checkout_query_id: pre_checkout_query::Id<'a>,
         result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> AnswerPreCheckoutQuery<'a> {
         AnswerPreCheckoutQuery::new(
@@ -183,7 +183,7 @@ impl Bot {
 
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
-        shipping_query_id: shipping::query::id::Id<'a>,
+        shipping_query_id: shipping::query::Id<'a>,
         result: Result<
             impl Into<Cow<'a, [shipping::Option<'a>]>>,
             impl Into<Cow<'a, str>>,
