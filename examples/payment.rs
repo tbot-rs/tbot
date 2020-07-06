@@ -26,9 +26,10 @@ const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
 #[tokio::main]
 async fn main() {
+    // The one that you'd get from BotFather after connecting a payment provider
+    // to your bot.
     let provider_token: &'static str =
         Box::leak(Box::new(std::env::var("PROVIDER_TOKEN").unwrap()));
-        // The one that you'd get from BotFather after connecting a payment provider to your bot.
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.start(move |context| async move {
