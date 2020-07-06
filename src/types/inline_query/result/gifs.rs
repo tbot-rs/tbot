@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 macro_rules! doc {
     (
         $doc:expr,
@@ -10,35 +12,35 @@ macro_rules! doc {
 
 /// Represents a `Fresh` GIF's thumb.
 pub struct GifThumb<'a> {
-    url: &'a str,
-    mime: &'a str,
+    url: Cow<'a, str>,
+    mime: Cow<'a, str>,
 }
 
 impl<'a> GifThumb<'a> {
     /// Constructs a JPEG thumb.
     #[must_use]
-    pub const fn jpeg(url: &'a str) -> Self {
+    pub fn jpeg(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            url,
-            mime: "image/jpeg",
+            url: url.into(),
+            mime: "image/jpeg".into(),
         }
     }
 
     /// Constructs a GIF thumb.
     #[must_use]
-    pub const fn gif(url: &'a str) -> Self {
+    pub fn gif(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            url,
-            mime: "image/gif",
+            url: url.into(),
+            mime: "image/gif".into(),
         }
     }
 
     /// Constructs a MP4 thumb.
     #[must_use]
-    pub const fn mp4(url: &'a str) -> Self {
+    pub fn mp4(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            url,
-            mime: "video/mp4",
+            url: url.into(),
+            mime: "video/mp4".into(),
         }
     }
 }
@@ -63,15 +65,16 @@ macro_rules! gif_base {
         use super::GifThumb;
         use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
         use serde::Serialize;
+        use std::borrow::Cow;
 
         /// Represents a non-cached GIF.
-        #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+        #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[must_use]
         pub struct Fresh<'a> {
-            thumb_url: &'a str,
-            thumb_mime_type: &'a str,
+            thumb_url: Cow<'a, str>,
+            thumb_mime_type: Cow<'a, str>,
             #[serde(rename = $url)]
-            url: &'a str,
+            url: Cow<'a, str>,
             #[serde(
                 skip_serializing_if = "Option::is_none",
                 rename = $width
@@ -89,13 +92,13 @@ macro_rules! gif_base {
             duration: Option<usize>,
         }
 
-        #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+        #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[serde(untagged)]
         #[must_use]
         enum Kind<'a> {
             Cached {
                 #[serde(rename = $file_id)]
-                id: &'a str,
+                id: Cow<'a, str>,
             },
             Fresh(Fresh<'a>),
         }
@@ -112,15 +115,15 @@ macro_rules! gif_base {
                 "https://core.telegram.org/bots/api#inlinequeryresultcached",
                 $doc_link_part,
             ),
-            #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+            #[derive(Debug, PartialEq, Clone, Serialize)]
             #[must_use]
             pub struct $struct<'a> {
                 #[serde(flatten)]
                 kind: Kind<'a>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                title: Option<&'a str>,
+                title: Option<Cow<'a, str>>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                caption: Option<&'a str>,
+                caption: Option<Cow<'a, str>>,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 parse_mode: Option<ParseMode>,
                 #[serde(skip_serializing_if = "Option::is_none")]
@@ -130,13 +133,13 @@ macro_rules! gif_base {
 
         impl<'a> Fresh<'a> {
             /// Constructs a `Fresh` GIF.
-            pub fn new(thumb: impl Into<GifThumb<'a>>, url: &'a str) -> Self {
+            pub fn new(thumb: impl Into<GifThumb<'a>>, url: impl Into<Cow<'a, str>>) -> Self {
                 let thumb = thumb.into();
 
                 Self {
                     thumb_url: thumb.url,
                     thumb_mime_type: thumb.mime,
-                    url,
+                    url: url.into(),
                     width: None,
                     height: None,
                     duration: None,
@@ -177,9 +180,9 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub fn cached(id: &'a str) -> Self {
+                pub fn cached(id: impl Into<Cow<'a, str>>) -> Self {
                     Self::new(Kind::Cached {
-                        id,
+                        id: id.into(),
                     })
                 }
             }
@@ -194,8 +197,8 @@ macro_rules! gif_base {
             }
 
             /// Configures the title of the GIF.
-            pub fn title(mut self, title: &'a str) -> Self {
-                self.title = Some(title);
+            pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+                self.title = Some(title.into());
                 self
             }
 
@@ -203,7 +206,7 @@ macro_rules! gif_base {
             pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
                 let caption = caption.into();
 
-                self.caption = Some(caption.text);
+                self.caption = Some(caption.text.into());
                 self.parse_mode = caption.parse_mode;
                 self
             }

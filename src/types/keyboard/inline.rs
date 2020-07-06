@@ -12,7 +12,7 @@ pub type Markup<'a> = &'a [&'a [Button<'a>]];
 /// Complete descriptions can be found in [Bots API docs][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum ButtonKind<'a> {
@@ -35,7 +35,7 @@ pub enum ButtonKind<'a> {
 /// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 #[must_use]
 pub struct Button<'a> {
@@ -46,7 +46,7 @@ pub struct Button<'a> {
 /// Represents an [`InlineKeyboardMarkup`].
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Keyboard<'a> {
     inline_keyboard: Markup<'a>,
@@ -65,7 +65,7 @@ impl Serialize for Button<'_> {
 
         map.serialize_entry("text", self.text)?;
 
-        match self.kind {
+        match &self.kind {
             ButtonKind::Url(url) => map.serialize_entry("url", url),
             ButtonKind::LoginUrl(login_url) => {
                 map.serialize_entry("login_url", &login_url)

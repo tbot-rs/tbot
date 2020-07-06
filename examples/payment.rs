@@ -11,17 +11,9 @@ use tbot::{
 const PAYLOAD: &str = "crab";
 const START_PARAMETER: &str = "crab";
 const TITLE: &str = "A crab";
-const PHOTO: Photo =
-    Photo::new("https://www.rustacean.net/assets/rustacean-flat-happy.png");
 const DESCRIPTION: &str = "Have you ever come across a heisenbug in your \
 program? No more! Our crab will take all bugs out of your program for you.";
 const CURRENCY: &str = "USD";
-const PRICE: &[LabeledPrice] = &[LabeledPrice::new(TITLE, 1_00)];
-const DELIVERY: &[shipping::Option] = &[shipping::Option::new(
-    "crab",
-    "Delivery Crab",
-    &[LabeledPrice::new("At your home", 1_00)],
-)];
 const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
 #[tokio::main]
@@ -32,6 +24,7 @@ async fn main() {
 
     bot.start(move |context| async move {
         let call_result = if context.text.value == START_PARAMETER {
+            let price: &[_] = &[LabeledPrice::new(TITLE, 1_00)];
             let mut invoice = context.send_invoice(
                 TITLE,
                 DESCRIPTION,
@@ -39,9 +32,12 @@ async fn main() {
                 provider_token,
                 START_PARAMETER,
                 CURRENCY,
-                PRICE,
+                price,
             );
-            invoice = invoice.photo(PHOTO).flexibility(Flexible);
+            let photo = Photo::new(
+                "https://www.rustacean.net/assets/rustacean-flat-happy.png",
+            );
+            invoice = invoice.photo(photo).flexibility(Flexible);
 
             invoice.call().await
         } else {
@@ -61,7 +57,10 @@ async fn main() {
     });
 
     bot.shipping(|context| async move {
-        let call_result = context.ok(DELIVERY).call().await;
+        let price: &[_] = &[LabeledPrice::new("At your home", 1_00)];
+        let delivery: &[_] =
+            &[shipping::Option::new("crab", "Delivery Crab", price)];
+        let call_result = context.ok(delivery).call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }

@@ -18,14 +18,14 @@ pub struct GetFile<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    file_id: file::id::Ref<'a>,
+    file_id: file::id::Id<'a>,
 }
 
 impl<'a> GetFile<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        file_id: &'a impl AsFileId,
+        file_id: &'a impl AsFileId<'a>,
     ) -> Self {
         Self {
             client,

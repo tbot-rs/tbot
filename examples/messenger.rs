@@ -61,7 +61,7 @@ impl State {
         let participants = self.participants(room).await;
 
         for id in participants {
-            let call_result = bot.send_message(id, message).call().await;
+            let call_result = bot.send_message(id, &message).call().await;
 
             if let Err(err) = call_result {
                 dbg!(err);

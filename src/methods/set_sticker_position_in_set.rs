@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Changes a sticker's position in a sticker set.
 ///
@@ -14,21 +15,21 @@ pub struct SetStickerPositionInSet<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    sticker: &'a str,
+    sticker: Cow<'a, str>,
     position: u32,
 }
 
 impl<'a> SetStickerPositionInSet<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        sticker: &'a str,
+        sticker: impl Into<Cow<'a, str>>,
         position: u32,
     ) -> Self {
         Self {
             client,
             token,
-            sticker,
+            sticker: sticker.into(),
             position,
         }
     }

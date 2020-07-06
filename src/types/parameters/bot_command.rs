@@ -1,4 +1,5 @@
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents a [`BotCommand`][docs] to be sent in the list of the bot's commands.
 ///
@@ -7,18 +8,21 @@ use serde::Serialize;
 #[non_exhaustive]
 pub struct BotCommand<'a> {
     /// The command's text.
-    command: &'a str,
-    /// The command's decription.
-    description: &'a str,
+    command: Cow<'a, str>,
+    /// The command's description.
+    description: Cow<'a, str>,
 }
 
 impl<'a> BotCommand<'a> {
-    /// Construсts a new `BotCommand`.
+    /// Constructs a new `BotCommand`.
     #[must_use]
-    pub const fn new(command: &'a str, description: &'a str) -> Self {
+    pub fn new(
+        command: impl Into<Cow<'a, str>>,
+        description: impl Into<Cow<'a, str>>,
+    ) -> Self {
         Self {
-            command,
-            description,
+            command: command.into(),
+            description: description.into(),
         }
     }
 }

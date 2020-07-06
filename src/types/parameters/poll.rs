@@ -3,6 +3,7 @@
 use super::{ParseMode, Text};
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
 use std::convert::From;
 
 /// Configures whether multiple answers are allowed in a poll.
@@ -26,11 +27,11 @@ pub enum AutoClose {
 }
 
 /// Represents a quiz.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Quiz<'a> {
     correct_option_id: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
-    explanation: Option<&'a str>,
+    explanation: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     explanation_parse_mode: Option<ParseMode>,
 }
@@ -42,7 +43,7 @@ pub struct Poll {
 }
 
 /// Represents either a quiz or a poll.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum Kind<'a> {
     /// Represents a quiz.
@@ -53,12 +54,12 @@ pub enum Kind<'a> {
 }
 
 /// Represents a poll that will be sent to a user.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 pub struct Any<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
-    question: &'a str,
-    options: &'a [&'a str],
+    question: Cow<'a, str>,
+    options: Vec<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -83,7 +84,6 @@ impl<'a> Quiz<'a> {
     /// Configures the `explanation` and `explanation_parse_mode` fields.
     pub fn explanation(mut self, explanation: impl Into<Text<'a>>) -> Self {
         let explanation = explanation.into();
-
         self.explanation = Some(explanation.text);
         self.explanation_parse_mode = explanation.parse_mode;
         self
@@ -103,15 +103,19 @@ impl Poll {
 impl<'a> Any<'a> {
     /// Constructs a poll.
     #[must_use]
-    pub fn new(
-        question: &'a str,
-        options: &'a [&'a str],
+    pub fn new<O>(
+        question: impl Into<Cow<'a, str>>,
+        options: O,
         kind: impl Into<Kind<'a>>,
-    ) -> Self {
+    ) -> Self
+    where
+        O: IntoIterator,
+        O::Item: Into<Cow<'a, str>>,
+    {
         Self {
             kind: kind.into(),
-            question,
-            options,
+            question: question.into(),
+            options: options.into_iter().map(Into::into).collect(),
             is_closed: None,
             is_anonymous: None,
             auto_close: None,

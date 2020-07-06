@@ -1,8 +1,9 @@
 use super::InputFile;
 use serde::ser::SerializeMap;
+use std::borrow::Cow;
 
 /// Represents a sticker to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Sticker<'a> {
     pub(crate) media: InputFile<'a>,
@@ -14,10 +15,10 @@ impl<'a> Sticker<'a> {
     }
 
     /// Constructs a `Sticker` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "sticker.webm",
-            bytes,
+            filename: "sticker.webm".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -25,8 +26,9 @@ impl<'a> Sticker<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    /// Panics if the ID starts with `attach://`.
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot] Sticker's ID cannot start with `attach://`\n",
@@ -39,8 +41,9 @@ impl<'a> Sticker<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    /// Panics if the URL starts with `attach://`.
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot] Sticker's URL cannot start with `attach://`\n",

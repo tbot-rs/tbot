@@ -3,7 +3,7 @@ use is_macro::Is;
 use serde::Serialize;
 
 /// An enum of possible keyboards.
-#[derive(Serialize, Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Serialize, Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]

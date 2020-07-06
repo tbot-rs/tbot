@@ -13,7 +13,7 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 /// Represents [`InputMessageContext`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
-#[derive(Debug, PartialEq, Clone, Copy, Serialize, Is)]
+#[derive(Debug, PartialEq, Clone, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 pub enum InputMessageContent<'a> {

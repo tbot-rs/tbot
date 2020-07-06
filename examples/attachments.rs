@@ -49,7 +49,8 @@ async fn main() {
     });
 
     bot.command("album", |context| async move {
-        let album = &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
+        let album: &[_] =
+            &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
         let call_result = context.send_media_group(album).call().await;
         if let Err(err) = call_result {
             dbg!(err);

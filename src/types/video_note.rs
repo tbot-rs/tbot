@@ -11,7 +11,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct VideoNote {
     /// The file ID of the video note.
-    pub file_id: file::Id,
+    pub file_id: file::Id<'static>,
     /// The unique ID of the video note.
     pub file_unique_id: String,
     /// The length of the video note.
@@ -26,9 +26,9 @@ pub struct VideoNote {
 
 impl crate::internal::Sealed for VideoNote {}
 
-impl AsFileId for VideoNote {
+impl AsFileId<'_> for VideoNote {
     #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+    fn as_file_id(&self) -> file::id::Id<'_> {
+        self.file_id.as_borrowed()
     }
 }

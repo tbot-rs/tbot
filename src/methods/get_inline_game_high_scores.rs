@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
-    types::{game::HighScore, inline_message_id, user},
+    types::{game::HighScore, inline_message_id::InlineMessageId, user},
 };
 use serde::Serialize;
 
@@ -20,14 +20,14 @@ pub struct GetInlineGameHighScores<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     user_id: user::Id,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
 }
 
 impl<'a> GetInlineGameHighScores<'a> {
     pub(crate) const fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
     ) -> Self {
         Self {

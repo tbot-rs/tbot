@@ -15,6 +15,7 @@ use crate::{
         user, LabeledPrice,
     },
 };
+use std::borrow::Cow;
 
 /// Provides methods appliable to all messages.
 pub trait ChatMethods: Message {
@@ -205,8 +206,8 @@ pub trait ChatMethods: Message {
     /// Sends a contact to this group.
     fn send_contact<'a>(
         &'a self,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
     ) -> SendContact<'a> {
         self.bot()
             .send_contact(self.chat().id, phone_number, first_name)
@@ -215,22 +216,25 @@ pub trait ChatMethods: Message {
     /// Sends a contact in reply to this message.
     fn send_contact_in_reply<'a>(
         &'a self,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
     ) -> SendContact<'a> {
         self.send_contact(phone_number, first_name)
             .reply_to_message_id(self.message_id())
     }
 
     /// Sends a game to this chat.
-    fn send_game<'a>(&'a self, game_short_name: &'a str) -> SendGame<'a> {
+    fn send_game<'a>(
+        &'a self,
+        game_short_name: impl Into<Cow<'a, str>>,
+    ) -> SendGame<'a> {
         self.bot().send_game(self.chat().id, game_short_name)
     }
 
     /// Sends a game in reply to this message.
     fn send_game_in_reply<'a>(
         &'a self,
-        game_short_name: &'a str,
+        game_short_name: impl Into<Cow<'a, str>>,
     ) -> SendGame<'a> {
         self.send_game(game_short_name)
             .reply_to_message_id(self.message_id())
@@ -264,13 +268,13 @@ pub trait ChatMethods: Message {
     #[allow(clippy::too_many_arguments)]
     fn send_invoice<'a>(
         &'a self,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<Cow<'a, str>>,
+        description: impl Into<Cow<'a, str>>,
+        payload: impl Into<Cow<'a, str>>,
+        provider_token: impl Into<Cow<'a, str>>,
+        start_parameter: impl Into<Cow<'a, str>>,
+        currency: impl Into<Cow<'a, str>>,
+        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> SendInvoice<'a> {
         self.bot().send_invoice(
             self.chat().id,
@@ -288,13 +292,13 @@ pub trait ChatMethods: Message {
     #[allow(clippy::too_many_arguments)]
     fn send_invoice_in_reply<'a>(
         &'a self,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<Cow<'a, str>>,
+        description: impl Into<Cow<'a, str>>,
+        payload: impl Into<Cow<'a, str>>,
+        provider_token: impl Into<Cow<'a, str>>,
+        start_parameter: impl Into<Cow<'a, str>>,
+        currency: impl Into<Cow<'a, str>>,
+        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> SendInvoice<'a> {
         self.send_invoice(
             title,
@@ -322,7 +326,7 @@ pub trait ChatMethods: Message {
     /// Sends an album to this chat.
     fn send_media_group<'a>(
         &'a self,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
     ) -> SendMediaGroup<'a> {
         self.bot().send_media_group(self.chat().id, media)
     }
@@ -330,7 +334,7 @@ pub trait ChatMethods: Message {
     /// Sends an album in reply to this message.
     fn send_media_group_in_reply<'a>(
         &'a self,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
     ) -> SendMediaGroup<'a> {
         self.send_media_group(media)
             .reply_to_message_id(self.message_id())
@@ -392,8 +396,8 @@ pub trait ChatMethods: Message {
     fn send_venue<'a>(
         &'a self,
         location: (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<Cow<'a, str>>,
+        address: impl Into<Cow<'a, str>>,
     ) -> SendVenue<'a> {
         self.bot()
             .send_venue(self.chat().id, location, title, address)
@@ -403,8 +407,8 @@ pub trait ChatMethods: Message {
     fn send_venue_in_reply<'a>(
         &'a self,
         location: (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<Cow<'a, str>>,
+        address: impl Into<Cow<'a, str>>,
     ) -> SendVenue<'a> {
         self.send_venue(location, title, address)
             .reply_to_message_id(self.message_id())
@@ -453,7 +457,7 @@ pub trait ChatMethods: Message {
     fn set_chat_administrator_custom_title<'a>(
         &'a self,
         user_id: user::Id,
-        custom_title: &'a str,
+        custom_title: impl Into<Cow<'a, str>>,
     ) -> SetChatAdministratorCustomTitle<'a> {
         self.bot().set_chat_administrator_custom_title(
             self.chat().id,
@@ -465,7 +469,7 @@ pub trait ChatMethods: Message {
     /// Sets a new description of this chat.
     fn set_chat_description<'a>(
         &'a self,
-        description: &'a str,
+        description: impl Into<Cow<'a, str>>,
     ) -> SetChatDescription<'a> {
         self.bot().set_chat_description(self.chat().id, description)
     }
@@ -486,14 +490,17 @@ pub trait ChatMethods: Message {
     /// Sets a new sticker set of this chat.
     fn set_chat_sticker_set<'a>(
         &'a self,
-        sticker_set_name: &'a str,
+        sticker_set_name: impl Into<Cow<'a, str>>,
     ) -> SetChatStickerSet<'a> {
         self.bot()
             .set_chat_sticker_set(self.chat().id, sticker_set_name)
     }
 
     /// Sets a new chat title of this chat.
-    fn set_chat_title<'a>(&'a self, title: &'a str) -> SetChatTitle<'a> {
+    fn set_chat_title<'a>(
+        &'a self,
+        title: impl Into<Cow<'a, str>>,
+    ) -> SetChatTitle<'a> {
         self.bot().set_chat_title(self.chat().id, title)
     }
 

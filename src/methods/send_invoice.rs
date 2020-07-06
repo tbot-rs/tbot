@@ -14,6 +14,7 @@ use crate::{
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sends an invoice.
 ///
@@ -28,15 +29,15 @@ pub struct SendInvoice<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: chat::Id,
-    title: &'a str,
-    description: &'a str,
-    payload: &'a str,
-    provider_token: &'a str,
-    start_parameter: &'a str,
-    currency: &'a str,
-    prices: &'a [LabeledPrice<'a>],
+    title: Cow<'a, str>,
+    description: Cow<'a, str>,
+    payload: Cow<'a, str>,
+    provider_token: Cow<'a, str>,
+    start_parameter: Cow<'a, str>,
+    currency: Cow<'a, str>,
+    prices: Cow<'a, [LabeledPrice<'a>]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    provider_data: Option<&'a str>,
+    provider_data: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
     photo: Option<Photo<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -67,25 +68,25 @@ impl<'a> SendInvoice<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl Into<chat::Id>,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<Cow<'a, str>>,
+        description: impl Into<Cow<'a, str>>,
+        payload: impl Into<Cow<'a, str>>,
+        provider_token: impl Into<Cow<'a, str>>,
+        start_parameter: impl Into<Cow<'a, str>>,
+        currency: impl Into<Cow<'a, str>>,
+        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            title,
-            description,
-            payload,
-            provider_token,
-            start_parameter,
-            currency,
-            prices,
+            title: title.into(),
+            description: description.into(),
+            payload: payload.into(),
+            provider_token: provider_token.into(),
+            start_parameter: start_parameter.into(),
+            currency: currency.into(),
+            prices: prices.into(),
             provider_data: None,
             photo: None,
             need_name: None,
@@ -103,8 +104,11 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures data for your payment provider.
     /// Reflects the `provider_data` parameter.
-    pub fn provider_data(mut self, provider_data: &'a str) -> Self {
-        self.provider_data = Some(provider_data);
+    pub fn provider_data(
+        mut self,
+        provider_data: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        self.provider_data = Some(provider_data.into());
         self
     }
 

@@ -7,13 +7,14 @@ use crate::types::{
     InputMessageContent,
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents a non-cached voice.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Fresh<'a> {
     #[serde(rename = "voice_url")]
-    url: &'a str,
+    url: Cow<'a, str>,
     #[serde(
         rename = "voice_duration",
         skip_serializing_if = "Option::is_none"
@@ -21,13 +22,13 @@ pub struct Fresh<'a> {
     duration: Option<usize>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "voice_file_id")]
-        id: &'a str,
+        id: Cow<'a, str>,
     },
     Fresh(Fresh<'a>),
 }
@@ -36,14 +37,14 @@ enum Kind<'a> {
 ///
 /// [`InlineQueryResultVoice`]: https://core.telegram.org/bots/api#inlinequeryresultvoice
 /// [`InlineQueryResultCachedVoice`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Voice<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
-    title: &'a str,
+    title: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<&'a str>,
+    caption: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,9 +53,9 @@ pub struct Voice<'a> {
 
 impl<'a> Fresh<'a> {
     /// Constructs a `Fresh` voice.
-    pub const fn new(url: &'a str) -> Self {
+    pub fn new(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            url,
+            url: url.into(),
             duration: None,
         }
     }
@@ -67,10 +68,10 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Voice<'a> {
-    const fn new(title: &'a str, kind: Kind<'a>) -> Self {
+    fn new(title: impl Into<Cow<'a, str>>, kind: Kind<'a>) -> Self {
         Self {
             kind,
-            title,
+            title: title.into(),
             caption: None,
             parse_mode: None,
             input_message_content: None,
@@ -78,12 +79,15 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a cached `Voice` result.
-    pub fn cached(title: &'a str, id: &'a str) -> Self {
-        Self::new(title, Kind::Cached { id })
+    pub fn cached(
+        title: impl Into<Cow<'a, str>>,
+        id: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        Self::new(title, Kind::Cached { id: id.into() })
     }
 
     /// Constructs a fresh `Voice` result.
-    pub fn fresh(title: &'a str, voice: Fresh<'a>) -> Self {
+    pub fn fresh(title: impl Into<Cow<'a, str>>, voice: Fresh<'a>) -> Self {
         Self::new(title, Kind::Fresh(voice))
     }
 

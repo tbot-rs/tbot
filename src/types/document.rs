@@ -11,7 +11,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct Document {
     /// The file ID of the document.
-    pub file_id: file::Id,
+    pub file_id: file::Id<'static>,
     /// The unique ID of the document.
     pub file_unique_id: String,
     /// The thumb of the document.
@@ -26,9 +26,9 @@ pub struct Document {
 
 impl crate::internal::Sealed for Document {}
 
-impl AsFileId for Document {
+impl AsFileId<'_> for Document {
     #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+    fn as_file_id(&self) -> file::id::Id<'_> {
+        self.file_id.as_borrowed()
     }
 }

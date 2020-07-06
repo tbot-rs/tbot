@@ -1,24 +1,23 @@
-use super::{InputFile, WithName};
+use super::InputFile;
 use crate::types::parameters::{ParseMode, Text};
-use serde::Serialize;
+use serde::ser::SerializeMap;
+use serde::{Serialize, Serializer};
+use std::borrow::Cow;
 
 /// Represents a voice to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Voice<'a> {
-    pub(crate) media: WithName<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) media: InputFile<'a>,
     pub(crate) duration: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) caption: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) caption: Option<Cow<'a, str>>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
 impl<'a> Voice<'a> {
     const fn new(media: InputFile<'a>) -> Self {
         Self {
-            media: media.with_name("voice"),
+            media,
             duration: None,
             caption: None,
             parse_mode: None,
@@ -26,10 +25,10 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a `Voice` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "voice.ogg",
-            bytes,
+            filename: "voice.ogg".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -37,8 +36,9 @@ impl<'a> Voice<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    /// Panics if the ID starts with `attach://`.
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot]: Voice's ID cannot start with `attach://`\n",
@@ -51,8 +51,9 @@ impl<'a> Voice<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    /// Panics if the URL starts with `attach://`.
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Voice's URL cannot start with `attach://`\n",
@@ -73,5 +74,30 @@ impl<'a> Voice<'a> {
         self.caption = Some(caption.text);
         self.parse_mode = caption.parse_mode;
         self
+    }
+}
+
+impl<'a> Serialize for Voice<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(None)?;
+
+        map.serialize_entry("media", &self.media.with_name("voice"))?;
+
+        if let Some(duration) = self.duration {
+            map.serialize_entry("duration", &duration)?;
+        }
+
+        if let Some(caption) = &self.caption {
+            map.serialize_entry("caption", &caption)?;
+        }
+
+        if let Some(parse_mode) = self.parse_mode {
+            map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+
+        map.end()
     }
 }

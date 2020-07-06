@@ -18,6 +18,7 @@ mod video_note;
 mod voice;
 
 pub(crate) use group_media::Album;
+use std::borrow::Cow;
 pub use {
     animation::Animation, audio::Audio, chat_photo::ChatPhoto,
     document::Document, editable_media::EditableMedia, group_media::GroupMedia,
@@ -27,16 +28,19 @@ pub use {
     video::Video, video_note::VideoNote, voice::Voice,
 };
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub(crate) enum InputFile<'a> {
-    File { filename: &'a str, bytes: &'a [u8] },
-    Url(&'a str),
-    Id(&'a str),
+    File {
+        filename: Cow<'a, str>,
+        bytes: Cow<'a, [u8]>,
+    },
+    Url(Cow<'a, str>),
+    Id(Cow<'a, str>),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-pub(crate) struct WithName<'a> {
-    pub(crate) file: InputFile<'a>,
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+struct WithName<'a> {
+    pub(crate) file: &'a InputFile<'a>,
     pub(crate) name: &'a str,
 }
 
@@ -55,7 +59,7 @@ impl<'a> InputFile<'a> {
         }
     }
 
-    const fn with_name(self, name: &'a str) -> WithName<'a> {
+    const fn with_name(&'a self, name: &'a str) -> WithName<'a> {
         WithName { file: self, name }
     }
 }

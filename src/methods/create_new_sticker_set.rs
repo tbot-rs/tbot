@@ -9,6 +9,7 @@ use crate::{
     },
     Multipart,
 };
+use std::borrow::Cow;
 
 /// Creates a new sticker set.
 ///
@@ -21,10 +22,10 @@ pub struct CreateNewStickerSet<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
     user_id: user::Id,
-    name: &'a str,
-    title: &'a str,
+    name: Cow<'a, str>,
+    title: Cow<'a, str>,
     sticker: StickerForStickerSet<'a>,
-    emojis: &'a str,
+    emojis: Cow<'a, str>,
     contains_masks: Option<bool>,
     mask_position: Option<MaskPosition>,
 }
@@ -34,19 +35,19 @@ impl<'a> CreateNewStickerSet<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
-        name: &'a str,
-        title: &'a str,
+        name: impl Into<Cow<'a, str>>,
+        title: impl Into<Cow<'a, str>>,
         sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: &'a str,
+        emojis: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            name,
-            title,
+            name: name.into(),
+            title: title.into(),
             sticker: sticker.into(),
-            emojis,
+            emojis: emojis.into(),
             contains_masks: None,
             mask_position: None,
         }
@@ -72,9 +73,9 @@ impl CreateNewStickerSet<'_> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(7)
             .string("user_id", &self.user_id)
-            .str("name", self.name)
-            .str("title", self.title)
-            .str("emojis", self.emojis)
+            .str("name", &self.name)
+            .str("title", &self.title)
+            .str("emojis", &self.emojis)
             .maybe_string("contains_masks", self.contains_masks)
             .maybe_json("mask_position", self.mask_position);
 
@@ -87,7 +88,7 @@ impl CreateNewStickerSet<'_> {
             }
         };
 
-        match media {
+        match &media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file(field, filename, bytes),

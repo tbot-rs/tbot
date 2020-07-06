@@ -5,6 +5,7 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sets a group's sticker set.
 ///
@@ -19,7 +20,7 @@ pub struct SetChatStickerSet<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
-    sticker_set_name: &'a str,
+    sticker_set_name: Cow<'a, str>,
 }
 
 impl<'a> SetChatStickerSet<'a> {
@@ -27,13 +28,13 @@ impl<'a> SetChatStickerSet<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
-        sticker_set_name: &'a str,
+        sticker_set_name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            sticker_set_name,
+            sticker_set_name: sticker_set_name.into(),
         }
     }
 }

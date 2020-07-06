@@ -55,7 +55,7 @@ pub enum RequestKind {
 /// Represents a [`KeyboardButton`].
 ///
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Button<'a> {
     text: &'a str,
@@ -65,7 +65,7 @@ pub struct Button<'a> {
 /// Represents a [`ReplyKeyboardMarkup`].
 ///
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Keyboard<'a> {
     keyboard: Markup<'a>,

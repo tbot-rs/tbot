@@ -75,18 +75,18 @@ impl SendVideo<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(12)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.video.duration)
             .maybe_string("width", self.video.width)
             .maybe_string("height", self.video.height)
-            .maybe_str("caption", self.video.caption)
+            .maybe_str("caption", self.video.caption.as_deref())
             .maybe_string("parse_mode", self.video.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("supports_streaming", self.video.supports_streaming)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.video.media {
+        match &self.video.media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("video", filename, bytes),
@@ -97,7 +97,7 @@ impl SendVideo<'_> {
 
         if let Some(Thumb(InputFile::File {
             filename, bytes, ..
-        })) = self.video.thumb
+        })) = &self.video.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

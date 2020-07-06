@@ -1,16 +1,17 @@
 use super::Thumb;
 use crate::types::InputMessageContent;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultLocation`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultlocation
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Location<'a> {
     latitude: f64,
     longitude: f64,
-    title: &'a str,
+    title: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -21,14 +22,14 @@ pub struct Location<'a> {
 
 impl<'a> Location<'a> {
     /// Constructs a `Location`.
-    pub const fn new(
-        title: &'a str,
+    pub fn new(
+        title: impl Into<Cow<'a, str>>,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {
             latitude,
             longitude,
-            title,
+            title: title.into(),
             live_period: None,
             input_message_content: None,
             thumb: None,

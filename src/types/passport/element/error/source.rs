@@ -20,7 +20,7 @@ pub use {
 };
 
 /// Reperesents possible sources of an error.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
 #[serde(rename_all = "snake_case", tag = "source")]
 #[non_exhaustive]
 #[must_use]

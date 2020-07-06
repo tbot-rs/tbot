@@ -11,6 +11,7 @@ use crate::{
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Edits the text of a message sent by the bot itself.
 ///
@@ -26,7 +27,7 @@ pub struct EditMessageText<'a> {
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     message_id: message::Id,
-    text: &'a str,
+    text: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]

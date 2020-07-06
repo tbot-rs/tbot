@@ -14,7 +14,7 @@ pub use id::Id;
 pub struct File {
     /// The ID of the file.
     #[serde(rename = "file_id")]
-    pub id: Id,
+    pub id: Id<'static>,
     /// The unique ID of the file.
     #[serde(rename = "file_unique_id")]
     pub unique_id: String,

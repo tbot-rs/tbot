@@ -6,7 +6,7 @@ use serde::{
 };
 
 /// Represents a media that can be sent in a group (aka albums).
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum GroupMedia<'a> {
@@ -17,7 +17,7 @@ pub enum GroupMedia<'a> {
 }
 
 struct WithIndex<'a> {
-    media: GroupMedia<'a>,
+    media: &'a GroupMedia<'a>,
     index: usize,
 }
 
@@ -69,10 +69,7 @@ impl<'a> Serialize for Album<'a> {
         let mut seq = serializer.serialize_seq(Some(self.0.len()))?;
 
         for (index, media) in self.0.iter().enumerate() {
-            let with_index = WithIndex {
-                media: *media,
-                index,
-            };
+            let with_index = WithIndex { media, index };
 
             seq.serialize_element(&with_index)?;
         }

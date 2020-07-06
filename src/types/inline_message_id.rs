@@ -1,61 +1,31 @@
 //! Types representing an inline message ID.
 
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 
 /// Represents an inline message ID.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct InlineMessageId(pub String);
+pub struct InlineMessageId<'a>(pub Cow<'a, str>);
 
-/// Contains a reference to an inline message ID.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-#[serde(transparent)]
-pub struct Ref<'a>(pub &'a str);
-
-impl InlineMessageId {
-    /// Constructs an inline message ID [`Ref`] based on `self`.
-    ///
-    /// [`IdRef`]: ./struct.Ref.html
+impl<'a> InlineMessageId<'a> {
+    /// Create a new reference to an inline message ID.
     #[must_use]
-    pub fn as_ref(&self) -> Ref<'_> {
-        Ref(&self.0)
+    pub fn as_borrowed(&'a self) -> Self {
+        Self(Cow::Borrowed(&self.0))
     }
 }
 
-impl<'a> Ref<'a> {
-    /// Constructs an inline message [`Id`] based on `self`.
-    ///
-    /// [`Id`]: ./struct.Id.html
-    #[must_use]
-    pub fn to_owned(&self) -> InlineMessageId {
-        InlineMessageId(self.0.into())
-    }
-}
-
-impl From<String> for InlineMessageId {
+impl<'a> From<String> for InlineMessageId<'a> {
     #[must_use]
     fn from(id: String) -> Self {
-        Self(id)
+        Self(id.into())
     }
 }
 
-impl<'a> From<&'a str> for Ref<'a> {
+impl<'a> From<&'a str> for InlineMessageId<'a> {
     #[must_use]
     fn from(id: &'a str) -> Self {
-        Self(id)
-    }
-}
-
-impl<'a> PartialEq<Ref<'a>> for InlineMessageId {
-    #[must_use]
-    fn eq(&self, other: &Ref<'a>) -> bool {
-        self.0 == other.0
-    }
-}
-
-impl<'a> PartialEq<InlineMessageId> for Ref<'a> {
-    #[must_use]
-    fn eq(&self, other: &InlineMessageId) -> bool {
-        self.0 == other.0
+        Self(id.into())
     }
 }

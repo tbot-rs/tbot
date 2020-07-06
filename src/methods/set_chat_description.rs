@@ -5,6 +5,7 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sets a chat's description.
 ///
@@ -19,7 +20,7 @@ pub struct SetChatDescription<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
-    description: &'a str,
+    description: Cow<'a, str>,
 }
 
 impl<'a> SetChatDescription<'a> {
@@ -27,13 +28,13 @@ impl<'a> SetChatDescription<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
-        description: &'a str,
+        description: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            description,
+            description: description.into(),
         }
     }
 }

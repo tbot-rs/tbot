@@ -8,6 +8,7 @@ use crate::{
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sets a custom title for an admin in a supergroup promoted by the bot.
 ///
@@ -23,7 +24,7 @@ pub struct SetChatAdministratorCustomTitle<'a> {
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
     user_id: user::Id,
-    custom_title: &'a str,
+    custom_title: Cow<'a, str>,
 }
 
 impl<'a> SetChatAdministratorCustomTitle<'a> {
@@ -32,14 +33,14 @@ impl<'a> SetChatAdministratorCustomTitle<'a> {
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
-        custom_title: &'a str,
+        custom_title: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
             user_id,
-            custom_title,
+            custom_title: custom_title.into(),
         }
     }
 }

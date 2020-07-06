@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token, types::shipping};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Answers a shipping query.
 ///
@@ -14,28 +15,42 @@ pub struct AnswerShippingQuery<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    shipping_query_id: shipping::query::id::Ref<'a>,
+    shipping_query_id: shipping::query::id::Id<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_options: Option<&'a [shipping::Option<'a>]>,
+    shipping_options: Option<Cow<'a, [shipping::Option<'a>]>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    error_message: Option<&'a str>,
+    error_message: Option<Cow<'a, str>>,
 }
 
 impl<'a> AnswerShippingQuery<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        shipping_query_id: shipping::query::id::Ref<'a>,
-        result: Result<&'a [shipping::Option<'a>], &'a str>,
+        shipping_query_id: shipping::query::id::Id<'a>,
+        result: Result<
+            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, str>>,
+        >,
     ) -> Self {
-        Self {
-            client,
-            token,
-            shipping_query_id,
-            ok: result.is_ok(),
-            shipping_options: result.ok(),
-            error_message: result.err(),
+        if result.is_ok() {
+            Self {
+                client,
+                token,
+                shipping_query_id,
+                ok: true,
+                shipping_options: result.ok().map(Into::into),
+                error_message: None,
+            }
+        } else {
+            Self {
+                client,
+                token,
+                shipping_query_id,
+                ok: false,
+                shipping_options: None,
+                error_message: result.err().map(Into::into),
+            }
         }
     }
 }

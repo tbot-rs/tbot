@@ -11,7 +11,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct Audio {
     /// The file ID of the audio.
-    pub file_id: file::Id,
+    pub file_id: file::Id<'static>,
     /// The unique ID of the audio.
     pub file_unique_id: String,
     /// The duration of the audio.
@@ -30,9 +30,9 @@ pub struct Audio {
 
 impl crate::internal::Sealed for Audio {}
 
-impl AsFileId for Audio {
+impl AsFileId<'_> for Audio {
     #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+    fn as_file_id(&self) -> file::id::Id<'_> {
+        self.file_id.as_borrowed()
     }
 }

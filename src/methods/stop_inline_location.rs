@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
-    types::{inline_message_id, keyboard::inline},
+    types::{inline_message_id::InlineMessageId, keyboard::inline},
 };
 use serde::Serialize;
 
@@ -18,7 +18,7 @@ pub struct StopInlineLocation<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -27,7 +27,7 @@ impl<'a> StopInlineLocation<'a> {
     pub(crate) const fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
     ) -> Self {
         Self {
             client,

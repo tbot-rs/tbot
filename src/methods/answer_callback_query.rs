@@ -5,6 +5,7 @@ use crate::{
     types::{callback, parameters::CallbackAction},
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Answers a callback query.
 ///
@@ -18,13 +19,13 @@ pub struct AnswerCallbackQuery<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    callback_query_id: callback::query::id::Ref<'a>,
+    callback_query_id: callback::query::id::Id<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    text: Option<&'a str>,
+    text: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     show_alert: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<&'a str>,
+    url: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
 }
@@ -33,17 +34,37 @@ impl<'a> AnswerCallbackQuery<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        callback_query_id: callback::query::id::Ref<'a>,
+        callback_query_id: callback::query::id::Id<'a>,
         action: CallbackAction<'a>,
     ) -> Self {
-        Self {
-            client,
-            token,
-            callback_query_id,
-            text: action.to_text(),
-            show_alert: action.to_show_alert(),
-            url: action.to_url(),
-            cache_time: None,
+        match action {
+            CallbackAction::None => Self {
+                client,
+                token,
+                callback_query_id,
+                text: None,
+                show_alert: None,
+                url: None,
+                cache_time: None,
+            },
+            CallbackAction::Url(url) => Self {
+                client,
+                token,
+                callback_query_id,
+                text: None,
+                show_alert: None,
+                url: Some(url),
+                cache_time: None,
+            },
+            CallbackAction::Text(text, show_alert) => Self {
+                client,
+                token,
+                callback_query_id,
+                text: Some(text),
+                show_alert: Some(show_alert),
+                url: None,
+                cache_time: None,
+            },
         }
     }
 

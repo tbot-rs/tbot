@@ -13,7 +13,7 @@ pub use id::Id;
 #[non_exhaustive]
 pub struct Query {
     /// The ID of the query.
-    pub id: Id,
+    pub id: Id<'static>,
     /// The user who sent the query.
     pub from: User,
     /// The invoice payload sent previously by the bot.

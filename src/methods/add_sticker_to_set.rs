@@ -9,6 +9,7 @@ use crate::{
     },
     Multipart,
 };
+use std::borrow::Cow;
 
 /// Adds a new sticker to an existing sticker set.
 ///
@@ -21,9 +22,9 @@ pub struct AddStickerToSet<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
     user_id: user::Id,
-    name: &'a str,
+    name: Cow<'a, str>,
     sticker: StickerForStickerSet<'a>,
-    emojis: &'a str,
+    emojis: Cow<'a, str>,
     mask_position: Option<MaskPosition>,
 }
 
@@ -32,17 +33,17 @@ impl<'a> AddStickerToSet<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
         sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: &'a str,
+        emojis: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            name,
+            name: name.into(),
             sticker: sticker.into(),
-            emojis,
+            emojis: emojis.into(),
             mask_position: None,
         }
     }
@@ -59,8 +60,8 @@ impl AddStickerToSet<'_> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(5)
             .string("user_id", &self.user_id)
-            .str("name", self.name)
-            .str("emojis", self.emojis)
+            .str("name", &self.name)
+            .str("emojis", &self.emojis)
             .maybe_json("mask_position", self.mask_position);
 
         let (field, media) = match self.sticker {
@@ -72,7 +73,7 @@ impl AddStickerToSet<'_> {
             }
         };
 
-        match media {
+        match &media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file(field, filename, bytes),

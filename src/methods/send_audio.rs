@@ -75,17 +75,17 @@ impl SendAudio<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(11)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.audio.duration)
-            .maybe_str("caption", self.audio.caption)
-            .maybe_str("performer", self.audio.performer)
-            .maybe_str("title", self.audio.title)
+            .maybe_str("caption", self.audio.caption.as_deref())
+            .maybe_str("performer", self.audio.performer.as_deref())
+            .maybe_str("title", self.audio.title.as_deref())
             .maybe_json("parse_mode", self.audio.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.audio.media {
+        match &self.audio.media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("audio", filename, bytes),
@@ -96,7 +96,7 @@ impl SendAudio<'_> {
 
         if let Some(Thumb(InputFile::File {
             filename, bytes, ..
-        })) = self.audio.thumb
+        })) = &self.audio.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token, types::sticker};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Gets a sticker set by its name.
 ///
@@ -14,19 +15,19 @@ pub struct GetStickerSet<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    name: &'a str,
+    name: Cow<'a, str>,
 }
 
 impl<'a> GetStickerSet<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
-            name,
+            name: name.into(),
         }
     }
 }

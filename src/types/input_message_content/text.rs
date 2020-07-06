@@ -1,13 +1,14 @@
 use crate::types::parameters::{self, ParseMode, WebPagePreviewState};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents an [`InputTextMessageContent`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputtextmessagecontent
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
 pub struct Text<'a> {
-    message_text: &'a str,
+    message_text: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]

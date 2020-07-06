@@ -2,7 +2,7 @@ use super::{PngSticker, TgsSticker};
 use is_macro::Is;
 
 /// Represents a sticker that can be added to a sticker set.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 pub enum StickerForStickerSet<'a> {
     /// A PNG sticker.
     Png(PngSticker<'a>),

@@ -3,6 +3,7 @@ use crate::{
     types::{inline_query, InlineQuery, Location, User},
     Bot,
 };
+use std::borrow::Cow;
 use std::sync::Arc;
 
 common! {
@@ -11,7 +12,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.inline
     struct Inline {
         /// The ID of the query.
-        id: inline_query::Id,
+        id: inline_query::Id<'static>,
         /// The user who sent the query.
         from: User,
         /// The location of the user, if enabled and allowed.
@@ -40,8 +41,8 @@ impl Inline {
     /// Answers the query.
     pub fn answer<'a>(
         &'a self,
-        results: &'a [inline_query::Result<'a>],
+        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
-        self.bot.answer_inline_query(self.id.as_ref(), results)
+        self.bot.answer_inline_query(self.id.as_borrowed(), results)
     }
 }

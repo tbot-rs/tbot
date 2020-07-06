@@ -11,7 +11,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct Animation {
     /// The file ID of the animation.
-    pub file_id: file::Id,
+    pub file_id: file::Id<'static>,
     /// The unique ID of the animation.
     pub file_unique_id: String,
     /// The width of the animation.
@@ -30,9 +30,9 @@ pub struct Animation {
 
 impl crate::internal::Sealed for Animation {}
 
-impl AsFileId for Animation {
+impl AsFileId<'_> for Animation {
     #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+    fn as_file_id(&self) -> file::id::Id<'_> {
+        self.file_id.as_borrowed()
     }
 }

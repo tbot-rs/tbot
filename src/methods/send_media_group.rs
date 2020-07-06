@@ -9,6 +9,7 @@ use crate::{
     },
     Multipart,
 };
+use std::borrow::Cow;
 
 /// Sends an album.
 ///
@@ -21,7 +22,7 @@ pub struct SendMediaGroup<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
-    media: &'a [GroupMedia<'a>],
+    media: Cow<'a, [GroupMedia<'a>]>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
 }
@@ -31,13 +32,13 @@ impl<'a> SendMediaGroup<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            media,
+            media: media.into(),
             disable_notification: None,
             reply_to_message_id: None,
         }
@@ -62,7 +63,7 @@ impl SendMediaGroup<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<Message>, errors::MethodCall> {
         let mut multipart = Multipart::new(4 + self.media.len())
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id);
 
@@ -98,7 +99,7 @@ impl SendMediaGroup<'_> {
             }
         }
 
-        let media = Album(self.media);
+        let media = Album(&self.media);
         let (boundary, body) = multipart.json("media", &media).finish();
 
         call_method(

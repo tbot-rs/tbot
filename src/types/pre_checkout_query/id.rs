@@ -1,61 +1,31 @@
 //! Types representing a pre-checkout query ID.
 
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 
 /// Represents a pre-checkout query ID.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct Id(pub String);
+pub struct Id<'a>(pub Cow<'a, str>);
 
-/// Contains a reference to a pre-checkout query ID.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
-#[serde(transparent)]
-pub struct Ref<'a>(pub &'a str);
-
-impl Id {
-    /// Constructs a pre-checkout query ID [`Ref`] based on `self`.
-    ///
-    /// [`IdRef`]: ./struct.Ref.html
+impl<'a> Id<'a> {
+    /// Create a new reference to a file ID.
     #[must_use]
-    pub fn as_ref(&self) -> Ref<'_> {
-        Ref(&self.0)
+    pub fn as_borrowed(&'a self) -> Self {
+        Self(Cow::Borrowed(&self.0))
     }
 }
 
-impl<'a> Ref<'a> {
-    /// Constructs a pre-checkout query [`Id`] based on `self`.
-    ///
-    /// [`Id`]: ./struct.Id.html
-    #[must_use]
-    pub fn to_owned(&self) -> Id {
-        Id(self.0.into())
-    }
-}
-
-impl From<String> for Id {
+impl<'a> From<String> for Id<'a> {
     #[must_use]
     fn from(id: String) -> Self {
-        Self(id)
+        Self(id.into())
     }
 }
 
-impl<'a> From<&'a str> for Ref<'a> {
+impl<'a> From<&'a str> for Id<'a> {
     #[must_use]
     fn from(id: &'a str) -> Self {
-        Self(id)
-    }
-}
-
-impl<'a> PartialEq<Ref<'a>> for Id {
-    #[must_use]
-    fn eq(&self, other: &Ref<'a>) -> bool {
-        self.0 == other.0
-    }
-}
-
-impl<'a> PartialEq<Id> for Ref<'a> {
-    #[must_use]
-    fn eq(&self, other: &Id) -> bool {
-        self.0 == other.0
+        Self(id.into())
     }
 }

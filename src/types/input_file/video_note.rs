@@ -1,23 +1,22 @@
-use super::{InputFile, Thumb, WithName};
-use serde::Serialize;
+use super::{InputFile, Thumb};
+use serde::ser::SerializeMap;
+use serde::{Serialize, Serializer};
+use std::borrow::Cow;
 
 /// Represents a video note to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct VideoNote<'a> {
-    pub(crate) media: WithName<'a>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) media: InputFile<'a>,
     pub(crate) duration: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) length: Option<u32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) thumb: Option<Thumb<'a>>,
 }
 
 impl<'a> VideoNote<'a> {
     const fn new(media: InputFile<'a>) -> Self {
         Self {
-            media: media.with_name("video_note"),
+            media,
             duration: None,
             length: None,
             thumb: None,
@@ -25,10 +24,10 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Constructs an `VideoNote` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
-            filename: "video_note.mp4",
-            bytes,
+            filename: "video_note.mp4".into(),
+            bytes: bytes.into(),
         })
     }
 
@@ -36,8 +35,9 @@ impl<'a> VideoNote<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    /// Panics if the ID starts with `attach://`.
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot]: Video note's ID cannot start with `attach://`\n",
@@ -50,8 +50,9 @@ impl<'a> VideoNote<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    /// Panics if the URL starts with `attach://`.
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Video note's URL cannot start with `attach://`\n",
@@ -76,5 +77,30 @@ impl<'a> VideoNote<'a> {
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
+    }
+}
+
+impl<'a> Serialize for VideoNote<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(None)?;
+
+        map.serialize_entry("media", &self.media.with_name("video_note"))?;
+
+        if let Some(duration) = self.duration {
+            map.serialize_entry("duration", &duration)?;
+        }
+
+        if let Some(length) = self.length {
+            map.serialize_entry("length", &length)?;
+        }
+
+        if let Some(thumb) = &self.thumb {
+            map.serialize_entry("thumb", &thumb)?;
+        }
+
+        map.end()
     }
 }

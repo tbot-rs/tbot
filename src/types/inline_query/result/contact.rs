@@ -1,19 +1,20 @@
 use super::Thumb;
 use crate::types::InputMessageContent;
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultContact`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultcontact
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Contact<'a> {
-    phone_number: &'a str,
-    first_name: &'a str,
+    phone_number: Cow<'a, str>,
+    first_name: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<&'a str>,
+    last_name: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<&'a str>,
+    vcard: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumb: Option<Thumb<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22,10 +23,13 @@ pub struct Contact<'a> {
 
 impl<'a> Contact<'a> {
     /// Constructs a 'Contact'.
-    pub const fn new(phone_number: &'a str, first_name: &'a str) -> Self {
+    pub fn new(
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
+    ) -> Self {
         Self {
-            phone_number,
-            first_name,
+            phone_number: phone_number.into(),
+            first_name: first_name.into(),
             last_name: None,
             vcard: None,
             thumb: None,
@@ -34,14 +38,14 @@ impl<'a> Contact<'a> {
     }
 
     /// Configures the last name of the contact.
-    pub fn last_name(mut self, name: &'a str) -> Self {
-        self.last_name = Some(name);
+    pub fn last_name(mut self, name: impl Into<Cow<'a, str>>) -> Self {
+        self.last_name = Some(name.into());
         self
     }
 
     /// Configures the contact's additional data.
-    pub fn vcard(mut self, vcard: &'a str) -> Self {
-        self.vcard = Some(vcard);
+    pub fn vcard(mut self, vcard: impl Into<Cow<'a, str>>) -> Self {
+        self.vcard = Some(vcard.into());
         self
     }
 

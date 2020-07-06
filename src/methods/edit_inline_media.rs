@@ -3,7 +3,7 @@ use crate::{
     connectors::Client,
     errors, token,
     types::{
-        inline_message_id,
+        inline_message_id::InlineMessageId,
         input_file::{
             Animation, Audio, Document, EditableMedia, InputFile, Photo, Video,
         },
@@ -22,7 +22,7 @@ use crate::{
 pub struct EditInlineMedia<'a> {
     client: &'a Client,
     token: token::Ref<'a>,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -31,7 +31,7 @@ impl<'a> EditInlineMedia<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
@@ -55,7 +55,7 @@ impl EditInlineMedia<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let mut multipart = Multipart::new(4)
-            .str("inline_message_id", self.inline_message_id.0)
+            .str("inline_message_id", &self.inline_message_id.0)
             .maybe_json("reply_markup", self.reply_markup);
 
         match &self.media {
@@ -71,7 +71,7 @@ impl EditInlineMedia<'_> {
             }
         }
 
-        let (boundary, body) = multipart.json("media", self.media).finish();
+        let (boundary, body) = multipart.json("media", &self.media).finish();
 
         call_method::<bool>(
             self.client,

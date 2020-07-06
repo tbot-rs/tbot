@@ -3,12 +3,13 @@ use crate::{
     connectors::Client,
     errors, token,
     types::{
-        inline_message_id,
+        inline_message_id::InlineMessageId,
         keyboard::inline,
         parameters::{ParseMode, Text, WebPagePreviewState},
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Edits the text of a message sent via the inline mode.
 ///
@@ -22,8 +23,8 @@ pub struct EditInlineText<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    inline_message_id: inline_message_id::Ref<'a>,
-    text: &'a str,
+    inline_message_id: InlineMessageId<'a>,
+    text: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,7 +37,7 @@ impl<'a> EditInlineText<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         text: impl Into<Text<'a>>,
     ) -> Self {
         let text = text.into();

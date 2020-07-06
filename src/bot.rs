@@ -11,7 +11,8 @@ use crate::{
     types::{
         callback, chat,
         file::{id::AsFileId, File},
-        inline_message_id, inline_query,
+        inline_message_id::InlineMessageId,
+        inline_query,
         input_file::{
             Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
             Photo, Sticker, StickerForStickerSet, StickerSetThumb, Video,
@@ -26,6 +27,7 @@ use crate::{
     },
     Token,
 };
+use std::borrow::Cow;
 use std::sync::Arc;
 
 /// Provides methods to call the Bots API.
@@ -126,9 +128,9 @@ impl Bot {
     pub fn add_sticker_to_set<'a>(
         &'a self,
         user_id: user::Id,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
         png_sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: &'a str,
+        emojis: impl Into<Cow<'a, str>>,
     ) -> AddStickerToSet<'a> {
         AddStickerToSet::new(
             &self.client,
@@ -142,7 +144,7 @@ impl Bot {
 
     pub(crate) fn answer_callback_query<'a>(
         &'a self,
-        callback_query_id: callback::query::id::Ref<'a>,
+        callback_query_id: callback::query::id::Id<'a>,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a> {
         AnswerCallbackQuery::new(
@@ -155,8 +157,8 @@ impl Bot {
 
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: inline_query::id::Ref<'a>,
-        results: &'a [inline_query::Result<'a>],
+        inline_query_id: inline_query::id::Id<'a>,
+        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery::new(
             &self.client,
@@ -168,8 +170,8 @@ impl Bot {
 
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
-        pre_checkout_query_id: pre_checkout_query::id::Ref<'a>,
-        result: Result<(), &'a str>,
+        pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
+        result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> AnswerPreCheckoutQuery<'a> {
         AnswerPreCheckoutQuery::new(
             &self.client,
@@ -181,8 +183,11 @@ impl Bot {
 
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
-        shipping_query_id: shipping::query::id::Ref<'a>,
-        result: Result<&'a [shipping::Option<'a>], &'a str>,
+        shipping_query_id: shipping::query::id::Id<'a>,
+        result: Result<
+            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, str>>,
+        >,
     ) -> AnswerShippingQuery<'a> {
         AnswerShippingQuery::new(
             &self.client,
@@ -196,10 +201,10 @@ impl Bot {
     pub fn create_new_sticker_set<'a>(
         &'a self,
         user_id: user::Id,
-        name: &'a str,
-        title: &'a str,
+        name: impl Into<Cow<'a, str>>,
+        title: impl Into<Cow<'a, str>>,
         png_sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: &'a str,
+        emojis: impl Into<Cow<'a, str>>,
     ) -> CreateNewStickerSet<'a> {
         CreateNewStickerSet::new(
             &self.client,
@@ -245,7 +250,7 @@ impl Bot {
     /// Deletes a sticker from a sticker set.
     pub fn delete_sticker_from_set<'a>(
         &'a self,
-        sticker: &'a str,
+        sticker: impl Into<Cow<'a, str>>,
     ) -> DeleteStickerFromSet<'a> {
         DeleteStickerFromSet::new(&self.client, self.token.as_ref(), sticker)
     }
@@ -257,7 +262,7 @@ impl Bot {
     /// Edits the caption of a media message sent via the inline mode.
     pub fn edit_inline_caption<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         caption: impl Into<Text<'a>>,
     ) -> EditInlineCaption<'a> {
         EditInlineCaption::new(
@@ -271,7 +276,7 @@ impl Bot {
     /// Edits a live location sent via the inline mode.
     pub fn edit_inline_location<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         position: (f64, f64),
     ) -> EditInlineLocation<'a> {
         EditInlineLocation::new(
@@ -285,7 +290,7 @@ impl Bot {
     /// Edits the media of a message sent via the inline mode.
     pub fn edit_inline_media<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditInlineMedia<'a> {
         EditInlineMedia::new(
@@ -299,7 +304,7 @@ impl Bot {
     /// Edits the inline keyboard of a message sent via the inline mode.
     pub fn edit_inline_reply_markup<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         reply_markup: inline::Keyboard<'a>,
     ) -> EditInlineReplyMarkup<'a> {
         EditInlineReplyMarkup::new(
@@ -313,7 +318,7 @@ impl Bot {
     /// Edits the text of a message sent via the inline mode.
     pub fn edit_inline_text<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         text: impl Into<Text<'a>>,
     ) -> EditInlineText<'a> {
         EditInlineText::new(
@@ -437,7 +442,10 @@ impl Bot {
     }
 
     /// Gets information about a file.
-    pub fn get_file<'a>(&'a self, file_id: &'a impl AsFileId) -> GetFile<'a> {
+    pub fn get_file<'a>(
+        &'a self,
+        file_id: &'a impl AsFileId<'a>,
+    ) -> GetFile<'a> {
         GetFile::new(&self.client, self.token.as_ref(), file_id)
     }
 
@@ -445,7 +453,7 @@ impl Bot {
     /// mode.
     pub fn get_inline_game_high_scores<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
     ) -> GetInlineGameHighScores<'a> {
         GetInlineGameHighScores::new(
@@ -509,7 +517,10 @@ impl Bot {
     }
 
     /// Gets a sticker set by its name.
-    pub fn get_sticker_set<'a>(&'a self, name: &'a str) -> GetStickerSet<'a> {
+    pub fn get_sticker_set<'a>(
+        &'a self,
+        name: impl Into<Cow<'a, str>>,
+    ) -> GetStickerSet<'a> {
         GetStickerSet::new(&self.client, self.token.as_ref(), name)
     }
 
@@ -640,8 +651,8 @@ impl Bot {
     pub fn send_contact<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        phone_number: &'a str,
-        first_name: &'a str,
+        phone_number: impl Into<Cow<'a, str>>,
+        first_name: impl Into<Cow<'a, str>>,
     ) -> SendContact<'a> {
         SendContact::new(
             &self.client,
@@ -656,7 +667,7 @@ impl Bot {
     pub fn send_game<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        game_short_name: &'a str,
+        game_short_name: impl Into<Cow<'a, str>>,
     ) -> SendGame<'a> {
         SendGame::new(
             &self.client,
@@ -688,13 +699,13 @@ impl Bot {
     pub fn send_invoice<'a>(
         &'a self,
         chat_id: impl Into<chat::Id>,
-        title: &'a str,
-        description: &'a str,
-        payload: &'a str,
-        provider_token: &'a str,
-        start_parameter: &'a str,
-        currency: &'a str,
-        prices: &'a [LabeledPrice<'a>],
+        title: impl Into<Cow<'a, str>>,
+        description: impl Into<Cow<'a, str>>,
+        payload: impl Into<Cow<'a, str>>,
+        provider_token: impl Into<Cow<'a, str>>,
+        start_parameter: impl Into<Cow<'a, str>>,
+        currency: impl Into<Cow<'a, str>>,
+        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> SendInvoice<'a> {
         SendInvoice::new(
             &self.client,
@@ -723,7 +734,7 @@ impl Bot {
     pub fn send_media_group<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        media: &'a [GroupMedia<'a>],
+        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
     ) -> SendMediaGroup<'a> {
         SendMediaGroup::new(&self.client, self.token.as_ref(), chat_id, media)
     }
@@ -769,8 +780,8 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         position: (f64, f64),
-        title: &'a str,
-        address: &'a str,
+        title: impl Into<Cow<'a, str>>,
+        address: impl Into<Cow<'a, str>>,
     ) -> SendVenue<'a> {
         SendVenue::new(
             &self.client,
@@ -819,7 +830,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
-        custom_title: &'a str,
+        custom_title: impl Into<Cow<'a, str>>,
     ) -> SetChatAdministratorCustomTitle<'a> {
         SetChatAdministratorCustomTitle::new(
             &self.client,
@@ -834,7 +845,7 @@ impl Bot {
     pub fn set_chat_description<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        description: &'a str,
+        description: impl Into<Cow<'a, str>>,
     ) -> SetChatDescription<'a> {
         SetChatDescription::new(
             &self.client,
@@ -871,7 +882,7 @@ impl Bot {
     pub fn set_chat_sticker_set<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        sticker_set_name: &'a str,
+        sticker_set_name: impl Into<Cow<'a, str>>,
     ) -> SetChatStickerSet<'a> {
         SetChatStickerSet::new(
             &self.client,
@@ -885,7 +896,7 @@ impl Bot {
     pub fn set_chat_title<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        title: &'a str,
+        title: impl Into<Cow<'a, str>>,
     ) -> SetChatTitle<'a> {
         SetChatTitle::new(&self.client, self.token.as_ref(), chat_id, title)
     }
@@ -893,7 +904,7 @@ impl Bot {
     /// Sets a user's new high score in a game sent via the inline mode.
     pub fn set_inline_game_score<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
         score: u32,
     ) -> SetInlineGameScore<'a> {
@@ -927,7 +938,7 @@ impl Bot {
     /// Sets the list of the bot's commands.
     pub fn set_my_commands<'a>(
         &'a self,
-        commands: &'a [BotCommand<'a>],
+        commands: impl Into<Cow<'a, [BotCommand<'a>]>>,
     ) -> SetMyCommands<'a> {
         SetMyCommands::new(&self.client, self.token.as_ref(), commands)
     }
@@ -936,7 +947,7 @@ impl Bot {
     pub fn set_passport_data_errors<'a>(
         &'a self,
         user_id: user::Id,
-        errors: &'a [passport::element::Error<'a>],
+        errors: impl Into<Cow<'a, [passport::element::Error<'a>]>>,
     ) -> SetPassportDataErrors<'a> {
         SetPassportDataErrors::new(
             &self.client,
@@ -949,7 +960,7 @@ impl Bot {
     /// Changes a sticker's position in a sticker set.
     pub fn set_sticker_position_in_set<'a>(
         &'a self,
-        sticker: &'a str,
+        sticker: impl Into<Cow<'a, str>>,
         position: u32,
     ) -> SetStickerPositionInSet<'a> {
         SetStickerPositionInSet::new(
@@ -964,7 +975,7 @@ impl Bot {
     pub fn set_sticker_set_thumb<'a>(
         &'a self,
         user_id: user::Id,
-        name: &'a str,
+        name: impl Into<Cow<'a, str>>,
         thumb: Option<&'a StickerSetThumb<'a>>,
     ) -> SetStickerSetThumb<'a> {
         SetStickerSetThumb::new(
@@ -996,7 +1007,7 @@ impl Bot {
     /// Stops a live location sent via the inline mode.
     pub fn stop_inline_location<'a>(
         &'a self,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
     ) -> StopInlineLocation<'a> {
         StopInlineLocation::new(
             &self.client,
@@ -1054,7 +1065,7 @@ impl Bot {
     pub fn upload_sticker_file<'a>(
         &'a self,
         user_id: user::Id,
-        png_sticker: &'a [u8],
+        png_sticker: impl Into<Cow<'a, [u8]>>,
     ) -> UploadStickerFile<'a> {
         UploadStickerFile::new(
             &self.client,

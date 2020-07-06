@@ -1,6 +1,7 @@
 use super::call_method;
 use crate::{connectors::Client, errors, token, types::pre_checkout_query};
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Answers a pre-checkout query.
 ///
@@ -14,25 +15,25 @@ pub struct AnswerPreCheckoutQuery<'a> {
     client: &'a Client,
     #[serde(skip)]
     token: token::Ref<'a>,
-    pre_checkout_query_id: pre_checkout_query::id::Ref<'a>,
+    pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    error_message: Option<&'a str>,
+    error_message: Option<Cow<'a, str>>,
 }
 
 impl<'a> AnswerPreCheckoutQuery<'a> {
     pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        pre_checkout_query_id: pre_checkout_query::id::Ref<'a>,
-        result: Result<(), &'a str>,
+        pre_checkout_query_id: pre_checkout_query::id::Id<'a>,
+        result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> Self {
         Self {
             client,
             token,
             pre_checkout_query_id,
             ok: result.is_ok(),
-            error_message: result.err(),
+            error_message: result.err().map(Into::into),
         }
     }
 }

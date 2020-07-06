@@ -8,7 +8,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct PhotoSize {
     /// The file ID of the photo.
-    pub file_id: file::Id,
+    pub file_id: file::Id<'static>,
     /// The unique ID of the photo.
     pub file_unique_id: String,
     /// The width of the photo.
@@ -21,9 +21,9 @@ pub struct PhotoSize {
 
 impl crate::internal::Sealed for PhotoSize {}
 
-impl AsFileId for PhotoSize {
+impl AsFileId<'_> for PhotoSize {
     #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
+    fn as_file_id(&self) -> file::id::Id<'_> {
+        self.file_id.as_borrowed()
     }
 }

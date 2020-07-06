@@ -75,14 +75,14 @@ impl SendVideoNote<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         let mut multipart = Multipart::new(8)
-            .chat_id("chat_id", self.chat_id)
+            .chat_id("chat_id", &self.chat_id)
             .maybe_string("duration", self.video_note.duration)
             .maybe_string("length", self.video_note.length)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup);
 
-        match self.video_note.media.file {
+        match &self.video_note.media {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("video_note", filename, bytes),
@@ -93,7 +93,7 @@ impl SendVideoNote<'_> {
 
         if let Some(Thumb(InputFile::File {
             filename, bytes, ..
-        })) = self.video_note.thumb
+        })) = &self.video_note.thumb
         {
             multipart = multipart.file("thumb", filename, bytes);
         }

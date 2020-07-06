@@ -5,6 +5,7 @@ use crate::{
     types::{passport, user},
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Reports passport errors to the user.
 ///
@@ -19,21 +20,21 @@ pub struct SetPassportDataErrors<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     user_id: user::Id,
-    errors: &'a [passport::element::Error<'a>],
+    errors: Cow<'a, [passport::element::Error<'a>]>,
 }
 
 impl<'a> SetPassportDataErrors<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         client: &'a Client,
         token: token::Ref<'a>,
         user_id: user::Id,
-        errors: &'a [passport::element::Error<'a>],
+        errors: impl Into<Cow<'a, [passport::element::Error<'a>]>>,
     ) -> Self {
         Self {
             client,
             token,
             user_id,
-            errors,
+            errors: errors.into(),
         }
     }
 }

@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     connectors::Client,
     errors, token,
-    types::{inline_message_id, user},
+    types::{inline_message_id::InlineMessageId, user},
 };
 use serde::Serialize;
 
@@ -20,7 +20,7 @@ pub struct SetInlineGameScore<'a> {
     token: token::Ref<'a>,
     user_id: user::Id,
     score: u32,
-    inline_message_id: inline_message_id::Ref<'a>,
+    inline_message_id: InlineMessageId<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31,7 +31,7 @@ impl<'a> SetInlineGameScore<'a> {
     pub(crate) const fn new(
         client: &'a Client,
         token: token::Ref<'a>,
-        inline_message_id: inline_message_id::Ref<'a>,
+        inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
         score: u32,
     ) -> Self {

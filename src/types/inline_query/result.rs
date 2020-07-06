@@ -5,6 +5,7 @@
 use crate::types::keyboard::inline;
 use is_macro::Is;
 use serde::Serialize;
+use std::borrow::Cow;
 
 pub mod article;
 pub mod audio;
@@ -46,7 +47,7 @@ pub use {
 ///
 /// [`InlineQueryResult`]: ./struct.InlineQueryResult.html
 #[allow(clippy::large_enum_variant)]
-#[derive(Debug, PartialEq, Clone, Copy, Serialize, Is)]
+#[derive(Debug, PartialEq, Clone, Serialize, Is)]
 #[serde(tag = "type", rename_all = "snake_case")]
 #[non_exhaustive]
 #[must_use]
@@ -83,10 +84,10 @@ pub enum Kind<'a> {
 /// Represents an [`InlineQueryResult`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
-#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Result<'a> {
-    id: &'a str,
+    id: Cow<'a, str>,
     #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -95,9 +96,9 @@ pub struct Result<'a> {
 
 impl<'a> Result<'a> {
     /// Constructs an inline query `Result`.
-    pub fn new(id: &'a str, kind: impl Into<Kind<'a>>) -> Self {
+    pub fn new(id: impl Into<Cow<'a, str>>, kind: impl Into<Kind<'a>>) -> Self {
         Self {
-            id,
+            id: id.into(),
             kind: kind.into(),
             reply_markup: None,
         }

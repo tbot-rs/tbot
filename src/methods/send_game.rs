@@ -9,6 +9,7 @@ use crate::{
     },
 };
 use serde::Serialize;
+use std::borrow::Cow;
 
 /// Sends a game.
 ///
@@ -23,7 +24,7 @@ pub struct SendGame<'a> {
     #[serde(skip)]
     token: token::Ref<'a>,
     chat_id: ChatId<'a>,
-    game_short_name: &'a str,
+    game_short_name: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,13 +38,13 @@ impl<'a> SendGame<'a> {
         client: &'a Client,
         token: token::Ref<'a>,
         chat_id: impl ImplicitChatId<'a>,
-        game_short_name: &'a str,
+        game_short_name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
             client,
             token,
             chat_id: chat_id.into(),
-            game_short_name,
+            game_short_name: game_short_name.into(),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,

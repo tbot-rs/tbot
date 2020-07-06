@@ -1,14 +1,15 @@
 use super::{InputFile, Thumb};
 use crate::types::parameters::{ParseMode, Text};
 use serde::ser::SerializeMap;
+use std::borrow::Cow;
 
 /// Represents a document to be sent.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Document<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<Thumb<'a>>,
-    pub(crate) caption: Option<&'a str>,
+    pub(crate) caption: Option<Cow<'a, str>>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -23,16 +24,23 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a `Document` from bytes.
-    pub fn bytes(filename: &'a str, bytes: &'a [u8]) -> Self {
-        Self::new(InputFile::File { filename, bytes })
+    pub fn bytes(
+        filename: impl Into<Cow<'a, str>>,
+        bytes: impl Into<Cow<'a, [u8]>>,
+    ) -> Self {
+        Self::new(InputFile::File {
+            filename: filename.into(),
+            bytes: bytes.into(),
+        })
     }
 
     /// Constructs a `Document` from a file ID.
     ///
     /// # Panics
     ///
-    /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    /// Panics if the ID starts with `attach://`.
+    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
+        let id = id.into();
         assert!(
             !id.starts_with("attach://"),
             "\n[tbot]: Document's ID cannot start with `attach://`\n",
@@ -45,8 +53,9 @@ impl<'a> Document<'a> {
     ///
     /// # Panics
     ///
-    /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    /// Panics if the URL starts with `attach://`.
+    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+        let url = url.into();
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Document's URL cannot start with `attach://`\n",
@@ -81,7 +90,7 @@ impl<'a> serde::Serialize for Document<'a> {
         if let Some(thumb) = &self.thumb {
             map.serialize_entry("thumb", &thumb)?;
         }
-        if let Some(caption) = self.caption {
+        if let Some(caption) = &self.caption {
             map.serialize_entry("caption", caption)?;
         }
         if let Some(parse_mode) = self.parse_mode {
