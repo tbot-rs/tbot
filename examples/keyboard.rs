@@ -32,7 +32,7 @@ async fn main() {
         }
     });
 
-    bot.data_callback(|context| async move {
+    bot.message_data_callback(|context| async move {
         let message = match context.data.as_str() {
             "cool" => "You're cool too!",
             "amazing" => "Thanks, I'm trying!",

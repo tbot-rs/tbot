@@ -2,13 +2,14 @@ macro_rules! callback {
     (
         struct $name:ident {
             #[doc = $kind_doc:literal] $kind:ident: $kind_type:ty,
+            $origin:ident: $origin_type:ty,
         } -> EventLoop::$handler:ident
     ) => {
         common! {
             #[doc = concat!(
                 "Context for the [`", stringify!($handler), "`][handler] ", "handler.\n\n",
 
-                "[handler]: ../event_loop/struct.Event.html#method.",
+                "[handler]: ../event_loop/struct.EventLoop.html#method.",
                 stringify!($handler),
             )]
             struct $name {
@@ -17,7 +18,7 @@ macro_rules! callback {
                 /// The user who initiated the callback.
                 from: crate::types::User,
                 /// The origin of the query.
-                origin: crate::types::callback::Origin,
+                $origin: $origin_type,
                 /// The identifier of the chat.
                 chat_instance: String,
                 #[doc = $kind_doc]
@@ -30,7 +31,7 @@ macro_rules! callback {
                 bot: std::sync::Arc<crate::Bot>,
                 id: crate::types::callback::query::Id,
                 from: crate::types::User,
-                origin: crate::types::callback::Origin,
+                $origin: $origin_type,
                 chat_instance: String,
                 $kind: $kind_type,
             ) -> Self {
@@ -38,7 +39,7 @@ macro_rules! callback {
                     bot,
                     id,
                     from,
-                    origin,
+                    $origin,
                     chat_instance,
                     $kind,
                 }
@@ -54,11 +55,6 @@ macro_rules! callback {
             #[must_use]
             fn from(&self) -> &crate::types::User {
                 &self.from
-            }
-
-            #[must_use]
-            fn origin(&self) -> &crate::types::callback::Origin {
-                &self.origin
             }
 
             #[must_use]

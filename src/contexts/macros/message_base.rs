@@ -35,6 +35,7 @@ macro_rules! message_base {
         }
 
         impl $name {
+            #[allow(clippy::redundant_field_names)]
             pub(crate) fn new(
                 bot: std::sync::Arc<crate::Bot>,
                 data: crate::types::message::Data,

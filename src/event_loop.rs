@@ -5,6 +5,7 @@ use crate::{
     state::StatefulEventLoop,
     types::{
         self, callback,
+        callback::Query,
         message::{
             self,
             text::{Entity, EntityKind, Text},
@@ -23,6 +24,8 @@ mod handlers_macros;
 mod polling;
 pub mod webhook;
 
+use errors::MethodCall;
+use types::parameters::BotCommand;
 pub use {polling::Polling, webhook::Webhook};
 
 type Handlers<T> = Vec<Box<T>>;
@@ -38,7 +41,8 @@ type CommandHandler = Handler<contexts::Command<contexts::Text>>;
 type ConnectedWebsiteHandler = Handler<contexts::ConnectedWebsite>;
 type ContactHandler = Handler<contexts::Contact>;
 type CreatedGroupHandler = Handler<contexts::CreatedGroup>;
-type DataCallbackHandler = Handler<contexts::DataCallback>;
+type MessageDataCallbackHandler = Handler<contexts::MessageDataCallback>;
+type InlineDataCallbackHandler = Handler<contexts::InlineDataCallback>;
 type DeletedChatPhotoHandler = Handler<contexts::DeletedChatPhoto>;
 type DiceHandler = Handler<contexts::Dice>;
 type DocumentHandler = Handler<contexts::Document>;
@@ -50,7 +54,8 @@ type EditedLocationHandler = Handler<contexts::EditedLocation>;
 type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
 type EditedTextHandler = Handler<contexts::EditedText>;
 type EditedVideoHandler = Handler<contexts::EditedVideo>;
-type GameCallbackHandler = Handler<contexts::GameCallback>;
+type MessageGameCallbackHandler = Handler<contexts::MessageGameCallback>;
+type InlineGameCallbackHandler = Handler<contexts::InlineGameCallback>;
 type GameHandler = Handler<contexts::Game>;
 type InlineHandler = Handler<contexts::Inline>;
 type InvoiceHandler = Handler<contexts::Invoice>;
@@ -103,6 +108,7 @@ pub struct EventLoop {
     username: Option<String>,
 
     command_handlers: Map<CommandHandler>,
+    command_description: HashMap<String, String>,
     edited_command_handlers: Map<EditedCommandHandler>,
     after_update_handlers: Handlers<UpdateHandler>,
     animation_handlers: Handlers<AnimationHandler>,
@@ -112,7 +118,6 @@ pub struct EventLoop {
     contact_handlers: Handlers<ContactHandler>,
     connected_website_handlers: Handlers<ConnectedWebsiteHandler>,
     created_group_handlers: Handlers<CreatedGroupHandler>,
-    data_callback_handlers: Handlers<DataCallbackHandler>,
     deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler>,
     dice_handlers: Handlers<DiceHandler>,
     document_handlers: Handlers<DocumentHandler>,
@@ -123,12 +128,15 @@ pub struct EventLoop {
     edited_photo_handlers: Handlers<EditedPhotoHandler>,
     edited_text_handlers: Handlers<EditedTextHandler>,
     edited_video_handlers: Handlers<EditedVideoHandler>,
-    game_callback_handlers: Handlers<GameCallbackHandler>,
     game_handlers: Handlers<GameHandler>,
     inline_handlers: Handlers<InlineHandler>,
+    inline_data_callback_handlers: Handlers<InlineDataCallbackHandler>,
+    inline_game_callback_handlers: Handlers<InlineGameCallbackHandler>,
     invoice_handlers: Handlers<InvoiceHandler>,
     left_member_handlers: Handlers<LeftMemberHandler>,
     location_handlers: Handlers<LocationHandler>,
+    message_data_callback_handlers: Handlers<MessageDataCallbackHandler>,
+    message_game_callback_handlers: Handlers<MessageGameCallbackHandler>,
     migration_handlers: Handlers<MigrationHandler>,
     new_chat_photo_handlers: Handlers<NewChatPhotoHandler>,
     new_chat_title_handlers: Handlers<NewChatTitleHandler>,
@@ -157,6 +165,7 @@ impl EventLoop {
             bot,
             username: None,
             command_handlers: HashMap::new(),
+            command_description: HashMap::new(),
             edited_command_handlers: HashMap::new(),
             after_update_handlers: Vec::new(),
             animation_handlers: Vec::new(),
@@ -166,7 +175,6 @@ impl EventLoop {
             contact_handlers: Vec::new(),
             connected_website_handlers: Vec::new(),
             created_group_handlers: Vec::new(),
-            data_callback_handlers: Vec::new(),
             deleted_chat_photo_handlers: Vec::new(),
             dice_handlers: Vec::new(),
             document_handlers: Vec::new(),
@@ -177,12 +185,15 @@ impl EventLoop {
             edited_photo_handlers: Vec::new(),
             edited_text_handlers: Vec::new(),
             edited_video_handlers: Vec::new(),
-            game_callback_handlers: Vec::new(),
             game_handlers: Vec::new(),
             inline_handlers: Vec::new(),
+            inline_data_callback_handlers: Vec::new(),
+            inline_game_callback_handlers: Vec::new(),
             invoice_handlers: Vec::new(),
             left_member_handlers: Vec::new(),
             location_handlers: Vec::new(),
+            message_data_callback_handlers: Vec::new(),
+            message_game_callback_handlers: Vec::new(),
             migration_handlers: Vec::new(),
             new_chat_photo_handlers: Vec::new(),
             new_chat_title_handlers: Vec::new(),
@@ -261,6 +272,31 @@ impl EventLoop {
             }));
     }
 
+    /// Adds a new handler for a command and sets its description.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
+    pub fn command_with_description<H, F>(
+        &mut self,
+        command: &'static str,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_description
+            .insert(command.to_string(), description.to_string());
+        self.command(command, handler);
+    }
+
     /// Adds a new handler for a command which is run if the predicate
     /// returns true.
     ///
@@ -298,6 +334,38 @@ impl EventLoop {
                 }
             }
         });
+    }
+
+    /// Adds a new handler for a command which is run if the predicate
+    /// returns true. Also sets the command's description.
+    ///
+    /// Note that commands such as `/command@username` will be completely
+    /// ignored unless you configure the event loop with your bot's username
+    /// with either [`username`] or [`fetch_username`].
+    ///
+    /// [`username`]: #method.username
+    /// [`fetch_username`]: #method.fetch_username
+    pub fn command_with_description_if<H, HF, P, PF>(
+        &mut self,
+        command: &'static str,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_description
+            .insert(command.to_string(), description.to_string());
+        self.command_if(command, predicate, handler);
     }
 
     /// Adds a new handler for a sequence of commands.
@@ -398,6 +466,21 @@ impl EventLoop {
         self.command("start", handler);
     }
 
+    /// Adds a new handler for the `/start` command and sets its description.
+    pub fn start_with_description<H, F>(
+        &mut self,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_with_description("start", description, handler);
+    }
+
     /// Adds a new handler for the `/start` command which is run
     /// if the predicate returns true.
     pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
@@ -426,6 +509,33 @@ impl EventLoop {
         });
     }
 
+    /// Adds a new handler for the `/start` command which is run
+    /// if the predicate returns true. Also sets the command's description.
+    pub fn start_with_description_if<H, HF, P, PF>(
+        &mut self,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_with_description_if(
+            "start",
+            description,
+            predicate,
+            handler,
+        )
+    }
+
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
@@ -436,6 +546,21 @@ impl EventLoop {
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("settings", handler);
+    }
+
+    /// Adds a new handler for the `/settings` command and sets its description.
+    pub fn settings_with_description<H, F>(
+        &mut self,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_with_description("settings", description, handler);
     }
 
     /// Adds a new handler for the `/settings` command which is run
@@ -466,6 +591,33 @@ impl EventLoop {
         });
     }
 
+    /// Adds a new handler for the `/settings` command which is run
+    /// if the predicate returns true. Also sets the command's description.
+    pub fn settings_with_description_if<H, HF, P, PF>(
+        &mut self,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_with_description_if(
+            "settings",
+            description,
+            predicate,
+            handler,
+        )
+    }
+
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
@@ -476,6 +628,21 @@ impl EventLoop {
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
+    }
+
+    /// Adds a new handler for the `/help` command and sets its description.
+    pub fn help_with_description<H, F>(
+        &mut self,
+        description: &'static str,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
+            + Send
+            + Sync
+            + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.command_with_description("help", description, handler);
     }
 
     /// Adds a new handler for the `/help` command which is run if the predicate
@@ -504,6 +671,33 @@ impl EventLoop {
                 }
             }
         });
+    }
+
+    /// Adds a new handler for the `/help` command which is run if the predicate
+    /// returns true. Also sets the command's description.
+    pub fn help_with_description_if<H, HF, P, PF>(
+        &mut self,
+        description: &'static str,
+        predicate: P,
+        handler: H,
+    ) where
+        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
+            + Send
+            + Sync
+            + 'static,
+        HF: Future<Output = ()> + Send + 'static,
+        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
+            + Send
+            + Sync
+            + 'static,
+        PF: Future<Output = bool> + Send + 'static,
+    {
+        self.command_with_description_if(
+            "help",
+            description,
+            predicate,
+            handler,
+        )
     }
 
     /// Adds a new handler for an edited command.
@@ -700,12 +894,21 @@ impl EventLoop {
     }
 
     handler! {
-        contexts::DataCallback,
-        /// Adds a new handler for data callbacks.
-        data_callback,
-        /// Adds a new handler for data callbacks which is run if the
-        /// predicate returns true.
-        data_callback_if,
+        contexts::MessageDataCallback,
+        /// Adds a new handler for data callbacks from chat messages.
+        message_data_callback,
+        /// Adds a new handler for data callbacks from chat messages which is
+        /// run if the predicate returns true.
+        message_data_callback_if,
+    }
+
+    handler! {
+        contexts::InlineDataCallback,
+        /// Adds a new handler for data callbacks from inline messages.
+        inline_data_callback,
+        /// Adds a new handler for data callbacks from inline messages which is
+        /// run if the predicate returns true.
+        inline_data_callback_if,
     }
 
     handler! {
@@ -799,12 +1002,21 @@ impl EventLoop {
     }
 
     handler! {
-        contexts::GameCallback,
-        /// Adds a new handler for game callbacks.
-        game_callback,
-        /// Adds a new handler for game callbacks which is run if the
-        /// predicate returns true.
-        game_callback_if,
+        contexts::MessageGameCallback,
+        /// Adds a new handler for game callbacks from chat messages.
+        message_game_callback,
+        /// Adds a new handler for game callbacks from chat messages which is
+        /// run if the predicate returns true.
+        message_game_callback_if,
+    }
+
+    handler! {
+        contexts::InlineGameCallback,
+        /// Adds a new handler for game callbacks from inline messages.
+        inline_game_callback,
+        /// Adds a new handler for game callbacks from inline messages which is
+        /// run if the predicate returns true.
+        inline_game_callback_if,
     }
 
     handler! {
@@ -1078,38 +1290,99 @@ impl EventLoop {
         self.run_before_update_handlers(update_context.clone());
 
         match update.kind {
-            update::Kind::CallbackQuery(query) => match query.kind {
-                callback::Kind::Data(data)
-                    if self.will_handle_data_callback() =>
-                {
-                    let context = contexts::DataCallback::new(
+            update::Kind::CallbackQuery(query) => match query {
+                Query {
+                    kind: callback::Kind::Data(data),
+                    origin: callback::Origin::Message(message),
+                    id,
+                    from,
+                    chat_instance,
+                } if self.will_handle_message_data_callback() => {
+                    let context = contexts::MessageDataCallback::new(
                         bot,
-                        query.id,
-                        query.from,
-                        query.origin,
-                        query.chat_instance,
+                        id,
+                        from,
+                        *message,
+                        chat_instance,
                         data,
                     );
-                    self.run_data_callback_handlers(Arc::new(context));
+                    self.run_message_data_callback_handlers(Arc::new(context));
                 }
-                callback::Kind::Game(game)
-                    if self.will_handle_game_callback() =>
-                {
-                    let context = contexts::GameCallback::new(
+                Query {
+                    kind: callback::Kind::Data(data),
+                    origin: callback::Origin::Inline(message_id),
+                    id,
+                    from,
+                    chat_instance,
+                } if self.will_handle_inline_data_callback() => {
+                    let context = contexts::InlineDataCallback::new(
                         bot,
-                        query.id,
-                        query.from,
-                        query.origin,
-                        query.chat_instance,
+                        id,
+                        from,
+                        message_id,
+                        chat_instance,
+                        data,
+                    );
+                    self.run_inline_data_callback_handlers(Arc::new(context));
+                }
+                Query {
+                    kind: callback::Kind::Game(game),
+                    origin: callback::Origin::Message(message),
+                    id,
+                    from,
+                    chat_instance,
+                } if self.will_handle_message_game_callback() => {
+                    let context = contexts::MessageGameCallback::new(
+                        bot,
+                        id,
+                        from,
+                        *message,
+                        chat_instance,
                         game,
                     );
-                    self.run_game_callback_handlers(Arc::new(context));
+                    self.run_message_game_callback_handlers(Arc::new(context));
                 }
-                _ if self.will_handle_unhandled() => {
-                    let update = update::Kind::CallbackQuery(query.clone());
+                Query {
+                    kind: callback::Kind::Game(game),
+                    origin: callback::Origin::Inline(message_id),
+                    id,
+                    from,
+                    chat_instance,
+                } if self.will_handle_inline_game_callback() => {
+                    let context = contexts::InlineGameCallback::new(
+                        bot,
+                        id,
+                        from,
+                        message_id,
+                        chat_instance,
+                        game,
+                    );
+                    self.run_inline_game_callback_handlers(Arc::new(context));
+                }
+                query if self.will_handle_unhandled() => {
+                    let update = update::Kind::CallbackQuery(query);
                     self.run_unhandled_handlers(bot, update);
                 }
-                callback::Kind::Data(..) | callback::Kind::Game(..) => (),
+                Query {
+                    kind: callback::Kind::Data(..),
+                    origin: callback::Origin::Message(..),
+                    ..
+                }
+                | Query {
+                    kind: callback::Kind::Data(..),
+                    origin: callback::Origin::Inline(..),
+                    ..
+                }
+                | Query {
+                    kind: callback::Kind::Game(..),
+                    origin: callback::Origin::Message(..),
+                    ..
+                }
+                | Query {
+                    kind: callback::Kind::Game(..),
+                    origin: callback::Origin::Inline(..),
+                    ..
+                } => (),
             },
             update::Kind::ChosenInlineResult(result)
                 if self.will_handle_chosen_inline() =>
@@ -1544,6 +1817,24 @@ impl EventLoop {
         } else {
             true
         }
+    }
+
+    pub(crate) async fn set_commands_descriptions(
+        &self,
+    ) -> Result<(), MethodCall> {
+        if self.command_description.is_empty() {
+            return Ok(());
+        }
+
+        let commands: Vec<_> = self
+            .command_description
+            .iter()
+            .map(|(name, description)| BotCommand::new(name, description))
+            .collect();
+
+        self.bot.set_my_commands(&commands).call().await?;
+
+        Ok(())
     }
 
     /// Fetches the bot's username.

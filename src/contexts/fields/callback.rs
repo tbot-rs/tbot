@@ -7,8 +7,7 @@ pub trait Callback: Context {
     fn id(&self) -> &callback::query::Id;
     /// The user who initiated the callback.
     fn from(&self) -> &User;
-    /// The origin of the query.
-    fn origin(&self) -> &callback::Origin;
     /// The identifier of the chat.
     fn chat_instance(&self) -> &str;
+    // todo: origin
 }

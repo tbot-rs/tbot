@@ -1,5 +1,5 @@
 use super::EventLoop;
-use crate::{errors, types::parameters::UpdateKind};
+use crate::{errors, state, types::parameters::UpdateKind};
 use std::{
     convert::{Infallible, TryInto},
     num::NonZeroUsize,
@@ -13,9 +13,9 @@ type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
 
 /// Configures and starts polling.
 ///
-/// To construct `Polling`, use [`Bot::polling`].
+/// To construct `Polling`, use [`EventLoop::polling`].
 ///
-/// [`Bot::polling`]: ./struct.Bot.html#method.polling
+/// [`EventLoop::polling`]: ./struct.EventLoop.html#method.polling
 #[must_use = "polling does nothing unless `start` is called"]
 pub struct Polling {
     event_loop: EventLoop,
@@ -42,6 +42,15 @@ impl Polling {
             request_timeout: None,
             offset: None,
         }
+    }
+
+    /// Turns this polling into a stateful one. Previous configuration
+    // is preserved.
+    pub fn into_stateful<S>(self, state: S) -> state::Polling<S>
+    where
+        S: Send + Sync + 'static,
+    {
+        state::Polling::new(self.event_loop, Arc::new(state))
     }
 
     /// Configures the limit of updates per request.
@@ -130,6 +139,18 @@ impl Polling {
 
         let delete_webhook = event_loop.bot.delete_webhook().call();
         timeout_future(request_timeout, delete_webhook).await??;
+
+        let set_commands = event_loop.set_commands_descriptions();
+
+        match timeout_future(request_timeout, set_commands).await {
+            Ok(Err(method)) => {
+                return Err(errors::PollingSetup::SetMyCommands(method))
+            }
+            Err(timeout) => {
+                return Err(errors::PollingSetup::SetMyCommandsTimeout(timeout))
+            }
+            _ => (),
+        };
 
         let bot = Arc::new(event_loop.bot.clone());
 

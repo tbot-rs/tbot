@@ -45,7 +45,7 @@
 //!
 //! [our group]: https://t.me/tbot_group
 //! [gitlab]: https://gitlab.com/SnejUgal/tbot
-//! [github]: https://github.com/SnejUgal/tbot
+//! [github]: https://github.com/tbot-rs/tbot
 
 #![deny(
     future_incompatible,
@@ -60,7 +60,11 @@
 // errors clearly describe why something may fail
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::multiple_crate_versions)] // can't do much
-#![allow(clippy::needless_doctest_main)] // that's where you're wrong, kiddo
+// that's where you're wrong, kiddo
+#![allow(clippy::needless_doctest_main)]
+// Can't do anything about `await` desugaring (fixed in some nightly, but
+// we test on stable)
+#![allow(clippy::used_underscore_binding)]
 #![doc(
     html_logo_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg",
     html_favicon_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg"
@@ -85,6 +89,7 @@ pub mod event_loop;
 pub mod markup;
 pub mod methods;
 pub mod predicates;
+pub mod proxy;
 pub mod state;
 pub mod types;
 pub mod util;
@@ -102,5 +107,3 @@ pub mod prelude {
     pub use super::util::ChatActionLoop as _;
     pub use super::util::ChatActionLoopBotExt as _;
 }
-
-pub use hyper_proxy as proxy;

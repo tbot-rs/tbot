@@ -52,7 +52,9 @@ impl<'a> SendDice<'a> {
     }
 
     /// Сonfigures the dice's kind. Reflects the `emoji` parameter.
-    pub const fn kind(mut self, kind: Kind) -> Self {
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn kind(mut self, kind: Kind) -> Self {
         self.kind = kind;
         self
     }

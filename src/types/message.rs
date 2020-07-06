@@ -21,7 +21,7 @@ pub struct Message {
     /// The author of the message. Note that this field is `None` for messages
     /// from channels.
     pub from: Option<User>,
-    /// The timestamp of the messagr.
+    /// The timestamp of the message.
     pub date: i64,
     /// The chat to which the message was sent.
     pub chat: Chat,
@@ -37,6 +37,8 @@ pub struct Message {
     pub reply_markup: Option<Keyboard>,
     /// The kind of the message.
     pub kind: Kind,
+    /// The bot via which the message was sent.
+    pub via_bot: Option<User>,
 }
 
 pub(crate) struct Data {
@@ -49,6 +51,7 @@ pub(crate) struct Data {
     pub edit_date: Option<i64>,
     pub author_signature: Option<String>,
     pub reply_markup: Option<Keyboard>,
+    pub via_bot: Option<User>,
 }
 
 impl Message {
@@ -63,6 +66,7 @@ impl Message {
             edit_date: data.edit_date,
             author_signature: data.author_signature,
             reply_markup: data.reply_markup,
+            via_bot: data.via_bot,
             kind,
         }
     }
@@ -78,6 +82,7 @@ impl Message {
             edit_date: self.edit_date,
             author_signature: self.author_signature,
             reply_markup: self.reply_markup,
+            via_bot: self.via_bot,
         };
 
         (data, self.kind)
@@ -134,6 +139,7 @@ const SUCCESSFUL_PAYMENT: &str = "successful_payment";
 const CONNECTED_WEBSITE: &str = "connected_website";
 const PASSPORT_DATA: &str = "passport_data";
 const REPLY_MARKUP: &str = "reply_markup";
+const VIA_BOT: &str = "via_bot";
 
 struct MessageVisitor;
 
@@ -198,6 +204,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         let mut connected_website = None;
         let mut passport_data = None;
         let mut reply_markup = None;
+        let mut via_bot = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -269,6 +276,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 }
                 PASSPORT_DATA => passport_data = Some(map.next_value()?),
                 REPLY_MARKUP => reply_markup = Some(map.next_value()?),
+                VIA_BOT => via_bot = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<serde_json::Value>();
                 }
@@ -330,10 +338,10 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::VideoNote(video_note)
         } else if let Some(contact) = contact {
             Kind::Contact(contact)
-        } else if let Some(location) = location {
-            Kind::Location(location)
         } else if let Some(venue) = venue {
             Kind::Venue(venue)
+        } else if let Some(location) = location {
+            Kind::Location(location)
         } else if let Some(poll) = poll {
             Kind::Poll(poll)
         } else if let Some(animation) = animation {
@@ -387,6 +395,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             edit_date,
             author_signature,
             reply_markup,
+            via_bot,
             kind,
         })
     }
@@ -449,6 +458,7 @@ impl<'de> serde::Deserialize<'de> for Message {
                 CONNECTED_WEBSITE,
                 PASSPORT_DATA,
                 REPLY_MARKUP,
+                VIA_BOT,
             ],
             MessageVisitor,
         )

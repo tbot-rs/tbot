@@ -6,10 +6,14 @@ use tokio::time::Elapsed;
 /// polling event loop.
 #[derive(Debug, Is)]
 pub enum PollingSetup {
-    /// Calling `DeleteWebhook` resulted in an error.
+    /// Calling the `deleteWebhook` method resulted in an error.
     DeleteWebhook(MethodCall),
-    /// Calling `DeleteWebhook` timed out.
+    /// Calling the `deleteWebhook` method timed out.
     DeleteWebhookTimeout(Elapsed),
+    /// Calling the `setMyCommands` method resulted in an error.
+    SetMyCommands(MethodCall),
+    /// Calling the `setMyCommands` method timed out.
+    SetMyCommandsTimeout(Elapsed),
 }
 
 impl From<MethodCall> for PollingSetup {

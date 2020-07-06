@@ -1,7 +1,7 @@
 use crate::{connectors::Client, errors, token, types::File};
 use hyper::{body::HttpBody, StatusCode, Uri};
 
-pub(crate) async fn download_file(
+pub async fn download_file(
     client: &Client,
     token: token::Ref<'_>,
     file: &File,

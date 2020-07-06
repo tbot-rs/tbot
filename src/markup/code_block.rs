@@ -21,17 +21,17 @@ impl<C, L: Deref<Target = str>> CodeBlock<C, L> {
     ///
     /// Panics if the language contains a line break or a quote.
     pub fn language(mut self, language: L) -> Self {
-        if language.deref().contains('\n') {
+        if (&*language).contains('\n') {
             panic!(
                 "[tbot] A code block's language may not contain line breaks: {}",
-                language.deref(),
+                &*language,
             );
         }
 
-        if language.deref().contains('"') {
+        if (&*language).contains('"') {
             panic!(
                 "[tbot] A code block's language may not contain quotes: {}",
-                language.deref(),
+                &*language,
             );
         }
 
@@ -103,11 +103,7 @@ where
         formatter.write_str("<pre>")?;
 
         if let Some(language) = &self.language {
-            write!(
-                formatter,
-                "<code class=\"language-{}\">",
-                language.deref()
-            )?;
+            write!(formatter, "<code class=\"language-{}\">", &**language)?;
         }
 
         (&self.code)
