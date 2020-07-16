@@ -9,7 +9,7 @@ use std::{
     fmt::{self, Debug, Formatter},
     str::from_utf8,
 };
-use tracing::{error, instrument, trace};
+use tracing::{error, field::debug, instrument, trace};
 
 struct DebugBytes<'a>(&'a [u8]);
 
