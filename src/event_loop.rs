@@ -15,7 +15,7 @@ use crate::{
     Bot,
 };
 use std::{collections::HashMap, future::Future, sync::Arc};
-use tracing::{error, instrument, trace, warn};
+use tracing::{error, field::debug, instrument, trace, warn};
 
 #[macro_use]
 mod handlers_macros;
@@ -1393,7 +1393,7 @@ impl EventLoop {
         }
     }
 
-    #[allow(clippy::too_many_lines)] // can't split the huge match
+    #[allow(clippy::too_many_lines, clippy::cognitive_complexity)] // can't split the huge match
     fn handle_message_edit_update(
         &self,
         bot: Arc<Bot>,
