@@ -15,7 +15,7 @@ use crate::{
     Bot,
 };
 use std::{collections::HashMap, future::Future, sync::Arc};
-use tracing::{error, field::debug, instrument, trace, warn};
+use tracing::{error, instrument, trace, warn};
 
 #[macro_use]
 mod handlers_macros;
@@ -1070,7 +1070,7 @@ impl EventLoop {
 
     #[instrument(skip(self, bot, update))]
     fn handle_update(&self, bot: Arc<Bot>, update: types::Update) {
-        trace!(update = debug(&update));
+        trace!(?update);
 
         let update_context =
             Arc::new(contexts::Update::new(Arc::clone(&bot), update.id));
