@@ -149,7 +149,7 @@ impl Polling {
             Err(timeout) => {
                 return Err(errors::PollingSetup::SetMyCommandsTimeout(timeout))
             }
-            _ => (),
+            Ok(_) => (),
         };
 
         let bot = Arc::new(event_loop.bot.clone());
