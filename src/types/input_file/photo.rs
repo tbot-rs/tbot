@@ -21,7 +21,7 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub const fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "photo.jpg",
             bytes,

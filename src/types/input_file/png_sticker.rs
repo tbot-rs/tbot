@@ -13,7 +13,7 @@ impl<'a> PngSticker<'a> {
     }
 
     /// Constructs a `PngSticker` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub const fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "sticker.png",
             bytes,

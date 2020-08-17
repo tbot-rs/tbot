@@ -25,7 +25,7 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Constructs an `VideoNote` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub const fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "video_note.mp4",
             bytes,
@@ -61,19 +61,19 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u32) -> Self {
+    pub const fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }
 
     /// Configures `length`.
-    pub fn length(mut self, length: u32) -> Self {
+    pub const fn length(mut self, length: u32) -> Self {
         self.length = Some(length);
         self
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }

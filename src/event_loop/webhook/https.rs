@@ -75,7 +75,7 @@ impl<'a> Https<'a> {
             Err(timeout) => {
                 return Err(errors::HttpsWebhook::SetMyCommandsTimeout(timeout))
             }
-            _ => (),
+            Ok(_) => (),
         };
 
         let bot = Arc::new(event_loop.bot.clone());

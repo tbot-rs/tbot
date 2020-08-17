@@ -66,14 +66,14 @@ impl<'a> SendVenue<'a> {
 
     /// Configures the Foursquare ID of this venue.
     /// Reflects the `foursquare_id` parameter.
-    pub fn foursquare_id(mut self, id: &'a str) -> Self {
+    pub const fn foursquare_id(mut self, id: &'a str) -> Self {
         self.foursquare_id = Some(id);
         self
     }
 
     /// Configures the Foursquare type of this venue.
     /// Reflects the `foursquare_type` parameter.
-    pub fn foursquare_type(mut self, fs_type: &'a str) -> Self {
+    pub const fn foursquare_type(mut self, fs_type: &'a str) -> Self {
         self.foursquare_type = Some(fs_type);
         self
     }
@@ -87,7 +87,7 @@ impl<'a> SendVenue<'a> {
 
     /// Configures which message this venue is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

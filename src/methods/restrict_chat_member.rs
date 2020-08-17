@@ -49,7 +49,7 @@ impl<'a> RestrictChatMember<'a> {
 
     /// Configures when the restrictions will be lifted.
     /// Reflects the `until_date` parameter.
-    pub fn until_date(mut self, date: i64) -> Self {
+    pub const fn until_date(mut self, date: i64) -> Self {
         self.until_date = Some(date);
         self
     }

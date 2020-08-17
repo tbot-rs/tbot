@@ -63,13 +63,13 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the width of the photo.
-    pub fn width(mut self, width: usize) -> Self {
+    pub const fn width(mut self, width: usize) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures the height of the photo.
-    pub fn height(mut self, height: usize) -> Self {
+    pub const fn height(mut self, height: usize) -> Self {
         self.height = Some(height);
         self
     }
@@ -88,23 +88,23 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a cached `Photo` result.
-    pub fn cached(id: &'a str) -> Self {
+    pub const fn cached(id: &'a str) -> Self {
         Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Photo` result.
-    pub fn fresh(photo: Fresh<'a>) -> Self {
+    pub const fn fresh(photo: Fresh<'a>) -> Self {
         Self::new(Kind::Fresh(photo))
     }
 
     /// Configures the title of the photo.
-    pub fn title(mut self, title: &'a str) -> Self {
+    pub const fn title(mut self, title: &'a str) -> Self {
         self.title = Some(title);
         self
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
+    pub const fn description(mut self, description: &'a str) -> Self {
         self.description = Some(description);
         self
     }

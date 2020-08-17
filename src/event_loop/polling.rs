@@ -54,19 +54,19 @@ impl Polling {
     }
 
     /// Configures the limit of updates per request.
-    pub fn limit(mut self, limit: u8) -> Self {
+    pub const fn limit(mut self, limit: u8) -> Self {
         self.limit = Some(limit);
         self
     }
 
     /// Configures the timeout for long polling.
-    pub fn timeout(mut self, timeout: u64) -> Self {
+    pub const fn timeout(mut self, timeout: u64) -> Self {
         self.timeout = Some(timeout);
         self
     }
 
     /// Configures which updates you'd like to listen to.
-    pub fn allowed_updates(
+    pub const fn allowed_updates(
         mut self,
         allowed_updates: &'static [UpdateKind],
     ) -> Self {
@@ -149,7 +149,7 @@ impl Polling {
             Err(timeout) => {
                 return Err(errors::PollingSetup::SetMyCommandsTimeout(timeout))
             }
-            _ => (),
+            Ok(_) => (),
         };
 
         let bot = Arc::new(event_loop.bot.clone());

@@ -60,7 +60,7 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the duration of the voice.
-    pub fn duration(mut self, duration: usize) -> Self {
+    pub const fn duration(mut self, duration: usize) -> Self {
         self.duration = Some(duration);
         self
     }
@@ -78,12 +78,12 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a cached `Voice` result.
-    pub fn cached(title: &'a str, id: &'a str) -> Self {
+    pub const fn cached(title: &'a str, id: &'a str) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Voice` result.
-    pub fn fresh(title: &'a str, voice: Fresh<'a>) -> Self {
+    pub const fn fresh(title: &'a str, voice: Fresh<'a>) -> Self {
         Self::new(title, Kind::Fresh(voice))
     }
 

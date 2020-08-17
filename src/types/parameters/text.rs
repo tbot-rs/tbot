@@ -39,7 +39,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `Markdown` parse mode.
-    pub fn markdown(text: &'a str) -> Self {
+    pub const fn markdown(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::Markdown),
@@ -47,7 +47,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `MarkdownV2` parse mode.
-    pub fn markdown_v2(text: &'a str) -> Self {
+    pub const fn markdown_v2(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::MarkdownV2),
@@ -55,7 +55,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `HTML` parse mode.
-    pub fn html(text: &'a str) -> Self {
+    pub const fn html(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::Html),

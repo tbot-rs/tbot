@@ -140,19 +140,19 @@ impl<'a> Keyboard<'a> {
     }
 
     /// Configures `resize_keyboard`.
-    pub fn resize_keyboard(mut self, is_resized: bool) -> Self {
+    pub const fn resize_keyboard(mut self, is_resized: bool) -> Self {
         self.resize_keyboard = Some(is_resized);
         self
     }
 
     /// Configures `one_time_keyboard`.
-    pub fn one_time_keyboard(mut self, is_one_time: bool) -> Self {
+    pub const fn one_time_keyboard(mut self, is_one_time: bool) -> Self {
         self.one_time_keyboard = Some(is_one_time);
         self
     }
 
     /// Configures `selective`.
-    pub fn selective(mut self, is_selective: bool) -> Self {
+    pub const fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
     }
@@ -171,7 +171,7 @@ impl Remove {
     }
 
     /// Configures `selective`.
-    pub fn selective(mut self, is_selective: bool) -> Self {
+    pub const fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
     }

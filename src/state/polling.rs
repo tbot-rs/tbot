@@ -27,7 +27,8 @@ impl<S> Polling<S> {
 
     /// Turns this polling into a stateless one. Previous configuration
     // is preserved.
-    #[allow(clippy::missing_const_for_fn)] // https://github.com/rust-lang/rust-clippy/issues/4979
+    // https://github.com/rust-lang/rust-clippy/issues/4979
+    #[allow(clippy::missing_const_for_fn)]
     pub fn into_stateless(self) -> event_loop::Polling {
         self.inner
     }
@@ -44,18 +45,24 @@ impl<S> Polling<S> {
     }
 
     /// Configures the limit of updates per request.
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
     pub fn limit(mut self, limit: u8) -> Self {
         self.inner = self.inner.limit(limit);
         self
     }
 
     /// Configures the timeout for long polling.
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
     pub fn timeout(mut self, timeout: u64) -> Self {
         self.inner = self.inner.timeout(timeout);
         self
     }
 
     /// Configures which updates you'd like to listen to.
+    // https://github.com/rust-lang/rust-clippy/issues/4041
+    #[allow(clippy::missing_const_for_fn)]
     pub fn allowed_updates(
         mut self,
         allowed_updates: &'static [UpdateKind],

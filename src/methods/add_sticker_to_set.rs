@@ -48,7 +48,7 @@ impl<'a> AddStickerToSet<'a> {
     }
 
     /// Sets the mask's position. Reflects the `mask_position` parameter.
-    pub fn mask_position(mut self, mask_position: MaskPosition) -> Self {
+    pub const fn mask_position(mut self, mask_position: MaskPosition) -> Self {
         self.mask_position = Some(mask_position);
         self
     }

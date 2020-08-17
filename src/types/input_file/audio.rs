@@ -29,7 +29,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs an `Audio` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub const fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "audio.mp3",
             bytes,
@@ -65,7 +65,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -80,19 +80,19 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u32) -> Self {
+    pub const fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }
 
     /// Configures `performer`.
-    pub fn performer(mut self, performer: &'a str) -> Self {
+    pub const fn performer(mut self, performer: &'a str) -> Self {
         self.performer = Some(performer);
         self
     }
 
     /// Configures `title`.
-    pub fn title(mut self, title: &'a str) -> Self {
+    pub const fn title(mut self, title: &'a str) -> Self {
         self.title = Some(title);
         self
     }

@@ -38,14 +38,14 @@ impl<'a> GetUserProfilePhotos<'a> {
 
     /// Configures the number of the first photo to be returned.
     /// Reflects the `offset` parameter.
-    pub fn offset(mut self, offset: u32) -> Self {
+    pub const fn offset(mut self, offset: u32) -> Self {
         self.offset = Some(offset);
         self
     }
 
     /// Configures how many photos will be returned. Must be in the range
     /// `1..=100`; defaults to 100. Reflects the `limit` parameter.
-    pub fn limit(mut self, limit: u8) -> Self {
+    pub const fn limit(mut self, limit: u8) -> Self {
         self.limit = Some(limit);
         self
     }

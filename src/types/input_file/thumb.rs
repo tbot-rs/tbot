@@ -10,7 +10,7 @@ pub struct Thumb<'a>(pub(crate) InputFile<'a>);
 
 impl<'a> Thumb<'a> {
     /// Constructs a `Thumb`.
-    pub fn new(bytes: &'a [u8]) -> Self {
+    pub const fn new(bytes: &'a [u8]) -> Self {
         Thumb(InputFile::File {
             filename: "thumb.jpg",
             bytes,

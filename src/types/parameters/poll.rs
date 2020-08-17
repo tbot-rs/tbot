@@ -120,14 +120,14 @@ impl<'a> Any<'a> {
 
     /// Configures if the poll is immediately closed.
     #[must_use]
-    pub fn immediately_closed(mut self, is_closed: bool) -> Self {
+    pub const fn immediately_closed(mut self, is_closed: bool) -> Self {
         self.is_closed = Some(is_closed);
         self
     }
 
     /// Comfigures if the poll is anonymous.
     #[must_use]
-    pub fn anonymous(mut self, is_anonymous: bool) -> Self {
+    pub const fn anonymous(mut self, is_anonymous: bool) -> Self {
         self.is_anonymous = Some(is_anonymous);
         self
     }
@@ -135,7 +135,7 @@ impl<'a> Any<'a> {
     /// Configures when the poll is automatically closed.
     /// Reflects the `open_period` and `close_date` parameters.
     #[must_use]
-    pub fn auto_close(mut self, auto_close: AutoClose) -> Self {
+    pub const fn auto_close(mut self, auto_close: AutoClose) -> Self {
         self.auto_close = Some(auto_close);
         self
     }

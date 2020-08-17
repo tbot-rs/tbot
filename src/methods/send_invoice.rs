@@ -103,14 +103,14 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures data for your payment provider.
     /// Reflects the `provider_data` parameter.
-    pub fn provider_data(mut self, provider_data: &'a str) -> Self {
+    pub const fn provider_data(mut self, provider_data: &'a str) -> Self {
         self.provider_data = Some(provider_data);
         self
     }
 
     /// Configures a photo for the invoice.
     /// Reflects the `photo_url`, `photo_width` and `photo_height` parameters.
-    pub fn photo(mut self, photo: Photo<'a>) -> Self {
+    pub const fn photo(mut self, photo: Photo<'a>) -> Self {
         self.photo = Some(photo);
         self
     }
@@ -179,14 +179,14 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures which message this invoice is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

@@ -23,7 +23,7 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a `Document` from bytes.
-    pub fn bytes(filename: &'a str, bytes: &'a [u8]) -> Self {
+    pub const fn bytes(filename: &'a str, bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File { filename, bytes })
     }
 
@@ -56,7 +56,7 @@ impl<'a> Document<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }

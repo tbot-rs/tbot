@@ -13,7 +13,7 @@ impl<'a> StickerSetThumb<'a> {
     }
 
     /// Constructs a `StickerSetThumb` from bytes of `.png` image.
-    pub fn png_bytes(bytes: &'a [u8]) -> Self {
+    pub const fn png_bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "thumb.png",
             bytes,
@@ -21,7 +21,7 @@ impl<'a> StickerSetThumb<'a> {
     }
 
     /// Constructs a `StickerSetThumb` from bytes of `.tgs` animation.
-    pub fn tgs_bytes(bytes: &'a [u8]) -> Self {
+    pub const fn tgs_bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "thumb.tgs",
             bytes,
