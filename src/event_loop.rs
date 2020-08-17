@@ -1282,7 +1282,7 @@ impl EventLoop {
 
     #[instrument(skip(self, bot, update))]
     fn handle_update(&self, bot: Arc<Bot>, update: types::Update) {
-        trace!(update = debug(&update));
+        trace!(?update);
 
         let update_context =
             Arc::new(contexts::Update::new(Arc::clone(&bot), update.id));
@@ -1666,7 +1666,7 @@ impl EventLoop {
         }
     }
 
-    #[allow(clippy::too_many_lines)] // can't split the huge match
+    #[allow(clippy::too_many_lines, clippy::cognitive_complexity)] // can't split the huge match
     fn handle_message_edit_update(
         &self,
         bot: Arc<Bot>,

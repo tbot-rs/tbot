@@ -48,7 +48,7 @@ pub async fn call_method<'a, T>(
 where
     T: DeserializeOwned + Debug,
 {
-    trace!(body = debug(DebugBytes(&body)), boundary = debug(&boundary));
+    trace!(body = ?DebugBytes(&body), ?boundary);
 
     let url = Uri::builder()
         .scheme("https")
@@ -79,7 +79,7 @@ where
         .await
         .map_err(|error| {
             let error: errors::MethodCall = error.into();
-            error!(error = debug(&error));
+            error!(?error);
             error
         })?
         .into_parts();
@@ -93,7 +93,7 @@ where
     while let Some(chunk) = body.data().await {
         response.extend(chunk.map_err(|error| {
             let error: errors::MethodCall = error.into();
-            error!(error = debug(&error));
+            error!(?error);
             error
         })?);
     }
@@ -102,19 +102,20 @@ where
         // If so, then Bots API is down and returns HTML.
         // Handling this case specially.
 
-        error!(error = debug(&errors::MethodCall::OutOfService));
-        return Err(errors::MethodCall::OutOfService);
+        let error = errors::MethodCall::OutOfService;
+        error!(?error);
+        return Err(error);
     }
 
     let response: Response<T> =
         serde_json::from_slice(&response[..]).map_err(|error| {
             let error = errors::MethodCall::Parse { response, error };
-            error!(error = debug(&error));
+            error!(?error);
             error
         })?;
 
     if let Some(result) = response.result {
-        trace!(result = debug(&result));
+        trace!(?result);
         return Ok(result);
     }
 
@@ -135,7 +136,7 @@ where
         retry_after,
     };
 
-    trace!(error = debug(&error));
+    trace!(?error);
 
     Err(error)
 }
