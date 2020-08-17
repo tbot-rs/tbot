@@ -28,17 +28,17 @@ impl<'a> CallbackAction<'a> {
     }
 
     /// Constructs the `Text` variant that shows a simple notification.
-    pub fn with_notification(text: &'a str) -> Self {
+    pub const fn with_notification(text: &'a str) -> Self {
         CallbackAction::Text(text, false)
     }
 
     /// Constructs the `Text` variant that shows an alert.
-    pub fn with_alert(text: &'a str) -> Self {
+    pub const fn with_alert(text: &'a str) -> Self {
         CallbackAction::Text(text, true)
     }
 
     /// Constructs the `Url` variant.
-    pub fn with_url(url: &'a str) -> Self {
+    pub const fn with_url(url: &'a str) -> Self {
         CallbackAction::Url(url)
     }
 

@@ -29,7 +29,7 @@ impl<'a> Animation<'a> {
     }
 
     /// Constructs an `Animation` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub const fn bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "animation.mp4",
             bytes,
@@ -64,7 +64,7 @@ impl<'a> Animation<'a> {
     }
 
     /// Configures `thumb`.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -79,19 +79,19 @@ impl<'a> Animation<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u32) -> Self {
+    pub const fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }
 
     /// Configures `width`.
-    pub fn width(mut self, width: u32) -> Self {
+    pub const fn width(mut self, width: u32) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures `height`.
-    pub fn height(mut self, height: u32) -> Self {
+    pub const fn height(mut self, height: u32) -> Self {
         self.height = Some(height);
         self
     }

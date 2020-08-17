@@ -42,19 +42,19 @@ impl<'a> Venue<'a> {
     }
 
     /// Configures the Foursquare ID.
-    pub fn foursquare_id(mut self, id: &'a str) -> Self {
+    pub const fn foursquare_id(mut self, id: &'a str) -> Self {
         self.foursquare_id = Some(id);
         self
     }
 
     /// Configures the Foursquare type.
-    pub fn foursquare_type(mut self, foursquare_type: &'a str) -> Self {
+    pub const fn foursquare_type(mut self, foursquare_type: &'a str) -> Self {
         self.foursquare_type = Some(foursquare_type);
         self
     }
 
     /// Configures the thumb of the venue.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }

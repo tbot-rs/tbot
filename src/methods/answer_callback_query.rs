@@ -49,7 +49,7 @@ impl<'a> AnswerCallbackQuery<'a> {
 
     /// Configures the amount of time (in seconds) for which the answer may be
     /// cached. Reflects the `cache_time` parameter.
-    pub fn cache_time(mut self, time: u64) -> Self {
+    pub const fn cache_time(mut self, time: u64) -> Self {
         self.cache_time = Some(time);
         self
     }

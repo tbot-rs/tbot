@@ -41,7 +41,7 @@ impl<'a> Article<'a> {
     }
 
     /// Configures the URL of article.
-    pub fn url(mut self, url: &'a str) -> Self {
+    pub const fn url(mut self, url: &'a str) -> Self {
         self.url = Some(url);
         self
     }
@@ -53,13 +53,13 @@ impl<'a> Article<'a> {
     }
 
     /// Configures the thumb of the article.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
+    pub const fn description(mut self, description: &'a str) -> Self {
         self.description = Some(description);
         self
     }

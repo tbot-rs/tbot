@@ -78,19 +78,19 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures `certificate`.
-    pub fn certificate(mut self, certificate: &'a str) -> Self {
+    pub const fn certificate(mut self, certificate: &'a str) -> Self {
         self.certificate = Some(certificate);
         self
     }
 
     /// Configures `max_connections`.
-    pub fn max_connections(mut self, max: u8) -> Self {
+    pub const fn max_connections(mut self, max: u8) -> Self {
         self.max_connections = Some(max);
         self
     }
 
     /// Configures `allowed_updates`.
-    pub fn allowed_updates(mut self, updates: &'a [UpdateKind]) -> Self {
+    pub const fn allowed_updates(mut self, updates: &'a [UpdateKind]) -> Self {
         self.allowed_updates = Some(updates);
         self
     }

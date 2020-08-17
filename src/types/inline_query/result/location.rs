@@ -36,7 +36,7 @@ impl<'a> Location<'a> {
     }
 
     /// Configures the period while the location will be live.
-    pub fn live_period(mut self, period: u64) -> Self {
+    pub const fn live_period(mut self, period: u64) -> Self {
         self.live_period = Some(period);
         self
     }
@@ -51,7 +51,7 @@ impl<'a> Location<'a> {
     }
 
     /// Configures the thumb of the location.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }

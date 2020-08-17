@@ -64,13 +64,13 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the performer of the audio.
-    pub fn performer(mut self, performer: &'a str) -> Self {
+    pub const fn performer(mut self, performer: &'a str) -> Self {
         self.performer = Some(performer);
         self
     }
 
     /// Configures the duration of the audio.
-    pub fn duration(mut self, duration: usize) -> Self {
+    pub const fn duration(mut self, duration: usize) -> Self {
         self.duration = Some(duration);
         self
     }
@@ -87,12 +87,12 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs a cached `Audio` result.
-    pub fn cached(id: &'a str) -> Self {
+    pub const fn cached(id: &'a str) -> Self {
         Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Audio` result.
-    pub fn fresh(audio: Fresh<'a>) -> Self {
+    pub const fn fresh(audio: Fresh<'a>) -> Self {
         Self::new(Kind::Fresh(audio))
     }
 

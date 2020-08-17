@@ -27,19 +27,19 @@ impl<'a> LoginUrl<'a> {
     }
 
     /// Configures `forward_text`.
-    pub fn forward_text(mut self, text: &'a str) -> Self {
+    pub const fn forward_text(mut self, text: &'a str) -> Self {
         self.forward_text = Some(text);
         self
     }
 
     /// Configures `bot_username`.
-    pub fn bot_username(mut self, username: &'a str) -> Self {
+    pub const fn bot_username(mut self, username: &'a str) -> Self {
         self.bot_username = Some(username);
         self
     }
 
     /// Configures `request_write_access`.
-    pub fn request_write_access(mut self, should_request: bool) -> Self {
+    pub const fn request_write_access(mut self, should_request: bool) -> Self {
         self.request_write_access = Some(should_request);
         self
     }

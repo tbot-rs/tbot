@@ -82,7 +82,8 @@ impl<S> StatefulEventLoop<S> {
 
     /// Turns this event loop into a stateless one. Handlers added on this event
     /// loop are still kept.
-    #[allow(clippy::missing_const_for_fn)] // https://github.com/rust-lang/rust-clippy/issues/4979
+    // https://github.com/rust-lang/rust-clippy/issues/4979
+    #[allow(clippy::missing_const_for_fn)]
     pub fn into_stateless(self) -> EventLoop {
         self.inner
     }

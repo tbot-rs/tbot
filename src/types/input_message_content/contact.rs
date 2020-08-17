@@ -26,13 +26,13 @@ impl<'a> Contact<'a> {
     }
 
     /// Configures the last name.
-    pub fn last_name(mut self, last_name: &'a str) -> Self {
+    pub const fn last_name(mut self, last_name: &'a str) -> Self {
         self.last_name = Some(last_name);
         self
     }
 
     /// Configures the vCard.
-    pub fn vcard(mut self, vcard: &'a str) -> Self {
+    pub const fn vcard(mut self, vcard: &'a str) -> Self {
         self.vcard = Some(vcard);
         self
     }

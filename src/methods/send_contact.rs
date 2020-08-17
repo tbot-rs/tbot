@@ -61,13 +61,13 @@ impl<'a> SendContact<'a> {
 
     /// Configures the last name of the contact.
     /// Reflects the `last_name` parameter.
-    pub fn last_name(mut self, last_name: &'a str) -> Self {
+    pub const fn last_name(mut self, last_name: &'a str) -> Self {
         self.last_name = Some(last_name);
         self
     }
 
     /// Configures a VCard for the contact. Reflects the `vcard` parameter.
-    pub fn vcard(mut self, vcard: &'a str) -> Self {
+    pub const fn vcard(mut self, vcard: &'a str) -> Self {
         self.vcard = Some(vcard);
         self
     }
@@ -81,7 +81,7 @@ impl<'a> SendContact<'a> {
 
     /// Configures which message this contact is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

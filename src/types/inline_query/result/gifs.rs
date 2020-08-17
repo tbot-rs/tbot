@@ -144,19 +144,19 @@ macro_rules! gif_base {
             }
 
             /// Configures the width of the GIF.
-            pub fn width(mut self, width: usize) -> Self {
+            pub const fn width(mut self, width: usize) -> Self {
                 self.width = Some(width);
                 self
             }
 
             /// Configures the height of the GIF.
-            pub fn height(mut self, height: usize) -> Self {
+            pub const fn height(mut self, height: usize) -> Self {
                 self.height = Some(height);
                 self
             }
 
             /// Configures the duration of the GIF.
-            pub fn duration(mut self, duration: usize) -> Self {
+            pub const fn duration(mut self, duration: usize) -> Self {
                 self.duration = Some(duration);
                 self
             }
@@ -177,7 +177,7 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub fn cached(id: &'a str) -> Self {
+                pub const fn cached(id: &'a str) -> Self {
                     Self::new(Kind::Cached {
                         id,
                     })
@@ -188,13 +188,13 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a fresh `", stringify!($struct), "` result.",
                 ),
-                pub fn fresh(gif: Fresh<'a>) -> Self {
+                pub const fn fresh(gif: Fresh<'a>) -> Self {
                     Self::new(Kind::Fresh(gif))
                 }
             }
 
             /// Configures the title of the GIF.
-            pub fn title(mut self, title: &'a str) -> Self {
+            pub const fn title(mut self, title: &'a str) -> Self {
                 self.title = Some(title);
                 self
             }

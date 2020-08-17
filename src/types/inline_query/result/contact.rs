@@ -34,19 +34,19 @@ impl<'a> Contact<'a> {
     }
 
     /// Configures the last name of the contact.
-    pub fn last_name(mut self, name: &'a str) -> Self {
+    pub const fn last_name(mut self, name: &'a str) -> Self {
         self.last_name = Some(name);
         self
     }
 
     /// Configures the contact's additional data.
-    pub fn vcard(mut self, vcard: &'a str) -> Self {
+    pub const fn vcard(mut self, vcard: &'a str) -> Self {
         self.vcard = Some(vcard);
         self
     }
 
     /// Configures the thumb of the contact.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }

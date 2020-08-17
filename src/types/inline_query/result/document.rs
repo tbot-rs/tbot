@@ -76,7 +76,7 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the thumb of the document.
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub const fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -95,17 +95,17 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub fn cached(title: &'a str, id: &'a str) -> Self {
+    pub const fn cached(title: &'a str, id: &'a str) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Document` result.
-    pub fn fresh(title: &'a str, document: Fresh<'a>) -> Self {
+    pub const fn fresh(title: &'a str, document: Fresh<'a>) -> Self {
         Self::new(title, Kind::Fresh(document))
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: &'a str) -> Self {
+    pub const fn description(mut self, description: &'a str) -> Self {
         self.description = Some(description);
         self
     }
