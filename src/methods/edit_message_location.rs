@@ -51,7 +51,7 @@ impl<'a> EditMessageLocation<'a> {
 
     /// Configures an inline keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

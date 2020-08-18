@@ -70,6 +70,7 @@ impl<'a> Video<'a> {
     }
 
     /// Configures `thumb`.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
@@ -85,25 +86,25 @@ impl<'a> Video<'a> {
     }
 
     /// Configures `width`.
-    pub fn width(mut self, width: u32) -> Self {
+    pub const fn width(mut self, width: u32) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures `height`.
-    pub fn height(mut self, height: u32) -> Self {
+    pub const fn height(mut self, height: u32) -> Self {
         self.height = Some(height);
         self
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u32) -> Self {
+    pub const fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }
 
     /// Configures `supports_streaming`.
-    pub fn supports_streaming(mut self, is_streamed: bool) -> Self {
+    pub const fn supports_streaming(mut self, is_streamed: bool) -> Self {
         self.supports_streaming = Some(is_streamed);
         self
     }

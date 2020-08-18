@@ -13,7 +13,6 @@ pub const ESCAPED_TEXT_CHARACTERS: [(char, &str); 3] =
 /// Represents a value that can be formatted for HTML.
 pub trait Formattable {
     /// Writes formatted value to the formatter.
-    #[allow(clippy::missing_errors_doc)]
     fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result;
 }
 

@@ -68,6 +68,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `thumb`.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
@@ -83,7 +84,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u32) -> Self {
+    pub const fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }

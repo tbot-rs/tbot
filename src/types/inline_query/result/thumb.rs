@@ -24,13 +24,13 @@ impl<'a> Thumb<'a> {
     }
 
     /// Configures the width of the thumb.
-    pub fn width(mut self, width: usize) -> Self {
+    pub const fn width(mut self, width: usize) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures the height of the thumb.
-    pub fn height(mut self, height: usize) -> Self {
+    pub const fn height(mut self, height: usize) -> Self {
         self.height = Some(height);
         self
     }

@@ -90,19 +90,19 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the width of the video.
-    pub fn width(mut self, width: usize) -> Self {
+    pub const fn width(mut self, width: usize) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures the height of the video.
-    pub fn height(mut self, height: usize) -> Self {
+    pub const fn height(mut self, height: usize) -> Self {
         self.height = Some(height);
         self
     }
 
     /// Configures the duration of the video.
-    pub fn duration(mut self, duration: usize) -> Self {
+    pub const fn duration(mut self, duration: usize) -> Self {
         self.duration = Some(duration);
         self
     }

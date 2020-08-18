@@ -33,8 +33,7 @@ impl<C> Deref for Command<C> {
 }
 
 impl<C> Command<C> {
-    #[allow(clippy::missing_const_for_fn)]
-    pub(crate) fn new(command: String, context: C) -> Self {
+    pub(crate) const fn new(command: String, context: C) -> Self {
         Self { command, context }
     }
 }

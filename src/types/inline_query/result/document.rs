@@ -77,6 +77,7 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the thumb of the document.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self

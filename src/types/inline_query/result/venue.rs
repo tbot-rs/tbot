@@ -58,6 +58,7 @@ impl<'a> Venue<'a> {
     }
 
     /// Configures the thumb of the venue.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self

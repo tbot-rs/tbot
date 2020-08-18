@@ -61,7 +61,7 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the duration of the voice.
-    pub fn duration(mut self, duration: usize) -> Self {
+    pub const fn duration(mut self, duration: usize) -> Self {
         self.duration = Some(duration);
         self
     }

@@ -56,7 +56,7 @@ impl<'a> LoginUrl<'a> {
     }
 
     /// Configures `request_write_access`.
-    pub fn request_write_access(mut self, should_request: bool) -> Self {
+    pub const fn request_write_access(mut self, should_request: bool) -> Self {
         self.request_write_access = Some(should_request);
         self
     }

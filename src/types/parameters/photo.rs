@@ -27,19 +27,19 @@ impl<'a> Photo<'a> {
     }
 
     /// Configures the size of the photo.
-    pub fn size(mut self, size: usize) -> Self {
+    pub const fn size(mut self, size: usize) -> Self {
         self.size = Some(size);
         self
     }
 
     /// Configures the width of the photo.
-    pub fn width(mut self, width: usize) -> Self {
+    pub const fn width(mut self, width: usize) -> Self {
         self.width = Some(width);
         self
     }
 
     /// Configures the height of the photo.
-    pub fn height(mut self, height: usize) -> Self {
+    pub const fn height(mut self, height: usize) -> Self {
         self.height = Some(height);
         self
     }

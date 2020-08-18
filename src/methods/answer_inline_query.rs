@@ -51,14 +51,14 @@ impl<'a> AnswerInlineQuery<'a> {
 
     /// Configures the amount of time (in seconds) for which the answer may be
     /// cached. Reflects the `cache_time` parameter.
-    pub fn cache_time(mut self, time: u64) -> Self {
+    pub const fn cache_time(mut self, time: u64) -> Self {
         self.cache_time = Some(time);
         self
     }
 
     /// Configures whether the result may be cached only for the user who sent
     /// the query. Reflects the `is_personal` parameter.
-    pub fn personal(mut self, is_personal: bool) -> Self {
+    pub const fn personal(mut self, is_personal: bool) -> Self {
         self.is_personal = Some(is_personal);
         self
     }

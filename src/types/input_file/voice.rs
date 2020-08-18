@@ -61,8 +61,9 @@ impl<'a> Voice<'a> {
 
         Self::new(InputFile::Url(url))
     }
+
     /// Configures `duration`.
-    pub fn duration(mut self, duration: u32) -> Self {
+    pub const fn duration(mut self, duration: u32) -> Self {
         self.duration = Some(duration);
         self
     }

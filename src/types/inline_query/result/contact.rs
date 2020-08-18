@@ -50,6 +50,7 @@ impl<'a> Contact<'a> {
     }
 
     /// Configures the thumb of the contact.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self

@@ -105,7 +105,7 @@ impl<'a> Result<'a> {
     }
 
     /// Configures `reply_markup`.
-    pub fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
         self.reply_markup = Some(markup);
         self
     }

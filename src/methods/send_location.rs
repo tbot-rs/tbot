@@ -57,7 +57,7 @@ impl<'a> SendLocation<'a> {
 
     /// Confgiures for how long this location will be live and may be edited.
     /// Reflects the `live_period` parameter.
-    pub fn live_period(mut self, duration: u32) -> Self {
+    pub const fn live_period(mut self, duration: u32) -> Self {
         self.live_period = Some(duration);
         self
     }
@@ -71,7 +71,7 @@ impl<'a> SendLocation<'a> {
 
     /// Configures which message this location is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

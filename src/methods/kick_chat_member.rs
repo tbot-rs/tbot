@@ -45,7 +45,7 @@ impl<'a> KickChatMember<'a> {
 
     /// Configures when the user regains the ability to return to the chat.
     /// Reflects the `until_date` parameter.
-    pub fn until_date(mut self, date: i64) -> Self {
+    pub const fn until_date(mut self, date: i64) -> Self {
         self.until_date = Some(date);
         self
     }

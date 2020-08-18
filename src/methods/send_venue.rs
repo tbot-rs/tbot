@@ -88,7 +88,7 @@ impl<'a> SendVenue<'a> {
 
     /// Configures which message this venue is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }
