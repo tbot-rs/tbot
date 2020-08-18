@@ -27,8 +27,9 @@ macro_rules! callback {
         }
 
         impl $name {
+            #[allow(clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: std::sync::Arc<crate::Bot>,
+                bot: crate::Bot,
                 id: crate::types::callback::query::Id,
                 from: crate::types::User,
                 $origin: $origin_type,

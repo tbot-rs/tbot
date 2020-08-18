@@ -3,7 +3,6 @@ use crate::{
     types::{shipping, User},
     Bot,
 };
-use std::sync::Arc;
 
 common! {
     /// The context for [`shipping`][handler] handlers.
@@ -22,7 +21,8 @@ common! {
 }
 
 impl Shipping {
-    pub(crate) fn new(bot: Arc<Bot>, query: shipping::Query) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn new(bot: Bot, query: shipping::Query) -> Self {
         Self {
             bot,
             id: query.id,

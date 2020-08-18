@@ -1,5 +1,4 @@
 use crate::{types::update, Bot};
-use std::sync::Arc;
 
 common! {
     /// The context for [`unhandled`] handlers.
@@ -12,7 +11,7 @@ common! {
 }
 
 impl Unhandled {
-    pub(crate) const fn new(bot: Arc<Bot>, update: update::Kind) -> Self {
+    pub(crate) const fn new(bot: Bot, update: update::Kind) -> Self {
         Self { bot, update }
     }
 }

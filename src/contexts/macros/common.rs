@@ -10,7 +10,7 @@ macro_rules! common {
         #[non_exhaustive]
         pub struct $name {
             /// A bot for calling API without information inference.
-            pub bot: std::sync::Arc<crate::Bot>,
+            pub bot: crate::Bot,
             $(#[doc = $field_doc] pub $field: $type,)+
         }
 
