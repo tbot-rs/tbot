@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types::user};
+use crate::{bot::InnerBot, errors, types::user};
 use serde::Serialize;
 
 /// Gets a user's profile photos.
@@ -11,9 +11,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetUserProfilePhotos<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<u32>,
@@ -22,14 +20,9 @@ pub struct GetUserProfilePhotos<'a> {
 }
 
 impl<'a> GetUserProfilePhotos<'a> {
-    pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
-        user_id: user::Id,
-    ) -> Self {
+    pub(crate) const fn new(bot: &'a InnerBot, user_id: user::Id) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             offset: None,
             limit: None,
@@ -55,8 +48,7 @@ impl GetUserProfilePhotos<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<user::ProfilePhotos, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "getUserProfilePhotos",
             None,
             serde_json::to_vec(&self).unwrap(),

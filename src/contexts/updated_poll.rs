@@ -1,5 +1,4 @@
 use crate::{types::Poll, Bot};
-use std::sync::Arc;
 
 common! {
     /// The context for [`updated_poll`][handler] handlers.
@@ -12,7 +11,7 @@ common! {
 }
 
 impl UpdatedPoll {
-    pub(crate) const fn new(bot: Arc<Bot>, poll: Poll) -> Self {
+    pub(crate) const fn new(bot: Bot, poll: Poll) -> Self {
         Self { bot, poll }
     }
 }

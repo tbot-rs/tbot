@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types::shipping};
+use crate::{bot::InnerBot, errors, types::shipping};
 use serde::Serialize;
 
 /// Answers a shipping query.
@@ -11,9 +11,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerShippingQuery<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     shipping_query_id: shipping::query::id::Ref<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24,14 +22,12 @@ pub struct AnswerShippingQuery<'a> {
 
 impl<'a> AnswerShippingQuery<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         shipping_query_id: shipping::query::id::Ref<'a>,
         result: Result<&'a [shipping::Option<'a>], &'a str>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             shipping_query_id,
             ok: result.is_ok(),
             shipping_options: result.ok(),
@@ -44,8 +40,7 @@ impl AnswerShippingQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "answerShippingQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::parameters::{ChatId, ImplicitChatId},
 };
 use serde::Serialize;
@@ -15,21 +15,17 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct LeaveChat<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
 }
 
 impl<'a> LeaveChat<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
         }
     }
@@ -39,8 +35,7 @@ impl LeaveChat<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "leaveChat",
             None,
             serde_json::to_vec(&self).unwrap(),

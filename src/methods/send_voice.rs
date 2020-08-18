@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         input_file::{InputFile, Voice},
         keyboard,
@@ -19,8 +19,7 @@ use crate::{
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVoice<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     voice: Voice<'a>,
     disable_notification: Option<bool>,
@@ -30,14 +29,12 @@ pub struct SendVoice<'a> {
 
 impl<'a> SendVoice<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         voice: Voice<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             voice,
             disable_notification: None,
@@ -94,7 +91,6 @@ impl SendVoice<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        call_method(self.client, self.token, "sendVoice", Some(boundary), body)
-            .await
+        call_method(self.bot, "sendVoice", Some(boundary), body).await
     }
 }

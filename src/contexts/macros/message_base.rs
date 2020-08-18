@@ -35,9 +35,9 @@ macro_rules! message_base {
         }
 
         impl $name {
-            #[allow(clippy::redundant_field_names)]
+            #[allow(clippy::redundant_field_names, clippy::missing_const_for_fn)]
             pub(crate) fn new(
-                bot: std::sync::Arc<crate::Bot>,
+                bot: crate::Bot,
                 data: crate::types::message::Data,
                 $($param: $param_type,)*
             ) -> Self {

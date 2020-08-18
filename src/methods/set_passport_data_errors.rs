@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{passport, user},
 };
 use serde::Serialize;
@@ -15,23 +15,19 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetPassportDataErrors<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     errors: &'a [passport::element::Error<'a>],
 }
 
 impl<'a> SetPassportDataErrors<'a> {
     pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         user_id: user::Id,
         errors: &'a [passport::element::Error<'a>],
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             errors,
         }
@@ -42,8 +38,7 @@ impl SetPassportDataErrors<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "setPassportDataErrors",
             None,
             serde_json::to_vec(&self).unwrap(),

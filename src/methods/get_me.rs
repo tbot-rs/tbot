@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types};
+use crate::{bot::InnerBot, errors, types};
 
 /// Gets information about the bot.
 ///
@@ -9,19 +9,18 @@ use crate::{connectors::Client, errors, token, types};
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMe<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
 }
 
 impl<'a> GetMe<'a> {
-    pub(crate) const fn new(client: &'a Client, token: token::Ref<'a>) -> Self {
-        Self { client, token }
+    pub(crate) const fn new(bot: &'a InnerBot) -> Self {
+        Self { bot }
     }
 }
 
 impl GetMe<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<types::user::Me, errors::MethodCall> {
-        call_method(self.client, self.token, "getMe", None, Vec::new()).await
+        call_method(self.bot, "getMe", None, Vec::new()).await
     }
 }

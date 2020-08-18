@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         chat,
         parameters::{ChatId, ImplicitChatId},
@@ -18,21 +18,17 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetChatAdministrators<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
 }
 
 impl<'a> GetChatAdministrators<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
         }
     }
@@ -42,8 +38,7 @@ impl GetChatAdministrators<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<chat::Member>, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "getChatAdministrators",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,7 +1,7 @@
 //! Types related to the webhook event loop.
 
 use super::EventLoop;
-use crate::{types::parameters::UpdateKind, Bot};
+use crate::types::parameters::UpdateKind;
 use hyper::{
     body::{Body, HttpBody},
     Method, Request, Response,
@@ -138,7 +138,6 @@ fn is_request_correct(request: &Request<Body>, updates_url: &str) -> bool {
 }
 
 async fn handle(
-    bot: Arc<Bot>,
     event_loop: Arc<EventLoop>,
     request: Request<Body>,
     updates_url: Arc<String>,
@@ -160,7 +159,7 @@ async fn handle(
                 panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
             });
 
-        event_loop.handle_update(bot, update);
+        event_loop.handle_update(update);
     }
 
     Ok(Response::new(Body::empty()))

@@ -152,12 +152,11 @@ impl Polling {
             Ok(_) => (),
         };
 
-        let bot = Arc::new(event_loop.bot.clone());
-
         loop {
             let mut next_tick = delay_for(poll_interval);
 
-            let get_updates = bot
+            let get_updates = event_loop
+                .bot
                 .get_updates(offset, limit, timeout, allowed_updates)
                 .call();
 
@@ -168,7 +167,7 @@ impl Polling {
                     }
 
                     for update in updates {
-                        event_loop.handle_update(Arc::clone(&bot), update);
+                        event_loop.handle_update(update);
                     }
                 }
                 Ok(Err(error)) => {

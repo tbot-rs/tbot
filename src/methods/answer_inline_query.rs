@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types::inline_query};
+use crate::{bot::InnerBot, errors, types::inline_query};
 use serde::Serialize;
 
 /// Answers an inline query.
@@ -11,9 +11,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerInlineQuery<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     inline_query_id: inline_query::id::Ref<'a>,
     results: &'a [inline_query::Result<'a>],
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -30,14 +28,12 @@ pub struct AnswerInlineQuery<'a> {
 
 impl<'a> AnswerInlineQuery<'a> {
     pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         inline_query_id: inline_query::id::Ref<'a>,
         results: &'a [inline_query::Result<'a>],
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             inline_query_id,
             results,
             cache_time: None,
@@ -87,8 +83,7 @@ impl AnswerInlineQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "answerInlineQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{parameters::UpdateKind, Update},
 };
 use serde::Serialize;
@@ -10,9 +10,7 @@ use serde::Serialize;
 #[must_use]
 pub struct GetUpdates<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<isize>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,16 +23,14 @@ pub struct GetUpdates<'a> {
 
 impl<'a> GetUpdates<'a> {
     pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
         allowed_updates: Option<&'a [UpdateKind]>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             offset,
             limit,
             timeout,
@@ -47,8 +43,7 @@ impl GetUpdates<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<Update>, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "getUpdates",
             None,
             serde_json::to_vec(&self).unwrap(),

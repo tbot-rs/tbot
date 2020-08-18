@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{callback, parameters::CallbackAction},
 };
 use serde::Serialize;
@@ -15,9 +15,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerCallbackQuery<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     callback_query_id: callback::query::id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<&'a str>,
@@ -31,14 +29,12 @@ pub struct AnswerCallbackQuery<'a> {
 
 impl<'a> AnswerCallbackQuery<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAction<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             callback_query_id,
             text: action.to_text(),
             show_alert: action.to_show_alert(),
@@ -59,8 +55,7 @@ impl AnswerCallbackQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "answerCallbackQuery",
             None,
             serde_json::to_vec(&self).unwrap(),
