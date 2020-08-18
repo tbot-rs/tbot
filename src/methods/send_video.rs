@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         input_file::{InputFile, Thumb, Video},
         keyboard,
@@ -19,8 +19,7 @@ use crate::{
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideo<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     video: Video<'a>,
     disable_notification: Option<bool>,
@@ -30,14 +29,12 @@ pub struct SendVideo<'a> {
 
 impl<'a> SendVideo<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         video: Video<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             video,
             disable_notification: None,
@@ -104,7 +101,6 @@ impl SendVideo<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        call_method(self.client, self.token, "sendVideo", Some(boundary), body)
-            .await
+        call_method(self.bot, "sendVideo", Some(boundary), body).await
     }
 }

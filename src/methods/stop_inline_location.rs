@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{inline_message_id, keyboard::inline},
 };
 use serde::Serialize;
@@ -15,9 +15,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct StopInlineLocation<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     inline_message_id: inline_message_id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
@@ -25,13 +23,11 @@ pub struct StopInlineLocation<'a> {
 
 impl<'a> StopInlineLocation<'a> {
     pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         inline_message_id: inline_message_id::Ref<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             inline_message_id,
             reply_markup: None,
         }
@@ -49,8 +45,7 @@ impl StopInlineLocation<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "stopMessageLiveLocation",
             None,
             serde_json::to_vec(&self).unwrap(),

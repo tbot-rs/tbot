@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         game::HighScore,
         message,
@@ -20,9 +20,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetMessageGameHighScores<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     chat_id: ChatId<'a>,
     message_id: message::Id,
@@ -30,15 +28,13 @@ pub struct GetMessageGameHighScores<'a> {
 
 impl<'a> GetMessageGameHighScores<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
         user_id: user::Id,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             chat_id: chat_id.into(),
             message_id,
@@ -50,8 +46,7 @@ impl GetMessageGameHighScores<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<HighScore>, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         keyboard::inline,
         message,
@@ -20,9 +20,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct StopPoll<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31,14 +29,12 @@ pub struct StopPoll<'a> {
 
 impl<'a> StopPoll<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             message_id,
             reply_markup: None,
@@ -57,8 +53,7 @@ impl StopPoll<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Poll, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "stopPoll",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         parameters::{ChatId, ImplicitChatId},
         user,
@@ -18,9 +18,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct KickChatMember<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,14 +27,12 @@ pub struct KickChatMember<'a> {
 
 impl<'a> KickChatMember<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             user_id,
             until_date: None,
@@ -55,8 +51,7 @@ impl KickChatMember<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "kickChatMember",
             None,
             serde_json::to_vec(&self).unwrap(),

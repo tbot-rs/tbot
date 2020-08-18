@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId, NotificationState},
@@ -18,9 +18,7 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct ForwardMessage<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     from_chat_id: ChatId<'a>,
     message_id: message::Id,
@@ -30,15 +28,13 @@ pub struct ForwardMessage<'a> {
 
 impl<'a> ForwardMessage<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         from_chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             from_chat_id: from_chat_id.into(),
             message_id,
@@ -58,8 +54,7 @@ impl ForwardMessage<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "forwardMessage",
             None,
             serde_json::to_vec(&self).unwrap(),

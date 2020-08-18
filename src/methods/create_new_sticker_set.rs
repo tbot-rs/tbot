@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         input_file::{InputFile, StickerForStickerSet},
         sticker::MaskPosition,
@@ -18,8 +18,7 @@ use crate::{
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct CreateNewStickerSet<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     name: &'a str,
     title: &'a str,
@@ -31,8 +30,7 @@ pub struct CreateNewStickerSet<'a> {
 
 impl<'a> CreateNewStickerSet<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         user_id: user::Id,
         name: &'a str,
         title: &'a str,
@@ -40,8 +38,7 @@ impl<'a> CreateNewStickerSet<'a> {
         emojis: &'a str,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             name,
             title,
@@ -99,8 +96,7 @@ impl CreateNewStickerSet<'_> {
         let (boundary, body) = multipart.finish();
 
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "createNewStickerSet",
             Some(boundary),
             body,

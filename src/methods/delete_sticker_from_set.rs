@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token};
+use crate::{bot::InnerBot, errors};
 use serde::Serialize;
 
 /// Deletes a sticker from a sticker set.
@@ -11,23 +11,13 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct DeleteStickerFromSet<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     sticker: &'a str,
 }
 
 impl<'a> DeleteStickerFromSet<'a> {
-    pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
-        sticker: &'a str,
-    ) -> Self {
-        Self {
-            client,
-            token,
-            sticker,
-        }
+    pub(crate) const fn new(bot: &'a InnerBot, sticker: &'a str) -> Self {
+        Self { bot, sticker }
     }
 }
 
@@ -35,8 +25,7 @@ impl DeleteStickerFromSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "deleteStickerFromSet",
             None,
             serde_json::to_vec(&self).unwrap(),
