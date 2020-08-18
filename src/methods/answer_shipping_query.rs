@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types::shipping};
+use crate::{bot::InnerBot, errors, types::shipping};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -12,9 +12,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerShippingQuery<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     shipping_query_id: shipping::query::Id<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,8 +23,7 @@ pub struct AnswerShippingQuery<'a> {
 
 impl<'a> AnswerShippingQuery<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         shipping_query_id: shipping::query::Id<'a>,
         result: Result<
             impl Into<Cow<'a, [shipping::Option<'a>]>>,
@@ -35,8 +32,7 @@ impl<'a> AnswerShippingQuery<'a> {
     ) -> Self {
         if result.is_ok() {
             Self {
-                client,
-                token,
+                bot,
                 shipping_query_id,
                 ok: true,
                 shipping_options: result.ok().map(Into::into),
@@ -44,8 +40,7 @@ impl<'a> AnswerShippingQuery<'a> {
             }
         } else {
             Self {
-                client,
-                token,
+                bot,
                 shipping_query_id,
                 ok: false,
                 shipping_options: None,
@@ -59,8 +54,7 @@ impl AnswerShippingQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "answerShippingQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

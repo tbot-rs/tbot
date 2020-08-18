@@ -1,8 +1,8 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
-    types::{inline_message_id::InlineMessageId, keyboard::inline},
+    bot::InnerBot,
+    errors,
+    types::{keyboard::inline, InlineMessageId},
 };
 use serde::Serialize;
 
@@ -15,23 +15,19 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineReplyMarkup<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     inline_message_id: InlineMessageId<'a>,
     reply_markup: inline::Keyboard<'a>,
 }
 
 impl<'a> EditInlineReplyMarkup<'a> {
     pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         inline_message_id: InlineMessageId<'a>,
         reply_markup: inline::Keyboard<'a>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             inline_message_id,
             reply_markup,
         }
@@ -42,8 +38,7 @@ impl EditInlineReplyMarkup<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "editMessageReplyMarkup",
             None,
             serde_json::to_vec(&self).unwrap(),

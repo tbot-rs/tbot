@@ -30,9 +30,9 @@ use crate::{
 use std::borrow::Cow;
 use std::sync::Arc;
 
-/// Provides methods to call the Bots API.
+/// A `Bot` lets you call Bot API methods and construct event loops.
 ///
-/// A `Bot` lets you call methods from the [`methods`] module.
+/// Using a `Bot` instance, you can call methods from the [`methods`] module.
 ///
 /// ```no_run
 /// # async fn foo() {
@@ -45,31 +45,54 @@ use std::sync::Arc;
 /// Besides, a `Bot` is used to construct an [`EventLoop`] — a struct
 /// responsible for configuring handlers and listening to updates.
 ///
+/// Note that the `Bot`'s internal data is wrapped in one `Arc`, so you can
+/// cheaply clone it.
+///
 /// [`EventLoop`]: ./event_loop/struct.EventLoop.html
 /// [`methods`]: ./methods/index.html
 #[derive(Debug, Clone)]
 #[must_use]
 pub struct Bot {
-    pub(crate) token: Token,
-    pub(crate) client: Arc<Client>,
+    pub(crate) inner: Arc<InnerBot>,
+}
+
+#[derive(Debug)]
+#[allow(clippy::module_name_repetitions)]
+pub struct InnerBot {
+    token: Token,
+    client: Client,
+}
+
+impl InnerBot {
+    pub fn token(&self) -> &str {
+        &self.token.0
+    }
+
+    pub const fn client(&self) -> &Client {
+        &self.client
+    }
 }
 
 impl Bot {
     /// Constructs a new `Bot`.
     pub fn new(token: String) -> Self {
         Self {
-            token: Token::new(token),
-            client: Arc::new(Client::https()),
+            inner: Arc::new(InnerBot {
+                token: Token(token),
+                client: Client::https(),
+            }),
         }
     }
 
     /// Constructs a `Bot` with the provided proxy.
     pub fn with_proxy(token: String, proxy: impl Into<Proxy>) -> Self {
-        let proxy = proxy.into();
+        let proxy: Proxy = proxy.into();
 
         Self {
-            token: Token::new(token),
-            client: Arc::new(proxy.into()),
+            inner: Arc::new(InnerBot {
+                token: Token(token),
+                client: proxy.into(),
+            }),
         }
     }
 
@@ -88,7 +111,7 @@ impl Bot {
         &self,
         file: &File,
     ) -> Result<Vec<u8>, errors::Download> {
-        download_file(&self.client, self.token.as_ref(), file).await
+        download_file(&self.inner, file).await
     }
 
     /// Constructs a new `Bot`, extracting the token from the environment at
@@ -132,14 +155,7 @@ impl Bot {
         png_sticker: impl Into<StickerForStickerSet<'a>>,
         emojis: impl Into<Cow<'a, str>>,
     ) -> AddStickerToSet<'a> {
-        AddStickerToSet::new(
-            &self.client,
-            self.token.as_ref(),
-            user_id,
-            name,
-            png_sticker,
-            emojis,
-        )
+        AddStickerToSet::new(&self.inner, user_id, name, png_sticker, emojis)
     }
 
     pub(crate) fn answer_callback_query<'a>(
@@ -147,12 +163,7 @@ impl Bot {
         callback_query_id: callback::query::Id<'a>,
         action: CallbackAction<'a>,
     ) -> AnswerCallbackQuery<'a> {
-        AnswerCallbackQuery::new(
-            &self.client,
-            self.token.as_ref(),
-            callback_query_id,
-            action,
-        )
+        AnswerCallbackQuery::new(&self.inner, callback_query_id, action)
     }
 
     pub(crate) fn answer_inline_query<'a>(
@@ -160,12 +171,7 @@ impl Bot {
         inline_query_id: inline_query::Id<'a>,
         results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
-        AnswerInlineQuery::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_query_id,
-            results,
-        )
+        AnswerInlineQuery::new(&self.inner, inline_query_id, results)
     }
 
     pub(crate) fn answer_pre_checkout_query<'a>(
@@ -173,12 +179,7 @@ impl Bot {
         pre_checkout_query_id: pre_checkout_query::Id<'a>,
         result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> AnswerPreCheckoutQuery<'a> {
-        AnswerPreCheckoutQuery::new(
-            &self.client,
-            self.token.as_ref(),
-            pre_checkout_query_id,
-            result,
-        )
+        AnswerPreCheckoutQuery::new(&self.inner, pre_checkout_query_id, result)
     }
 
     pub(crate) fn answer_shipping_query<'a>(
@@ -189,12 +190,7 @@ impl Bot {
             impl Into<Cow<'a, str>>,
         >,
     ) -> AnswerShippingQuery<'a> {
-        AnswerShippingQuery::new(
-            &self.client,
-            self.token.as_ref(),
-            shipping_query_id,
-            result,
-        )
+        AnswerShippingQuery::new(&self.inner, shipping_query_id, result)
     }
 
     /// Creates a new sticker set.
@@ -207,8 +203,7 @@ impl Bot {
         emojis: impl Into<Cow<'a, str>>,
     ) -> CreateNewStickerSet<'a> {
         CreateNewStickerSet::new(
-            &self.client,
-            self.token.as_ref(),
+            &self.inner,
             user_id,
             name,
             title,
@@ -222,7 +217,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> DeleteChatPhoto<'a> {
-        DeleteChatPhoto::new(&self.client, self.token.as_ref(), chat_id)
+        DeleteChatPhoto::new(&self.inner, chat_id)
     }
 
     /// Deletes a chat's sticker set.
@@ -230,7 +225,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> DeleteChatStickerSet<'a> {
-        DeleteChatStickerSet::new(&self.client, self.token.as_ref(), chat_id)
+        DeleteChatStickerSet::new(&self.inner, chat_id)
     }
 
     /// Deletes a message from a chat.
@@ -239,12 +234,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> DeleteMessage<'a> {
-        DeleteMessage::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-        )
+        DeleteMessage::new(&self.inner, chat_id, message_id)
     }
 
     /// Deletes a sticker from a sticker set.
@@ -252,11 +242,11 @@ impl Bot {
         &'a self,
         sticker: impl Into<Cow<'a, str>>,
     ) -> DeleteStickerFromSet<'a> {
-        DeleteStickerFromSet::new(&self.client, self.token.as_ref(), sticker)
+        DeleteStickerFromSet::new(&self.inner, sticker)
     }
 
     pub(crate) fn delete_webhook(&self) -> DeleteWebhook<'_> {
-        DeleteWebhook::new(&self.client, self.token.as_ref())
+        DeleteWebhook::new(&self.inner)
     }
 
     /// Edits the caption of a media message sent via the inline mode.
@@ -265,12 +255,7 @@ impl Bot {
         inline_message_id: InlineMessageId<'a>,
         caption: impl Into<Text<'a>>,
     ) -> EditInlineCaption<'a> {
-        EditInlineCaption::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            caption,
-        )
+        EditInlineCaption::new(&self.inner, inline_message_id, caption)
     }
 
     /// Edits a live location sent via the inline mode.
@@ -279,12 +264,7 @@ impl Bot {
         inline_message_id: InlineMessageId<'a>,
         position: (f64, f64),
     ) -> EditInlineLocation<'a> {
-        EditInlineLocation::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            position,
-        )
+        EditInlineLocation::new(&self.inner, inline_message_id, position)
     }
 
     /// Edits the media of a message sent via the inline mode.
@@ -293,12 +273,7 @@ impl Bot {
         inline_message_id: InlineMessageId<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditInlineMedia<'a> {
-        EditInlineMedia::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            media,
-        )
+        EditInlineMedia::new(&self.inner, inline_message_id, media)
     }
 
     /// Edits the inline keyboard of a message sent via the inline mode.
@@ -307,12 +282,7 @@ impl Bot {
         inline_message_id: InlineMessageId<'a>,
         reply_markup: inline::Keyboard<'a>,
     ) -> EditInlineReplyMarkup<'a> {
-        EditInlineReplyMarkup::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            reply_markup,
-        )
+        EditInlineReplyMarkup::new(&self.inner, inline_message_id, reply_markup)
     }
 
     /// Edits the text of a message sent via the inline mode.
@@ -321,12 +291,7 @@ impl Bot {
         inline_message_id: InlineMessageId<'a>,
         text: impl Into<Text<'a>>,
     ) -> EditInlineText<'a> {
-        EditInlineText::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            text,
-        )
+        EditInlineText::new(&self.inner, inline_message_id, text)
     }
 
     /// Edits the caption of a media message sent by the bot itself.
@@ -336,13 +301,7 @@ impl Bot {
         message_id: message::Id,
         caption: impl Into<Text<'a>>,
     ) -> EditMessageCaption<'a> {
-        EditMessageCaption::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-            caption,
-        )
+        EditMessageCaption::new(&self.inner, chat_id, message_id, caption)
     }
 
     /// Edits a live location sent by the bot itself.
@@ -352,13 +311,7 @@ impl Bot {
         message_id: message::Id,
         position: (f64, f64),
     ) -> EditMessageLocation<'a> {
-        EditMessageLocation::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-            position,
-        )
+        EditMessageLocation::new(&self.inner, chat_id, message_id, position)
     }
 
     /// Edits a live location sent by the bot itself.
@@ -368,13 +321,7 @@ impl Bot {
         message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditMessageMedia<'a> {
-        EditMessageMedia::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-            media,
-        )
+        EditMessageMedia::new(&self.inner, chat_id, message_id, media)
     }
 
     /// Edits the inline keyboard of a message sent by the bot itself.
@@ -385,8 +332,7 @@ impl Bot {
         reply_markup: inline::Keyboard<'a>,
     ) -> EditMessageReplyMarkup<'a> {
         EditMessageReplyMarkup::new(
-            &self.client,
-            self.token.as_ref(),
+            &self.inner,
             chat_id,
             message_id,
             reply_markup,
@@ -400,13 +346,7 @@ impl Bot {
         message_id: message::Id,
         text: impl Into<Text<'a>>,
     ) -> EditMessageText<'a> {
-        EditMessageText::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-            text,
-        )
+        EditMessageText::new(&self.inner, chat_id, message_id, text)
     }
 
     /// Exports a chat's invite link.
@@ -414,7 +354,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> ExportChatInviteLink<'a> {
-        ExportChatInviteLink::new(&self.client, self.token.as_ref(), chat_id)
+        ExportChatInviteLink::new(&self.inner, chat_id)
     }
 
     /// Forwards a message.
@@ -424,13 +364,7 @@ impl Bot {
         from_chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> ForwardMessage<'a> {
-        ForwardMessage::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            from_chat_id,
-            message_id,
-        )
+        ForwardMessage::new(&self.inner, chat_id, from_chat_id, message_id)
     }
 
     /// Gets information about a chat.
@@ -438,7 +372,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> GetChat<'a> {
-        GetChat::new(&self.client, self.token.as_ref(), chat_id)
+        GetChat::new(&self.inner, chat_id)
     }
 
     /// Gets information about a file.
@@ -446,7 +380,7 @@ impl Bot {
         &'a self,
         file_id: &'a impl AsFileId<'a>,
     ) -> GetFile<'a> {
-        GetFile::new(&self.client, self.token.as_ref(), file_id)
+        GetFile::new(&self.inner, file_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent via the inline
@@ -456,12 +390,7 @@ impl Bot {
         inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
     ) -> GetInlineGameHighScores<'a> {
-        GetInlineGameHighScores::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            user_id,
-        )
+        GetInlineGameHighScores::new(&self.inner, inline_message_id, user_id)
     }
 
     /// Gets information about a chat's admins.
@@ -469,7 +398,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> GetChatAdministrators<'a> {
-        GetChatAdministrators::new(&self.client, self.token.as_ref(), chat_id)
+        GetChatAdministrators::new(&self.inner, chat_id)
     }
 
     /// Gets information about a chat's member.
@@ -478,7 +407,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> GetChatMember<'a> {
-        GetChatMember::new(&self.client, self.token.as_ref(), chat_id, user_id)
+        GetChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Gets a chat's member count.
@@ -486,7 +415,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> GetChatMembersCount<'a> {
-        GetChatMembersCount::new(&self.client, self.token.as_ref(), chat_id)
+        GetChatMembersCount::new(&self.inner, chat_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent by the bot
@@ -497,23 +426,17 @@ impl Bot {
         message_id: message::Id,
         user_id: user::Id,
     ) -> GetMessageGameHighScores<'a> {
-        GetMessageGameHighScores::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-            user_id,
-        )
+        GetMessageGameHighScores::new(&self.inner, chat_id, message_id, user_id)
     }
 
     /// Gets information about the bot.
     pub fn get_me(&self) -> GetMe<'_> {
-        GetMe::new(&self.client, self.token.as_ref())
+        GetMe::new(&self.inner)
     }
 
     /// Gets the list of the bot's commands.
     pub fn get_my_commands(&self) -> GetMyCommands<'_> {
-        GetMyCommands::new(&self.client, self.token.as_ref())
+        GetMyCommands::new(&self.inner)
     }
 
     /// Gets a sticker set by its name.
@@ -521,7 +444,7 @@ impl Bot {
         &'a self,
         name: impl Into<Cow<'a, str>>,
     ) -> GetStickerSet<'a> {
-        GetStickerSet::new(&self.client, self.token.as_ref(), name)
+        GetStickerSet::new(&self.inner, name)
     }
 
     pub(crate) fn get_updates<'a>(
@@ -531,14 +454,7 @@ impl Bot {
         timeout: Option<u64>,
         allowed_updates: Option<&'a [UpdateKind]>,
     ) -> GetUpdates<'a> {
-        GetUpdates::new(
-            &self.client,
-            self.token.as_ref(),
-            offset,
-            limit,
-            timeout,
-            allowed_updates,
-        )
+        GetUpdates::new(&self.inner, offset, limit, timeout, allowed_updates)
     }
 
     /// Gets a user's profile photos.
@@ -546,12 +462,12 @@ impl Bot {
         &self,
         user_id: user::Id,
     ) -> GetUserProfilePhotos<'_> {
-        GetUserProfilePhotos::new(&self.client, self.token.as_ref(), user_id)
+        GetUserProfilePhotos::new(&self.inner, user_id)
     }
 
     /// Gets information about the bot's webhook.
     pub fn get_webhook_info(&self) -> GetWebhookInfo<'_> {
-        GetWebhookInfo::new(&self.client, self.token.as_ref())
+        GetWebhookInfo::new(&self.inner)
     }
 
     /// Kicks a member out of a chat.
@@ -560,7 +476,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> KickChatMember<'a> {
-        KickChatMember::new(&self.client, self.token.as_ref(), chat_id, user_id)
+        KickChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Leaves a chat.
@@ -568,7 +484,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> LeaveChat<'a> {
-        LeaveChat::new(&self.client, self.token.as_ref(), chat_id)
+        LeaveChat::new(&self.inner, chat_id)
     }
 
     /// Pins a message in a chat.
@@ -577,12 +493,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> PinChatMessage<'a> {
-        PinChatMessage::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-        )
+        PinChatMessage::new(&self.inner, chat_id, message_id)
     }
 
     /// Promotes a chat member to an admin.
@@ -591,12 +502,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> PromoteChatMember<'a> {
-        PromoteChatMember::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            user_id,
-        )
+        PromoteChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Restricts a chat member.
@@ -606,13 +512,7 @@ impl Bot {
         user_id: user::Id,
         permissions: chat::Permissions,
     ) -> RestrictChatMember<'a> {
-        RestrictChatMember::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            user_id,
-            permissions,
-        )
+        RestrictChatMember::new(&self.inner, chat_id, user_id, permissions)
     }
 
     /// Sends an animation.
@@ -621,12 +521,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         animation: Animation<'a>,
     ) -> SendAnimation<'a> {
-        SendAnimation::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            animation,
-        )
+        SendAnimation::new(&self.inner, chat_id, animation)
     }
 
     /// Sends an audio.
@@ -635,7 +530,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         audio: Audio<'a>,
     ) -> SendAudio<'a> {
-        SendAudio::new(&self.client, self.token.as_ref(), chat_id, audio)
+        SendAudio::new(&self.inner, chat_id, audio)
     }
 
     /// Sends a chat action.
@@ -644,7 +539,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         action: chat::Action,
     ) -> SendChatAction<'a> {
-        SendChatAction::new(&self.client, self.token.as_ref(), chat_id, action)
+        SendChatAction::new(&self.inner, chat_id, action)
     }
 
     /// Sends a contact.
@@ -654,13 +549,7 @@ impl Bot {
         phone_number: impl Into<Cow<'a, str>>,
         first_name: impl Into<Cow<'a, str>>,
     ) -> SendContact<'a> {
-        SendContact::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            phone_number,
-            first_name,
-        )
+        SendContact::new(&self.inner, chat_id, phone_number, first_name)
     }
 
     /// Sends a game.
@@ -669,12 +558,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         game_short_name: impl Into<Cow<'a, str>>,
     ) -> SendGame<'a> {
-        SendGame::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            game_short_name,
-        )
+        SendGame::new(&self.inner, chat_id, game_short_name)
     }
 
     /// Sends a dice.
@@ -682,7 +566,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> SendDice<'a> {
-        SendDice::new(&self.client, self.token.as_ref(), chat_id)
+        SendDice::new(&self.inner, chat_id)
     }
 
     /// Sends a document.
@@ -691,7 +575,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         document: Document<'a>,
     ) -> SendDocument<'a> {
-        SendDocument::new(&self.client, self.token.as_ref(), chat_id, document)
+        SendDocument::new(&self.inner, chat_id, document)
     }
 
     /// Sends an invoice.
@@ -708,8 +592,7 @@ impl Bot {
         prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
     ) -> SendInvoice<'a> {
         SendInvoice::new(
-            &self.client,
-            self.token.as_ref(),
+            &self.inner,
             chat_id,
             title,
             description,
@@ -727,7 +610,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         position: (f64, f64),
     ) -> SendLocation<'a> {
-        SendLocation::new(&self.client, self.token.as_ref(), chat_id, position)
+        SendLocation::new(&self.inner, chat_id, position)
     }
 
     /// Sends an album.
@@ -736,7 +619,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
     ) -> SendMediaGroup<'a> {
-        SendMediaGroup::new(&self.client, self.token.as_ref(), chat_id, media)
+        SendMediaGroup::new(&self.inner, chat_id, media)
     }
 
     /// Sends a text message.
@@ -745,7 +628,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         text: impl Into<Text<'a>>,
     ) -> SendMessage<'a> {
-        SendMessage::new(&self.client, self.token.as_ref(), chat_id, text)
+        SendMessage::new(&self.inner, chat_id, text)
     }
 
     /// Sends a photo.
@@ -754,7 +637,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         photo: Photo<'a>,
     ) -> SendPhoto<'a> {
-        SendPhoto::new(&self.client, self.token.as_ref(), chat_id, photo)
+        SendPhoto::new(&self.inner, chat_id, photo)
     }
 
     /// Sends a poll.
@@ -763,7 +646,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         poll: &'a Any<'a>,
     ) -> SendPoll<'a> {
-        SendPoll::new(&self.client, self.token.as_ref(), chat_id, poll)
+        SendPoll::new(&self.inner, chat_id, poll)
     }
 
     /// Sends a sticker.
@@ -772,7 +655,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         sticker: Sticker<'a>,
     ) -> SendSticker<'a> {
-        SendSticker::new(&self.client, self.token.as_ref(), chat_id, sticker)
+        SendSticker::new(&self.inner, chat_id, sticker)
     }
 
     /// Sends a venue.
@@ -783,14 +666,7 @@ impl Bot {
         title: impl Into<Cow<'a, str>>,
         address: impl Into<Cow<'a, str>>,
     ) -> SendVenue<'a> {
-        SendVenue::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            position,
-            title,
-            address,
-        )
+        SendVenue::new(&self.inner, chat_id, position, title, address)
     }
 
     /// Sends a video note.
@@ -799,12 +675,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a> {
-        SendVideoNote::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            video_note,
-        )
+        SendVideoNote::new(&self.inner, chat_id, video_note)
     }
 
     /// Sends a video.
@@ -813,7 +684,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         video: Video<'a>,
     ) -> SendVideo<'a> {
-        SendVideo::new(&self.client, self.token.as_ref(), chat_id, video)
+        SendVideo::new(&self.inner, chat_id, video)
     }
 
     /// Sends a voice.
@@ -822,7 +693,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         voice: Voice<'a>,
     ) -> SendVoice<'a> {
-        SendVoice::new(&self.client, self.token.as_ref(), chat_id, voice)
+        SendVoice::new(&self.inner, chat_id, voice)
     }
 
     /// Sets a custom title for an admin in a chat.
@@ -833,8 +704,7 @@ impl Bot {
         custom_title: impl Into<Cow<'a, str>>,
     ) -> SetChatAdministratorCustomTitle<'a> {
         SetChatAdministratorCustomTitle::new(
-            &self.client,
-            self.token.as_ref(),
+            &self.inner,
             chat_id,
             user_id,
             custom_title,
@@ -847,12 +717,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         description: impl Into<Cow<'a, str>>,
     ) -> SetChatDescription<'a> {
-        SetChatDescription::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            description,
-        )
+        SetChatDescription::new(&self.inner, chat_id, description)
     }
 
     /// Sets a group's global permissions.
@@ -861,12 +726,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         permissions: chat::Permissions,
     ) -> SetChatPermissions<'a> {
-        SetChatPermissions::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            permissions,
-        )
+        SetChatPermissions::new(&self.inner, chat_id, permissions)
     }
 
     /// Sets a chat's photo.
@@ -875,7 +735,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         photo: ChatPhoto<'a>,
     ) -> SetChatPhoto<'a> {
-        SetChatPhoto::new(&self.client, self.token.as_ref(), chat_id, photo)
+        SetChatPhoto::new(&self.inner, chat_id, photo)
     }
 
     /// Sets a group's sticker set.
@@ -884,12 +744,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         sticker_set_name: impl Into<Cow<'a, str>>,
     ) -> SetChatStickerSet<'a> {
-        SetChatStickerSet::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            sticker_set_name,
-        )
+        SetChatStickerSet::new(&self.inner, chat_id, sticker_set_name)
     }
 
     /// Sets a group's title.
@@ -898,7 +753,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         title: impl Into<Cow<'a, str>>,
     ) -> SetChatTitle<'a> {
-        SetChatTitle::new(&self.client, self.token.as_ref(), chat_id, title)
+        SetChatTitle::new(&self.inner, chat_id, title)
     }
 
     /// Sets a user's new high score in a game sent via the inline mode.
@@ -908,13 +763,7 @@ impl Bot {
         user_id: user::Id,
         score: u32,
     ) -> SetInlineGameScore<'a> {
-        SetInlineGameScore::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-            user_id,
-            score,
-        )
+        SetInlineGameScore::new(&self.inner, inline_message_id, user_id, score)
     }
 
     /// Sets a user's new high score in a game sent by the bot itself.
@@ -926,8 +775,7 @@ impl Bot {
         score: u32,
     ) -> SetMessageGameScore<'a> {
         SetMessageGameScore::new(
-            &self.client,
-            self.token.as_ref(),
+            &self.inner,
             chat_id,
             message_id,
             user_id,
@@ -940,7 +788,7 @@ impl Bot {
         &'a self,
         commands: impl Into<Cow<'a, [BotCommand<'a>]>>,
     ) -> SetMyCommands<'a> {
-        SetMyCommands::new(&self.client, self.token.as_ref(), commands)
+        SetMyCommands::new(&self.inner, commands)
     }
 
     /// Reports passport errors to the user.
@@ -949,12 +797,7 @@ impl Bot {
         user_id: user::Id,
         errors: impl Into<Cow<'a, [passport::element::Error<'a>]>>,
     ) -> SetPassportDataErrors<'a> {
-        SetPassportDataErrors::new(
-            &self.client,
-            self.token.as_ref(),
-            user_id,
-            errors,
-        )
+        SetPassportDataErrors::new(&self.inner, user_id, errors)
     }
 
     /// Changes a sticker's position in a sticker set.
@@ -963,12 +806,7 @@ impl Bot {
         sticker: impl Into<Cow<'a, str>>,
         position: u32,
     ) -> SetStickerPositionInSet<'a> {
-        SetStickerPositionInSet::new(
-            &self.client,
-            self.token.as_ref(),
-            sticker,
-            position,
-        )
+        SetStickerPositionInSet::new(&self.inner, sticker, position)
     }
 
     /// Sets the thumb of a sticker set.
@@ -978,13 +816,7 @@ impl Bot {
         name: impl Into<Cow<'a, str>>,
         thumb: Option<&'a StickerSetThumb<'a>>,
     ) -> SetStickerSetThumb<'a> {
-        SetStickerSetThumb::new(
-            &self.client,
-            self.token.as_ref(),
-            user_id,
-            name,
-            thumb,
-        )
+        SetStickerSetThumb::new(&self.inner, user_id, name, thumb)
     }
 
     pub(crate) fn set_webhook<'a>(
@@ -995,8 +827,7 @@ impl Bot {
         allowed_updates: Option<&'a [UpdateKind]>,
     ) -> SetWebhook<'a> {
         SetWebhook::new(
-            &self.client,
-            self.token.as_ref(),
+            &self.inner,
             url,
             certificate,
             max_connections,
@@ -1009,11 +840,7 @@ impl Bot {
         &'a self,
         inline_message_id: InlineMessageId<'a>,
     ) -> StopInlineLocation<'a> {
-        StopInlineLocation::new(
-            &self.client,
-            self.token.as_ref(),
-            inline_message_id,
-        )
+        StopInlineLocation::new(&self.inner, inline_message_id)
     }
 
     /// Stops a live location sent by the bot itself.
@@ -1022,12 +849,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> StopMessageLocation<'a> {
-        StopMessageLocation::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            message_id,
-        )
+        StopMessageLocation::new(&self.inner, chat_id, message_id)
     }
 
     /// Stops a poll.
@@ -1036,7 +858,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         message_id: message::Id,
     ) -> StopPoll<'a> {
-        StopPoll::new(&self.client, self.token.as_ref(), chat_id, message_id)
+        StopPoll::new(&self.inner, chat_id, message_id)
     }
 
     /// Lifts all restrictions from a group's member.
@@ -1045,12 +867,7 @@ impl Bot {
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
     ) -> UnbanChatMember<'a> {
-        UnbanChatMember::new(
-            &self.client,
-            self.token.as_ref(),
-            chat_id,
-            user_id,
-        )
+        UnbanChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Unpins a chat message.
@@ -1058,7 +875,7 @@ impl Bot {
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
     ) -> UnpinChatMessage<'a> {
-        UnpinChatMessage::new(&self.client, self.token.as_ref(), chat_id)
+        UnpinChatMessage::new(&self.inner, chat_id)
     }
 
     /// Uploads a sticker file.
@@ -1067,12 +884,7 @@ impl Bot {
         user_id: user::Id,
         png_sticker: impl Into<Cow<'a, [u8]>>,
     ) -> UploadStickerFile<'a> {
-        UploadStickerFile::new(
-            &self.client,
-            self.token.as_ref(),
-            user_id,
-            png_sticker,
-        )
+        UploadStickerFile::new(&self.inner, user_id, png_sticker)
     }
 }
 

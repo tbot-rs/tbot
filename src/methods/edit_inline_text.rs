@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         inline_message_id::InlineMessageId,
         keyboard::inline,
@@ -20,9 +20,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineText<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     inline_message_id: InlineMessageId<'a>,
     text: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,16 +33,14 @@ pub struct EditInlineText<'a> {
 
 impl<'a> EditInlineText<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         inline_message_id: InlineMessageId<'a>,
         text: impl Into<Text<'a>>,
     ) -> Self {
         let text = text.into();
 
         Self {
-            client,
-            token,
+            bot,
             inline_message_id,
             text: text.text,
             parse_mode: text.parse_mode,
@@ -72,8 +68,7 @@ impl EditInlineText<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "editMessageText",
             None,
             serde_json::to_vec(&self).unwrap(),

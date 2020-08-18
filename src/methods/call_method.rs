@@ -1,4 +1,4 @@
-use crate::{connectors::Client, errors, token, types::chat};
+use crate::{bot::InnerBot, errors, types::chat};
 use hyper::{
     body::{Body, HttpBody},
     header::HeaderValue,
@@ -37,10 +37,9 @@ struct Response<T> {
     parameters: Option<ResponseParameters>,
 }
 
-#[instrument(skip(client, token, boundary, body))]
+#[instrument(skip(bot, boundary, body))]
 pub async fn call_method<'a, T>(
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     method: &'static str,
     boundary: Option<String>,
     body: Vec<u8>,
@@ -53,7 +52,7 @@ where
     let url = Uri::builder()
         .scheme("https")
         .authority("api.telegram.org")
-        .path_and_query(format!("/bot{}/{}", token.as_str(), method).as_str())
+        .path_and_query(format!("/bot{}/{}", bot.token(), method).as_str())
         .build()
         .expect("[tbot] Method URL construction failed");
 
@@ -74,7 +73,8 @@ where
         .headers_mut()
         .insert(hyper::header::CONTENT_TYPE, content_type);
 
-    let (parts, mut body) = client
+    let (parts, mut body) = bot
+        .client()
         .request(request)
         .await
         .map_err(|error| {

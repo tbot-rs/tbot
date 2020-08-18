@@ -54,21 +54,18 @@ impl<'a> Http<'a> {
             Ok(_) => (),
         };
 
-        let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
         let addr = SocketAddr::new(ip, port);
         let updates_url = Arc::new(updates_url);
 
         Server::bind(&addr)
             .serve(make_service_fn(move |_| {
-                let bot = Arc::clone(&bot);
                 let event_loop = Arc::clone(&event_loop);
                 let updates_url = Arc::clone(&updates_url);
 
                 async move {
                     let service = service_fn(move |request| {
                         handle(
-                            Arc::clone(&bot),
                             Arc::clone(&event_loop),
                             request,
                             Arc::clone(&updates_url),

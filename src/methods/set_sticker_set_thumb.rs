@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         input_file::{InputFile, StickerSetThumb},
         user,
@@ -18,8 +18,7 @@ use std::borrow::Cow;
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetStickerSetThumb<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     name: Cow<'a, str>,
     thumb: Option<&'a StickerSetThumb<'a>>,
@@ -27,15 +26,13 @@ pub struct SetStickerSetThumb<'a> {
 
 impl<'a> SetStickerSetThumb<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
         thumb: Option<&'a StickerSetThumb<'a>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             name: name.into(),
             thumb,
@@ -64,8 +61,7 @@ impl SetStickerSetThumb<'_> {
         let (boundary, body) = multipart.finish();
 
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "setStickerSetThumb",
             Some(boundary),
             body,

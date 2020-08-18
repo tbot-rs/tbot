@@ -4,7 +4,6 @@ use crate::{
     Bot,
 };
 use std::borrow::Cow;
-use std::sync::Arc;
 
 common! {
     /// The context for [`pre_checkout`][handler] handlers.
@@ -29,7 +28,8 @@ common! {
 }
 
 impl PreCheckout {
-    pub(crate) fn new(bot: Arc<Bot>, query: PreCheckoutQuery) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn new(bot: Bot, query: PreCheckoutQuery) -> Self {
         Self {
             bot,
             id: query.id,

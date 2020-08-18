@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{callback, parameters::CallbackAction},
 };
 use serde::Serialize;
@@ -16,9 +16,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerCallbackQuery<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     callback_query_id: callback::query::Id<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<Cow<'a, str>>,
@@ -32,15 +30,13 @@ pub struct AnswerCallbackQuery<'a> {
 
 impl<'a> AnswerCallbackQuery<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         callback_query_id: callback::query::Id<'a>,
         action: CallbackAction<'a>,
     ) -> Self {
         match action {
             CallbackAction::None => Self {
-                client,
-                token,
+                bot,
                 callback_query_id,
                 text: None,
                 show_alert: None,
@@ -48,8 +44,7 @@ impl<'a> AnswerCallbackQuery<'a> {
                 cache_time: None,
             },
             CallbackAction::Url(url) => Self {
-                client,
-                token,
+                bot,
                 callback_query_id,
                 text: None,
                 show_alert: None,
@@ -57,8 +52,7 @@ impl<'a> AnswerCallbackQuery<'a> {
                 cache_time: None,
             },
             CallbackAction::Text(text, show_alert) => Self {
-                client,
-                token,
+                bot,
                 callback_query_id,
                 text: Some(text),
                 show_alert: Some(show_alert),
@@ -80,8 +74,7 @@ impl AnswerCallbackQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "answerCallbackQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

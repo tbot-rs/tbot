@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{user, File},
     Multipart,
 };
@@ -15,22 +15,19 @@ use std::borrow::Cow;
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct UploadStickerFile<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     png_sticker: Cow<'a, [u8]>,
 }
 
 impl<'a> UploadStickerFile<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         user_id: user::Id,
         png_sticker: impl Into<Cow<'a, [u8]>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             png_sticker: png_sticker.into(),
         }
@@ -45,13 +42,6 @@ impl UploadStickerFile<'_> {
             .file("png_sticker", "sticker.png", &self.png_sticker)
             .finish();
 
-        call_method(
-            self.client,
-            self.token,
-            "uploadStickerFile",
-            Some(boundary),
-            body,
-        )
-        .await
+        call_method(self.bot, "uploadStickerFile", Some(boundary), body).await
     }
 }

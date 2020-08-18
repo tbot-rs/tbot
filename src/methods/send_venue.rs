@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         keyboard,
         message::{self, Message},
@@ -20,9 +20,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVenue<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     latitude: f64,
     longitude: f64,
@@ -42,16 +40,14 @@ pub struct SendVenue<'a> {
 
 impl<'a> SendVenue<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         (latitude, longitude): (f64, f64),
         title: impl Into<Cow<'a, str>>,
         address: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             latitude,
             longitude,
@@ -108,8 +104,7 @@ impl SendVenue<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "sendVenue",
             None,
             serde_json::to_vec(&self).unwrap(),

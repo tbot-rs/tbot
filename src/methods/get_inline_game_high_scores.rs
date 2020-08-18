@@ -1,8 +1,8 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
-    types::{game::HighScore, inline_message_id::InlineMessageId, user},
+    bot::InnerBot,
+    errors,
+    types::{game::HighScore, InlineMessageId, user},
 };
 use serde::Serialize;
 
@@ -16,23 +16,19 @@ use serde::Serialize;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetInlineGameHighScores<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     inline_message_id: InlineMessageId<'a>,
 }
 
 impl<'a> GetInlineGameHighScores<'a> {
     pub(crate) const fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         inline_message_id: InlineMessageId<'a>,
         user_id: user::Id,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             inline_message_id,
         }
@@ -43,8 +39,7 @@ impl GetInlineGameHighScores<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Vec<HighScore>, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "getGameHighScores",
             None,
             serde_json::to_vec(&self).unwrap(),

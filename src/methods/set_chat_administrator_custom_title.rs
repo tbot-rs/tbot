@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         parameters::{ChatId, ImplicitChatId},
         user,
@@ -19,9 +19,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatAdministratorCustomTitle<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     user_id: user::Id,
     custom_title: Cow<'a, str>,
@@ -29,15 +27,13 @@ pub struct SetChatAdministratorCustomTitle<'a> {
 
 impl<'a> SetChatAdministratorCustomTitle<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         user_id: user::Id,
         custom_title: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             user_id,
             custom_title: custom_title.into(),
@@ -49,8 +45,7 @@ impl SetChatAdministratorCustomTitle<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "setChatAdministratorCustomTitle",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         input_file::{InputFile, StickerForStickerSet},
         sticker::MaskPosition,
@@ -19,8 +19,7 @@ use std::borrow::Cow;
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AddStickerToSet<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     user_id: user::Id,
     name: Cow<'a, str>,
     sticker: StickerForStickerSet<'a>,
@@ -30,16 +29,14 @@ pub struct AddStickerToSet<'a> {
 
 impl<'a> AddStickerToSet<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
         sticker: impl Into<StickerForStickerSet<'a>>,
         emojis: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             user_id,
             name: name.into(),
             sticker: sticker.into(),
@@ -84,14 +81,8 @@ impl AddStickerToSet<'_> {
 
         let (boundary, body) = multipart.finish();
 
-        call_method::<bool>(
-            self.client,
-            self.token,
-            "addStickerToSet",
-            Some(boundary),
-            body,
-        )
-        .await?;
+        call_method::<bool>(self.bot, "addStickerToSet", Some(boundary), body)
+            .await?;
 
         Ok(())
     }

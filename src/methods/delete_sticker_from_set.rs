@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token};
+use crate::{bot::InnerBot, errors};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -12,21 +12,17 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct DeleteStickerFromSet<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     sticker: Cow<'a, str>,
 }
 
 impl<'a> DeleteStickerFromSet<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         sticker: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             sticker: sticker.into(),
         }
     }
@@ -36,8 +32,7 @@ impl DeleteStickerFromSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "deleteStickerFromSet",
             None,
             serde_json::to_vec(&self).unwrap(),

@@ -1,9 +1,8 @@
-use crate::{connectors::Client, errors, token, types::File};
+use crate::{bot::InnerBot, errors, types::File};
 use hyper::{body::HttpBody, StatusCode, Uri};
 
 pub async fn download_file(
-    client: &Client,
-    token: token::Ref<'_>,
+    bot: &InnerBot,
     file: &File,
 ) -> Result<Vec<u8>, errors::Download> {
     let path = match &file.path {
@@ -14,15 +13,13 @@ pub async fn download_file(
     let url = Uri::builder()
         .scheme("https")
         .authority("api.telegram.org")
-        .path_and_query(
-            format!("/file/bot{}/{}", token.as_str(), path).as_str(),
-        )
+        .path_and_query(format!("/file/bot{}/{}", bot.token(), path).as_str())
         .build()
         .unwrap_or_else(|err| {
             panic!("\n[tbot] Download URL construction failed: {:#?}\n", err);
         });
 
-    let (parts, mut body) = client.get(url).await?.into_parts();
+    let (parts, mut body) = bot.client().get(url).await?.into_parts();
 
     if parts.status != StatusCode::OK {
         return Err(errors::Download::InvalidStatusCode(parts.status));

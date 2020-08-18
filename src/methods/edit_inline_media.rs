@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         inline_message_id::InlineMessageId,
         input_file::{
@@ -20,8 +20,7 @@ use crate::{
 #[derive(Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineMedia<'a> {
-    client: &'a Client,
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     inline_message_id: InlineMessageId<'a>,
     media: EditableMedia<'a>,
     reply_markup: Option<inline::Keyboard<'a>>,
@@ -29,14 +28,12 @@ pub struct EditInlineMedia<'a> {
 
 impl<'a> EditInlineMedia<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         inline_message_id: InlineMessageId<'a>,
         media: impl Into<EditableMedia<'a>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             inline_message_id,
             media: media.into(),
             reply_markup: None,
@@ -73,14 +70,8 @@ impl EditInlineMedia<'_> {
 
         let (boundary, body) = multipart.json("media", &self.media).finish();
 
-        call_method::<bool>(
-            self.client,
-            self.token,
-            "editMessageMedia",
-            Some(boundary),
-            body,
-        )
-        .await?;
+        call_method::<bool>(self.bot, "editMessageMedia", Some(boundary), body)
+            .await?;
 
         Ok(())
     }

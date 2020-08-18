@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types::sticker};
+use crate::{bot::InnerBot, errors, types::sticker};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -12,21 +12,17 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct GetStickerSet<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     name: Cow<'a, str>,
 }
 
 impl<'a> GetStickerSet<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             name: name.into(),
         }
     }
@@ -36,8 +32,7 @@ impl GetStickerSet<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<sticker::Set, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "getStickerSet",
             None,
             serde_json::to_vec(&self).unwrap(),

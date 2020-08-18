@@ -1,7 +1,7 @@
 use super::call_method;
 use crate::{
-    connectors::Client,
-    errors, token,
+    bot::InnerBot,
+    errors,
     types::{
         keyboard,
         message::{self, Message},
@@ -20,9 +20,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendGame<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     game_short_name: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,14 +33,12 @@ pub struct SendGame<'a> {
 
 impl<'a> SendGame<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
         game_short_name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             chat_id: chat_id.into(),
             game_short_name: game_short_name.into(),
             disable_notification: None,
@@ -80,8 +76,7 @@ impl SendGame<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
         call_method(
-            self.client,
-            self.token,
+            self.bot,
             "sendGame",
             None,
             serde_json::to_vec(&self).unwrap(),

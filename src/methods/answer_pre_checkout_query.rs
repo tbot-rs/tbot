@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{connectors::Client, errors, token, types::pre_checkout_query};
+use crate::{bot::InnerBot, errors, types::pre_checkout_query};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -12,9 +12,7 @@ use std::borrow::Cow;
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct AnswerPreCheckoutQuery<'a> {
     #[serde(skip)]
-    client: &'a Client,
-    #[serde(skip)]
-    token: token::Ref<'a>,
+    bot: &'a InnerBot,
     pre_checkout_query_id: pre_checkout_query::Id<'a>,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,14 +21,12 @@ pub struct AnswerPreCheckoutQuery<'a> {
 
 impl<'a> AnswerPreCheckoutQuery<'a> {
     pub(crate) fn new(
-        client: &'a Client,
-        token: token::Ref<'a>,
+        bot: &'a InnerBot,
         pre_checkout_query_id: pre_checkout_query::Id<'a>,
         result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> Self {
         Self {
-            client,
-            token,
+            bot,
             pre_checkout_query_id,
             ok: result.is_ok(),
             error_message: result.err().map(Into::into),
@@ -42,8 +38,7 @@ impl AnswerPreCheckoutQuery<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
-            self.client,
-            self.token,
+            self.bot,
             "answerPreCheckoutQuery",
             None,
             serde_json::to_vec(&self).unwrap(),

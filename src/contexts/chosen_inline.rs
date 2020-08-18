@@ -2,7 +2,6 @@ use crate::{
     types::{ChosenInlineResult, InlineMessageId, Location, User},
     Bot,
 };
-use std::sync::Arc;
 
 common! {
     /// The context for [`chosen_inline`][handler] handlers.
@@ -23,10 +22,8 @@ common! {
 }
 
 impl ChosenInline {
-    pub(crate) fn new(
-        bot: Arc<Bot>,
-        chosen_result: ChosenInlineResult,
-    ) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn new(bot: Bot, chosen_result: ChosenInlineResult) -> Self {
         Self {
             bot,
             result_id: chosen_result.result_id,

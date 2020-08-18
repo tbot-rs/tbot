@@ -4,7 +4,6 @@ use crate::{
     Bot,
 };
 use std::borrow::Cow;
-use std::sync::Arc;
 
 common! {
     /// The context for [`inline`][handler] handlers.
@@ -25,7 +24,8 @@ common! {
 }
 
 impl Inline {
-    pub(crate) fn new(bot: Arc<Bot>, inline_query: InlineQuery) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub(crate) fn new(bot: Bot, inline_query: InlineQuery) -> Self {
         Self {
             bot,
             id: inline_query.id,

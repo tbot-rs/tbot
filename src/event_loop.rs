@@ -1218,8 +1218,9 @@ impl EventLoop {
         !self.unhandled_handlers.is_empty()
     }
 
-    fn run_unhandled_handlers(&self, bot: Arc<Bot>, update: update::Kind) {
-        let context = Arc::new(contexts::Unhandled::new(bot, update));
+    fn run_unhandled_handlers(&self, update: update::Kind) {
+        let context =
+            Arc::new(contexts::Unhandled::new(self.bot.clone(), update));
 
         for handler in &self.unhandled_handlers {
             handler(context.clone());
@@ -1280,12 +1281,12 @@ impl EventLoop {
         voice_if,
     }
 
-    #[instrument(skip(self, bot, update))]
-    fn handle_update(&self, bot: Arc<Bot>, update: types::Update) {
+    #[instrument(skip(self, update))]
+    fn handle_update(&self, update: types::Update) {
         trace!(?update);
 
         let update_context =
-            Arc::new(contexts::Update::new(Arc::clone(&bot), update.id));
+            Arc::new(contexts::Update::new(self.bot.clone(), update.id));
 
         self.run_before_update_handlers(update_context.clone());
 
@@ -1299,7 +1300,7 @@ impl EventLoop {
                     chat_instance,
                 } if self.will_handle_message_data_callback() => {
                     let context = contexts::MessageDataCallback::new(
-                        bot,
+                        self.bot.clone(),
                         id,
                         from,
                         *message,
@@ -1316,7 +1317,7 @@ impl EventLoop {
                     chat_instance,
                 } if self.will_handle_inline_data_callback() => {
                     let context = contexts::InlineDataCallback::new(
-                        bot,
+                        self.bot.clone(),
                         id,
                         from,
                         message_id,
@@ -1333,7 +1334,7 @@ impl EventLoop {
                     chat_instance,
                 } if self.will_handle_message_game_callback() => {
                     let context = contexts::MessageGameCallback::new(
-                        bot,
+                        self.bot.clone(),
                         id,
                         from,
                         *message,
@@ -1350,7 +1351,7 @@ impl EventLoop {
                     chat_instance,
                 } if self.will_handle_inline_game_callback() => {
                     let context = contexts::InlineGameCallback::new(
-                        bot,
+                        self.bot.clone(),
                         id,
                         from,
                         message_id,
@@ -1361,7 +1362,7 @@ impl EventLoop {
                 }
                 query if self.will_handle_unhandled() => {
                     let update = update::Kind::CallbackQuery(query);
-                    self.run_unhandled_handlers(bot, update);
+                    self.run_unhandled_handlers(update);
                 }
                 Query {
                     kind: callback::Kind::Data(..),
@@ -1387,45 +1388,49 @@ impl EventLoop {
             update::Kind::ChosenInlineResult(result)
                 if self.will_handle_chosen_inline() =>
             {
-                let context = contexts::ChosenInline::new(bot, result);
+                let context =
+                    contexts::ChosenInline::new(self.bot.clone(), result);
                 self.run_chosen_inline_handlers(Arc::new(context));
             }
             update::Kind::EditedMessage(message)
             | update::Kind::EditedChannelPost(message) => {
-                self.handle_message_edit_update(bot, message);
+                self.handle_message_edit_update(message);
             }
             update::Kind::InlineQuery(query) if self.will_handle_inline() => {
-                let context = contexts::Inline::new(bot, query);
+                let context = contexts::Inline::new(self.bot.clone(), query);
                 self.run_inline_handlers(Arc::new(context));
             }
             update::Kind::Message(message)
             | update::Kind::ChannelPost(message) => {
-                self.handle_message_update(bot, message);
+                self.handle_message_update(message);
             }
             update::Kind::PreCheckoutQuery(query)
                 if self.will_handle_pre_checkout() =>
             {
-                let context = contexts::PreCheckout::new(bot, query);
+                let context =
+                    contexts::PreCheckout::new(self.bot.clone(), query);
                 self.run_pre_checkout_handlers(Arc::new(context));
             }
             update::Kind::Poll(poll) if self.will_handle_updated_poll() => {
-                let context = contexts::UpdatedPoll::new(bot, poll);
+                let context =
+                    contexts::UpdatedPoll::new(self.bot.clone(), poll);
                 self.run_updated_poll_handlers(Arc::new(context));
             }
             update::Kind::PollAnswer(answer)
                 if self.will_handle_poll_answer() =>
             {
-                let context = contexts::PollAnswer::new(bot, answer);
+                let context =
+                    contexts::PollAnswer::new(self.bot.clone(), answer);
                 self.run_poll_answer_handlers(Arc::new(context));
             }
             update::Kind::ShippingQuery(query)
                 if self.will_handle_shipping() =>
             {
-                let context = contexts::Shipping::new(bot, query);
+                let context = contexts::Shipping::new(self.bot.clone(), query);
                 self.run_shipping_handlers(Arc::new(context));
             }
             update if self.will_handle_unhandled() => {
-                self.run_unhandled_handlers(bot, update);
+                self.run_unhandled_handlers(update);
             }
             update::Kind::ChosenInlineResult(..)
             | update::Kind::InlineQuery(..)
@@ -1441,111 +1446,142 @@ impl EventLoop {
 
     #[allow(clippy::cognitive_complexity)]
     #[allow(clippy::too_many_lines)] // can't split the huge match
-    fn handle_message_update(&self, bot: Arc<Bot>, message: types::Message) {
+    fn handle_message_update(&self, message: types::Message) {
         let (data, kind) = message.split();
 
         match kind {
             message::Kind::Animation(animation, caption)
                 if self.will_handle_animation() =>
             {
-                let context =
-                    contexts::Animation::new(bot, data, *animation, caption);
+                let context = contexts::Animation::new(
+                    self.bot.clone(),
+                    data,
+                    *animation,
+                    caption,
+                );
                 self.run_animation_handlers(Arc::new(context));
             }
             message::Kind::Audio(audio, caption)
                 if self.will_handle_audio() =>
             {
-                let context = contexts::Audio::new(bot, data, *audio, caption);
+                let context = contexts::Audio::new(
+                    self.bot.clone(),
+                    data,
+                    *audio,
+                    caption,
+                );
                 self.run_audio_handlers(Arc::new(context));
             }
             message::Kind::ChatPhotoDeleted
                 if self.will_handle_deleted_chat_photo() =>
             {
-                let context = contexts::DeletedChatPhoto::new(bot, data);
+                let context =
+                    contexts::DeletedChatPhoto::new(self.bot.clone(), data);
                 self.run_deleted_chat_photo_handlers(Arc::new(context));
             }
             message::Kind::ConnectedWebsite(website)
                 if self.will_handle_connected_website() =>
             {
-                let context =
-                    contexts::ConnectedWebsite::new(bot, data, website);
+                let context = contexts::ConnectedWebsite::new(
+                    self.bot.clone(),
+                    data,
+                    website,
+                );
                 self.run_connected_website_handlers(Arc::new(context));
             }
             message::Kind::Contact(contact) if self.will_handle_contact() => {
-                let context = contexts::Contact::new(bot, data, contact);
+                let context =
+                    contexts::Contact::new(self.bot.clone(), data, contact);
                 self.run_contact_handlers(Arc::new(context));
             }
             message::Kind::Dice(dice) if self.will_handle_dice() => {
-                let context = contexts::Dice::new(bot, data, dice);
+                let context = contexts::Dice::new(self.bot.clone(), data, dice);
                 self.run_dice_handlers(Arc::new(context));
             }
             message::Kind::Document(document, caption)
                 if self.will_handle_document() =>
             {
-                let context =
-                    contexts::Document::new(bot, data, *document, caption);
+                let context = contexts::Document::new(
+                    self.bot.clone(),
+                    data,
+                    *document,
+                    caption,
+                );
                 self.run_document_handlers(Arc::new(context));
             }
             message::Kind::Game(game) if self.will_handle_game() => {
-                let context = contexts::Game::new(bot, data, *game);
+                let context =
+                    contexts::Game::new(self.bot.clone(), data, *game);
                 self.run_game_handlers(Arc::new(context));
             }
             message::Kind::GroupCreated if self.will_handle_created_group() => {
-                let context = contexts::CreatedGroup::new(bot, data);
+                let context =
+                    contexts::CreatedGroup::new(self.bot.clone(), data);
                 self.run_created_group_handlers(Arc::new(context));
             }
             message::Kind::Invoice(invoice) if self.will_handle_invoice() => {
-                let context = contexts::Invoice::new(bot, data, invoice);
+                let context =
+                    contexts::Invoice::new(self.bot.clone(), data, invoice);
                 self.run_invoice_handlers(Arc::new(context));
             }
             message::Kind::LeftChatMember(member)
                 if self.will_handle_left_member() =>
             {
-                let context = contexts::LeftMember::new(bot, data, member);
+                let context =
+                    contexts::LeftMember::new(self.bot.clone(), data, member);
                 self.run_left_member_handlers(Arc::new(context));
             }
             message::Kind::Location(location)
                 if self.will_handle_location() =>
             {
-                let context = contexts::Location::new(bot, data, location);
+                let context =
+                    contexts::Location::new(self.bot.clone(), data, location);
                 self.run_location_handlers(Arc::new(context));
             }
             message::Kind::MigrateFrom(old_id)
                 if self.will_handle_migration() =>
             {
-                let context = contexts::Migration::new(bot, data, old_id);
+                let context =
+                    contexts::Migration::new(self.bot.clone(), data, old_id);
                 self.run_migration_handlers(Arc::new(context));
             }
             message::Kind::MigrateTo(..) => (), // ignored on purpose
             message::Kind::NewChatMembers(members)
                 if self.will_handle_new_members() =>
             {
-                let context = contexts::NewMembers::new(bot, data, members);
+                let context =
+                    contexts::NewMembers::new(self.bot.clone(), data, members);
                 self.run_new_members_handlers(Arc::new(context));
             }
             message::Kind::NewChatPhoto(photo)
                 if self.will_handle_new_chat_photo() =>
             {
-                let context = contexts::NewChatPhoto::new(bot, data, photo);
+                let context =
+                    contexts::NewChatPhoto::new(self.bot.clone(), data, photo);
                 self.run_new_chat_photo_handlers(Arc::new(context));
             }
             message::Kind::NewChatTitle(title)
                 if self.will_handle_new_chat_title() =>
             {
-                let context = contexts::NewChatTitle::new(bot, data, title);
+                let context =
+                    contexts::NewChatTitle::new(self.bot.clone(), data, title);
                 self.run_new_chat_title_handlers(Arc::new(context));
             }
             message::Kind::PassportData(passport_data)
                 if self.will_handle_passport() =>
             {
-                let context = contexts::Passport::new(bot, data, passport_data);
+                let context = contexts::Passport::new(
+                    self.bot.clone(),
+                    data,
+                    passport_data,
+                );
                 self.run_passport_handlers(Arc::new(context));
             }
             message::Kind::Photo(photo, caption, media_group_id)
                 if self.will_handle_photo() =>
             {
                 let context = contexts::Photo::new(
-                    bot,
+                    self.bot.clone(),
                     data,
                     photo,
                     caption,
@@ -1556,21 +1592,27 @@ impl EventLoop {
             message::Kind::Pinned(message)
                 if self.will_handle_pinned_message() =>
             {
-                let context = contexts::PinnedMessage::new(bot, data, *message);
+                let context = contexts::PinnedMessage::new(
+                    self.bot.clone(),
+                    data,
+                    *message,
+                );
                 self.run_pinned_message_handlers(Arc::new(context));
             }
             message::Kind::Poll(poll) if self.will_handle_poll() => {
-                let context = contexts::Poll::new(bot, data, poll);
+                let context = contexts::Poll::new(self.bot.clone(), data, poll);
                 self.run_poll_handlers(Arc::new(context));
             }
             message::Kind::Sticker(sticker) if self.will_handle_sticker() => {
-                let context = contexts::Sticker::new(bot, data, *sticker);
+                let context =
+                    contexts::Sticker::new(self.bot.clone(), data, *sticker);
                 self.run_sticker_handlers(Arc::new(context));
             }
             message::Kind::SuccessfulPayment(payment)
                 if self.will_handle_payment() =>
             {
-                let context = contexts::Payment::new(bot, data, *payment);
+                let context =
+                    contexts::Payment::new(self.bot.clone(), data, *payment);
                 self.run_payment_handlers(Arc::new(context));
             }
             message::Kind::Text(text) if is_command(&text) => {
@@ -1584,29 +1626,30 @@ impl EventLoop {
                     let text = trim_command(text);
                     let context = contexts::Command::new(
                         command.clone(),
-                        contexts::Text::new(bot, data, text),
+                        contexts::Text::new(self.bot.clone(), data, text),
                     );
                     self.run_command_handlers(&command, &Arc::new(context));
                 } else if self.will_handle_unhandled() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
-                    self.run_unhandled_handlers(bot, update);
+                    self.run_unhandled_handlers(update);
                 }
             }
             message::Kind::Text(text) if self.will_handle_text() => {
-                let context = contexts::Text::new(bot, data, text);
+                let context = contexts::Text::new(self.bot.clone(), data, text);
                 self.run_text_handlers(Arc::new(context));
             }
             message::Kind::Venue(venue) if self.will_handle_venue() => {
-                let context = contexts::Venue::new(bot, data, venue);
+                let context =
+                    contexts::Venue::new(self.bot.clone(), data, venue);
                 self.run_venue_handlers(Arc::new(context));
             }
             message::Kind::Video(video, caption, media_group_id)
                 if self.will_handle_video() =>
             {
                 let context = contexts::Video::new(
-                    bot,
+                    self.bot.clone(),
                     data,
                     *video,
                     caption,
@@ -1617,13 +1660,22 @@ impl EventLoop {
             message::Kind::VideoNote(video_note)
                 if self.will_handle_video_note() =>
             {
-                let context = contexts::VideoNote::new(bot, data, video_note);
+                let context = contexts::VideoNote::new(
+                    self.bot.clone(),
+                    data,
+                    video_note,
+                );
                 self.run_video_note_handlers(Arc::new(context));
             }
             message::Kind::Voice(voice, caption)
                 if self.will_handle_voice() =>
             {
-                let context = contexts::Voice::new(bot, data, voice, caption);
+                let context = contexts::Voice::new(
+                    self.bot.clone(),
+                    data,
+                    voice,
+                    caption,
+                );
                 self.run_voice_handlers(Arc::new(context));
             }
             message::Kind::SupergroupCreated
@@ -1633,7 +1685,7 @@ impl EventLoop {
             kind if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = update::Kind::Message(message);
-                self.run_unhandled_handlers(bot, update);
+                self.run_unhandled_handlers(update);
             }
             message::Kind::Animation(..)
             | message::Kind::Audio(..)
@@ -1667,11 +1719,7 @@ impl EventLoop {
     }
 
     #[allow(clippy::too_many_lines, clippy::cognitive_complexity)] // can't split the huge match
-    fn handle_message_edit_update(
-        &self,
-        bot: Arc<Bot>,
-        message: types::Message,
-    ) {
+    fn handle_message_edit_update(&self, message: types::Message) {
         let (data, kind) = message.split();
         let edit_date = if let Some(edit_date) = data.edit_date {
             edit_date
@@ -1685,7 +1733,11 @@ impl EventLoop {
                 if self.will_handle_edited_animation() =>
             {
                 let context = contexts::EditedAnimation::new(
-                    bot, data, edit_date, *animation, caption,
+                    self.bot.clone(),
+                    data,
+                    edit_date,
+                    *animation,
+                    caption,
                 );
                 self.run_edited_animation_handlers(Arc::new(context));
             }
@@ -1693,7 +1745,11 @@ impl EventLoop {
                 if self.will_handle_edited_audio() =>
             {
                 let context = contexts::EditedAudio::new(
-                    bot, data, edit_date, *audio, caption,
+                    self.bot.clone(),
+                    data,
+                    edit_date,
+                    *audio,
+                    caption,
                 );
                 self.run_edited_audio_handlers(Arc::new(context));
             }
@@ -1701,7 +1757,11 @@ impl EventLoop {
                 if self.will_handle_edited_document() =>
             {
                 let context = contexts::EditedDocument::new(
-                    bot, data, edit_date, *document, caption,
+                    self.bot.clone(),
+                    data,
+                    edit_date,
+                    *document,
+                    caption,
                 );
                 self.run_edited_document_handlers(Arc::new(context));
             }
@@ -1709,7 +1769,10 @@ impl EventLoop {
                 if self.will_handle_edited_location() =>
             {
                 let context = contexts::EditedLocation::new(
-                    bot, data, edit_date, location,
+                    self.bot.clone(),
+                    data,
+                    edit_date,
+                    location,
                 );
                 self.run_edited_location_handlers(Arc::new(context));
             }
@@ -1717,7 +1780,7 @@ impl EventLoop {
                 if self.will_handle_edited_photo() =>
             {
                 let context = contexts::EditedPhoto::new(
-                    bot,
+                    self.bot.clone(),
                     data,
                     edit_date,
                     photo,
@@ -1736,7 +1799,12 @@ impl EventLoop {
                     let text = trim_command(text);
                     let context = contexts::Command::new(
                         command.clone(),
-                        contexts::EditedText::new(bot, data, edit_date, text),
+                        contexts::EditedText::new(
+                            self.bot.clone(),
+                            data,
+                            edit_date,
+                            text,
+                        ),
                     );
                     self.run_edited_command_handlers(
                         &command,
@@ -1746,19 +1814,23 @@ impl EventLoop {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
                     let update = update::Kind::EditedMessage(message);
-                    self.run_unhandled_handlers(bot, update);
+                    self.run_unhandled_handlers(update);
                 }
             }
             message::Kind::Text(text) if self.will_handle_edited_text() => {
-                let context =
-                    contexts::EditedText::new(bot, data, edit_date, text);
+                let context = contexts::EditedText::new(
+                    self.bot.clone(),
+                    data,
+                    edit_date,
+                    text,
+                );
                 self.run_edited_text_handlers(Arc::new(context));
             }
             message::Kind::Video(video, caption, media_group_id)
                 if self.will_handle_edited_video() =>
             {
                 let context = contexts::EditedVideo::new(
-                    bot,
+                    self.bot.clone(),
                     data,
                     edit_date,
                     *video,
@@ -1798,7 +1870,7 @@ impl EventLoop {
             kind if self.will_handle_unhandled() => {
                 let message = Message::new(data, kind);
                 let update = update::Kind::EditedMessage(message);
-                self.run_unhandled_handlers(bot, update)
+                self.run_unhandled_handlers(update)
             }
             message::Kind::Animation(..)
             | message::Kind::Audio(..)

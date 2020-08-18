@@ -78,7 +78,6 @@ impl<'a> Https<'a> {
             Ok(_) => (),
         };
 
-        let bot = Arc::new(event_loop.bot.clone());
         let event_loop = Arc::new(event_loop);
         let addr = SocketAddr::new(ip, port);
         let updates_url = Arc::new(updates_url);
@@ -99,13 +98,11 @@ impl<'a> Https<'a> {
             let (tcp_stream, _) = server.accept().await?;
             let tls_stream = tls_acceptor.accept(tcp_stream).await?;
 
-            let bot = Arc::clone(&bot);
             let event_loop = Arc::clone(&event_loop);
             let updates_url = Arc::clone(&updates_url);
 
             let service = service_fn(move |request: Request<Body>| {
                 handle(
-                    Arc::clone(&bot),
                     Arc::clone(&event_loop),
                     request,
                     Arc::clone(&updates_url),
