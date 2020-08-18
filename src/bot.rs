@@ -28,9 +28,9 @@ use crate::{
 };
 use std::sync::Arc;
 
-/// Provides methods to call the Bots API.
+/// A `Bot` lets you call Bot API methods and construct event loops.
 ///
-/// A `Bot` lets you call methods from the [`methods`] module.
+/// Using a `Bot` instance, you can call methods from the [`methods`] module.
 ///
 /// ```no_run
 /// # async fn foo() {
@@ -42,6 +42,9 @@ use std::sync::Arc;
 ///
 /// Besides, a `Bot` is used to construct an [`EventLoop`] — a struct
 /// responsible for configuring handlers and listening to updates.
+///
+/// Note that the `Bot`'s internal data is wrapped in one `Arc`, so you can
+/// cheaply clone it.
 ///
 /// [`EventLoop`]: ./event_loop/struct.EventLoop.html
 /// [`methods`]: ./methods/index.html
