@@ -1,6 +1,7 @@
 //! MarkdownV2 markup utilities.
 
 use super::Nesting;
+use crate::types::parameters::Text;
 use std::{
     fmt::{self, Display, Formatter, Write},
     ops::Deref,
@@ -99,8 +100,10 @@ impl<T: Formattable + ?Sized> Formattable for Box<T> {
 ///
 /// [`markdown_v2`]: ./fn.markdown_v2.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-#[must_use = "MarkdownV2 needs to be turned into a String with `.to_string()`"]
+#[must_use = "MarkdownV2 needs to be turned into a `Text` instance"]
 pub struct MarkdownV2<T>(T);
+
+struct Displayable<T>(MarkdownV2<T>);
 
 /// Creates MarkdownV2 text.
 pub fn markdown_v2<T: Formattable>(content: T) -> MarkdownV2<T> {
@@ -117,8 +120,15 @@ impl<T: Formattable> Formattable for MarkdownV2<T> {
     }
 }
 
-impl<T: Formattable> Display for MarkdownV2<T> {
+impl<T: Formattable> Display for Displayable<T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        self.format(formatter, Nesting::default())
+        self.0.format(formatter, Nesting::default())
+    }
+}
+
+impl<T: Formattable> From<MarkdownV2<T>> for Text<'_> {
+    fn from(markup: MarkdownV2<T>) -> Self {
+        let message = Displayable(markup).to_string();
+        Text::markdown_v2(message)
     }
 }

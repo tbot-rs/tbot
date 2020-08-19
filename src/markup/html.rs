@@ -1,6 +1,7 @@
 //! HTML markup utilities.
 
 use super::Nesting;
+use crate::types::parameters::Text;
 use std::{
     fmt::{self, Display, Formatter, Write},
     ops::Deref,
@@ -87,8 +88,10 @@ impl<T: Formattable + ?Sized> Formattable for Box<T> {
 ///
 /// [`html`]: ./fn.html.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-#[must_use = "HTML needs to be turned into a String with `.to_string()`"]
+#[must_use = "HTML needs to be turned into a `Text` instance"]
 pub struct Html<T>(T);
+
+struct Displayable<T>(Html<T>);
 
 /// Creates HTML text.
 pub fn html<T: Formattable>(content: T) -> Html<T> {
@@ -105,8 +108,15 @@ impl<T: Formattable> Formattable for Html<T> {
     }
 }
 
-impl<T: Formattable> Display for Html<T> {
+impl<T: Formattable> Display for Displayable<T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        self.format(formatter, Nesting::default())
+        self.0.format(formatter, Nesting::default())
+    }
+}
+
+impl<T: Formattable> From<Html<T>> for Text<'_> {
+    fn from(markup: Html<T>) -> Self {
+        let message = Displayable(markup).to_string();
+        Text::html(message)
     }
 }

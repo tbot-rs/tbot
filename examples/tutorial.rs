@@ -17,15 +17,13 @@ async fn main() {
 
     bot.text(|context, _| async move {
         let calc_result = meval::eval_str(&context.text.value);
-        let message = if let Ok(answer) = calc_result {
-            markdown_v2(("= ", inline_code([answer.to_string()]))).to_string()
+        let message: ParseMode = if let Ok(answer) = calc_result {
+            markdown_v2(("= ", inline_code([answer.to_string()]))).into()
         } else {
-            markdown_v2("Whops, I couldn't evaluate your expression :(")
-                .to_string()
+            markdown_v2("Whops, I couldn't evaluate your expression :(").into()
         };
-        let reply = ParseMode::markdown_v2(&message);
 
-        let call_result = context.send_message_in_reply(reply).call().await;
+        let call_result = context.send_message_in_reply(message).call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }
@@ -33,20 +31,25 @@ async fn main() {
 
     bot.inline(move |context, id| async move {
         let calc_result = meval::eval_str(&context.query);
-        let (title, message) = if let Ok(answer) = calc_result {
-            let answer = answer.to_string();
-            let message = markdown_v2(inline_code([
+        let title;
+        let message: ParseMode;
+        let description;
+
+        if let Ok(answer) = calc_result {
+            title = answer.to_string();
+            message = markdown_v2(inline_code([
                 context.query.as_str(),
                 " = ",
-                answer.as_str(),
+                title.as_str(),
             ]))
-            .to_string();
-            (answer, message)
+            .into();
+            description = format!("{} = {}", context.query, answer);
         } else {
-            let title = "Whops...".into();
-            let message = markdown_v2("I couldn't evaluate your expression :(")
-                .to_string();
-            (title, message)
+            title = "Whops...".into();
+            message =
+                markdown_v2("I couldn't evaluate your expression :(").into();
+            description =
+                String::from("I couldn't evaluate your expression :(");
         };
 
         let id = {
@@ -54,9 +57,9 @@ async fn main() {
             *id += 1;
             id.to_string()
         };
-        let content = Text::new(ParseMode::markdown_v2(&message));
-        let article = Article::new(&title, content).description(&message);
-        let result = inline_query::Result::new(&id, article);
+        let content = Text::new(message);
+        let article = Article::new(title, content).description(description);
+        let result = inline_query::Result::new(id, article);
 
         let call_result = context.answer(&[result][..]).call().await;
         if let Err(err) = call_result {
