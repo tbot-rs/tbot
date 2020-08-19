@@ -1,7 +1,4 @@
-use tbot::{
-    markup::markdown_v2, prelude::*, types::parameters::Text, util::entities,
-    Bot,
-};
+use tbot::{markup::markdown_v2, prelude::*, util::entities, Bot};
 
 #[tokio::main]
 async fn main() {
@@ -9,14 +6,9 @@ async fn main() {
 
     bot.text(|context| async move {
         let entities = entities(&context.text);
+        let echo = markdown_v2(entities);
 
-        let echo = markdown_v2(entities).to_string();
-
-        context
-            .send_message(Text::markdown_v2(&echo))
-            .call()
-            .await
-            .unwrap();
+        context.send_message(echo).call().await.unwrap();
     });
 
     bot.polling().start().await.unwrap();

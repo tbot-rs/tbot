@@ -2,7 +2,7 @@ use tbot::{
     markup::{inline_code, markdown_v2},
     prelude::*,
     types::{
-        parameters::{Flexibility::Flexible, Photo, Text},
+        parameters::{Flexibility::Flexible, Photo},
         shipping, LabeledPrice,
     },
     Bot,
@@ -47,10 +47,8 @@ async fn main() {
                 "Send ",
                 inline_code(["/start ", START_PARAMETER]),
                 " to get started",
-            ))
-            .to_string();
-            let text = Text::markdown_v2(&error_message);
-            context.send_message(text).call().await
+            ));
+            context.send_message(error_message).call().await
         };
 
         if let Err(err) = call_result {

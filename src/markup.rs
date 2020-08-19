@@ -21,23 +21,41 @@
 //! know if they need to format their inputs as HTML or MarkdownV2? That's where
 //! markup formatters [`html`] and [`markdown_v2`] come into play. They take
 //! the return values from the abstract utilities and return values that can
-//! finally be turned into strings:
+//! finally be turned into [`Text`] instances:
 //!
 //! ```
 //! # let message = tbot::markup::bold((
 //! #     "*This is <b>old, ",
 //! #     tbot::markup::italic("and this is bold and italic!"),
 //! # ));
-//! use tbot::markup::markdown_v2;
+//! use tbot::{markup::markdown_v2, types::parameters::Text};
 //! assert_eq!(
-//!     markdown_v2(message).to_string(),
-//!     "*\\*This is <b\\>old, \r_and this is bold and italic\\!\r_*",
-//!     // the extra `\r`s are needed for correct parsing in edge cases
+//!     Text::from(markdown_v2(message)),
+//!     Text::markdown_v2(
+//!         // the extra `\r`s are needed for correct parsing in edge cases
+//!         "*\\*This is <b\\>old, \r_and this is bold and italic\\!\r_*",
+//!     ),
 //! );
 //! ```
 //!
 //! As you can see, you can fearlessly pass any strings to formatters
 //! and they'll be automatically properly escaped. Magic!
+//!
+//! Note that methods that support sending markup take `impl Into<Text<'_>>`,
+//! so you don't need to turn formatters into `Text` manually:
+//!
+//! ```no_run
+//! # async fn foo() {
+//! use tbot::{Bot, markup::html, types::chat};
+//!
+//! let bot = Bot::from_env("BOT_TOKEN");
+//! bot
+//!     .send_message(chat::Id(42), html("<escaped text, sent as html!>"))
+//!     .call()
+//!     .await
+//!     .unwrap();
+//! }
+//! ```
 //!
 //! [`html`]: ./html/fn.html.html
 //! [`markdown_v2`]: ./markdown_v2/fn.markdown_v2.html
