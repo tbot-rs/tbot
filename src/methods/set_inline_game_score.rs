@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     bot::InnerBot,
     errors,
-    types::{InlineMessageId, user},
+    types::{user, InlineMessageId},
 };
 use serde::Serialize;
 

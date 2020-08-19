@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     bot::InnerBot,
     errors,
-    types::{game::HighScore, InlineMessageId, user},
+    types::{game::HighScore, user, InlineMessageId},
 };
 use serde::Serialize;
 
