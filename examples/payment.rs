@@ -49,7 +49,7 @@ async fn main() {
         } else {
             let error_message = markdown_v2((
                 "Send ",
-                inline_code(["/start ", START_PARAMETER]),
+                inline_code(format!("/start {}", START_PARAMETER)),
                 " to get started",
             ))
             .to_string();

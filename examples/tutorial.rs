@@ -18,7 +18,7 @@ async fn main() {
     bot.text(|context, _| async move {
         let calc_result = meval::eval_str(&context.text.value);
         let message = if let Ok(answer) = calc_result {
-            markdown_v2(("= ", inline_code([answer.to_string()]))).to_string()
+            markdown_v2(("= ", inline_code(answer.to_string()))).to_string()
         } else {
             markdown_v2("Whops, I couldn't evaluate your expression :(")
                 .to_string()
@@ -35,11 +35,10 @@ async fn main() {
         let calc_result = meval::eval_str(&context.query);
         let (title, message) = if let Ok(answer) = calc_result {
             let answer = answer.to_string();
-            let message = markdown_v2(inline_code([
-                context.query.as_str(),
-                " = ",
-                answer.as_str(),
-            ]))
+            let message = markdown_v2(inline_code(format!(
+                "{} = {}",
+                context.query, answer,
+            )))
             .to_string();
             (answer, message)
         } else {
