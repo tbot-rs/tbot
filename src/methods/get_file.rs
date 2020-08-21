@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     bot::InnerBot,
     errors,
-    types::file::{self, id::AsFileId, File},
+    types::file::{self, File},
 };
 use serde::Serialize;
 
@@ -20,11 +20,11 @@ pub struct GetFile<'a> {
 }
 
 impl<'a> GetFile<'a> {
-    pub(crate) fn new(bot: &'a InnerBot, file_id: &'a impl AsFileId) -> Self {
-        Self {
-            bot,
-            file_id: file_id.as_file_id(),
-        }
+    pub(crate) const fn new(
+        bot: &'a InnerBot,
+        file_id: file::id::Ref<'a>,
+    ) -> Self {
+        Self { bot, file_id }
     }
 }
 
