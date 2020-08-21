@@ -5,7 +5,11 @@ async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.document(|context| async move {
-        let call_result = context.bot.get_file(&context.document).call().await;
+        let call_result = context
+            .bot
+            .get_file(context.document.file_id.as_ref())
+            .call()
+            .await;
         let file = match call_result {
             Ok(file) => file,
             Err(err) => {

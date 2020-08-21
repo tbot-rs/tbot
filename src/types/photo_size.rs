@@ -1,4 +1,4 @@
-use crate::types::file::{self, id::AsFileId};
+use crate::types::file;
 use serde::Deserialize;
 
 /// Represents a [`PhotoSize`].
@@ -17,13 +17,4 @@ pub struct PhotoSize {
     pub height: u32,
     /// The file size of the photo.
     pub file_size: Option<u32>,
-}
-
-impl crate::internal::Sealed for PhotoSize {}
-
-impl AsFileId for PhotoSize {
-    #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
-    }
 }

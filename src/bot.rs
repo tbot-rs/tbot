@@ -10,7 +10,7 @@ use crate::{
     state::StatefulEventLoop,
     types::{
         callback, chat,
-        file::{id::AsFileId, File},
+        file::{self, File},
         inline_message_id, inline_query,
         input_file::{
             Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
@@ -371,7 +371,7 @@ impl Bot {
     }
 
     /// Gets information about a file.
-    pub fn get_file<'a>(&'a self, file_id: &'a impl AsFileId) -> GetFile<'a> {
+    pub fn get_file<'a>(&'a self, file_id: file::id::Ref<'a>) -> GetFile<'a> {
         GetFile::new(&self.inner, file_id)
     }
 

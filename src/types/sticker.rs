@@ -1,9 +1,6 @@
 //! Types related to stickers.
 
-use super::{
-    file::{self, id::AsFileId},
-    PhotoSize,
-};
+use super::{file, PhotoSize};
 use is_macro::Is;
 use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
 use std::fmt::{self, Formatter};
@@ -51,15 +48,6 @@ pub struct Sticker {
     pub file_size: Option<u32>,
     /// The kind of the sticker.
     pub kind: Kind,
-}
-
-impl crate::internal::Sealed for Sticker {}
-
-impl AsFileId for Sticker {
-    #[must_use]
-    fn as_file_id(&self) -> file::id::Ref<'_> {
-        self.file_id.as_ref()
-    }
 }
 
 const FILE_ID: &str = "file_id";
