@@ -2,6 +2,7 @@
 
 use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
+use std::borrow::Cow;
 
 /// A shorthand for reply markup.
 pub type Markup<'a> = &'a [&'a [Button<'a>]];
@@ -58,7 +59,7 @@ pub enum RequestKind {
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 pub struct Button<'a> {
-    text: &'a str,
+    text: Cow<'a, str>,
     request: Option<RequestKind>,
 }
 
@@ -89,9 +90,9 @@ pub struct Remove {
 
 impl<'a> Button<'a> {
     /// Constructs a reply `Button`.
-    pub const fn new(text: &'a str) -> Self {
+    pub fn new(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            text,
+            text: text.into(),
             request: None,
         }
     }
@@ -109,7 +110,7 @@ impl<'a> serde::Serialize for Button<'a> {
 
         let mut map = s.serialize_map(Some(len))?;
 
-        map.serialize_entry("text", self.text)?;
+        map.serialize_entry("text", &self.text)?;
 
         match self.request {
             Some(RequestKind::Location) => {
