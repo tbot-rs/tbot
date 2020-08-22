@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{InputFile, Thumb, Video},
         keyboard,
         message::{self, Message},
@@ -87,7 +88,7 @@ impl SendVideo<'_> {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("video", filename, bytes),
-            InputFile::Id(audio) | InputFile::Url(audio) => {
+            InputFile::Id(file::id::Ref(audio)) | InputFile::Url(audio) => {
                 multipart = multipart.str("video", audio);
             }
         }

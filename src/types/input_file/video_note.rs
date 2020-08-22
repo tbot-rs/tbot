@@ -1,4 +1,5 @@
 use super::{InputFile, Thumb, WithName};
+use crate::types::file;
 use serde::Serialize;
 
 /// Represents a video note to be sent.
@@ -37,9 +38,9 @@ impl<'a> VideoNote<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: file::id::Ref<'a>) -> Self {
         assert!(
-            !id.starts_with("attach://"),
+            !id.0.starts_with("attach://"),
             "\n[tbot]: Video note's ID cannot start with `attach://`\n",
         );
 

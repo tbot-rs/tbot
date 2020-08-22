@@ -1,5 +1,8 @@
 use super::{InputFile, Thumb};
-use crate::types::parameters::{ParseMode, Text};
+use crate::types::{
+    file,
+    parameters::{ParseMode, Text},
+};
 use serde::ser::SerializeMap;
 
 /// Represents an audio to be sent.
@@ -41,9 +44,9 @@ impl<'a> Audio<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn id(id: file::id::Ref<'a>) -> Self {
         assert!(
-            !id.starts_with("attach://"),
+            !id.0.starts_with("attach://"),
             "\n[tbot] Audio's ID cannot start with `attach://`\n",
         );
 

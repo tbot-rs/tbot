@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{InputFile, StickerForStickerSet},
         sticker::MaskPosition,
         user,
@@ -73,7 +74,7 @@ impl AddStickerToSet<'_> {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file(field, filename, bytes),
-            InputFile::Id(sticker) | InputFile::Url(sticker) => {
+            InputFile::Id(file::id::Ref(sticker)) | InputFile::Url(sticker) => {
                 multipart = multipart.str(field, sticker);
             }
         }

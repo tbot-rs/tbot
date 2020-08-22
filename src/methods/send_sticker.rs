@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{InputFile, Sticker},
         keyboard,
         message::{self, Message},
@@ -81,7 +82,7 @@ impl SendSticker<'_> {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("sticker", filename, bytes),
-            InputFile::Id(sticker) | InputFile::Url(sticker) => {
+            InputFile::Id(file::id::Ref(sticker)) | InputFile::Url(sticker) => {
                 multipart = multipart.str("sticker", sticker);
             }
         }
