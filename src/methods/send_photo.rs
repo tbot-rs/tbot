@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{InputFile, Photo},
         keyboard,
         message::{self, Message},
@@ -83,7 +84,7 @@ impl SendPhoto<'_> {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("photo", filename, bytes),
-            InputFile::Id(photo) | InputFile::Url(photo) => {
+            InputFile::Id(file::id::Ref(photo)) | InputFile::Url(photo) => {
                 multipart = multipart.str("photo", photo);
             }
         }

@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{InputFile, Voice},
         keyboard,
         message::{self, Message},
@@ -84,7 +85,7 @@ impl SendVoice<'_> {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("voice", filename, bytes),
-            InputFile::Id(voice) | InputFile::Url(voice) => {
+            InputFile::Id(file::id::Ref(voice)) | InputFile::Url(voice) => {
                 multipart = multipart.str("voice", voice);
             }
         }

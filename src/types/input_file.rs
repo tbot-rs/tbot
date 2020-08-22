@@ -1,5 +1,7 @@
 //! Types representing uploadable media.
 
+use crate::types::file;
+
 mod animation;
 mod audio;
 mod chat_photo;
@@ -31,7 +33,7 @@ pub use {
 pub(crate) enum InputFile<'a> {
     File { filename: &'a str, bytes: &'a [u8] },
     Url(&'a str),
-    Id(&'a str),
+    Id(file::id::Ref<'a>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
@@ -49,7 +51,7 @@ impl<'a> InputFile<'a> {
             InputFile::File { .. } => {
                 serializer.serialize_str(&format!("attach://{}", name))
             }
-            InputFile::Url(file) | InputFile::Id(file) => {
+            InputFile::Url(file) | InputFile::Id(file::id::Ref(file)) => {
                 serializer.serialize_str(file)
             }
         }
