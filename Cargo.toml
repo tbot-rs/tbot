@@ -19,6 +19,7 @@ categories = [
     "api-bindings",
     "asynchronous",
 ]
+exclude = ["examples"]
 
 [dependencies]
 hyper = { version = "0.13.3", default-features = false }
