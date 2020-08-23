@@ -1,5 +1,6 @@
 //! Types related to file passport errors.
 
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -43,6 +44,15 @@ impl<'a> File<'a> {
     }
 }
 
+impl<'a> InteriorBorrow<'a> for File<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            file_hash: self.file_hash.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
 /// Represents a [`PassportElementErrorFiles`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorfiles
@@ -64,6 +74,15 @@ impl<'a> Files<'a> {
         Self {
             kind,
             file_hashes: file_hashes.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Files<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            file_hashes: self.file_hashes.borrow_inside(),
+            ..*self
         }
     }
 }

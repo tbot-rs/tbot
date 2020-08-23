@@ -1,3 +1,4 @@
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 
@@ -96,5 +97,31 @@ impl<'a> From<TranslationFiles<'a>> for Source<'a> {
 impl<'a> From<Unspecified<'a>> for Source<'a> {
     fn from(source: Unspecified<'a>) -> Self {
         Self::Unspecified(source)
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Source<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Data(data) => Self::Data(data.borrow_inside()),
+            Self::FrontSide(front_side) => {
+                Self::FrontSide(front_side.borrow_inside())
+            }
+            Self::ReverseSide(reverse_side) => {
+                Self::ReverseSide(reverse_side.borrow_inside())
+            }
+            Self::Selfie(selfie) => Self::Selfie(selfie.borrow_inside()),
+            Self::File(file) => Self::File(file.borrow_inside()),
+            Self::Files(files) => Self::Files(files.borrow_inside()),
+            Self::TranslationFile(translation_file) => {
+                Self::TranslationFile(translation_file.borrow_inside())
+            }
+            Self::TranslationFiles(translation_files) => {
+                Self::TranslationFiles(translation_files.borrow_inside())
+            }
+            Self::Unspecified(unspecified) => {
+                Self::Unspecified(unspecified.borrow_inside())
+            }
+        }
     }
 }

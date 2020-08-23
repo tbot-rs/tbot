@@ -1,5 +1,6 @@
 //! Types representing reply keyboards.
 
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
 use std::borrow::Cow;
@@ -129,6 +130,15 @@ impl<'a> serde::Serialize for Button<'a> {
     }
 }
 
+impl<'a> InteriorBorrow<'a> for Button<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            text: self.text.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
 impl<'a> Keyboard<'a> {
     /// Constructs a reply `Keyboard`.
     pub const fn new(keyboard: Markup<'a>) -> Self {
@@ -156,6 +166,12 @@ impl<'a> Keyboard<'a> {
     pub const fn selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Keyboard<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self { ..*self }
     }
 }
 

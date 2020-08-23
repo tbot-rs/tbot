@@ -1,4 +1,4 @@
-use crate::types::LabeledPrice;
+use crate::types::{InteriorBorrow, LabeledPrice};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -24,6 +24,16 @@ impl<'a> Option<'a> {
             id: id.into(),
             title: title.into(),
             prices: prices.into(),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Option<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            id: self.id.borrow_inside(),
+            title: self.title.borrow_inside(),
+            prices: self.prices.borrow_inside(),
         }
     }
 }

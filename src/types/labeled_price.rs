@@ -1,3 +1,4 @@
+use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -18,6 +19,15 @@ impl<'a> LabeledPrice<'a> {
         Self {
             label: label.into(),
             amount,
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for LabeledPrice<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            label: self.label.borrow_inside(),
+            ..*self
         }
     }
 }

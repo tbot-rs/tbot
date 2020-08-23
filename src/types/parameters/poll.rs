@@ -1,6 +1,7 @@
 //! Types related to polls.
 
 use super::{ParseMode, Text};
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -154,5 +155,34 @@ impl<'a> From<Quiz<'a>> for Kind<'a> {
 impl<'a> From<Poll> for Kind<'a> {
     fn from(poll: Poll) -> Self {
         Self::Poll(poll)
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Quiz<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            explanation: self.explanation.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Kind<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Quiz(quiz) => Self::Quiz(quiz.borrow_inside()),
+            Self::Poll(poll) => Self::Poll(*poll),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Any<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            kind: self.kind.borrow_inside(),
+            question: self.question.borrow_inside(),
+            options: self.options.borrow_inside(),
+            ..*self
+        }
     }
 }

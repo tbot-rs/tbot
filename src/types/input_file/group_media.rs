@@ -1,4 +1,5 @@
 use super::{Photo, Video};
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::{
     ser::{SerializeSeq, Serializer},
@@ -58,6 +59,15 @@ impl<'a> From<Photo<'a>> for GroupMedia<'a> {
 impl<'a> From<Video<'a>> for GroupMedia<'a> {
     fn from(video: Video<'a>) -> Self {
         GroupMedia::Video(video)
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for GroupMedia<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Photo(photo) => Self::Photo(photo.borrow_inside()),
+            Self::Video(video) => Self::Video(video.borrow_inside()),
+        }
     }
 }
 

@@ -1,3 +1,4 @@
+use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -42,5 +43,14 @@ impl<'a> Photo<'a> {
     pub const fn height(mut self, height: usize) -> Self {
         self.height = Some(height);
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Photo<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            url: self.url.borrow_inside(),
+            ..*self
+        }
     }
 }

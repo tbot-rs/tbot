@@ -1,5 +1,6 @@
 //! Types related to selfie errors.
 
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -37,6 +38,15 @@ impl<'a> Selfie<'a> {
         Self {
             kind,
             file_hash: file_hash.into(),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Selfie<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            file_hash: self.file_hash.borrow_inside(),
+            ..*self
         }
     }
 }

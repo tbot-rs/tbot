@@ -1,4 +1,4 @@
-use crate::types::InputMessageContent;
+use crate::types::{InputMessageContent, InteriorBorrow};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -30,5 +30,14 @@ impl<'a> Sticker<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Sticker<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            id: self.id.borrow_inside(),
+            input_message_content: self.input_message_content.borrow_inside(),
+        }
     }
 }

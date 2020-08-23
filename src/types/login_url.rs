@@ -1,3 +1,4 @@
+use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -27,22 +28,6 @@ impl<'a> LoginUrl<'a> {
         }
     }
 
-    /// Create an owned `LoginUrl` from a reference without cloning.
-    pub fn as_borrowed(&'a self) -> Self {
-        Self {
-            url: Cow::Borrowed(&self.url),
-            forward_text: self
-                .forward_text
-                .as_deref()
-                .map(|x| Cow::Borrowed(x)),
-            bot_username: self
-                .bot_username
-                .as_deref()
-                .map(|x| Cow::Borrowed(x)),
-            request_write_access: self.request_write_access,
-        }
-    }
-
     /// Configures `forward_text`.
     pub fn forward_text(mut self, text: impl Into<Cow<'a, str>>) -> Self {
         self.forward_text = Some(text.into());
@@ -59,5 +44,16 @@ impl<'a> LoginUrl<'a> {
     pub const fn request_write_access(mut self, should_request: bool) -> Self {
         self.request_write_access = Some(should_request);
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for LoginUrl<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            url: self.url.borrow_inside(),
+            forward_text: self.forward_text.borrow_inside(),
+            bot_username: self.bot_username.borrow_inside(),
+            ..*self
+        }
     }
 }

@@ -1,8 +1,7 @@
-use crate::types::{chat, user};
+use crate::types::{chat, user, InteriorBorrow};
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
-use std::ops::Deref;
 
 /// Represents possible ways to specify the destination chat.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
@@ -48,10 +47,16 @@ impl<'a> From<String> for ChatId<'a> {
 
 impl<'a> From<&'a ChatId<'a>> for ChatId<'a> {
     fn from(chat_id: &'a Self) -> Self {
-        match chat_id {
+        chat_id.borrow_inside()
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for ChatId<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
             ChatId::Id(id) => ChatId::Id(*id),
             ChatId::Username(username) => {
-                ChatId::Username(username.deref().into())
+                ChatId::Username(username.borrow_inside())
             }
         }
     }

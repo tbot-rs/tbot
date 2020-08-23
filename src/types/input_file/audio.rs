@@ -2,6 +2,7 @@ use super::{InputFile, Thumb};
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
+    InteriorBorrow,
 };
 use serde::ser::SerializeMap;
 use std::borrow::Cow;
@@ -101,6 +102,19 @@ impl<'a> Audio<'a> {
     pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
         self.title = Some(title.into());
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Audio<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            media: self.media.borrow_inside(),
+            thumb: self.thumb.borrow_inside(),
+            caption: self.caption.borrow_inside(),
+            performer: self.performer.borrow_inside(),
+            title: self.title.borrow_inside(),
+            ..*self
+        }
     }
 }
 

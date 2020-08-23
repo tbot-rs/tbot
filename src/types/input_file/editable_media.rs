@@ -1,4 +1,5 @@
 use super::{Animation, Audio, Document, Photo, Video};
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 
@@ -28,6 +29,22 @@ impl EditableMedia<'_> {
             EditableMedia::Document(..) => "document",
             EditableMedia::Photo(..) => "photo",
             EditableMedia::Video(..) => "video",
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for EditableMedia<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Animation(animation) => {
+                Self::Animation(animation.borrow_inside())
+            }
+            Self::Audio(audio) => Self::Audio(audio.borrow_inside()),
+            Self::Document(document) => {
+                Self::Document(document.borrow_inside())
+            }
+            Self::Photo(photo) => Self::Photo(photo.borrow_inside()),
+            Self::Video(video) => Self::Video(video.borrow_inside()),
         }
     }
 }

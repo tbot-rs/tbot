@@ -1,4 +1,7 @@
-use crate::types::parameters::{self, ParseMode, WebPagePreviewState};
+use crate::types::{
+    parameters::{self, ParseMode, WebPagePreviewState},
+    InteriorBorrow,
+};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -31,5 +34,14 @@ impl<'a> Text<'a> {
     pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
         self.disable_web_page_preview = Some(state.is_disabled());
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Text<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            message_text: self.message_text.borrow_inside(),
+            ..*self
+        }
     }
 }
