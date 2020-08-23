@@ -7,7 +7,7 @@ async fn main() {
     bot.document(|context| async move {
         let call_result = context
             .bot
-            .get_file(context.document.file_id.as_ref())
+            .get_file(context.document.file_id.as_borrowed())
             .call()
             .await;
         let file = match call_result {
