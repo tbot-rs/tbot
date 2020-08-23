@@ -1,4 +1,5 @@
 use super::InputFile;
+use crate::types::InteriorBorrow;
 use serde::{Serialize, Serializer};
 use std::borrow::Cow;
 
@@ -18,6 +19,12 @@ impl<'a> ChatPhoto<'a> {
         };
 
         ChatPhoto(file)
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for ChatPhoto<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self(self.0.borrow_inside())
     }
 }
 

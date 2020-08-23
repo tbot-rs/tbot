@@ -1,3 +1,4 @@
+use crate::types::InteriorBorrow;
 use std::borrow::Cow;
 
 macro_rules! doc {
@@ -13,7 +14,7 @@ macro_rules! doc {
 /// Represents a `Fresh` GIF's thumb.
 pub struct GifThumb<'a> {
     url: Cow<'a, str>,
-    mime: Cow<'a, str>,
+    mime: &'static str,
 }
 
 impl<'a> GifThumb<'a> {
@@ -22,7 +23,7 @@ impl<'a> GifThumb<'a> {
     pub fn jpeg(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
             url: url.into(),
-            mime: "image/jpeg".into(),
+            mime: "image/jpeg",
         }
     }
 
@@ -31,7 +32,7 @@ impl<'a> GifThumb<'a> {
     pub fn gif(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
             url: url.into(),
-            mime: "image/gif".into(),
+            mime: "image/gif",
         }
     }
 
@@ -40,7 +41,7 @@ impl<'a> GifThumb<'a> {
     pub fn mp4(url: impl Into<Cow<'a, str>>) -> Self {
         Self {
             url: url.into(),
-            mime: "video/mp4".into(),
+            mime: "video/mp4",
         }
     }
 }
@@ -48,6 +49,15 @@ impl<'a> GifThumb<'a> {
 impl<'a> From<&'a str> for GifThumb<'a> {
     fn from(url: &'a str) -> Self {
         Self::jpeg(url)
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for GifThumb<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            url: self.url.borrow_inside(),
+            ..*self
+        }
     }
 }
 
@@ -63,7 +73,9 @@ macro_rules! gif_base {
       doc_link_part: $doc_link_part:literal,
     ) => {
         use super::GifThumb;
-        use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
+        use crate::types::{
+            InteriorBorrow, InputMessageContent, parameters::{ParseMode, Text},
+        };
         use serde::Serialize;
         use std::borrow::Cow;
 
@@ -72,7 +84,7 @@ macro_rules! gif_base {
         #[must_use]
         pub struct Fresh<'a> {
             thumb_url: Cow<'a, str>,
-            thumb_mime_type: Cow<'a, str>,
+            thumb_mime_type: &'static str,
             #[serde(rename = $url)]
             url: Cow<'a, str>,
             #[serde(
@@ -218,6 +230,39 @@ macro_rules! gif_base {
             ) -> Self {
                 self.input_message_content = Some(content.into());
                 self
+            }
+        }
+
+        impl<'a> InteriorBorrow<'a> for Fresh<'a> {
+            fn borrow_inside(&'a self) -> Self {
+                Self {
+                    thumb_url: self.thumb_url.borrow_inside(),
+                    url: self.url.borrow_inside(),
+                    ..*self
+                }
+            }
+        }
+
+        impl<'a> InteriorBorrow<'a> for Kind<'a> {
+            fn borrow_inside(&'a self) -> Self {
+                match self {
+                    Self::Cached { id } => Self::Cached {
+                        id: id.borrow_inside(),
+                    },
+                    Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
+                }
+            }
+        }
+
+        impl<'a> InteriorBorrow<'a> for $struct<'a> {
+            fn borrow_inside(&'a self) -> Self {
+                Self {
+                    kind: self.kind.borrow_inside(),
+                    title: self.title.borrow_inside(),
+                    caption: self.caption.borrow_inside(),
+                    input_message_content: self.input_message_content.borrow_inside(),
+                    ..*self
+                }
             }
         }
     };

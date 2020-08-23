@@ -1,5 +1,6 @@
 //! Types related to unspecified errors.
 
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -55,6 +56,15 @@ impl<'a> Unspecified<'a> {
         Self {
             kind,
             element_hash: element_hash.into(),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Unspecified<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            element_hash: self.element_hash.borrow_inside(),
+            ..*self
         }
     }
 }

@@ -1,5 +1,5 @@
 use super::InputFile;
-use crate::types::file;
+use crate::types::{file, InteriorBorrow};
 use std::borrow::Cow;
 
 /// Represents a PNG sticker to be uploaded in a sticker set.
@@ -49,5 +49,13 @@ impl<'a> PngSticker<'a> {
         );
 
         Self::new(InputFile::Url(url))
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for PngSticker<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            media: self.media.borrow_inside(),
+        }
     }
 }

@@ -1,4 +1,5 @@
 use super::{inline, reply, ForceReply};
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 
@@ -51,5 +52,16 @@ impl<'a> From<reply::Remove> for Any<'a> {
 impl<'a> From<ForceReply> for Any<'a> {
     fn from(keyboard: ForceReply) -> Self {
         Any::ForceReply(keyboard)
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Any<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Inline(inline) => Self::Inline(inline.borrow_inside()),
+            Self::Reply(reply) => Self::Reply(reply.borrow_inside()),
+            Self::RemoveReply(remove_reply) => Self::RemoveReply(*remove_reply),
+            Self::ForceReply(force_reply) => Self::ForceReply(*force_reply),
+        }
     }
 }

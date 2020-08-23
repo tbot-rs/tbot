@@ -2,6 +2,7 @@ use super::InputFile;
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
+    InteriorBorrow,
 };
 use serde::ser::SerializeMap;
 use serde::{Serialize, Serializer};
@@ -77,6 +78,16 @@ impl<'a> Voice<'a> {
         self.caption = Some(caption.text);
         self.parse_mode = caption.parse_mode;
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Voice<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            media: self.media.borrow_inside(),
+            caption: self.caption.borrow_inside(),
+            ..*self
+        }
     }
 }
 

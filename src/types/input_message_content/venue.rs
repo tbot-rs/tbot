@@ -1,3 +1,4 @@
+use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -48,5 +49,17 @@ impl<'a> Venue<'a> {
     ) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Venue<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            title: self.title.borrow_inside(),
+            address: self.address.borrow_inside(),
+            foursquare_id: self.foursquare_id.borrow_inside(),
+            foursquare_type: self.foursquare_type.borrow_inside(),
+            ..*self
+        }
     }
 }

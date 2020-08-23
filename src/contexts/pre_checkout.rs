@@ -1,6 +1,8 @@
 use crate::{
     methods::AnswerPreCheckoutQuery,
-    types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User},
+    types::{
+        pre_checkout_query, InteriorBorrow, OrderInfo, PreCheckoutQuery, User,
+    },
     Bot,
 };
 use std::borrow::Cow;
@@ -55,7 +57,7 @@ impl PreCheckout {
         result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> AnswerPreCheckoutQuery<'a> {
         self.bot
-            .answer_pre_checkout_query(self.id.as_borrowed(), result)
+            .answer_pre_checkout_query(self.id.borrow_inside(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.

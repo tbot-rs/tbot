@@ -1,5 +1,6 @@
 //! Types related to translation file errors.
 
+use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -51,6 +52,15 @@ impl<'a> TranslationFile<'a> {
     }
 }
 
+impl<'a> InteriorBorrow<'a> for TranslationFile<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            file_hash: self.file_hash.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
 /// Represents a [`PassportElementErrorTranslationFiles`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrortranslationfiles
@@ -72,6 +82,15 @@ impl<'a> TranslationFiles<'a> {
         Self {
             kind,
             file_hashes: file_hashes.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for TranslationFiles<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            file_hashes: self.file_hashes.borrow_inside(),
+            ..*self
         }
     }
 }

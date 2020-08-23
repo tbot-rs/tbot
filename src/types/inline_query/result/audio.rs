@@ -4,7 +4,7 @@
 
 use crate::types::{
     parameters::{ParseMode, Text},
-    InputMessageContent,
+    InputMessageContent, InteriorBorrow,
 };
 use serde::Serialize;
 use std::borrow::Cow;
@@ -116,5 +116,38 @@ impl<'a> Audio<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Fresh<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            url: self.url.borrow_inside(),
+            title: self.title.borrow_inside(),
+            performer: self.performer.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Kind<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Cached { id } => Self::Cached {
+                id: id.borrow_inside(),
+            },
+            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Audio<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            kind: self.kind.borrow_inside(),
+            caption: self.caption.borrow_inside(),
+            input_message_content: self.input_message_content.borrow_inside(),
+            ..*self
+        }
     }
 }

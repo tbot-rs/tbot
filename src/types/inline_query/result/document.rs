@@ -5,14 +5,14 @@
 use super::Thumb;
 use crate::types::{
     parameters::{ParseMode, Text},
-    InputMessageContent,
+    InputMessageContent, InteriorBorrow,
 };
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
 
 /// Represents possible MIME types for a fresh document.
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[non_exhaustive]
 #[must_use]
 pub enum MimeType {
@@ -131,5 +131,39 @@ impl<'a> Document<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Fresh<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            url: self.url.borrow_inside(),
+            thumb: self.thumb.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Kind<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        match self {
+            Self::Cached { id } => Self::Cached {
+                id: id.borrow_inside(),
+            },
+            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
+        }
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Document<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            kind: self.kind.borrow_inside(),
+            title: self.title.borrow_inside(),
+            description: self.description.borrow_inside(),
+            caption: self.caption.borrow_inside(),
+            input_message_content: self.input_message_content.borrow_inside(),
+            ..*self
+        }
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     methods::AnswerShippingQuery,
-    types::{shipping, User},
+    types::{shipping, InteriorBorrow, User},
     Bot,
 };
 use std::borrow::Cow;
@@ -49,7 +49,7 @@ impl Shipping {
         >,
     ) -> AnswerShippingQuery<'a> {
         self.bot
-            .answer_shipping_query(self.id.as_borrowed(), result)
+            .answer_shipping_query(self.id.borrow_inside(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.

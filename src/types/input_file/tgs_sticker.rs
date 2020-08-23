@@ -1,4 +1,5 @@
 use super::InputFile;
+use crate::types::InteriorBorrow;
 use std::borrow::Cow;
 
 /// Represents a TGS sticker to be uploaded in a sticker set.
@@ -19,5 +20,13 @@ impl<'a> TgsSticker<'a> {
             filename: "sticker.tgs".into(),
             bytes: bytes.into(),
         })
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for TgsSticker<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            media: self.media.borrow_inside(),
+        }
     }
 }

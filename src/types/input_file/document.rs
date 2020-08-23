@@ -2,6 +2,7 @@ use super::{InputFile, Thumb};
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
+    InteriorBorrow,
 };
 use serde::ser::SerializeMap;
 use std::borrow::Cow;
@@ -80,6 +81,17 @@ impl<'a> Document<'a> {
         self.caption = Some(caption.text);
         self.parse_mode = caption.parse_mode;
         self
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Document<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            media: self.media.borrow_inside(),
+            thumb: self.thumb.borrow_inside(),
+            caption: self.caption.borrow_inside(),
+            ..*self
+        }
     }
 }
 
