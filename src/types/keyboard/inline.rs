@@ -28,8 +28,8 @@ pub enum ButtonKind<'a> {
     SwitchInlineQueryCurrentChat(&'a str),
     /// Represent a description of the game to be laucnhed.
     CallbackGame(Game),
-    /// If `true`, a pay button is sent.
-    Pay(bool),
+    /// Represents a pay button.
+    Pay,
 }
 
 /// Represents an [`InlineKeyboardButton`].
@@ -82,7 +82,7 @@ impl Serialize for Button<'_> {
             ButtonKind::CallbackGame(game) => {
                 map.serialize_entry("callback_game", &game)
             }
-            ButtonKind::Pay(pay) => map.serialize_entry("pay", &pay),
+            ButtonKind::Pay => map.serialize_entry("pay", &true),
         }?;
 
         map.end()
