@@ -41,10 +41,9 @@ impl<C, L: Deref<Target = str>> CodeBlock<C, L> {
 }
 
 /// Formats a block of code.
-pub fn code_block<I, T, L>(code: I) -> CodeBlock<I, L>
+pub fn code_block<C, L>(code: C) -> CodeBlock<C, L>
 where
-    for<'a> &'a I: IntoIterator<Item = &'a T>,
-    T: Deref<Target = str>,
+    C: Deref<Target = str>,
     L: Deref<Target = str>,
 {
     CodeBlock {
@@ -53,10 +52,9 @@ where
     }
 }
 
-impl<I, T, L> markdown_v2::Formattable for CodeBlock<I, L>
+impl<C, L> markdown_v2::Formattable for CodeBlock<C, L>
 where
-    for<'a> &'a I: IntoIterator<Item = &'a T>,
-    T: Deref<Target = str>,
+    C: Deref<Target = str>,
     L: Deref<Target = str>,
 {
     fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
@@ -75,9 +73,8 @@ where
         }
         formatter.write_char('\n')?;
 
-        (&self.code)
-            .into_iter()
-            .flat_map(|x| x.deref().chars())
+        self.code
+            .chars()
             .map(|x| {
                 if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
                     formatter.write_char('\\')?;
@@ -89,10 +86,9 @@ where
     }
 }
 
-impl<I, T, L> html::Formattable for CodeBlock<I, L>
+impl<C, L> html::Formattable for CodeBlock<C, L>
 where
-    for<'a> &'a I: IntoIterator<Item = &'a T>,
-    T: Deref<Target = str>,
+    C: Deref<Target = str>,
     L: Deref<Target = str>,
 {
     fn format(
@@ -106,10 +102,7 @@ where
             write!(formatter, "<code class=\"language-{}\">", &**language)?;
         }
 
-        (&self.code)
-            .into_iter()
-            .map(|x| html::Formattable::format(&&**x, formatter, nesting))
-            .collect::<Result<(), _>>()?;
+        html::Formattable::format(&&*self.code, formatter, nesting)?;
 
         if self.language.is_some() {
             formatter.write_str("</code>")?;

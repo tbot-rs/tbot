@@ -210,12 +210,12 @@ impl<'a> markdown_v2::Formattable for Entity<'a> {
     ) -> std::fmt::Result {
         match self {
             Self::Code(code) => markdown_v2::Formattable::format(
-                &inline_code([code.as_str()]),
+                &inline_code(code.as_str()),
                 formatter,
                 nesting,
             ),
             Self::Pre { language, value } => {
-                let mut code = code_block([value.as_str()]);
+                let mut code = code_block(value.as_str());
 
                 if let Some(language) = language {
                     code = code.language(*language);
@@ -238,12 +238,12 @@ impl<'a> html::Formattable for Entity<'a> {
     ) -> std::fmt::Result {
         match self {
             Self::Code(code) => html::Formattable::format(
-                &inline_code([code.as_str()]),
+                &inline_code(code.as_str()),
                 formatter,
                 nesting,
             ),
             Self::Pre { language, value } => {
-                let mut code = code_block([value.as_str()]);
+                let mut code = code_block(value.as_str());
 
                 if let Some(language) = language {
                     code = code.language(*language);

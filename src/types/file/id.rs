@@ -1,6 +1,5 @@
 //! Types representing a file ID.
 
-use crate::internal::Sealed;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
@@ -28,23 +27,5 @@ impl<'a> From<&'a str> for Id<'a> {
     #[must_use]
     fn from(id: &'a str) -> Self {
         Self(id.into())
-    }
-}
-
-impl<'a> Sealed for Id<'a> {}
-
-/// Allows a type with a unique file ID to act as [`file::Id`].
-///
-/// [`file::Id`]: ./struct.Id.html
-#[allow(clippy::module_name_repetitions)] // can't think of a better name
-pub trait AsFileId<'a>: Sealed {
-    #[doc(hidden)]
-    fn as_file_id(&'a self) -> Id<'a>;
-}
-
-impl<'a> AsFileId<'a> for Id<'a> {
-    #[must_use]
-    fn as_file_id(&self) -> Id<'_> {
-        self.as_borrowed()
     }
 }

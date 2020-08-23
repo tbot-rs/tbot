@@ -1,5 +1,8 @@
 use super::InputFile;
-use crate::types::parameters::{ParseMode, Text};
+use crate::types::{
+    file,
+    parameters::{ParseMode, Text},
+};
 use serde::ser::SerializeMap;
 use std::borrow::Cow;
 
@@ -34,10 +37,9 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panics if the ID starts with `attach://`.
-    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
-        let id = id.into();
+    pub fn id(id: file::Id<'a>) -> Self {
         assert!(
-            !id.starts_with("attach://"),
+            !id.0.starts_with("attach://"),
             "\n[tbot]: Photo's ID cannot start with `attach://`\n",
         );
 

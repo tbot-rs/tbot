@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{InputFile, StickerSetThumb},
         user,
     },
@@ -52,7 +53,7 @@ impl SetStickerSetThumb<'_> {
                 InputFile::File {
                     filename, bytes, ..
                 } => multipart = multipart.file("thumb", filename, bytes),
-                InputFile::Id(sticker) | InputFile::Url(sticker) => {
+                InputFile::Id(file::Id(sticker)) | InputFile::Url(sticker) => {
                     multipart = multipart.str("thumb", sticker);
                 }
             }

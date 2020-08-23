@@ -1,7 +1,4 @@
-use crate::types::{
-    file::{self, id::AsFileId},
-    PhotoSize,
-};
+use crate::types::{file, PhotoSize};
 use serde::Deserialize;
 
 /// Represents a [`Video`].
@@ -26,13 +23,4 @@ pub struct Video {
     pub mime_type: Option<String>,
     /// The file size of the video.
     pub file_size: Option<u32>,
-}
-
-impl crate::internal::Sealed for Video {}
-
-impl AsFileId<'_> for Video {
-    #[must_use]
-    fn as_file_id(&self) -> file::id::Id<'_> {
-        self.file_id.as_borrowed()
-    }
 }

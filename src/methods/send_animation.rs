@@ -3,6 +3,7 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
+        file,
         input_file::{Animation, InputFile, Thumb},
         keyboard,
         message::{self, Message},
@@ -86,7 +87,7 @@ impl SendAnimation<'_> {
             InputFile::File {
                 filename, bytes, ..
             } => multipart = multipart.file("animation", filename, bytes),
-            InputFile::Id(animation) | InputFile::Url(animation) => {
+            InputFile::Id(file::Id(animation)) | InputFile::Url(animation) => {
                 multipart = multipart.str("animation", animation);
             }
         }

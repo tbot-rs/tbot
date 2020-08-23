@@ -12,24 +12,21 @@ use std::{
 pub struct InlineCode<T>(T);
 
 /// Formats an inline piece of code.
-pub fn inline_code<I, T>(code: I) -> InlineCode<I>
+pub fn inline_code<T>(code: T) -> InlineCode<T>
 where
-    for<'a> &'a I: IntoIterator<Item = &'a T>,
     T: Deref<Target = str>,
 {
     InlineCode(code)
 }
 
-impl<I, T> markdown_v2::Formattable for InlineCode<I>
+impl<T> markdown_v2::Formattable for InlineCode<T>
 where
-    for<'a> &'a I: IntoIterator<Item = &'a T>,
     T: Deref<Target = str>,
 {
     fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
         formatter.write_char('`')?;
-        (&self.0)
-            .into_iter()
-            .flat_map(|x| x.deref().chars())
+        self.0
+            .chars()
             .map(|x| {
                 if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
                     formatter.write_char('\\')?;
@@ -41,9 +38,8 @@ where
     }
 }
 
-impl<I, T> html::Formattable for InlineCode<I>
+impl<T> html::Formattable for InlineCode<T>
 where
-    for<'a> &'a I: IntoIterator<Item = &'a T>,
     T: Deref<Target = str>,
 {
     fn format(
@@ -52,10 +48,7 @@ where
         nesting: Nesting,
     ) -> fmt::Result {
         formatter.write_str("<code>")?;
-        (&self.0)
-            .into_iter()
-            .map(|x| html::Formattable::format(&&**x, formatter, nesting))
-            .collect::<Result<(), _>>()?;
+        html::Formattable::format(&&*self.0, formatter, nesting)?;
         formatter.write_str("</code>")
     }
 }

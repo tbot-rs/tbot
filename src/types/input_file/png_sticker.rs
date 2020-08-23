@@ -1,4 +1,5 @@
 use super::InputFile;
+use crate::types::file;
 use std::borrow::Cow;
 
 /// Represents a PNG sticker to be uploaded in a sticker set.
@@ -26,10 +27,9 @@ impl<'a> PngSticker<'a> {
     /// # Panics
     ///
     /// Panics if the ID starts with `attach://`.
-    pub fn id(id: impl Into<Cow<'a, str>>) -> Self {
-        let id = id.into();
+    pub fn id(id: file::Id<'a>) -> Self {
         assert!(
-            !id.starts_with("attach://"),
+            !id.0.starts_with("attach://"),
             "\n[tbot] Sticker's ID cannot start with `attach://`\n",
         );
 

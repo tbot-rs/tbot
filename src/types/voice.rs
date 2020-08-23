@@ -1,4 +1,4 @@
-use crate::types::file::{self, id::AsFileId};
+use crate::types::file;
 use serde::Deserialize;
 
 /// Represents a [`Voice`].
@@ -17,13 +17,4 @@ pub struct Voice {
     pub mime_type: Option<String>,
     /// The file size of the voice.
     pub file_size: Option<u32>,
-}
-
-impl crate::internal::Sealed for Voice {}
-
-impl AsFileId<'_> for Voice {
-    #[must_use]
-    fn as_file_id(&self) -> file::id::Id<'_> {
-        self.file_id.as_borrowed()
-    }
 }
