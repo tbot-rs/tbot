@@ -11,7 +11,7 @@ use crate::{
         },
         keyboard::inline,
         message,
-        parameters::{Any, ImplicitChatId, Text},
+        parameters::{poll, ImplicitChatId, Text},
         user, LabeledPrice,
     },
 };
@@ -365,12 +365,12 @@ pub trait ChatMethods: Message {
     }
 
     /// Sends a poll to this chat.
-    fn send_poll<'a>(&'a self, poll: &'a Any<'a>) -> SendPoll<'a> {
+    fn send_poll<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
         self.bot().send_poll(self.chat().id, poll)
     }
 
     /// Sends a poll in reply to this message.
-    fn send_poll_in_reply<'a>(&'a self, poll: &'a Any<'a>) -> SendPoll<'a> {
+    fn send_poll_in_reply<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
         self.send_poll(poll).reply_to_message_id(self.message_id())
     }
 

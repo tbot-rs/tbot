@@ -20,7 +20,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{
-            Any, BotCommand, CallbackAction, ImplicitChatId, Text, UpdateKind,
+            poll, BotCommand, CallbackAction, ImplicitChatId, Text, UpdateKind,
         },
         passport, pre_checkout_query, shipping, user, LabeledPrice,
     },
@@ -633,7 +633,7 @@ impl Bot {
     pub fn send_poll<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        poll: &'a Any<'a>,
+        poll: poll::Any<'a>,
     ) -> SendPoll<'a> {
         SendPoll::new(&self.inner, chat_id, poll)
     }

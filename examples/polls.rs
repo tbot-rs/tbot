@@ -1,9 +1,6 @@
 use tbot::{
     prelude::*,
-    types::parameters::{
-        poll::{Answer, AutoClose, Poll, Quiz},
-        Any,
-    },
+    types::parameters::poll::{self, Answer, AutoClose, Poll, Quiz},
     Bot,
 };
 
@@ -22,10 +19,10 @@ const QUIZ_EXPLANATION: &str =
 async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
-    let regular = Any::new(QUESTION, OPTIONS, Poll::new(Answer::Single))
+    let regular = poll::Any::new(QUESTION, OPTIONS, Poll::new(Answer::Single))
         .auto_close(AutoClose::OpenPeriod(60));
 
-    let quiz = Any::new(
+    let quiz = poll::Any::new(
         QUIZ_QUESTION,
         QUIZ_OPTIONS,
         Quiz::new(QUIZ_CORRECT_OPTION).explanation(QUIZ_EXPLANATION),
@@ -33,14 +30,14 @@ async fn main() {
     .anonymous(false);
 
     bot.command("poll", move |context| async move {
-        let call_result = context.send_poll(&regular).call().await;
+        let call_result = context.send_poll(regular).call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }
     });
 
     bot.command("quiz", move |context| async move {
-        let call_result = context.send_poll(&quiz).call().await;
+        let call_result = context.send_poll(quiz).call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }

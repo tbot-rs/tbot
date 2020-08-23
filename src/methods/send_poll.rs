@@ -5,7 +5,7 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{Any, ChatId, ImplicitChatId, NotificationState},
+        parameters::{poll, ChatId, ImplicitChatId, NotificationState},
     },
 };
 use serde::Serialize;
@@ -22,7 +22,7 @@ pub struct SendPoll<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     #[serde(flatten)]
-    poll: &'a Any<'a>,
+    poll: poll::Any<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +35,7 @@ impl<'a> SendPoll<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
-        poll: &'a Any<'a>,
+        poll: poll::Any<'a>,
     ) -> Self {
         Self {
             bot,
