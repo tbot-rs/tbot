@@ -5,7 +5,7 @@ use crate::{
     types::{
         input_file::{Album, GroupMedia, InputFile, Photo, Thumb, Video},
         message::{self, Message},
-        parameters::{ChatId, ImplicitChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId},
     },
     Multipart,
 };
@@ -40,10 +40,10 @@ impl<'a> SendMediaGroup<'a> {
         }
     }
 
-    /// Configures if the album will be sent silently.
+    /// Configures whether the album is sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
     }
 

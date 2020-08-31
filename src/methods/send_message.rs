@@ -5,10 +5,7 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{
-            ChatId, ImplicitChatId, NotificationState, ParseMode, Text,
-            WebPagePreviewState,
-        },
+        parameters::{ChatId, ImplicitChatId, ParseMode, Text},
     },
 };
 use serde::Serialize;
@@ -59,15 +56,18 @@ impl<'a> SendMessage<'a> {
 
     /// Configures if a preview for the first link in the message should be
     /// shown. Reflects the `disable_web_page_preview` parameter.
-    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
-        self.disable_web_page_preview = Some(state.is_disabled());
+    pub const fn is_web_page_preview_disabled(
+        mut self,
+        is_disabled: bool,
+    ) -> Self {
+        self.disable_web_page_preview = Some(is_disabled);
         self
     }
 
     /// Configures if the message will be sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
     }
 
