@@ -3,18 +3,15 @@ use is_macro::Is;
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
 /// Though you can consturct variants directly, there are convenient methods
-/// to do that: [`none`], [`notification`], [`alert`], [`url`].
+/// to do that: [`with_notification`], [`with_alert`] and [`with_url`].
 ///
 /// [`AnswerCallbackQuery`]: ./struct.AnswerCallbackQuery.html
-/// [`none`]: #method.none
-/// [`notification`]: #method.notification
-/// [`alert`]: #method.alert
-/// [`url`]: #method.url
+/// [`with_notification`]: #method.with_notification
+/// [`with_alert`]: #method.with_alert
+/// [`with_url`]: #method.with_url
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum CallbackAction<'a> {
-    /// No action.
-    None,
     /// Show text to the user. The last item configures `show_alert`.
     Text(&'a str, bool),
     /// Open a URL.
@@ -22,11 +19,6 @@ pub enum CallbackAction<'a> {
 }
 
 impl<'a> CallbackAction<'a> {
-    /// Constructs the `None` variant.
-    pub const fn with_no_action() -> Self {
-        CallbackAction::None
-    }
-
     /// Constructs the `Text` variant that shows a simple notification.
     pub const fn with_notification(text: &'a str) -> Self {
         CallbackAction::Text(text, false)
@@ -45,21 +37,21 @@ impl<'a> CallbackAction<'a> {
     pub(crate) const fn to_text(self) -> Option<&'a str> {
         match self {
             CallbackAction::Text(text, _) => Some(text),
-            _ => None,
+            CallbackAction::Url(_) => None,
         }
     }
 
     pub(crate) const fn to_show_alert(self) -> Option<bool> {
         match self {
             CallbackAction::Text(_, should_show) => Some(should_show),
-            _ => None,
+            CallbackAction::Url(_) => None,
         }
     }
 
     pub(crate) const fn to_url(self) -> Option<&'a str> {
         match self {
             CallbackAction::Url(url) => Some(url),
-            _ => None,
+            CallbackAction::Text(..) => None,
         }
     }
 }

@@ -17,29 +17,29 @@ pub trait Callback: fields::Callback {
     /// [`alert`]: #method.alert
     fn answer<'a>(
         &'a self,
-        action: CallbackAction<'a>,
+        action: Option<CallbackAction<'a>>,
     ) -> AnswerCallbackQuery<'a> {
         self.bot().answer_callback_query(self.id().as_ref(), action)
     }
 
     /// Answers the query without any action.
     fn ignore(&self) -> AnswerCallbackQuery<'_> {
-        self.answer(CallbackAction::with_no_action())
+        self.answer(None)
     }
 
     /// Opens a URL.
     fn open_url<'a>(&'a self, url: &'a str) -> AnswerCallbackQuery<'a> {
-        self.answer(CallbackAction::with_url(url))
+        self.answer(Some(CallbackAction::with_url(url)))
     }
 
     /// Shows a notification to the user.
     fn notify<'a>(&'a self, text: &'a str) -> AnswerCallbackQuery<'a> {
-        self.answer(CallbackAction::with_notification(text))
+        self.answer(Some(CallbackAction::with_notification(text)))
     }
 
     /// Shows an alert to the user.
     fn alert<'a>(&'a self, text: &'a str) -> AnswerCallbackQuery<'a> {
-        self.answer(CallbackAction::with_alert(text))
+        self.answer(Some(CallbackAction::with_alert(text)))
     }
 }
 

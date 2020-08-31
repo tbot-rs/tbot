@@ -28,17 +28,17 @@ pub struct AnswerCallbackQuery<'a> {
 }
 
 impl<'a> AnswerCallbackQuery<'a> {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         bot: &'a InnerBot,
         callback_query_id: callback::query::id::Ref<'a>,
-        action: CallbackAction<'a>,
+        action: Option<CallbackAction<'a>>,
     ) -> Self {
         Self {
             bot,
             callback_query_id,
-            text: action.to_text(),
-            show_alert: action.to_show_alert(),
-            url: action.to_url(),
+            text: action.as_ref().and_then(|x| x.to_text()),
+            show_alert: action.as_ref().and_then(|x| x.to_show_alert()),
+            url: action.as_ref().and_then(|x| x.to_url()),
             cache_time: None,
         }
     }
