@@ -28,7 +28,7 @@ pub struct AnswerCallbackQuery<'a> {
 }
 
 impl<'a> AnswerCallbackQuery<'a> {
-    pub(crate) fn new(
+    pub(crate) const fn new(
         bot: &'a InnerBot,
         callback_query_id: callback::query::id::Ref<'a>,
         action: CallbackAction<'a>,

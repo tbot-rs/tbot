@@ -42,21 +42,21 @@ impl<'a> CallbackAction<'a> {
         CallbackAction::Url(url)
     }
 
-    pub(crate) fn to_text(self) -> Option<&'a str> {
+    pub(crate) const fn to_text(self) -> Option<&'a str> {
         match self {
             CallbackAction::Text(text, _) => Some(text),
             _ => None,
         }
     }
 
-    pub(crate) fn to_show_alert(self) -> Option<bool> {
+    pub(crate) const fn to_show_alert(self) -> Option<bool> {
         match self {
             CallbackAction::Text(_, should_show) => Some(should_show),
             _ => None,
         }
     }
 
-    pub(crate) fn to_url(self) -> Option<&'a str> {
+    pub(crate) const fn to_url(self) -> Option<&'a str> {
         match self {
             CallbackAction::Url(url) => Some(url),
             _ => None,
