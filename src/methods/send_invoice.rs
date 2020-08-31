@@ -6,10 +6,7 @@ use crate::{
         chat,
         keyboard::inline,
         message::{self, Message},
-        parameters::{
-            Flexibility, NotificationState, Photo, Requirement,
-            SendToProviderState,
-        },
+        parameters::Photo,
         LabeledPrice,
     },
 };
@@ -111,65 +108,65 @@ impl<'a> SendInvoice<'a> {
         self
     }
 
-    /// Configures if the user must specify their name.
+    /// Configures whether the user must specify their name.
     /// Reflects the `need_name` parameters.
-    pub fn name(mut self, is_needed: Requirement) -> Self {
-        self.need_name = Some(is_needed.is_required());
+    pub const fn is_name_needed(mut self, is_needed: bool) -> Self {
+        self.need_name = Some(is_needed);
         self
     }
 
-    /// Configures if the user must specify their phone number.
+    /// Configures whether the user must specify their phone number.
     /// Reflects the `need_phone_number` parameter.
-    pub fn phone_number(mut self, is_needed: Requirement) -> Self {
-        self.need_phone_number = Some(is_needed.is_required());
+    pub const fn is_phone_number_needed(mut self, is_needed: bool) -> Self {
+        self.need_phone_number = Some(is_needed);
         self
     }
 
-    /// Configures if the user must specify their email.
+    /// Configures whether the user must specify their email.
     /// Reflects the `need_email` parameter.
-    pub fn email(mut self, is_needed: Requirement) -> Self {
-        self.need_email = Some(is_needed.is_required());
+    pub const fn is_email_needed(mut self, is_needed: bool) -> Self {
+        self.need_email = Some(is_needed);
         self
     }
 
-    /// Configures if the user must specify their shipping address.
+    /// Configures whether the user must specify their shipping address.
     /// Reflects the `need_shipping_address` parameter.
-    pub fn shipping_address(mut self, is_needed: Requirement) -> Self {
-        self.need_shipping_address = Some(is_needed.is_required());
+    pub const fn is_shipping_address_needed(mut self, is_needed: bool) -> Self {
+        self.need_shipping_address = Some(is_needed);
         self
     }
 
-    /// Configures if the user's phone must be sent to your payment provider.
-    /// Reflects the `send_phone_number_to_provider` parameter.
-    pub fn should_share_phone(
+    /// Configures whether the user's phone must be sent to your payment
+    /// provider. Reflects the `send_phone_number_to_provider` parameter.
+    pub const fn must_send_phone_to_provider(
         mut self,
-        should_send: SendToProviderState,
+        must_send: bool,
     ) -> Self {
-        self.send_phone_number_to_provider = Some(should_send.should_send());
+        self.send_phone_number_to_provider = Some(must_send);
         self
     }
 
-    /// Configures if the user's email must be sent to your payment provider.
-    /// Reflects the `send_email_to_provider` parameter.
-    pub fn should_share_email(
+    /// Configures whether the user's email must be sent to your payment
+    /// provider. Reflects the `send_email_to_provider` parameter.
+    pub const fn must_send_email_to_provider(
         mut self,
-        should_send: SendToProviderState,
+        must_send: bool,
     ) -> Self {
-        self.send_email_to_provider = Some(should_send.should_send());
+        self.send_email_to_provider = Some(must_send);
         self
     }
 
-    /// Configures if the final price depends on the shipping method.
+    /// Configures whether the final price depends on the shipping method.
     /// Reflects the `is_flexible` parameter.
-    pub fn flexibility(mut self, flexibility: Flexibility) -> Self {
-        self.is_flexible = Some(flexibility.is_flexible());
+    pub const fn is_flexible(mut self, is_flexible: bool) -> Self {
+        self.is_flexible = Some(is_flexible);
         self
     }
 
-    /// Configures if the message will be sent silently.
+    /// Configures whether the message is sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
     }
 

@@ -5,7 +5,7 @@ use crate::{
     types::{
         dice::Kind,
         keyboard, message,
-        parameters::{ChatId, ImplicitChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId},
         Message,
     },
 };
@@ -55,10 +55,10 @@ impl<'a> SendDice<'a> {
         self
     }
 
-    /// Configures if the message will be sent silently.
+    /// Configures whether the message is sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
     }
 

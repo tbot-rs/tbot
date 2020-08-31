@@ -43,6 +43,8 @@
 //! [`EditInlineText`]: ./struct.EditInlineText.html
 //! [`types::Message`]: ../types/struct.Message.html
 
+#![allow(clippy::wrong_self_convention)]
+
 mod add_sticker_to_set;
 mod answer_callback_query;
 mod answer_inline_query;
