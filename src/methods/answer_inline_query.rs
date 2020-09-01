@@ -53,7 +53,7 @@ impl<'a> AnswerInlineQuery<'a> {
 
     /// Configures whether the result may be cached only for the user who sent
     /// the query. Reflects the `is_personal` parameter.
-    pub const fn personal(mut self, is_personal: bool) -> Self {
+    pub const fn is_personal(mut self, is_personal: bool) -> Self {
         self.is_personal = Some(is_personal);
         self
     }

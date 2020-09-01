@@ -49,7 +49,7 @@ impl<'a> SendMediaGroup<'a> {
 
     /// Configures which message this album is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

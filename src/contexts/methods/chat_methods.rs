@@ -183,7 +183,7 @@ pub trait ChatMethods: Message {
         animation: Animation<'a>,
     ) -> SendAnimation<'a> {
         self.send_animation(animation)
-            .reply_to_message_id(self.message_id())
+            .in_reply_to(self.message_id())
     }
 
     /// Sends an audio to this chat.
@@ -193,8 +193,7 @@ pub trait ChatMethods: Message {
 
     /// Sends an audio in reply to this message.
     fn send_audio_in_reply<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
-        self.send_audio(audio)
-            .reply_to_message_id(self.message_id())
+        self.send_audio(audio).in_reply_to(self.message_id())
     }
 
     /// Sends an action to this group.
@@ -219,7 +218,7 @@ pub trait ChatMethods: Message {
         first_name: &'a str,
     ) -> SendContact<'a> {
         self.send_contact(phone_number, first_name)
-            .reply_to_message_id(self.message_id())
+            .in_reply_to(self.message_id())
     }
 
     /// Sends a game to this chat.
@@ -233,7 +232,7 @@ pub trait ChatMethods: Message {
         game_short_name: &'a str,
     ) -> SendGame<'a> {
         self.send_game(game_short_name)
-            .reply_to_message_id(self.message_id())
+            .in_reply_to(self.message_id())
     }
 
     /// Sends a dice to this chat.
@@ -243,7 +242,7 @@ pub trait ChatMethods: Message {
 
     /// Sends a dice in reply to this message.
     fn send_dice_in_reply(&self) -> SendDice<'_> {
-        self.send_dice().reply_to_message_id(self.message_id())
+        self.send_dice().in_reply_to(self.message_id())
     }
 
     /// Sends a document to this chat.
@@ -256,8 +255,7 @@ pub trait ChatMethods: Message {
         &'a self,
         document: Document<'a>,
     ) -> SendDocument<'a> {
-        self.send_document(document)
-            .reply_to_message_id(self.message_id())
+        self.send_document(document).in_reply_to(self.message_id())
     }
 
     /// Sends an invoice to this chat.
@@ -305,7 +303,7 @@ pub trait ChatMethods: Message {
             currency,
             prices,
         )
-        .reply_to_message_id(self.message_id())
+        .in_reply_to(self.message_id())
     }
 
     /// Sends a location to this chat.
@@ -315,8 +313,7 @@ pub trait ChatMethods: Message {
 
     /// Sends a location in reply to this message.
     fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation {
-        self.send_location(location)
-            .reply_to_message_id(self.message_id())
+        self.send_location(location).in_reply_to(self.message_id())
     }
 
     /// Sends an album to this chat.
@@ -332,8 +329,7 @@ pub trait ChatMethods: Message {
         &'a self,
         media: &'a [GroupMedia<'a>],
     ) -> SendMediaGroup<'a> {
-        self.send_media_group(media)
-            .reply_to_message_id(self.message_id())
+        self.send_media_group(media).in_reply_to(self.message_id())
     }
 
     /// Sends a message to this chat.
@@ -349,8 +345,7 @@ pub trait ChatMethods: Message {
         &'a self,
         text: impl Into<Text<'a>>,
     ) -> SendMessage<'a> {
-        self.send_message(text)
-            .reply_to_message_id(self.message_id())
+        self.send_message(text).in_reply_to(self.message_id())
     }
 
     /// Sends a photo to this chat.
@@ -360,8 +355,7 @@ pub trait ChatMethods: Message {
 
     /// Sends a photo in reply to this message.
     fn send_photo_in_reply<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
-        self.send_photo(photo)
-            .reply_to_message_id(self.message_id())
+        self.send_photo(photo).in_reply_to(self.message_id())
     }
 
     /// Sends a poll to this chat.
@@ -371,7 +365,7 @@ pub trait ChatMethods: Message {
 
     /// Sends a poll in reply to this message.
     fn send_poll_in_reply<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
-        self.send_poll(poll).reply_to_message_id(self.message_id())
+        self.send_poll(poll).in_reply_to(self.message_id())
     }
 
     /// Sends a sticker to this chat.
@@ -384,8 +378,7 @@ pub trait ChatMethods: Message {
         &'a self,
         sticker: Sticker<'a>,
     ) -> SendSticker<'a> {
-        self.send_sticker(sticker)
-            .reply_to_message_id(self.message_id())
+        self.send_sticker(sticker).in_reply_to(self.message_id())
     }
 
     /// Sends a venue to this chat.
@@ -407,7 +400,7 @@ pub trait ChatMethods: Message {
         address: &'a str,
     ) -> SendVenue<'a> {
         self.send_venue(location, title, address)
-            .reply_to_message_id(self.message_id())
+            .in_reply_to(self.message_id())
     }
 
     /// Sends a video to this chat.
@@ -417,8 +410,7 @@ pub trait ChatMethods: Message {
 
     /// Sends a video in reply to this message.
     fn send_video_in_reply<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
-        self.send_video(video)
-            .reply_to_message_id(self.message_id())
+        self.send_video(video).in_reply_to(self.message_id())
     }
 
     /// Sends a video note to this chat.
@@ -435,7 +427,7 @@ pub trait ChatMethods: Message {
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a> {
         self.send_video_note(video_note)
-            .reply_to_message_id(self.message_id())
+            .in_reply_to(self.message_id())
     }
 
     /// Sends a voice to this chat.
@@ -445,8 +437,7 @@ pub trait ChatMethods: Message {
 
     /// Sends a voice in reply to this message.
     fn send_voice_in_reply<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
-        self.send_voice(voice)
-            .reply_to_message_id(self.message_id())
+        self.send_voice(voice).in_reply_to(self.message_id())
     }
 
     /// Sets a custom title for an admin in this chat.
