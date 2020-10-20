@@ -1884,7 +1884,7 @@ impl EventLoop {
     }
 
     fn is_for_this_bot(&self, username: Option<&str>) -> bool {
-        username.map_or(false, |username| {
+        username.map_or(true, |username| {
             self.username.as_ref().map(|x| x == username) == Some(true)
         })
     }
