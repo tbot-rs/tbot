@@ -65,6 +65,8 @@
 // Can't do anything about `await` desugaring (fixed in some nightly, but
 // we test on stable)
 #![allow(clippy::used_underscore_binding)]
+// not going to fix any clippy lints for v0.6.x, they're fixed for v0.7
+#![allow(clippy::missing_const_for_fn, clippy::option_if_let_else)]
 #![doc(
     html_logo_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg",
     html_favicon_url = "https://gitlab.com/SnejUgal/tbot/-/raw/master/logo.svg"
