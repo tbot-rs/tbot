@@ -22,6 +22,7 @@ pub struct Fresh<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize)]
+#[serde(untagged)]
 #[must_use]
 enum Kind<'a> {
     Cached {
@@ -38,6 +39,7 @@ enum Kind<'a> {
 #[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 #[must_use]
 pub struct Photo<'a> {
+    #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<&'a str>,
