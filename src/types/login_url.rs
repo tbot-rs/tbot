@@ -39,8 +39,17 @@ impl<'a> LoginUrl<'a> {
     }
 
     /// Configures `request_write_access`.
-    pub fn request_write_access(mut self, should_request: bool) -> Self {
+    pub fn should_request_write_access(mut self, should_request: bool) -> Self {
         self.request_write_access = Some(should_request);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `should_request_write_access`"
+    )]
+    pub fn request_write_access(self, should_request: bool) -> Self {
+        self.should_request_write_access(should_request)
     }
 }

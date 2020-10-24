@@ -1,5 +1,8 @@
 use super::InputFile;
-use crate::types::parameters::{ParseMode, Text};
+use crate::types::{
+    file,
+    parameters::{ParseMode, Text},
+};
 use serde::ser::SerializeMap;
 
 /// Represents a photo to be sent.
@@ -21,11 +24,20 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn with_bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "photo.jpg",
             bytes,
         })
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `with_bytes`"
+    )]
+    pub fn bytes(bytes: &'a [u8]) -> Self {
+        Self::with_bytes(bytes)
     }
 
     /// Constructs a `Photo` from a file ID.
@@ -33,13 +45,22 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: &'a str) -> Self {
+    pub fn with_id(id: file::id::Ref<'a>) -> Self {
         assert!(
-            !id.starts_with("attach://"),
+            !id.0.starts_with("attach://"),
             "\n[tbot]: Photo's ID cannot start with `attach://`\n",
         );
 
-        Self::new(InputFile::Id(id))
+        Self::new(InputFile::Id(id.0))
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "use `with_id` which takes a `file::id::Ref<'a>`"
+    )]
+    pub fn id(id: &'a str) -> Self {
+        Self::with_id(file::id::Ref(id))
     }
 
     /// Constructs a `Photo` from an URL.
@@ -47,13 +68,22 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn with_url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Photo's URL cannot start with `attach://`\n",
         );
 
         Self::new(InputFile::Url(url))
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `with_url`"
+    )]
+    pub fn url(url: &'a str) -> Self {
+        Self::with_url(url)
     }
 
     /// Configures `caption`.

@@ -10,11 +10,20 @@ pub struct Thumb<'a>(pub(crate) InputFile<'a>);
 
 impl<'a> Thumb<'a> {
     /// Constructs a `Thumb`.
-    pub fn new(bytes: &'a [u8]) -> Self {
+    pub fn with_bytes(bytes: &'a [u8]) -> Self {
         Thumb(InputFile::File {
             filename: "thumb.jpg",
             bytes,
         })
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `with_bytes`"
+    )]
+    pub fn new(bytes: &'a [u8]) -> Self {
+        Self::with_bytes(bytes)
     }
 
     pub(crate) const fn with_name(self, name: &'a str) -> WithName<'a> {

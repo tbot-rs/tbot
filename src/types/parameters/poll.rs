@@ -120,16 +120,36 @@ impl<'a> Any<'a> {
 
     /// Configures if the poll is immediately closed.
     #[must_use]
-    pub fn immediately_closed(mut self, is_closed: bool) -> Self {
+    pub fn is_immediately_closed(mut self, is_closed: bool) -> Self {
         self.is_closed = Some(is_closed);
         self
     }
 
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_immediately_closed`"
+    )]
+    #[must_use]
+    pub fn immediately_closed(self, is_immediately_closed: bool) -> Self {
+        self.is_immediately_closed(is_immediately_closed)
+    }
+
     /// Comfigures if the poll is anonymous.
     #[must_use]
-    pub fn anonymous(mut self, is_anonymous: bool) -> Self {
+    pub fn is_anonymous(mut self, is_anonymous: bool) -> Self {
         self.is_anonymous = Some(is_anonymous);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_anonymous`"
+    )]
+    #[must_use]
+    pub fn anonymous(self, is_anonymous: bool) -> Self {
+        self.is_anonymous(is_anonymous)
     }
 
     /// Configures when the poll is automatically closed.
