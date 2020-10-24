@@ -1,3 +1,4 @@
+#[allow(deprecated)]
 use crate::types::parameters::{self, ParseMode, WebPagePreviewState};
 use serde::Serialize;
 
@@ -27,8 +28,18 @@ impl<'a> Text<'a> {
     }
 
     /// Configures if the web page preview will be shown.
-    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
-        self.disable_web_page_preview = Some(state.is_disabled());
+    pub fn is_web_page_preview_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_web_page_preview = Some(is_disabled);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "use `is_web_page_preview_disabled` which takes a `bool`"
+    )]
+    #[allow(deprecated)]
+    pub fn web_page_preview(self, state: WebPagePreviewState) -> Self {
+        self.is_web_page_preview_disabled(state.is_disabled())
     }
 }

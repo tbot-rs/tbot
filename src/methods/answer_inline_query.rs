@@ -57,9 +57,18 @@ impl<'a> AnswerInlineQuery<'a> {
 
     /// Configures whether the result may be cached only for the user who sent
     /// the query. Reflects the `is_personal` parameter.
-    pub fn personal(mut self, is_personal: bool) -> Self {
+    pub fn is_personal(mut self, is_personal: bool) -> Self {
         self.is_personal = Some(is_personal);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_personal`"
+    )]
+    pub fn personal(self, is_personal: bool) -> Self {
+        self.is_personal(is_personal)
     }
 
     /// Configures the offset to be sent in the next query.

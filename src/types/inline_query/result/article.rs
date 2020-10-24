@@ -3,6 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Article
 
 use super::Thumb;
+#[allow(deprecated)]
 use crate::types::{parameters::UrlVisibility, InputMessageContent};
 use serde::Serialize;
 
@@ -47,9 +48,19 @@ impl<'a> Article<'a> {
     }
 
     /// Configures the article's URL visibility.
-    pub fn url_visibility(mut self, visibility: UrlVisibility) -> Self {
-        self.hide_url = Some(visibility.is_hidden());
+    pub fn is_url_hidden(mut self, is_hidden: bool) -> Self {
+        self.hide_url = Some(is_hidden);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "use`is_url_hidden` which takes a `bool`"
+    )]
+    #[allow(deprecated)]
+    pub fn url_visibility(self, visibility: UrlVisibility) -> Self {
+        self.is_url_hidden(visibility.is_hidden())
     }
 
     /// Configures the thumb of the article.

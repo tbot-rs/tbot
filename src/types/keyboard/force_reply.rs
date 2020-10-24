@@ -17,9 +17,18 @@ impl ForceReply {
     }
 
     /// Configure `selective`.
-    pub fn selective(mut self, is_selective: bool) -> Self {
+    pub fn is_selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_selective`"
+    )]
+    pub fn selective(self, is_selective: bool) -> Self {
+        self.is_selective(is_selective)
     }
 }
 

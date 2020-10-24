@@ -140,21 +140,48 @@ impl<'a> Keyboard<'a> {
     }
 
     /// Configures `resize_keyboard`.
-    pub fn resize_keyboard(mut self, is_resized: bool) -> Self {
-        self.resize_keyboard = Some(is_resized);
+    pub fn is_resizable(mut self, is_resizable: bool) -> Self {
+        self.resize_keyboard = Some(is_resizable);
         self
     }
 
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_resizable`"
+    )]
+    pub fn resize_keyboard(self, is_resizable: bool) -> Self {
+        self.is_resizable(is_resizable)
+    }
+
     /// Configures `one_time_keyboard`.
-    pub fn one_time_keyboard(mut self, is_one_time: bool) -> Self {
+    pub fn is_one_time(mut self, is_one_time: bool) -> Self {
         self.one_time_keyboard = Some(is_one_time);
         self
     }
 
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_one_time`"
+    )]
+    pub fn one_time_keyboard(self, is_one_time: bool) -> Self {
+        self.is_one_time(is_one_time)
+    }
+
     /// Configures `selective`.
-    pub fn selective(mut self, is_selective: bool) -> Self {
+    pub fn is_selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `is_selective`"
+    )]
+    pub fn selective(self, is_selective: bool) -> Self {
+        self.is_selective(is_selective)
     }
 }
 

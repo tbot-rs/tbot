@@ -61,7 +61,7 @@ macro_rules! gif_base {
       doc_link_part: $doc_link_part:literal,
     ) => {
         use super::GifThumb;
-        use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
+        use crate::types::{file, InputMessageContent, parameters::{ParseMode, Text}};
         use serde::Serialize;
 
         /// Represents a non-cached GIF.
@@ -177,20 +177,38 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub fn cached(id: &'a str) -> Self {
+                pub fn with_cached(id: file::id::Ref<'a>) -> Self {
                     Self::new(Kind::Cached {
-                        id,
+                        id: id.0
                     })
                 }
+            }
+
+            #[doc(hidden)]
+            #[deprecated(
+                since = "0.6.6",
+                note = "use `with_cached` which takes a `file::id::Ref<'a>`"
+            )]
+            pub fn cached(id: &'a str) -> Self {
+                Self::with_cached(file::id::Ref(id))
             }
 
             doc! {
                 concat!(
                     "Constructs a fresh `", stringify!($struct), "` result.",
                 ),
-                pub fn fresh(gif: Fresh<'a>) -> Self {
+                pub fn with_fresh(gif: Fresh<'a>) -> Self {
                     Self::new(Kind::Fresh(gif))
                 }
+            }
+
+            #[doc(hidden)]
+            #[deprecated(
+                since = "0.6.6",
+                note = "this method is renamed to `with_fresh`"
+            )]
+            pub fn fresh(gif: Fresh<'a>) -> Self {
+                Self::with_fresh(gif)
             }
 
             /// Configures the title of the GIF.

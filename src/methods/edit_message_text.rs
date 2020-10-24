@@ -1,4 +1,5 @@
 use super::call_method;
+#[allow(deprecated)]
 use crate::{
     connectors::Client,
     errors, token,
@@ -59,9 +60,19 @@ impl<'a> EditMessageText<'a> {
 
     /// Configures if a preview for the first link in the message should be
     /// shown. Reflects the `disable_web_page_preview` parameter.
-    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
-        self.disable_web_page_preview = Some(state.is_disabled());
+    pub fn is_web_page_preview_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_web_page_preview = Some(is_disabled);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "use `is_web_page_preview_disabled` which takes a `bool`"
+    )]
+    #[allow(deprecated)]
+    pub fn web_page_preview(self, state: WebPagePreviewState) -> Self {
+        self.is_web_page_preview_disabled(state.is_disabled())
     }
 
     /// Configures an inline keyboard for the message.

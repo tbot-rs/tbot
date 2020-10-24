@@ -15,6 +15,7 @@ mod url_visibility;
 mod web_page_preview_state;
 
 pub(crate) use text::ParseMode;
+#[allow(deprecated)]
 pub use {
     bot_command::BotCommand,
     callback_action::CallbackAction,

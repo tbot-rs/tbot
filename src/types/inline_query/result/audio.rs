@@ -3,6 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Audio
 
 use crate::types::{
+    file,
     parameters::{ParseMode, Text},
     InputMessageContent,
 };
@@ -87,13 +88,31 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs a cached `Audio` result.
+    pub fn with_cached(id: file::id::Ref<'a>) -> Self {
+        Self::new(Kind::Cached { id: id.0 })
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "use `with_cached` which takes a `file::id::Ref<'a>`"
+    )]
     pub fn cached(id: &'a str) -> Self {
-        Self::new(Kind::Cached { id })
+        Self::with_cached(file::id::Ref(id))
     }
 
     /// Constructs a fresh `Audio` result.
-    pub fn fresh(audio: Fresh<'a>) -> Self {
+    pub fn with_fresh(audio: Fresh<'a>) -> Self {
         Self::new(Kind::Fresh(audio))
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `with_fresh`"
+    )]
+    pub fn fresh(audio: Fresh<'a>) -> Self {
+        Self::with_fresh(audio)
     }
 
     /// Configures the caption of the audio.

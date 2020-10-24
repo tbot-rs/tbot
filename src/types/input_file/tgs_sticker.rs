@@ -13,10 +13,19 @@ impl<'a> TgsSticker<'a> {
     }
 
     /// Constructs a `TgsSticker` from bytes.
-    pub fn bytes(bytes: &'a [u8]) -> Self {
+    pub fn with_bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "sticker.tgs",
             bytes,
         })
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `with_bytes`"
+    )]
+    pub fn bytes(bytes: &'a [u8]) -> Self {
+        Self::with_bytes(bytes)
     }
 }

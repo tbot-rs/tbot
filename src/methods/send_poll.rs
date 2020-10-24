@@ -1,4 +1,5 @@
 use super::call_method;
+#[allow(deprecated)]
 use crate::{
     connectors::Client,
     errors, token,
@@ -53,16 +54,35 @@ impl<'a> SendPoll<'a> {
 
     /// Configures if the message will be sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "use `is_notification_disabled` which takes a `bool`"
+    )]
+    #[allow(deprecated)]
+    pub fn notification(self, state: NotificationState) -> Self {
+        self.is_notification_disabled(state.is_disabled())
     }
 
     /// Configures which message this poll is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
+    }
+
+    #[doc(hidden)]
+    #[deprecated(
+        since = "0.6.6",
+        note = "this method is renamed to `in_reply_to`"
+    )]
+    pub fn reply_to_message_id(self, id: message::Id) -> Self {
+        self.in_reply_to(id)
     }
 
     /// Configures a keyboard for the message.
