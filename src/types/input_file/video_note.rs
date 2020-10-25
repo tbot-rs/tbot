@@ -26,7 +26,7 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Constructs an `VideoNote` from bytes.
-    pub const fn bytes(bytes: &'a [u8]) -> Self {
+    pub const fn with_bytes(bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File {
             filename: "video_note.mp4",
             bytes,
@@ -38,7 +38,7 @@ impl<'a> VideoNote<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: file::id::Ref<'a>) -> Self {
+    pub fn with_id(id: file::id::Ref<'a>) -> Self {
         assert!(
             !id.0.starts_with("attach://"),
             "\n[tbot]: Video note's ID cannot start with `attach://`\n",
@@ -52,7 +52,7 @@ impl<'a> VideoNote<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn with_url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Video note's URL cannot start with `attach://`\n",

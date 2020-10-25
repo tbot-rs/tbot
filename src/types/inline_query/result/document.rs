@@ -4,6 +4,7 @@
 
 use super::Thumb;
 use crate::types::{
+    file,
     parameters::{ParseMode, Text},
     InputMessageContent,
 };
@@ -40,7 +41,7 @@ pub struct Fresh<'a> {
 enum Kind<'a> {
     Cached {
         #[serde(rename = "document_file_id")]
-        id: &'a str,
+        id: file::id::Ref<'a>,
     },
     Fresh(Fresh<'a>),
 }
@@ -95,12 +96,12 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub const fn cached(title: &'a str, id: &'a str) -> Self {
+    pub const fn with_cached(title: &'a str, id: file::id::Ref<'a>) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Document` result.
-    pub const fn fresh(title: &'a str, document: Fresh<'a>) -> Self {
+    pub const fn with_fresh(title: &'a str, document: Fresh<'a>) -> Self {
         Self::new(title, Kind::Fresh(document))
     }
 

@@ -1,4 +1,4 @@
-use crate::types::InputMessageContent;
+use crate::types::{file, InputMessageContent};
 use serde::Serialize;
 
 /// Represents an [`InlineQueryResultCachedSticker`][docs].
@@ -8,14 +8,14 @@ use serde::Serialize;
 #[must_use]
 pub struct Sticker<'a> {
     #[serde(rename = "sticker_file_id")]
-    id: &'a str,
+    id: file::id::Ref<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
 }
 
 impl<'a> Sticker<'a> {
     /// Constructs a `Sticker`.
-    pub const fn new(id: &'a str) -> Self {
+    pub const fn new(id: file::id::Ref<'a>) -> Self {
         Self {
             id,
             input_message_content: None,

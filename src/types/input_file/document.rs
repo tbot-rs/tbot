@@ -26,7 +26,7 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a `Document` from bytes.
-    pub const fn bytes(filename: &'a str, bytes: &'a [u8]) -> Self {
+    pub const fn with_bytes(filename: &'a str, bytes: &'a [u8]) -> Self {
         Self::new(InputFile::File { filename, bytes })
     }
 
@@ -35,7 +35,7 @@ impl<'a> Document<'a> {
     /// # Panics
     ///
     /// Panicks if the ID starts with `attach://`.
-    pub fn id(id: file::id::Ref<'a>) -> Self {
+    pub fn with_id(id: file::id::Ref<'a>) -> Self {
         assert!(
             !id.0.starts_with("attach://"),
             "\n[tbot]: Document's ID cannot start with `attach://`\n",
@@ -49,7 +49,7 @@ impl<'a> Document<'a> {
     /// # Panics
     ///
     /// Panicks if the URL starts with `attach://`.
-    pub fn url(url: &'a str) -> Self {
+    pub fn with_url(url: &'a str) -> Self {
         assert!(
             !url.starts_with("attach://"),
             "\n[tbot]: Document's URL cannot start with `attach://`\n",
