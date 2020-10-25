@@ -23,21 +23,21 @@ exclude = ["examples"]
 
 [dependencies]
 hyper = { version = "0.13.3", default-features = false }
-hyper-proxy = { version = "0.6", default-features = false }
+hyper-proxy = { version = "0.8", default-features = false }
 tokio = { version = "0.2", features = ["time", "rt-core", "tcp"] }
-futures = { version = "0.3" }
+futures = "0.3"
 serde_json = "1"
 serde = { version = "1.0.34", features = ["derive"] }
 hyper-tls = { version = "0.4",  optional = true }
 tokio-tls = { version = "0.3", optional = true }
 native-tls = { version = "0.2", optional = true }
-hyper-rustls = { version = "0.20", optional = true }
-tokio-rustls = { version = "0.12", optional = true }
-hyper-socks2 = { version = "0.4.3", default-features = false }
+hyper-rustls = { version = "0.21", optional = true }
+tokio-rustls = { version = "0.14", optional = true }
+hyper-socks2 = { version = "0.5", default-features = false }
 is-macro = "0.1.6"
 tracing = "0.1"
 tracing-futures = "0.2"
-paste = "0.1"
+paste = "1"
 
 [dev-dependencies]
 meval = "0.2"
