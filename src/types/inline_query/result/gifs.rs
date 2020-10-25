@@ -61,7 +61,10 @@ macro_rules! gif_base {
       doc_link_part: $doc_link_part:literal,
     ) => {
         use super::GifThumb;
-        use crate::types::{InputMessageContent, parameters::{ParseMode, Text}};
+        use crate::types::{
+            InputMessageContent, file,
+            parameters::{ParseMode, Text},
+        };
         use serde::Serialize;
 
         /// Represents a non-cached GIF.
@@ -95,7 +98,7 @@ macro_rules! gif_base {
         enum Kind<'a> {
             Cached {
                 #[serde(rename = $file_id)]
-                id: &'a str,
+                id: file::id::Ref<'a>,
             },
             Fresh(Fresh<'a>),
         }
@@ -177,10 +180,8 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub const fn cached(id: &'a str) -> Self {
-                    Self::new(Kind::Cached {
-                        id,
-                    })
+                pub const fn with_cached(id: file::id::Ref<'a>) -> Self {
+                    Self::new(Kind::Cached { id })
                 }
             }
 
@@ -188,7 +189,7 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a fresh `", stringify!($struct), "` result.",
                 ),
-                pub const fn fresh(gif: Fresh<'a>) -> Self {
+                pub const fn with_fresh(gif: Fresh<'a>) -> Self {
                     Self::new(Kind::Fresh(gif))
                 }
             }

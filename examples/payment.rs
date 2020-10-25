@@ -53,7 +53,7 @@ async fn main() {
                 " to get started",
             ))
             .to_string();
-            let text = Text::markdown_v2(&error_message);
+            let text = Text::with_markdown_v2(&error_message);
             context.send_message(text).call().await
         };
 

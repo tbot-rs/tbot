@@ -18,10 +18,10 @@
 //! use tbot::types::{chat, parameters::Text};
 //!
 //! const CHAT: chat::Id = chat::Id(0);
-//! const MESSAGE: &str = "`tbot` is a super-cool crate!";
+//! const MESSAGE: Text = Text::with_markdown("`tbot` is a super-cool crate!");
 //!
 //! let bot = tbot::from_env!("BOT_TOKEN");
-//! bot.send_message(CHAT, Text::markdown(MESSAGE)).call().await.unwrap();
+//! bot.send_message(CHAT, MESSAGE).call().await.unwrap();
 //! # }
 //! ```
 //!

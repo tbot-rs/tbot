@@ -31,7 +31,7 @@ impl Display for ParseMode {
 
 impl<'a> Text<'a> {
     /// Consructs new `Text` without any parse mode.
-    pub const fn plain(text: &'a str) -> Self {
+    pub const fn with_plain(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: None,
@@ -39,7 +39,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `Markdown` parse mode.
-    pub const fn markdown(text: &'a str) -> Self {
+    pub const fn with_markdown(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::Markdown),
@@ -47,7 +47,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `MarkdownV2` parse mode.
-    pub const fn markdown_v2(text: &'a str) -> Self {
+    pub const fn with_markdown_v2(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::MarkdownV2),
@@ -55,7 +55,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `HTML` parse mode.
-    pub const fn html(text: &'a str) -> Self {
+    pub const fn with_html(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::Html),
@@ -89,12 +89,12 @@ impl<'a> Text<'a> {
 
 impl<'a> From<&'a str> for Text<'a> {
     fn from(text: &'a str) -> Self {
-        Text::plain(text)
+        Text::with_plain(text)
     }
 }
 
 impl<'a> From<&'a String> for Text<'a> {
     fn from(text: &'a String) -> Self {
-        Text::plain(text.as_str())
+        Text::with_plain(text.as_str())
     }
 }

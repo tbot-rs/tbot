@@ -138,7 +138,7 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures whether the user's phone must be sent to your payment
     /// provider. Reflects the `send_phone_number_to_provider` parameter.
-    pub const fn must_send_phone_to_provider(
+    pub const fn should_send_phone_number_to_provider(
         mut self,
         must_send: bool,
     ) -> Self {
@@ -148,7 +148,7 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures whether the user's email must be sent to your payment
     /// provider. Reflects the `send_email_to_provider` parameter.
-    pub const fn must_send_email_to_provider(
+    pub const fn should_send_email_to_provider(
         mut self,
         must_send: bool,
     ) -> Self {
