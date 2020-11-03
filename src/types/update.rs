@@ -9,7 +9,10 @@ use serde::{
     de::{Deserializer, Error, IgnoredAny, MapAccess, Visitor},
     Deserialize,
 };
-use std::fmt::{self, Formatter};
+use std::{
+    convert::TryFrom,
+    fmt::{self, Formatter},
+};
 
 /// Represents an update ID.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
@@ -59,6 +62,23 @@ pub struct Update {
     pub kind: Kind,
 }
 
+#[derive(Debug)]
+pub(crate) struct RawUpdate {
+    pub id: Id,
+    pub kind: Result<Kind, String>,
+}
+
+impl TryFrom<RawUpdate> for Update {
+    type Error = String;
+
+    fn try_from(raw_update: RawUpdate) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: raw_update.id,
+            kind: raw_update.kind?,
+        })
+    }
+}
+
 const UPDATE_ID: &str = "update_id";
 const MESSAGE: &str = "message";
 const EDITED_MESSAGE: &str = "edited_message";
@@ -72,13 +92,13 @@ const PRE_CHECKOUT_QUERY: &str = "pre_checkout_query";
 const POLL: &str = "poll";
 const POLL_ANSWER: &str = "poll_answer";
 
-struct UpdateVisitor;
+struct RawUpdateVisitor;
 
-impl<'v> Visitor<'v> for UpdateVisitor {
-    type Value = Update;
+impl<'v> Visitor<'v> for RawUpdateVisitor {
+    type Value = RawUpdate;
 
     fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
-        write!(fmt, "struct Update")
+        write!(fmt, "struct RawUpdate")
     }
 
     fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
@@ -86,58 +106,52 @@ impl<'v> Visitor<'v> for UpdateVisitor {
         V: MapAccess<'v>,
     {
         let mut id = None;
-        let mut kind = None;
+        let mut kind = Ok(Kind::Unknown);
 
         while let Some(key) = map.next_key()? {
-            match key {
-                UPDATE_ID => id = Some(map.next_value()?),
-                MESSAGE => kind = Some(Kind::Message(map.next_value()?)),
-                EDITED_MESSAGE => {
-                    kind = Some(Kind::EditedMessage(map.next_value()?))
+            kind = match key {
+                UPDATE_ID => {
+                    id = Some(map.next_value()?);
+                    continue;
                 }
-                CHANNEL_POST => {
-                    kind = Some(Kind::ChannelPost(map.next_value()?))
-                }
+                MESSAGE => map.next_value().map(Kind::Message),
+                EDITED_MESSAGE => map.next_value().map(Kind::EditedMessage),
+                CHANNEL_POST => map.next_value().map(Kind::ChannelPost),
                 EDITED_CHANNEL_POST => {
-                    kind = Some(Kind::EditedChannelPost(map.next_value()?))
+                    map.next_value().map(Kind::EditedChannelPost)
                 }
-                INLINE_QUERY => {
-                    kind = Some(Kind::InlineQuery(map.next_value()?))
-                }
-                CALLBACK_QUERY => {
-                    kind = Some(Kind::CallbackQuery(map.next_value()?))
-                }
+                INLINE_QUERY => map.next_value().map(Kind::InlineQuery),
+                CALLBACK_QUERY => map.next_value().map(Kind::CallbackQuery),
                 CHOSEN_INLINE_RESULT => {
-                    kind = Some(Kind::ChosenInlineResult(map.next_value()?))
+                    map.next_value().map(Kind::ChosenInlineResult)
                 }
-                SHIPPING_QUERY => {
-                    kind = Some(Kind::ShippingQuery(map.next_value()?))
-                }
+                SHIPPING_QUERY => map.next_value().map(Kind::ShippingQuery),
                 PRE_CHECKOUT_QUERY => {
-                    kind = Some(Kind::PreCheckoutQuery(map.next_value()?))
+                    map.next_value().map(Kind::PreCheckoutQuery)
                 }
-                POLL => kind = Some(Kind::Poll(map.next_value()?)),
-                POLL_ANSWER => kind = Some(Kind::PollAnswer(map.next_value()?)),
+                POLL => map.next_value().map(Kind::Poll),
+                POLL_ANSWER => map.next_value().map(Kind::PollAnswer),
                 _ => {
-                    let _ = map.next_value::<IgnoredAny>()?;
+                    let _: IgnoredAny = map.next_value()?;
+                    Ok(Kind::Unknown)
                 }
-            }
+            };
         }
 
-        Ok(Update {
+        Ok(RawUpdate {
             id: id.ok_or_else(|| Error::missing_field(UPDATE_ID))?,
-            kind: kind.unwrap_or(Kind::Unknown),
+            kind: kind.map_err(|x| x.to_string()),
         })
     }
 }
 
-impl<'de> Deserialize<'de> for Update {
+impl<'de> Deserialize<'de> for RawUpdate {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
         deserializer.deserialize_struct(
-            "Update",
+            "RawUpdate",
             &[
                 UPDATE_ID,
                 MESSAGE,
@@ -151,7 +165,17 @@ impl<'de> Deserialize<'de> for Update {
                 POLL,
                 POLL_ANSWER,
             ],
-            UpdateVisitor,
+            RawUpdateVisitor,
         )
+    }
+}
+
+impl<'de> Deserialize<'de> for Update {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Self::try_from(RawUpdate::deserialize(deserializer)?)
+            .map_err(Error::custom)
     }
 }
