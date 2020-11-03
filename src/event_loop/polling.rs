@@ -141,13 +141,24 @@ impl Polling {
                 .call();
 
             match timeout_future(request_timeout, get_updates).await {
-                Ok(Ok(updates)) => {
-                    if let Some(update) = updates.last() {
+                Ok(Ok(raw_updates)) => {
+                    if let Some(update) = raw_updates.last() {
                         offset = Some(update.id.0 + 1);
                     }
 
-                    for update in updates {
-                        event_loop.handle_update(Arc::clone(&bot), update);
+                    for raw_update in raw_updates {
+                        match raw_update.try_into() {
+                            Ok(update) => event_loop
+                                .handle_update(Arc::clone(&bot), update),
+                            Err(error) => eprintln!(
+                                "[tbot] Failed to parse an update: {:?}. `tbot` \
+                                 will skip it, but this error means that \
+                                 `tbot`'s type deserialization doesn't match \
+                                 the Bot API. You should file an issue at \
+                                 https://gitlab.com/SnejUgal/tbot.",
+                                error
+                            ),
+                        }
                     }
                 }
                 Ok(Err(error)) => {
