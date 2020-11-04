@@ -1,5 +1,4 @@
 use super::call_method;
-#[allow(deprecated)]
 use crate::{
     connectors::Client,
     errors, token,
@@ -118,157 +117,71 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures if the user must specify their name.
     /// Reflects the `need_name` parameters.
-    pub fn is_name_needed(mut self, is_needed: bool) -> Self {
-        self.need_name = Some(is_needed);
+    pub fn name(mut self, is_needed: Requirement) -> Self {
+        self.need_name = Some(is_needed.is_required());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `is_name_needed` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn name(self, is_needed: Requirement) -> Self {
-        self.is_name_needed(is_needed.is_required())
     }
 
     /// Configures if the user must specify their phone number.
     /// Reflects the `need_phone_number` parameter.
-    pub fn is_phone_number_needed(mut self, is_needed: bool) -> Self {
-        self.need_phone_number = Some(is_needed);
+    pub fn phone_number(mut self, is_needed: Requirement) -> Self {
+        self.need_phone_number = Some(is_needed.is_required());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `is_phone_number_needed` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn phone_number(self, is_needed: Requirement) -> Self {
-        self.is_phone_number_needed(is_needed.is_required())
     }
 
     /// Configures if the user must specify their email.
     /// Reflects the `need_email` parameter.
-    pub fn is_email_needed(mut self, is_needed: bool) -> Self {
-        self.need_email = Some(is_needed);
+    pub fn email(mut self, is_needed: Requirement) -> Self {
+        self.need_email = Some(is_needed.is_required());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `is_email_needed` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn email(self, is_needed: Requirement) -> Self {
-        self.is_email_needed(is_needed.is_required())
     }
 
     /// Configures if the user must specify their shipping address.
     /// Reflects the `need_shipping_address` parameter.
-    pub fn is_shipping_address_needed(mut self, is_needed: bool) -> Self {
-        self.need_shipping_address = Some(is_needed);
+    pub fn shipping_address(mut self, is_needed: Requirement) -> Self {
+        self.need_shipping_address = Some(is_needed.is_required());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `is_shipping_address_needed` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn shipping_address(self, is_needed: Requirement) -> Self {
-        self.is_shipping_address_needed(is_needed.is_required())
     }
 
     /// Configures if the user's phone must be sent to your payment provider.
     /// Reflects the `send_phone_number_to_provider` parameter.
-    pub fn should_send_phone_number_to_provider(
+    pub fn should_share_phone(
         mut self,
-        should_send: bool,
+        should_send: SendToProviderState,
     ) -> Self {
-        self.send_phone_number_to_provider = Some(should_send);
+        self.send_phone_number_to_provider = Some(should_send.should_send());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `should_send_phone_number_to_provider` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn should_share_phone(self, should_send: SendToProviderState) -> Self {
-        self.should_send_phone_number_to_provider(should_send.should_send())
     }
 
     /// Configures if the user's email must be sent to your payment provider.
     /// Reflects the `send_email_to_provider` parameter.
-    pub fn should_send_email_to_provider(mut self, must_send: bool) -> Self {
-        self.send_email_to_provider = Some(must_send);
+    pub fn should_share_email(
+        mut self,
+        should_send: SendToProviderState,
+    ) -> Self {
+        self.send_email_to_provider = Some(should_send.should_send());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `should_send_email_to_provider` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn should_share_email(self, should_send: SendToProviderState) -> Self {
-        self.should_send_email_to_provider(should_send.should_send())
     }
 
     /// Configures if the final price depends on the shipping method.
     /// Reflects the `is_flexible` parameter.
-    pub fn is_flexible(mut self, is_flexible: bool) -> Self {
-        self.is_flexible = Some(is_flexible);
+    pub fn flexibility(mut self, flexibility: Flexibility) -> Self {
+        self.is_flexible = Some(flexibility.is_flexible());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `is_flexible` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn flexibility(self, flexibility: Flexibility) -> Self {
-        self.is_flexible(flexibility.is_flexible())
     }
 
     /// Configures if the message will be sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
-        self.disable_notification = Some(is_disabled);
+    pub fn notification(mut self, state: NotificationState) -> Self {
+        self.disable_notification = Some(state.is_disabled());
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `is_notification_disabled` which takes a `bool`"
-    )]
-    #[allow(deprecated)]
-    pub fn notification(self, state: NotificationState) -> Self {
-        self.is_notification_disabled(state.is_disabled())
     }
 
     /// Configures which message this invoice is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub fn in_reply_to(mut self, id: message::Id) -> Self {
+    pub fn reply_to_message_id(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `in_reply_to`"
-    )]
-    pub fn reply_to_message_id(self, id: message::Id) -> Self {
-        self.in_reply_to(id)
     }
 
     /// Configures a keyboard for the message.

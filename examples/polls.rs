@@ -30,7 +30,7 @@ async fn main() {
         QUIZ_OPTIONS,
         Quiz::new(QUIZ_CORRECT_OPTION).explanation(QUIZ_EXPLANATION),
     )
-    .is_anonymous(false);
+    .anonymous(false);
 
     bot.command("poll", move |context| async move {
         let call_result = context.send_poll(&regular).call().await;

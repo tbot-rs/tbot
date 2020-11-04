@@ -47,34 +47,16 @@ impl<'a> SetInlineGameScore<'a> {
     }
 
     /// Configures if the score may go down. Reflects the `force` parameter.
-    pub fn is_forced(mut self, is_forced: bool) -> Self {
+    pub fn force(mut self, is_forced: bool) -> Self {
         self.force = Some(is_forced);
         self
     }
 
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `is_forced`"
-    )]
-    pub fn force(self, is_forced: bool) -> Self {
-        self.is_forced(is_forced)
-    }
-
     /// Configures if the message should not be edited immediately.
     /// Reflects the `disable_edit_message` parameter.
-    pub fn is_editing_message_disabled(mut self, is_disabled: bool) -> Self {
+    pub fn disable_edit_message(mut self, is_disabled: bool) -> Self {
         self.disable_edit_message = Some(is_disabled);
         self
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `is_editing_message_disabled`"
-    )]
-    pub fn disable_edit_message(self, is_disabled: bool) -> Self {
-        self.is_editing_message_disabled(is_disabled)
     }
 }
 

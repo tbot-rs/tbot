@@ -31,71 +31,35 @@ impl Display for ParseMode {
 
 impl<'a> Text<'a> {
     /// Consructs new `Text` without any parse mode.
-    pub const fn with_plain(text: &'a str) -> Self {
+    pub const fn plain(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: None,
         }
     }
 
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `with_plain`"
-    )]
-    pub const fn plain(text: &'a str) -> Self {
-        Self::with_plain(text)
-    }
-
     /// Constructs new `Text` with `Markdown` parse mode.
-    pub fn with_markdown(text: &'a str) -> Self {
+    pub fn markdown(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::Markdown),
         }
     }
 
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `with_markdown`"
-    )]
-    pub fn markdown(text: &'a str) -> Self {
-        Self::with_markdown(text)
-    }
-
     /// Constructs new `Text` with `MarkdownV2` parse mode.
-    pub fn with_markdown_v2(text: &'a str) -> Self {
+    pub fn markdown_v2(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::MarkdownV2),
         }
     }
 
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `with_markdown_v2`"
-    )]
-    pub fn markdown_v2(text: &'a str) -> Self {
-        Self::with_markdown_v2(text)
-    }
-
     /// Constructs new `Text` with `HTML` parse mode.
-    pub fn with_html(text: &'a str) -> Self {
+    pub fn html(text: &'a str) -> Self {
         Self {
             text,
             parse_mode: Some(ParseMode::Html),
         }
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `with_html`"
-    )]
-    pub fn html(text: &'a str) -> Self {
-        Self::with_html(text)
     }
 
     /// Checks if parse mode isn't set.
@@ -125,12 +89,12 @@ impl<'a> Text<'a> {
 
 impl<'a> From<&'a str> for Text<'a> {
     fn from(text: &'a str) -> Self {
-        Text::with_plain(text)
+        Text::plain(text)
     }
 }
 
 impl<'a> From<&'a String> for Text<'a> {
     fn from(text: &'a String) -> Self {
-        Text::with_plain(text.as_str())
+        Text::plain(text.as_str())
     }
 }

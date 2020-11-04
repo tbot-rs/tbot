@@ -10,21 +10,12 @@ pub struct ChatPhoto<'a>(pub(crate) WithName<'a>);
 
 impl<'a> ChatPhoto<'a> {
     /// Constructs a `ChatPhoto`.
-    pub fn with_bytes(bytes: &'a [u8]) -> Self {
+    pub fn new(bytes: &'a [u8]) -> Self {
         let file = InputFile::File {
             filename: "photo.jpg",
             bytes,
         };
 
         ChatPhoto(file.with_name("photo"))
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `with_bytes`"
-    )]
-    pub fn new(bytes: &'a [u8]) -> Self {
-        Self::with_bytes(bytes)
     }
 }
