@@ -2,7 +2,7 @@ use tbot::{
     markup::{inline_code, markdown_v2},
     prelude::*,
     types::{
-        parameters::{Photo, Text},
+        parameters::{Flexibility::Flexible, Photo, Text},
         shipping, LabeledPrice,
     },
     Bot,
@@ -43,7 +43,7 @@ async fn main() {
                 CURRENCY,
                 PRICE,
             );
-            invoice = invoice.photo(PHOTO).is_flexible(true);
+            invoice = invoice.photo(PHOTO).flexibility(Flexible);
 
             invoice.call().await
         } else {
@@ -53,7 +53,7 @@ async fn main() {
                 " to get started",
             ))
             .to_string();
-            let text = Text::with_markdown_v2(&error_message);
+            let text = Text::markdown_v2(&error_message);
             context.send_message(text).call().await
         };
 

@@ -23,7 +23,7 @@ async fn main() {
             markdown_v2("Whops, I couldn't evaluate your expression :(")
                 .to_string()
         };
-        let reply = ParseMode::with_markdown_v2(&message);
+        let reply = ParseMode::markdown_v2(&message);
 
         let call_result = context.send_message_in_reply(reply).call().await;
         if let Err(err) = call_result {
@@ -54,7 +54,7 @@ async fn main() {
             *id += 1;
             id.to_string()
         };
-        let content = Text::new(ParseMode::with_markdown_v2(&message));
+        let content = Text::new(ParseMode::markdown_v2(&message));
         let article = Article::new(&title, content).description(&message);
         let result = inline_query::Result::new(&id, article);
 

@@ -13,7 +13,7 @@ async fn main() {
         let echo = markdown_v2(entities).to_string();
 
         context
-            .send_message(Text::with_markdown_v2(&echo))
+            .send_message(Text::markdown_v2(&echo))
             .call()
             .await
             .unwrap();

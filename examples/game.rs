@@ -59,7 +59,7 @@ async fn main() {
 
             let call_result = context
                 .set_message_game_score(message_id, user.id, score)
-                .is_forced(true)
+                .force(true)
                 .call()
                 .await;
 

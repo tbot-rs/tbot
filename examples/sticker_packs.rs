@@ -17,13 +17,13 @@ async fn main() -> Result<(), tbot::errors::MethodCall> {
     let mut stickers = STICKERS.iter();
     let &(bytes, emoji) = stickers.next().unwrap();
 
-    let sticker = PngSticker::with_bytes(bytes);
+    let sticker = PngSticker::bytes(bytes);
     bot.create_new_sticker_set(user_id, NAME, TITLE, sticker, emoji)
         .call()
         .await?;
 
     for &(bytes, emoji) in stickers {
-        let sticker = PngSticker::with_bytes(bytes);
+        let sticker = PngSticker::bytes(bytes);
         bot.add_sticker_to_set(user_id, NAME, sticker, emoji)
             .call()
             .await?;

@@ -13,7 +13,7 @@ async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("photo", |context| async move {
-        let photo = Photo::with_bytes(PHOTO);
+        let photo = Photo::bytes(PHOTO);
         let call_result = context.send_photo(photo).call().await;
         if let Err(err) = call_result {
             dbg!(err);
@@ -21,7 +21,7 @@ async fn main() {
     });
 
     bot.command("animation", |context| async move {
-        let animation = Animation::with_bytes(GIF);
+        let animation = Animation::bytes(GIF);
         let call_result = context.send_animation(animation).call().await;
         if let Err(err) = call_result {
             dbg!(err);
@@ -29,7 +29,7 @@ async fn main() {
     });
 
     bot.command("document", |context| async move {
-        let document = Document::with_bytes("tutorial.rs", TUTORIAL);
+        let document = Document::bytes("tutorial.rs", TUTORIAL);
         let call_result = context.send_document(document).call().await;
         if let Err(err) = call_result {
             dbg!(err);
@@ -41,7 +41,7 @@ async fn main() {
     // video. Also, Telegram seems not to create the thumb and figure out the
     // duration on its own, so the video might look somewhat corrupted at first.
     bot.command("video", |context| async move {
-        let video = Video::with_bytes(GIF);
+        let video = Video::bytes(GIF);
         let call_result = context.send_video(video).call().await;
         if let Err(err) = call_result {
             dbg!(err);
@@ -49,10 +49,7 @@ async fn main() {
     });
 
     bot.command("album", |context| async move {
-        let album = &[
-            Photo::with_bytes(PHOTO).into(),
-            Video::with_bytes(GIF).into(),
-        ];
+        let album = &[Photo::bytes(PHOTO).into(), Video::bytes(GIF).into()];
         let call_result = context.send_media_group(album).call().await;
         if let Err(err) = call_result {
             dbg!(err);

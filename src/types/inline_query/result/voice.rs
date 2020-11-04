@@ -3,7 +3,6 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Voice
 
 use crate::types::{
-    file,
     parameters::{ParseMode, Text},
     InputMessageContent,
 };
@@ -79,31 +78,13 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a cached `Voice` result.
-    pub fn with_cached(title: &'a str, id: file::id::Ref<'a>) -> Self {
-        Self::new(title, Kind::Cached { id: id.0 })
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "use `with_cached` which takes a `file::id::Ref<'a>` for `id`"
-    )]
     pub fn cached(title: &'a str, id: &'a str) -> Self {
-        Self::with_cached(title, file::id::Ref(id))
+        Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Voice` result.
-    pub fn with_fresh(title: &'a str, voice: Fresh<'a>) -> Self {
-        Self::new(title, Kind::Fresh(voice))
-    }
-
-    #[doc(hidden)]
-    #[deprecated(
-        since = "0.6.6",
-        note = "this method is renamed to `with_fresh`"
-    )]
     pub fn fresh(title: &'a str, voice: Fresh<'a>) -> Self {
-        Self::with_fresh(title, voice)
+        Self::new(title, Kind::Fresh(voice))
     }
 
     /// Configures the caption of the voice.
