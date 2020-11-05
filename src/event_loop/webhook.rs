@@ -154,12 +154,16 @@ async fn handle(
             request.extend(chunk?);
         }
 
-        let update =
-            serde_json::from_slice(&request[..]).unwrap_or_else(|error| {
-                panic!("\n[tbot] Received invalid JSON: {:#?}\n", error);
-            });
-
-        event_loop.handle_update(update);
+        match serde_json::from_slice(&request[..]) {
+            Ok(update) => event_loop.handle_update(update),
+            Err(error) => eprintln!(
+                "[tbot] Failed to parse an update: {:?}. `tbot` will skip it, \
+                 but this error means that `tbot`'s type deserialization \
+                 doesn't match the Bot API. You should file an issue at \
+                 https://gitlab.com/SnejUgal/tbot.",
+                error
+            ),
+        }
     }
 
     Ok(Response::new(Body::empty()))

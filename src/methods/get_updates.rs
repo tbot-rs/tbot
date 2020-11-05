@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     bot::InnerBot,
     errors,
-    types::{parameters::UpdateKind, Update},
+    types::{parameters::UpdateKind, update::RawUpdate},
 };
 use serde::Serialize;
 
@@ -41,7 +41,9 @@ impl<'a> GetUpdates<'a> {
 
 impl GetUpdates<'_> {
     /// Calls the method.
-    pub async fn call(self) -> Result<Vec<Update>, errors::MethodCall> {
+    pub(crate) async fn call(
+        self,
+    ) -> Result<Vec<RawUpdate>, errors::MethodCall> {
         call_method(
             self.bot,
             "getUpdates",
