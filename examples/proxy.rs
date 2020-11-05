@@ -1,7 +1,7 @@
 use tbot::{
     prelude::*,
     proxy::https::{Intercept, Proxy},
-    Bot,
+    BotBuilder,
 };
 
 const PROXY: &str = "http://127.0.0.1:8080";
@@ -12,7 +12,10 @@ async fn main() {
     // or, for SOCKS:
     // let proxy = tbot::proxy::Proxy::socks(SOCKS_PROXY, AUTH);
 
-    let mut bot = Bot::from_env_with_proxy("BOT_TOKEN", proxy).event_loop();
+    let mut bot = BotBuilder::with_env_token("BOT_TOKEN")
+        .proxy(proxy)
+        .build()
+        .event_loop();
 
     bot.text(|context| async move {
         context
