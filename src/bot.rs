@@ -30,6 +30,9 @@ use crate::{
 use std::borrow::Cow;
 use std::sync::Arc;
 
+mod inner_bot;
+pub(crate) use inner_bot::InnerBot;
+
 /// A `Bot` lets you call Bot API methods and construct event loops.
 ///
 /// Using a `Bot` instance, you can call methods from the [`methods`] module.
@@ -53,46 +56,28 @@ use std::sync::Arc;
 #[derive(Debug, Clone)]
 #[must_use]
 pub struct Bot {
-    pub(crate) inner: Arc<InnerBot>,
-}
-
-#[derive(Debug)]
-#[allow(clippy::module_name_repetitions)]
-pub struct InnerBot {
-    token: Token,
-    client: Client,
-}
-
-impl InnerBot {
-    pub fn token(&self) -> &str {
-        &self.token.0
-    }
-
-    pub const fn client(&self) -> &Client {
-        &self.client
-    }
+    inner: Arc<InnerBot>,
 }
 
 impl Bot {
     /// Constructs a new `Bot`.
     pub fn new(token: String) -> Self {
+        let token = Token(token);
+        let client = Client::https();
+
         Self {
-            inner: Arc::new(InnerBot {
-                token: Token(token),
-                client: Client::https(),
-            }),
+            inner: Arc::new(InnerBot::new(token, client)),
         }
     }
 
     /// Constructs a `Bot` with the provided proxy.
     pub fn with_proxy(token: String, proxy: impl Into<Proxy>) -> Self {
         let proxy: Proxy = proxy.into();
+        let client = proxy.into();
+        let token = Token(token);
 
         Self {
-            inner: Arc::new(InnerBot {
-                token: Token(token),
-                client: proxy.into(),
-            }),
+            inner: Arc::new(InnerBot::new(token, client)),
         }
     }
 
