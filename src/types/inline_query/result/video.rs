@@ -3,6 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Video
 
 use crate::types::{
+    file,
     parameters::{ParseMode, Text},
     InputMessageContent, InteriorBorrow,
 };
@@ -44,11 +45,12 @@ pub struct Fresh<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[serde(untagged)]
 #[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "video_file_id")]
-        id: Cow<'a, str>,
+        id: file::Id<'a>,
     },
     Fresh(Fresh<'a>),
 }
@@ -60,6 +62,7 @@ enum Kind<'a> {
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Video<'a> {
+    #[serde(flatten)]
     kind: Kind<'a>,
     title: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -121,15 +124,18 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a cached `Video` result.
-    pub fn cached(
+    pub fn with_cached(
         title: impl Into<Cow<'a, str>>,
-        id: impl Into<Cow<'a, str>>,
+        id: file::Id<'a>,
     ) -> Self {
-        Self::new(title, Kind::Cached { id: id.into() })
+        Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Video` result.
-    pub fn fresh(title: impl Into<Cow<'a, str>>, video: Fresh<'a>) -> Self {
+    pub fn with_fresh(
+        title: impl Into<Cow<'a, str>>,
+        video: Fresh<'a>,
+    ) -> Self {
         Self::new(title, Kind::Fresh(video))
     }
 

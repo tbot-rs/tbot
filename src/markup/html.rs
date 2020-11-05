@@ -117,6 +117,6 @@ impl<T: Formattable> Display for Displayable<T> {
 impl<T: Formattable> From<Html<T>> for Text<'_> {
     fn from(markup: Html<T>) -> Self {
         let message = Displayable(markup).to_string();
-        Text::html(message)
+        Text::with_html(message)
     }
 }

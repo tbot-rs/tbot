@@ -1,10 +1,7 @@
 use tbot::{
     markup::{inline_code, markdown_v2},
     prelude::*,
-    types::{
-        parameters::{Flexibility::Flexible, Photo},
-        shipping, LabeledPrice,
-    },
+    types::{parameters::Photo, shipping, LabeledPrice},
     Bot,
 };
 
@@ -39,7 +36,7 @@ async fn main() {
             let photo = Photo::new(
                 "https://www.rustacean.net/assets/rustacean-flat-happy.png",
             );
-            invoice = invoice.photo(photo).flexibility(Flexible);
+            invoice = invoice.photo(photo).is_flexible(true);
 
             invoice.call().await
         } else {

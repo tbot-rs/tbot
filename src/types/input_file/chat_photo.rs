@@ -12,7 +12,7 @@ pub struct ChatPhoto<'a>(pub(crate) InputFile<'a>);
 
 impl<'a> ChatPhoto<'a> {
     /// Constructs a `ChatPhoto`.
-    pub fn new(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         let file = InputFile::File {
             filename: "photo.jpg".into(),
             bytes: bytes.into(),

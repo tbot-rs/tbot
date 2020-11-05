@@ -1,5 +1,7 @@
 //! Types for interacting with the API.
 
+#![allow(clippy::wrong_self_convention)]
+
 mod animation;
 mod audio;
 mod bot_command;

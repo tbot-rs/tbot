@@ -5,7 +5,7 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{ChatId, ImplicitChatId, NotificationState},
+        parameters::{ChatId, ImplicitChatId},
     },
 };
 use serde::Serialize;
@@ -70,16 +70,16 @@ impl<'a> SendContact<'a> {
         self
     }
 
-    /// Configures if the message will be sent silently.
+    /// Configures whether the message is sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
     }
 
     /// Configures which message this contact is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

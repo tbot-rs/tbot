@@ -98,6 +98,8 @@ where
         })?);
     }
 
+    trace!(raw_response = ?DebugBytes(&response));
+
     if response.starts_with(b"<") {
         // If so, then Bots API is down and returns HTML.
         // Handling this case specially.

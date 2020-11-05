@@ -29,13 +29,14 @@ pub struct AnswerCallbackQuery<'a> {
 }
 
 impl<'a> AnswerCallbackQuery<'a> {
+    #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: &'a InnerBot,
         callback_query_id: callback::query::Id<'a>,
-        action: CallbackAction<'a>,
+        action: Option<CallbackAction<'a>>,
     ) -> Self {
         match action {
-            CallbackAction::None => Self {
+            None => Self {
                 bot,
                 callback_query_id,
                 text: None,
@@ -43,7 +44,7 @@ impl<'a> AnswerCallbackQuery<'a> {
                 url: None,
                 cache_time: None,
             },
-            CallbackAction::Url(url) => Self {
+            Some(CallbackAction::Url(url)) => Self {
                 bot,
                 callback_query_id,
                 text: None,
@@ -51,7 +52,7 @@ impl<'a> AnswerCallbackQuery<'a> {
                 url: Some(url),
                 cache_time: None,
             },
-            CallbackAction::Text(text, show_alert) => Self {
+            Some(CallbackAction::Text(text, show_alert)) => Self {
                 bot,
                 callback_query_id,
                 text: Some(text),

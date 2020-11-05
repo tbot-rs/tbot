@@ -26,7 +26,7 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from bytes.
-    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
             filename: "photo.jpg".into(),
             bytes: bytes.into(),
@@ -38,7 +38,7 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panics if the ID starts with `attach://`.
-    pub fn id(id: file::Id<'a>) -> Self {
+    pub fn with_id(id: file::Id<'a>) -> Self {
         assert!(
             !id.0.starts_with("attach://"),
             "\n[tbot]: Photo's ID cannot start with `attach://`\n",
@@ -52,7 +52,7 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),

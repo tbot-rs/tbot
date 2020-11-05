@@ -5,9 +5,7 @@ use crate::{
     types::{
         keyboard::inline,
         message::{self, Message},
-        parameters::{
-            ChatId, ImplicitChatId, ParseMode, Text, WebPagePreviewState,
-        },
+        parameters::{ChatId, ImplicitChatId, ParseMode, Text},
     },
 };
 use serde::Serialize;
@@ -54,10 +52,13 @@ impl<'a> EditMessageText<'a> {
         }
     }
 
-    /// Configures if a preview for the first link in the message should be
+    /// Configures whether a preview for the first link in the message should be
     /// shown. Reflects the `disable_web_page_preview` parameter.
-    pub fn web_page_preview(mut self, state: WebPagePreviewState) -> Self {
-        self.disable_web_page_preview = Some(state.is_disabled());
+    pub const fn is_web_page_preview_disabled(
+        mut self,
+        is_disabled: bool,
+    ) -> Self {
+        self.disable_web_page_preview = Some(is_disabled);
         self
     }
 

@@ -15,7 +15,7 @@ impl<'a> TgsSticker<'a> {
     }
 
     /// Constructs a `TgsSticker` from bytes.
-    pub fn bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Self::new(InputFile::File {
             filename: "sticker.tgs".into(),
             bytes: bytes.into(),

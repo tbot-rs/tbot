@@ -129,6 +129,6 @@ impl<T: Formattable> Display for Displayable<T> {
 impl<T: Formattable> From<MarkdownV2<T>> for Text<'_> {
     fn from(markup: MarkdownV2<T>) -> Self {
         let message = Displayable(markup).to_string();
-        Text::markdown_v2(message)
+        Text::with_markdown_v2(message)
     }
 }

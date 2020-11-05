@@ -32,4 +32,6 @@ pub enum UpdateKind {
     PreCheckoutQuery,
     /// Handles poll state updates.
     Poll,
+    /// Handles poll answer updates.
+    PollAnswer,
 }

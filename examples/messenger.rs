@@ -40,7 +40,7 @@ impl State {
         self.notify(
             bot,
             &room,
-            Text::markdown_v2("_A participant has joined the room\\._"),
+            Text::with_markdown_v2("_A participant has joined the room\\._"),
         )
         .await;
 
@@ -51,7 +51,7 @@ impl State {
             self.notify(
                 bot,
                 &room,
-                Text::markdown_v2("_A participant has left the room\\._"),
+                Text::with_markdown_v2("_A participant has left the room\\._"),
             )
             .await;
         }
@@ -176,7 +176,7 @@ async fn main() {
                 .await;
 
             let call_result = context
-                .send_message(Text::markdown_v2(
+                .send_message(Text::with_markdown_v2(
                     "_You have joined the room\\._",
                 ))
                 .call()
@@ -221,13 +221,15 @@ async fn main() {
                 .notify(
                     &context.bot,
                     &room,
-                    Text::markdown_v2("_A participant has left the room\\._"),
+                    Text::with_markdown_v2(
+                        "_A participant has left the room\\._",
+                    ),
                 )
                 .await;
         }
 
         let call_result = context
-            .send_message(Text::markdown_v2("_You have left the room\\._"))
+            .send_message(Text::with_markdown_v2("_You have left the room\\._"))
             .call()
             .await;
 
@@ -254,7 +256,7 @@ async fn main() {
             state.join(&context.bot, context.chat.id, room).await;
 
             let call_result = context
-                .send_message(Text::markdown_v2(&message))
+                .send_message(Text::with_markdown_v2(&message))
                 .call()
                 .await;
 

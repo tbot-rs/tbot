@@ -3,9 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Article
 
 use super::Thumb;
-use crate::types::{
-    parameters::UrlVisibility, InputMessageContent, InteriorBorrow,
-};
+use crate::types::{InputMessageContent, InteriorBorrow};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -49,9 +47,9 @@ impl<'a> Article<'a> {
         self
     }
 
-    /// Configures the article's URL visibility.
-    pub fn url_visibility(mut self, visibility: UrlVisibility) -> Self {
-        self.hide_url = Some(visibility.is_hidden());
+    /// Configures whether the article's URL is hidden.
+    pub const fn is_url_hidden(mut self, is_hidden: bool) -> Self {
+        self.hide_url = Some(is_hidden);
         self
     }
 

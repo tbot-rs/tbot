@@ -1,6 +1,5 @@
-use crate::types::{InputMessageContent, InteriorBorrow};
+use crate::types::{file, InputMessageContent, InteriorBorrow};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultCachedSticker`][docs].
 ///
@@ -9,16 +8,16 @@ use std::borrow::Cow;
 #[must_use]
 pub struct Sticker<'a> {
     #[serde(rename = "sticker_file_id")]
-    id: Cow<'a, str>,
+    id: file::Id<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
 }
 
 impl<'a> Sticker<'a> {
     /// Constructs a `Sticker`.
-    pub fn new(id: impl Into<Cow<'a, str>>) -> Self {
+    pub const fn new(id: file::Id<'a>) -> Self {
         Self {
-            id: id.into(),
+            id,
             input_message_content: None,
         }
     }

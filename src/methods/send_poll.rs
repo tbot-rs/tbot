@@ -5,7 +5,7 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{Any, ChatId, ImplicitChatId, NotificationState},
+        parameters::{poll, ChatId, ImplicitChatId},
     },
 };
 use serde::Serialize;
@@ -22,7 +22,7 @@ pub struct SendPoll<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     #[serde(flatten)]
-    poll: &'a Any<'a>,
+    poll: poll::Any<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +35,7 @@ impl<'a> SendPoll<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
-        poll: &'a Any<'a>,
+        poll: poll::Any<'a>,
     ) -> Self {
         Self {
             bot,
@@ -47,16 +47,16 @@ impl<'a> SendPoll<'a> {
         }
     }
 
-    /// Configures if the message will be sent silently.
+    /// Configures whether the message is sent silently.
     /// Reflects the `disable_notification` parameter.
-    pub fn notification(mut self, state: NotificationState) -> Self {
-        self.disable_notification = Some(state.is_disabled());
+    pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
+        self.disable_notification = Some(is_disabled);
         self
     }
 
     /// Configures which message this poll is sent in reply to.
     /// Reflects the `reply_to_message_id` parameter.
-    pub const fn reply_to_message_id(mut self, id: message::Id) -> Self {
+    pub const fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
         self
     }

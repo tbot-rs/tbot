@@ -5,18 +5,15 @@ use std::borrow::Cow;
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
 /// Though you can consturct variants directly, there are convenient methods
-/// to do that: [`none`], [`notification`], [`alert`], [`url`].
+/// to do that: [`with_notification`], [`with_alert`] and [`with_url`].
 ///
 /// [`AnswerCallbackQuery`]: ./struct.AnswerCallbackQuery.html
-/// [`none`]: #method.none
-/// [`notification`]: #method.notification
-/// [`alert`]: #method.alert
-/// [`url`]: #method.url
+/// [`with_notification`]: #method.with_notification
+/// [`with_alert`]: #method.with_alert
+/// [`with_url`]: #method.with_url
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[must_use]
 pub enum CallbackAction<'a> {
-    /// No action.
-    None,
     /// Show text to the user. The last item configures `show_alert`.
     Text(Cow<'a, str>, bool),
     /// Open a URL.
@@ -24,11 +21,6 @@ pub enum CallbackAction<'a> {
 }
 
 impl<'a> CallbackAction<'a> {
-    /// Constructs the `None` variant.
-    pub const fn with_no_action() -> Self {
-        CallbackAction::None
-    }
-
     /// Constructs the `Text` variant that shows a simple notification.
     pub fn with_notification(text: impl Into<Cow<'a, str>>) -> Self {
         CallbackAction::Text(text.into(), false)
@@ -48,7 +40,6 @@ impl<'a> CallbackAction<'a> {
 impl<'a> InteriorBorrow<'a> for CallbackAction<'a> {
     fn borrow_inside(&'a self) -> Self {
         match self {
-            Self::None => Self::None,
             Self::Text(text, show_alert) => {
                 Self::Text(text.borrow_inside(), *show_alert)
             }

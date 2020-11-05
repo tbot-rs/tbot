@@ -17,7 +17,7 @@ impl ForceReply {
     }
 
     /// Configure `selective`.
-    pub const fn selective(mut self, is_selective: bool) -> Self {
+    pub const fn is_selective(mut self, is_selective: bool) -> Self {
         self.selective = Some(is_selective);
         self
     }

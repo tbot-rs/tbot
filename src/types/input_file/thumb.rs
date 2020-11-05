@@ -12,7 +12,7 @@ pub struct Thumb<'a>(pub(crate) InputFile<'a>);
 
 impl<'a> Thumb<'a> {
     /// Constructs a `Thumb`.
-    pub fn new(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
         Thumb(InputFile::File {
             filename: "thumb.jpg".into(),
             bytes: bytes.into(),

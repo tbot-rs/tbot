@@ -283,12 +283,13 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             }
         }
 
-        let forward_source = if let Some(chat) = forward_from_chat {
+        #[allow(clippy::option_if_let_else)]
+        let forward_source = if let Some(message_id) = forward_from_message_id {
             Some(forward::From::Channel {
-                chat,
-                message_id: forward_from_message_id.ok_or_else(|| {
-                    serde::de::Error::missing_field(FORWARD_FROM_MESSAGE_ID)
+                chat: forward_from_chat.ok_or_else(|| {
+                    serde::de::Error::missing_field(FORWARD_FROM_CHAT)
                 })?,
+                message_id,
                 signature: forward_signature,
             })
         } else if let Some(user) = forward_from {
@@ -315,6 +316,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             entities: caption_entities.unwrap_or_else(Vec::new),
         };
 
+        #[allow(clippy::option_if_let_else)]
         let kind = if let Some(value) = text {
             let text = Text {
                 value,

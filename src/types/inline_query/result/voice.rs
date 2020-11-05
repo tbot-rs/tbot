@@ -3,6 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Voice
 
 use crate::types::{
+    file,
     parameters::{ParseMode, Text},
     InputMessageContent, InteriorBorrow,
 };
@@ -28,7 +29,7 @@ pub struct Fresh<'a> {
 enum Kind<'a> {
     Cached {
         #[serde(rename = "voice_file_id")]
-        id: Cow<'a, str>,
+        id: file::Id<'a>,
     },
     Fresh(Fresh<'a>),
 }
@@ -79,15 +80,18 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a cached `Voice` result.
-    pub fn cached(
+    pub fn with_cached(
         title: impl Into<Cow<'a, str>>,
-        id: impl Into<Cow<'a, str>>,
+        id: file::Id<'a>,
     ) -> Self {
-        Self::new(title, Kind::Cached { id: id.into() })
+        Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Voice` result.
-    pub fn fresh(title: impl Into<Cow<'a, str>>, voice: Fresh<'a>) -> Self {
+    pub fn with_fresh(
+        title: impl Into<Cow<'a, str>>,
+        voice: Fresh<'a>,
+    ) -> Self {
         Self::new(title, Kind::Fresh(voice))
     }
 

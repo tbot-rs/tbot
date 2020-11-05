@@ -4,6 +4,7 @@
 
 use super::Thumb;
 use crate::types::{
+    file,
     parameters::{ParseMode, Text},
     InputMessageContent, InteriorBorrow,
 };
@@ -41,7 +42,7 @@ pub struct Fresh<'a> {
 enum Kind<'a> {
     Cached {
         #[serde(rename = "document_file_id")]
-        id: Cow<'a, str>,
+        id: file::Id<'a>,
     },
     Fresh(Fresh<'a>),
 }
@@ -97,15 +98,18 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub fn cached(
+    pub fn with_cached(
         title: impl Into<Cow<'a, str>>,
-        id: impl Into<Cow<'a, str>>,
+        id: file::Id<'a>,
     ) -> Self {
-        Self::new(title, Kind::Cached { id: id.into() })
+        Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Document` result.
-    pub fn fresh(title: impl Into<Cow<'a, str>>, document: Fresh<'a>) -> Self {
+    pub fn with_fresh(
+        title: impl Into<Cow<'a, str>>,
+        document: Fresh<'a>,
+    ) -> Self {
         Self::new(title, Kind::Fresh(document))
     }
 

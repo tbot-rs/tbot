@@ -33,7 +33,7 @@ impl Display for ParseMode {
 
 impl<'a> Text<'a> {
     /// Constructs new `Text` without any parse mode.
-    pub fn plain(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_plain(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
             parse_mode: None,
@@ -41,7 +41,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `Markdown` parse mode.
-    pub fn markdown(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_markdown(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
             parse_mode: Some(ParseMode::Markdown),
@@ -49,7 +49,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `MarkdownV2` parse mode.
-    pub fn markdown_v2(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_markdown_v2(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
             parse_mode: Some(ParseMode::MarkdownV2),
@@ -57,7 +57,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `HTML` parse mode.
-    pub fn html(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_html(text: impl Into<Cow<'a, str>>) -> Self {
         Self {
             text: text.into(),
             parse_mode: Some(ParseMode::Html),
@@ -91,19 +91,19 @@ impl<'a> Text<'a> {
 
 impl<'a> From<&'a str> for Text<'a> {
     fn from(text: &'a str) -> Self {
-        Text::plain(text)
+        Text::with_plain(text)
     }
 }
 
 impl<'a> From<String> for Text<'a> {
     fn from(text: String) -> Self {
-        Text::plain(text)
+        Text::with_plain(text)
     }
 }
 
 impl<'a> From<&'a String> for Text<'a> {
     fn from(text: &'a String) -> Self {
-        Text::plain(text.as_str())
+        Text::with_plain(text.as_str())
     }
 }
 

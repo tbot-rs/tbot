@@ -3,6 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Photo
 
 use crate::types::{
+    file,
     parameters::{ParseMode, Text},
     InputMessageContent, InteriorBorrow,
 };
@@ -23,11 +24,12 @@ pub struct Fresh<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[serde(untagged)]
 #[must_use]
 enum Kind<'a> {
     Cached {
         #[serde(rename = "photo_file_id")]
-        id: Cow<'a, str>,
+        id: file::Id<'a>,
     },
     Fresh(Fresh<'a>),
 }
@@ -39,6 +41,7 @@ enum Kind<'a> {
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
 pub struct Photo<'a> {
+    #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<Cow<'a, str>>,
@@ -92,12 +95,12 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a cached `Photo` result.
-    pub fn cached(id: impl Into<Cow<'a, str>>) -> Self {
-        Self::new(Kind::Cached { id: id.into() })
+    pub const fn with_cached(id: file::Id<'a>) -> Self {
+        Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Photo` result.
-    pub const fn fresh(photo: Fresh<'a>) -> Self {
+    pub const fn with_fresh(photo: Fresh<'a>) -> Self {
         Self::new(Kind::Fresh(photo))
     }
 

@@ -18,10 +18,10 @@
 //! use tbot::types::{chat, parameters::Text};
 //!
 //! const CHAT: chat::Id = chat::Id(0);
-//! const MESSAGE: &str = "`tbot` is a super-cool crate!";
+//! const MESSAGE: Text = Text::with_markdown("`tbot` is a super-cool crate!");
 //!
 //! let bot = tbot::from_env!("BOT_TOKEN");
-//! bot.send_message(CHAT, Text::markdown(MESSAGE)).call().await.unwrap();
+//! bot.send_message(CHAT, MESSAGE).call().await.unwrap();
 //! # }
 //! ```
 //!
@@ -42,6 +42,8 @@
 //! [`EditMessageText`]: ./struct.EditMessageText.html
 //! [`EditInlineText`]: ./struct.EditInlineText.html
 //! [`types::Message`]: ../types/struct.Message.html
+
+#![allow(clippy::wrong_self_convention)]
 
 mod add_sticker_to_set;
 mod answer_callback_query;

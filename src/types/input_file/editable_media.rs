@@ -22,7 +22,7 @@ pub enum EditableMedia<'a> {
 }
 
 impl EditableMedia<'_> {
-    pub(crate) fn name(&self) -> &'static str {
+    pub(crate) const fn name(&self) -> &'static str {
         match self {
             EditableMedia::Animation(..) => "animation",
             EditableMedia::Audio(..) => "audio",

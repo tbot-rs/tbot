@@ -19,7 +19,7 @@ pub trait Callback: fields::Callback {
     /// [`alert`]: #method.alert
     fn answer<'a>(
         &'a self,
-        action: CallbackAction<'a>,
+        action: Option<CallbackAction<'a>>,
     ) -> AnswerCallbackQuery<'a> {
         self.bot()
             .answer_callback_query(self.id().borrow_inside(), action)
@@ -27,7 +27,7 @@ pub trait Callback: fields::Callback {
 
     /// Answers the query without any action.
     fn ignore(&self) -> AnswerCallbackQuery<'_> {
-        self.answer(CallbackAction::with_no_action())
+        self.answer(None)
     }
 
     /// Opens a URL.
@@ -35,7 +35,7 @@ pub trait Callback: fields::Callback {
         &'a self,
         url: impl Into<Cow<'a, str>>,
     ) -> AnswerCallbackQuery<'a> {
-        self.answer(CallbackAction::with_url(url))
+        self.answer(Some(CallbackAction::with_url(url)))
     }
 
     /// Shows a notification to the user.
@@ -43,7 +43,7 @@ pub trait Callback: fields::Callback {
         &'a self,
         text: impl Into<Cow<'a, str>>,
     ) -> AnswerCallbackQuery<'a> {
-        self.answer(CallbackAction::with_notification(text))
+        self.answer(Some(CallbackAction::with_notification(text)))
     }
 
     /// Shows an alert to the user.
@@ -51,7 +51,7 @@ pub trait Callback: fields::Callback {
         &'a self,
         text: impl Into<Cow<'a, str>>,
     ) -> AnswerCallbackQuery<'a> {
-        self.answer(CallbackAction::with_alert(text))
+        self.answer(Some(CallbackAction::with_alert(text)))
     }
 }
 

@@ -29,8 +29,8 @@ pub enum ButtonKind<'a> {
     SwitchInlineQueryCurrentChat(Cow<'a, str>),
     /// Represent a description of the game to be laucnhed.
     CallbackGame(Game),
-    /// If `true`, a pay button is sent.
-    Pay(bool),
+    /// Represents a pay button.
+    Pay,
 }
 
 impl<'a> ButtonKind<'a> {
@@ -68,7 +68,7 @@ impl<'a> ButtonKind<'a> {
 
     /// Constructs a `ButtonKind::Pay`.
     pub const fn with_pay() -> Self {
-        Self::Pay(true)
+        Self::Pay
     }
 }
 
@@ -93,7 +93,7 @@ impl<'a> InteriorBorrow<'a> for ButtonKind<'a> {
             Self::CallbackGame(callback_game) => {
                 Self::CallbackGame(*callback_game)
             }
-            Self::Pay(pay) => Self::Pay(*pay),
+            Self::Pay => Self::Pay,
         }
     }
 }
@@ -151,7 +151,7 @@ impl Serialize for Button<'_> {
             ButtonKind::CallbackGame(game) => {
                 map.serialize_entry("callback_game", &game)
             }
-            ButtonKind::Pay(pay) => map.serialize_entry("pay", &pay),
+            ButtonKind::Pay => map.serialize_entry("pay", &true),
         }?;
 
         map.end()
