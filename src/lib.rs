@@ -94,9 +94,12 @@ pub mod state;
 pub mod types;
 pub mod util;
 
-use {download_file::download_file, multipart::Multipart, token::Token};
+use {download_file::download_file, multipart::Multipart};
 
-pub use {bot::{Bot, Builder as BotBuilder}, event_loop::EventLoop};
+pub use {
+    bot::{Bot, Builder as BotBuilder},
+    event_loop::EventLoop,
+};
 
 pub mod prelude {
     //! Traits needed when working with `tbot`.
