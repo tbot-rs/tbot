@@ -11,6 +11,10 @@ impl InnerBot {
         Self { token, client }
     }
 
+    pub fn set_client(&mut self, client: Client) {
+        self.client = client;
+    }
+
     pub fn token(&self) -> &str {
         &self.token.0
     }

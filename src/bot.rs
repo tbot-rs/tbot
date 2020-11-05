@@ -1,12 +1,10 @@
 // Type out about 80 method names? No, thanks
 #![allow(clippy::wildcard_imports)]
 use crate::{
-    connectors::Client,
     download_file, errors,
     event_loop::EventLoop,
     internal::Sealed,
     methods::*,
-    proxy::Proxy,
     state::StatefulEventLoop,
     types::{
         callback, chat,
@@ -25,34 +23,74 @@ use crate::{
         passport, pre_checkout_query, shipping, user, InlineMessageId,
         LabeledPrice,
     },
-    Token,
 };
 use std::borrow::Cow;
 use std::sync::Arc;
 
+mod builder;
 mod inner_bot;
-pub(crate) use inner_bot::InnerBot;
 
-/// A `Bot` lets you call Bot API methods and construct event loops.
+pub use builder::Builder;
+pub use inner_bot::InnerBot;
+
+/// A `Bot` is the entry point to interacting with the Bot API.
 ///
-/// Using a `Bot` instance, you can call methods from the [`methods`] module.
+/// Using a `Bot`, you can call methods from the [`methods`] module:
 ///
 /// ```no_run
-/// # async fn foo() {
+/// # async fn foo() -> Result<(), tbot::errors::MethodCall> {
 /// let bot = tbot::from_env!("BOT_TOKEN");
-/// let me = bot.get_me().call().await.unwrap();
+/// let me = bot.get_me().call().await?;
 /// dbg!(me);
+/// # Ok(())
 /// # }
 /// ```
 ///
-/// Besides, a `Bot` is used to construct an [`EventLoop`] — a struct
-/// responsible for configuring handlers and listening to updates.
+/// [`methods`]: ./methods/index.html
 ///
-/// Note that the `Bot`'s internal data is wrapped in one `Arc`, so you can
-/// cheaply clone it.
+/// A `Bot` is also used to construct an [`EventLoop`] — a struct
+/// responsible for configuring handlers and listening to updates:
+///
+/// ```no_run
+/// # async fn foo() -> Result<(), tbot::errors::PollingSetup> {
+/// use tbot::prelude::*;
+///
+/// let mut bot = tbot::from_env!("BOT_TOKEN").event_loop();
+///
+/// bot.start(|context| async move {
+///    let result = context.send_message_in_reply("Hi!").call().await;
+///
+///     if let Err(error) = result {
+///         eprintln!("Failed to send a message: {}", error);
+///     }
+/// });
+///
+/// bot.polling().start().await?;
+/// # Ok(())
+/// # }
+/// ```
 ///
 /// [`EventLoop`]: ./event_loop/struct.EventLoop.html
-/// [`methods`]: ./methods/index.html
+///
+/// A `Bot` can be constructed in several ways:
+///
+/// - The [`from_env!`] macro constructs a bot extracting its token from
+///   an enviroment variable at _compile time_;
+/// - The [`Bot::from_env`] method constructs a bot extracting its token from
+///   an environment variable at _runtime_;
+/// - The [`Bot::new`] methods constructs a bot, and its token is provided
+///   as a parameter;
+/// - The [`BotBuilder`] provides advanced configuration of a bot. You can
+///   set up an HTTPS/SOCKS5 proxy or your local Bot API server's URL using it.
+///
+/// The bot's internal data (its token, proxy and the URL where it makes
+/// requests) is kept behind an [`Arc`]. It means that you can clone a `Bot`
+/// cheaply to share it between tasks.
+///
+/// [`from_env!`]: ./macro.from_env.html
+/// [`Bot::from_env`]: #method.from_env
+/// [`BotBuilder`]: ./struct.BotBuilder.html
+/// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
 #[derive(Debug, Clone)]
 #[must_use]
 pub struct Bot {
@@ -61,34 +99,41 @@ pub struct Bot {
 
 impl Bot {
     /// Constructs a new `Bot`.
-    pub fn new(token: String) -> Self {
-        let token = Token(token);
-        let client = Client::https();
-
-        Self {
-            inner: Arc::new(InnerBot::new(token, client)),
-        }
-    }
-
-    /// Constructs a `Bot` with the provided proxy.
-    pub fn with_proxy(token: String, proxy: impl Into<Proxy>) -> Self {
-        let proxy: Proxy = proxy.into();
-        let client = proxy.into();
-        let token = Token(token);
-
-        Self {
-            inner: Arc::new(InnerBot::new(token, client)),
-        }
-    }
-
-    /// Like [`Bot::from_env`], but with a provided proxy.
     ///
-    /// [`Bot::from_env`]: #method.from_env
-    pub fn from_env_with_proxy(
-        env_var: &'static str,
-        proxy: impl Into<Proxy>,
-    ) -> Self {
-        Self::with_proxy(extract_token(env_var), proxy)
+    /// This method is a shorthand for a common case. If you need advanced
+    /// configuration, e.g. you want to set a proxy or use a local Bot API
+    /// server, construct a `Bot` using a [`BotBuilder`].
+    ///
+    /// [`BotBuilder`]: ./struct.BotBuilder.html
+    pub fn new(token: String) -> Self {
+        Builder::with_string_token(token).build()
+    }
+
+    /// Constructs a new `Bot`, extracting the token from the environment at
+    /// _runtime_.
+    ///
+    /// If you need to extract the token at _compile time_, use [`from_env!`].
+    ///
+    /// This method is a shorthand for a common case. If you need advanced
+    /// configuration, e.g. you want to set a proxy or use a local Bot API
+    /// server, construct a `Bot` using a [`BotBuilder`].
+    ///
+    /// [`from_env!`]: ./macro.bot.html
+    /// [`BotBuilder`]: ./struct.BotBuilder.html
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # async fn foo() {
+    /// use tbot::Bot;
+    ///
+    /// let bot = Bot::from_env("BOT_TOKEN");
+    /// let me = bot.get_me().call().await.unwrap();
+    /// dbg!(me);
+    /// # }
+    /// ```
+    pub fn from_env(env_var: &'static str) -> Self {
+        Builder::with_env_token(env_var).build()
     }
 
     /// Downloads a file.
@@ -97,26 +142,6 @@ impl Bot {
         file: &File,
     ) -> Result<Vec<u8>, errors::Download> {
         download_file(&self.inner, file).await
-    }
-
-    /// Constructs a new `Bot`, extracting the token from the environment at
-    /// _runtime_.
-    ///
-    /// If you need to extract the token at _compile time_, use [`from_env!`].
-    ///
-    /// [`from_env!`]: ./macro.bot.html
-    ///
-    /// # Example
-    ///
-    /// ```no_run
-    /// # async fn foo() {
-    /// let bot = tbot::Bot::from_env("BOT_TOKEN");
-    /// let me = bot.get_me().call().await.unwrap();
-    /// dbg!(me);
-    /// # }
-    /// ```
-    pub fn from_env(env_var: &'static str) -> Self {
-        Self::new(extract_token(env_var))
     }
 
     /// Constructs an `EventLoop`.
@@ -918,12 +943,6 @@ macro_rules! from_env {
 }
 
 impl Sealed for Bot {}
-
-fn extract_token(env_var: &'static str) -> String {
-    std::env::var(env_var).unwrap_or_else(|_| {
-        panic!("\n[tbot] Bot's token in {} was not specified\n", env_var)
-    })
-}
 
 #[cfg(test)]
 mod tests {
