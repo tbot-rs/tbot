@@ -898,47 +898,35 @@ impl Bot {
 /// Constructs a new [`Bot`], extracting the token from the environment at
 /// _compile time_.
 ///
-/// You can provide the proxy as the second parameter,
-/// e.g. `from_env!("...", proxy)`.
-///
 /// If you need to extract the token at _runtime_, use [`Bot::from_env`].
+///
+/// This macro is a shorthand for a common case. If you need advanced
+/// configuration, e.g. you want to set a proxy or use a local Bot API
+/// server, construct a `Bot` using a [`BotBuilder`] and extracting the token
+/// using `String::from(env!("BOT_TOKEN"))`.
 ///
 /// [`Bot`]: ./struct.Bot.html
 /// [`Bot::from_env`]: ./struct.Bot.html#method.from_env
+/// [`BotBuilder`]: ./struct.BotBuilder.html
 ///
 /// # Example
 ///
 /// ```no_run
-/// # async fn foo() {
+/// # async fn foo() -> Result<(), tbot::errors::MethodCall> {
 /// let mut bot = tbot::from_env!("BOT_TOKEN");
-/// let me = bot.get_me().call().await.unwrap();
+/// let me = bot.get_me().call().await?;
 /// dbg!(me);
+/// # Ok(())
 /// # }
 /// ```
 #[macro_export]
 macro_rules! from_env {
-    ($var:literal) => {{
+    ($var:literal$(,)?) => {{
         let token = env!($var).to_string();
         $crate::Bot::new(token)
     }};
-    ($var:literal,) => {
-        $crate::from_env!($var)
-    };
-    ($var:literal, $proxy:expr) => {{
-        let token = env!($var).to_string();
-        $crate::Bot::with_proxy(token, $proxy)
-    }};
-    ($var:literal, $proxy:expr,) => {
-        $crate::from_env!($var, $proxy)
-    };
-    () => {
-        compile_error!(
-            "the macro must be invoked as `from_env!(\"<VAR_NAME>\")` or \
-             `from_env!(\"<VAR_NAME>\", proxy)`"
-        )
-    };
-    ($($x:tt)+) => {
-        $crate::from_env!()
+    ($($x:tt)*) => {
+        compile_error!("the macro must be invoked as `from_env!(\"VAR_NAME\")`")
     };
 }
 
@@ -946,19 +934,9 @@ impl Sealed for Bot {}
 
 #[cfg(test)]
 mod tests {
-    use crate::proxy::https::{Intercept, Proxy};
-
     #[test]
     fn macro_compiles() {
-        const PROXY: &str = "http://127.0.0.1:8080";
-
         let _ = from_env!("BOT_TOKEN");
         let _ = from_env!("BOT_TOKEN",);
-
-        let proxy = Proxy::new(Intercept::All, PROXY.parse().unwrap());
-        let _ = from_env!("BOT_TOKEN", proxy);
-
-        let proxy = Proxy::new(Intercept::All, PROXY.parse().unwrap());
-        let _ = from_env!("BOT_TOKEN", proxy,);
     }
 }
