@@ -83,6 +83,7 @@ mod get_user_profile_photos;
 mod get_webhook_info;
 mod kick_chat_member;
 mod leave_chat;
+mod log_out;
 mod pin_chat_message;
 mod promote_chat_member;
 mod restrict_chat_member;
@@ -201,7 +202,7 @@ pub use unpin_chat_message::UnpinChatMessage;
 pub use upload_sticker_file::UploadStickerFile;
 
 pub(crate) use {
-    delete_webhook::DeleteWebhook, get_updates::GetUpdates,
+    delete_webhook::DeleteWebhook, get_updates::GetUpdates, log_out::LogOut,
     set_webhook::SetWebhook,
 };
 

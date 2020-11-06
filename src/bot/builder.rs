@@ -1,5 +1,7 @@
 use super::{Bot, InnerBot};
-use crate::{connectors::Client, proxy::Proxy, token::Token};
+use crate::{
+    connectors::Client, errors, methods::LogOut, proxy::Proxy, token::Token,
+};
 use std::sync::Arc;
 
 /// A builder for a [`Bot`] with advanced configuration.
@@ -30,6 +32,25 @@ impl Builder {
         let proxy: Proxy = proxy.into();
         self.0.set_client(proxy.into());
         self
+    }
+
+    /// Logs out from the cloud Bot API server.
+    ///
+    /// Note that after calling this method you must change the URI where `tbot`
+    /// makes requests to your local Bot API server using [`server_uri`]. Once
+    /// you log out, you cannot log back in the cloud server for 10 minutes.
+    ///
+    /// [`server_uri`]: #method.server_uri
+    ///
+    /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
+    /// returned in case you expect an error and can recover from it.
+    ///
+    /// [`errors::MethodCall`]: ./errors/enum.MethodCall.html
+    pub async fn log_out(self) -> Result<Self, (errors::MethodCall, Self)> {
+        match LogOut::new(&self.0).call().await {
+            Ok(()) => Ok(self),
+            Err(error) => Err((error, self)),
+        }
     }
 
     /// Finishes constructing the [`Bot`].
