@@ -1,7 +1,7 @@
 use tbot::{
+    bot,
     prelude::*,
     proxy::https::{Intercept, Proxy},
-    bot,
 };
 
 const PROXY: &str = "http://127.0.0.1:8080";
