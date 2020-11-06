@@ -8,6 +8,7 @@ use hyper::{
 };
 use std::{
     net::{IpAddr, Ipv4Addr},
+    num::NonZeroU32,
     sync::Arc,
     time::Duration,
 };
@@ -20,9 +21,9 @@ pub use https::Https;
 
 /// Configures webhook and starts a server.
 ///
-/// To construct a `Webhook`, use [`Bot::webhook`].
+/// To construct a `Webhook`, use [`EventLoop::webhook`].
 ///
-/// [`Bot::webhook`]: ./struct.Bot.html#method.webhook
+/// [`EventLoop::webhook`]: ./struct.Bot.html#method.webhook
 #[must_use = "webhook does not start unless `start` is called"]
 pub struct Webhook<'a> {
     event_loop: EventLoop,
@@ -33,7 +34,7 @@ pub struct Webhook<'a> {
 
     url: &'a str,
     certificate: Option<&'a str>,
-    max_connections: Option<u8>,
+    max_connections: Option<NonZeroU32>,
     allowed_updates: Option<&'a [UpdateKind]>,
 }
 
@@ -84,7 +85,7 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures `max_connections`.
-    pub const fn max_connections(mut self, max: u8) -> Self {
+    pub const fn max_connections(mut self, max: NonZeroU32) -> Self {
         self.max_connections = Some(max);
         self
     }

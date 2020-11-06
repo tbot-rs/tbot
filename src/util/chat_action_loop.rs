@@ -28,7 +28,7 @@ async fn send_chat_action_in_loop(
 
 /// An utility trait for [`Bot`] with a method to send a chat action in a loop.
 ///
-/// [`Bot`]: ../struct.Bot.html
+/// [`Bot`]: ../bot/struct.Bot.html
 #[allow(clippy::module_name_repetitions)]
 pub trait ChatActionLoopBotExt: Sealed {
     /// Sends a chat action in an infinite loop, returning only if failed

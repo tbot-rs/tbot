@@ -50,10 +50,10 @@
 //! or [`Pinnable`]. These traits share common methods between contexts,
 //! e.g. [`send_message_in_reply`] you have seen above.
 //!
-//! [text-handler]: ../struct.Bot.html#method.text
+//! [text-handler]: ../bot/struct.Bot.html#method.text
 //! [text-context]: ./struct.Text.html
 //! [`send_message_in_reply`]: ./traits/trait.ChatMethods.html#method.send_message_in_reply
-//! [`Bot`]: ../struct.Bot.html
+//! [`Bot`]: ../bot/struct.Bot.html
 //! [`ChatMethods`]: ./traits/trait.ChatMethods.html
 //! [`Pinnable`]: ./traits/trait.Pinnable.html
 

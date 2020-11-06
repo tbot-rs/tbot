@@ -35,7 +35,7 @@
 //! brings a type-safer API wrapper, unlike if we only had one method
 //! which would resolve to `(() | types::Message)`.
 //!
-//! [`Bot`]: ../struct.Bot.html
+//! [`Bot`]: ../bot/struct.Bot.html
 //! [contexts]: ../contexts/
 //! [`SendMessage`]: ./struct.SendMessage.html
 //! [tg-doc]: https://core.telegram.org/bots/api#editmessagetext
@@ -50,6 +50,7 @@ mod answer_callback_query;
 mod answer_inline_query;
 mod answer_pre_checkout_query;
 mod answer_shipping_query;
+mod close;
 mod create_new_sticker_set;
 mod delete_chat_photo;
 mod delete_chat_sticker_set;
@@ -83,6 +84,7 @@ mod get_user_profile_photos;
 mod get_webhook_info;
 mod kick_chat_member;
 mod leave_chat;
+mod log_out;
 mod pin_chat_message;
 mod promote_chat_member;
 mod restrict_chat_member;
@@ -201,8 +203,8 @@ pub use unpin_chat_message::UnpinChatMessage;
 pub use upload_sticker_file::UploadStickerFile;
 
 pub(crate) use {
-    delete_webhook::DeleteWebhook, get_updates::GetUpdates,
-    set_webhook::SetWebhook,
+    close::Close, delete_webhook::DeleteWebhook, get_updates::GetUpdates,
+    log_out::LogOut, set_webhook::SetWebhook,
 };
 
 mod call_method;
