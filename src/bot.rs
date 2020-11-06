@@ -1,3 +1,10 @@
+//! The [`Bot`] struct, and other types used to construct it.
+//!
+//! See [`Bot`]'s documentation on how to interact with the API and how to
+//! construct a [`Bot`].
+//!
+//! [`Bot`]: ./struct.Bot.html
+
 // Type out about 80 method names? No, thanks
 #![allow(clippy::wildcard_imports)]
 use crate::{
@@ -31,7 +38,8 @@ mod builder;
 mod inner_bot;
 
 pub use builder::Builder;
-pub use inner_bot::InnerBot;
+pub use hyper::Uri;
+pub(crate) use inner_bot::InnerBot;
 
 /// A `Bot` is the entry point to interacting with the Bot API.
 ///
@@ -46,7 +54,7 @@ pub use inner_bot::InnerBot;
 /// # }
 /// ```
 ///
-/// [`methods`]: ./methods/index.html
+/// [`methods`]: ../methods/index.html
 ///
 /// A `Bot` is also used to construct an [`EventLoop`] — a struct
 /// responsible for configuring handlers and listening to updates:
@@ -70,7 +78,7 @@ pub use inner_bot::InnerBot;
 /// # }
 /// ```
 ///
-/// [`EventLoop`]: ./event_loop/struct.EventLoop.html
+/// [`EventLoop`]: ../event_loop/struct.EventLoop.html
 ///
 /// A `Bot` can be constructed in several ways:
 ///
@@ -80,16 +88,16 @@ pub use inner_bot::InnerBot;
 ///   an environment variable at _runtime_;
 /// - The [`Bot::new`] methods constructs a bot, and its token is provided
 ///   as a parameter;
-/// - The [`BotBuilder`] provides advanced configuration of a bot. You can
+/// - The [`bot::Builder`] provides advanced configuration of a bot. You can
 ///   set up an HTTPS/SOCKS5 proxy or your local Bot API server's URL using it.
 ///
 /// The bot's internal data (its token, proxy and the URL where it makes
 /// requests) is kept behind an [`Arc`]. It means that you can clone a `Bot`
 /// cheaply to share it between tasks.
 ///
-/// [`from_env!`]: ./macro.from_env.html
+/// [`from_env!`]: ../macro.from_env.html
 /// [`Bot::from_env`]: #method.from_env
-/// [`BotBuilder`]: ./struct.BotBuilder.html
+/// [`bot::Builder`]: ./struct.Builder.html
 /// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
 #[derive(Debug, Clone)]
 #[must_use]
@@ -102,9 +110,9 @@ impl Bot {
     ///
     /// This method is a shorthand for a common case. If you need advanced
     /// configuration, e.g. you want to set a proxy or use a local Bot API
-    /// server, construct a `Bot` using a [`BotBuilder`].
+    /// server, construct a `Bot` using a [`bot::Builder`].
     ///
-    /// [`BotBuilder`]: ./struct.BotBuilder.html
+    /// [`bot::Builder`]: ./struct.Builder.html
     pub fn new(token: String) -> Self {
         Builder::with_string_token(token).build()
     }
@@ -116,10 +124,10 @@ impl Bot {
     ///
     /// This method is a shorthand for a common case. If you need advanced
     /// configuration, e.g. you want to set a proxy or use a local Bot API
-    /// server, construct a `Bot` using a [`BotBuilder`].
+    /// server, construct a `Bot` using a [`bot::Builder`].
     ///
-    /// [`from_env!`]: ./macro.bot.html
-    /// [`BotBuilder`]: ./struct.BotBuilder.html
+    /// [`from_env!`]: ../macro.bot.html
+    /// [`bot::Builder`]: ./struct.Builder.html
     ///
     /// # Example
     ///
@@ -902,12 +910,12 @@ impl Bot {
 ///
 /// This macro is a shorthand for a common case. If you need advanced
 /// configuration, e.g. you want to set a proxy or use a local Bot API
-/// server, construct a `Bot` using a [`BotBuilder`] and extracting the token
+/// server, construct a `Bot` using a [`bot::Builder`] and extracting the token
 /// using `String::from(env!("BOT_TOKEN"))`.
 ///
-/// [`Bot`]: ./struct.Bot.html
-/// [`Bot::from_env`]: ./struct.Bot.html#method.from_env
-/// [`BotBuilder`]: ./struct.BotBuilder.html
+/// [`Bot`]: ./bot/struct.Bot.html
+/// [`Bot::from_env`]: ./bot/struct.Bot.html#method.from_env
+/// [`bot::Builder`]: ./bot/struct.Builder.html
 ///
 /// # Example
 ///

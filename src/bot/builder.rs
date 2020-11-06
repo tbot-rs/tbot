@@ -72,9 +72,9 @@ impl Builder {
     ///
     /// ```no_run
     /// # async fn foo() -> Result<(), Box<dyn std::error::Error> {
-    /// use tbot::BotBuilder;
+    /// use tbot::bot;
     ///
-    /// let bot = BotBuilder::with_env_token("BOT_TOKEN")
+    /// let bot = bot::Builder::with_env_token("BOT_TOKEN")
     ///     .log_out().await? // log out from cloud Bot API first
     ///     .server_uri("http://localhost:8081".parse()?)
     ///     .build();
@@ -87,9 +87,9 @@ impl Builder {
     ///
     /// ```
     /// # fn main() -> Result<(), Box<dyn std::error::Error> {
-    /// use tbot::BotBuilder;
+    /// use tbot::bot;
     ///
-    /// let bot = BotBuilder::with_env_token("BOT_TOKEN")
+    /// let bot = bot::Builder::with_env_token("BOT_TOKEN")
     ///     .server_uri("http://localhost:8081".parse()?)
     ///     .build();
     /// # }
@@ -102,9 +102,9 @@ impl Builder {
     ///
     /// ```no_run
     /// # async fn foo() -> Result<(), Box<dyn std::any::Any> {
-    /// use tbot::BotBuilder;
+    /// use tbot::bot;
     ///
-    /// let bot = BotBuilder::with_env_token("BOT_TOKEN")
+    /// let bot = bot::Builder::with_env_token("BOT_TOKEN")
     ///     .server_uri("http://other-server:8081".parse()?)
     ///     .close().await? // close the bot on the old server first
     ///     .server_uri("http://localhost:8081".parse()?)
@@ -136,7 +136,7 @@ impl Builder {
     /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
     /// returned in case you expect an error and can recover from it.
     ///
-    /// [`errors::MethodCall`]: ./errors/enum.MethodCall.html
+    /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
     pub async fn log_out(self) -> Result<Self, (errors::MethodCall, Self)> {
         match LogOut::new(&self.0).call().await {
             Ok(()) => Ok(self),

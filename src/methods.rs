@@ -35,7 +35,7 @@
 //! brings a type-safer API wrapper, unlike if we only had one method
 //! which would resolve to `(() | types::Message)`.
 //!
-//! [`Bot`]: ../struct.Bot.html
+//! [`Bot`]: ../bot/struct.Bot.html
 //! [contexts]: ../contexts/
 //! [`SendMessage`]: ./struct.SendMessage.html
 //! [tg-doc]: https://core.telegram.org/bots/api#editmessagetext

@@ -20,9 +20,9 @@ pub use https::Https;
 
 /// Configures webhook and starts a server.
 ///
-/// To construct a `Webhook`, use [`Bot::webhook`].
+/// To construct a `Webhook`, use [`EventLoop::webhook`].
 ///
-/// [`Bot::webhook`]: ./struct.Bot.html#method.webhook
+/// [`EventLoop::webhook`]: ./struct.Bot.html#method.webhook
 #[must_use = "webhook does not start unless `start` is called"]
 pub struct Webhook<'a> {
     event_loop: EventLoop,

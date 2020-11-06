@@ -24,8 +24,8 @@
 //!     .stateful_event_loop(initial_state);
 //! ```
 //!
-//! [`stateful_event_loop`]: ../struct.Bot.html#method.stateful_event_loop
-//! [`event_loop`]: ../struct.Bot.html#method.event_loop
+//! [`stateful_event_loop`]: ../bot/struct.Bot.html#method.stateful_event_loop
+//! [`event_loop`]: ../bot/struct.Bot.html#method.event_loop
 //!
 //! What should `initial_state` be? It can actually be any value (that can be
 //! shared across threads). You'd think that, as we only have a counter,

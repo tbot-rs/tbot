@@ -76,7 +76,7 @@ compile_error!("`tls` and `rustls` features are mutually exclusive. You should e
 #[cfg(not(any(feature = "tls", feature = "rustls")))]
 compile_error!("Either `tls` or `rustls` feature needs to be enabled");
 
-mod bot;
+pub mod bot;
 mod download_file;
 mod internal;
 mod multipart;
@@ -96,10 +96,7 @@ pub mod util;
 
 use {download_file::download_file, multipart::Multipart};
 
-pub use {
-    bot::{Bot, Builder as BotBuilder},
-    event_loop::EventLoop,
-};
+pub use {bot::Bot, event_loop::EventLoop};
 
 pub mod prelude {
     //! Traits needed when working with `tbot`.
