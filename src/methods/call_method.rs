@@ -2,11 +2,13 @@ use crate::{bot::InnerBot, errors, types::chat};
 use hyper::{
     body::{Body, HttpBody},
     header::HeaderValue,
+    http::uri::PathAndQuery,
     Method, Request, Uri,
 };
 use serde::{de::DeserializeOwned, Deserialize};
 use std::{
-    fmt::{self, Debug, Formatter},
+    error::Error,
+    fmt::{self, Debug, Formatter, Write},
     str::from_utf8,
 };
 use tracing::{error, instrument, trace};
@@ -37,6 +39,33 @@ struct Response<T> {
     parameters: Option<ResponseParameters>,
 }
 
+fn construct_uri(
+    bot: &InnerBot,
+    method: &'static str,
+) -> Result<Uri, Box<dyn Error>> {
+    let mut uri_parts = bot.uri().into_parts();
+    let path = uri_parts.path_and_query.as_ref().map_or("/", |x| x.path());
+    let query = uri_parts
+        .path_and_query
+        .as_ref()
+        .and_then(PathAndQuery::query);
+
+    let mut new_path = String::from(path);
+
+    if !new_path.ends_with('/') {
+        new_path.push('/');
+    }
+    write!(&mut new_path, "bot{}/{}", bot.token(), method)?;
+
+    if let Some(query) = query {
+        write!(&mut new_path, "?{}", query)?;
+    }
+
+    uri_parts.path_and_query = Some(new_path.parse()?);
+
+    Uri::from_parts(uri_parts).map_err(Into::into)
+}
+
 #[instrument(skip(bot, boundary, body))]
 pub async fn call_method<'a, T>(
     bot: &'a InnerBot,
@@ -49,16 +78,10 @@ where
 {
     trace!(body = ?DebugBytes(&body), ?boundary);
 
-    let url = Uri::builder()
-        .scheme("https")
-        .authority("api.telegram.org")
-        .path_and_query(format!("/bot{}/{}", bot.token(), method).as_str())
-        .build()
-        .expect("[tbot] Method URL construction failed");
-
     let mut request = Request::new(Body::from(body));
     *request.method_mut() = Method::POST;
-    *request.uri_mut() = url;
+    *request.uri_mut() = construct_uri(bot, method)
+        .expect("[tbot] Method URI construction failed");
 
     let content_type = if let Some(boundary) = boundary {
         let value = format!("multipart/form-data; boundary={}", boundary);
@@ -141,4 +164,67 @@ where
     trace!(?error);
 
     Err(error)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{connectors::Client, token::Token};
+
+    #[test]
+    fn construts_uri_correctly() -> Result<(), Box<dyn Error>> {
+        let mut bot =
+            InnerBot::new(Token(String::from("TOKEN")), Client::https());
+
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(
+            uri,
+            Uri::from_static("https://api.telegram.org/botTOKEN/method")
+        );
+
+        bot.set_uri(Uri::from_static("http://localhost"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(uri, Uri::from_static("http://localhost/botTOKEN/method"));
+
+        bot.set_uri(Uri::from_static("http://localhost/"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(uri, Uri::from_static("http://localhost/botTOKEN/method"));
+
+        bot.set_uri(Uri::from_static("http://localhost:8081/"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(
+            uri,
+            Uri::from_static("http://localhost:8081/botTOKEN/method")
+        );
+
+        bot.set_uri(Uri::from_static("http://localhost/foo"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(
+            uri,
+            Uri::from_static("http://localhost/foo/botTOKEN/method")
+        );
+
+        bot.set_uri(Uri::from_static("http://localhost/?bar"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(
+            uri,
+            Uri::from_static("http://localhost/botTOKEN/method?bar")
+        );
+
+        bot.set_uri(Uri::from_static("http://localhost/foo?bar"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(
+            uri,
+            Uri::from_static("http://localhost/foo/botTOKEN/method?bar")
+        );
+
+        bot.set_uri(Uri::from_static("http://localhost/foo/?bar"));
+        let uri = construct_uri(&bot, "method")?;
+        assert_eq!(
+            uri,
+            Uri::from_static("http://localhost/foo/botTOKEN/method?bar")
+        );
+
+        Ok(())
+    }
 }
