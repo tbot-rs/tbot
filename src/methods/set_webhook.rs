@@ -1,5 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors, types::parameters::UpdateKind, Multipart};
+use std::num::NonZeroU32;
 
 /// This method isn't meant to be used by users directly.
 #[derive(Debug, Clone)]
@@ -8,7 +9,7 @@ pub struct SetWebhook<'a> {
     bot: &'a InnerBot,
     url: &'a str,
     certificate: Option<&'a str>,
-    max_connections: Option<u8>,
+    max_connections: Option<NonZeroU32>,
     allowed_updates: Option<&'a [UpdateKind]>,
 }
 
@@ -17,7 +18,7 @@ impl<'a> SetWebhook<'a> {
         bot: &'a InnerBot,
         url: &'a str,
         certificate: Option<&'a str>,
-        max_connections: Option<u8>,
+        max_connections: Option<NonZeroU32>,
         allowed_updates: Option<&'a [UpdateKind]>,
     ) -> Self {
         Self {

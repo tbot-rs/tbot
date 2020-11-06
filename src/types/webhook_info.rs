@@ -1,7 +1,10 @@
 //! Types related to webhook information.
 
 use crate::types::parameters::UpdateKind;
-use serde::de::{Deserialize, Deserializer, Error, MapAccess, Visitor};
+use serde::de::{
+    Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
+};
+use std::num::NonZeroU32;
 
 /// Represents information about the last error.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -28,7 +31,7 @@ pub struct WebhookInfo {
     /// Information about the last error that happened during sending an update.
     pub last_error: Option<LastError>,
     /// Maximum allowed number of connections at a time.
-    pub max_connections: Option<u8>,
+    pub max_connections: Option<NonZeroU32>,
     /// A list of updates the bot is subscribed to.
     pub allowed_updates: Option<Vec<UpdateKind>>,
 }
@@ -77,7 +80,9 @@ impl<'v> Visitor<'v> for WebhookInfoVisitor {
                 }
                 MAX_CONNECTIONS => max_connections = Some(map.next_value()?),
                 ALLOWED_UPDATES => allowed_updates = Some(map.next_value()?),
-                _ => (),
+                _ => {
+                    let _: IgnoredAny = map.next_value()?;
+                }
             }
         }
 

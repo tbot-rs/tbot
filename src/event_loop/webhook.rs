@@ -8,6 +8,7 @@ use hyper::{
 };
 use std::{
     net::{IpAddr, Ipv4Addr},
+    num::NonZeroU32,
     sync::Arc,
     time::Duration,
 };
@@ -33,7 +34,7 @@ pub struct Webhook<'a> {
 
     url: &'a str,
     certificate: Option<&'a str>,
-    max_connections: Option<u8>,
+    max_connections: Option<NonZeroU32>,
     allowed_updates: Option<&'a [UpdateKind]>,
 }
 
@@ -84,7 +85,7 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures `max_connections`.
-    pub const fn max_connections(mut self, max: u8) -> Self {
+    pub const fn max_connections(mut self, max: NonZeroU32) -> Self {
         self.max_connections = Some(max);
         self
     }
