@@ -2,7 +2,7 @@ use super::{Bot, InnerBot};
 use crate::{
     connectors::Client,
     errors,
-    methods::{Close, LogOut},
+    methods::{Close, DeleteWebhook, LogOut},
     proxy::Proxy,
     token::Token,
 };
@@ -165,6 +165,32 @@ impl Builder {
     /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
     pub async fn close(self) -> Result<Self, (errors::MethodCall, Self)> {
         match Close::new(&self.0).call().await {
+            Ok(()) => Ok(self),
+            Err(error) => Err((error, self)),
+        }
+    }
+
+    /// Deletes the bot's webhook.
+    ///
+    /// Before you [`close`] your bot on a self-hosted server, you should
+    /// delete the bot's webhook to ensure that, when that server is restarted,
+    /// your bot isn't laucnhed there.
+    ///
+    /// [`close`]: #method.close
+    ///
+    /// You might want to call this method if you're switching from webhooks
+    /// to polling. Though this method can be used this way, this isn't
+    /// the intended usecase: starting a polling event loop already does it
+    /// automatically before the first call to `getUpdates`.
+    ///
+    /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
+    /// returned in case you expect an error and can recover from it.
+    ///
+    /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
+    pub async fn delete_webhook(
+        self,
+    ) -> Result<Self, (errors::MethodCall, Self)> {
+        match DeleteWebhook::new(&self.0).call().await {
             Ok(()) => Ok(self),
             Err(error) => Err((error, self)),
         }
