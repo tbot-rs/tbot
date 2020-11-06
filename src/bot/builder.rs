@@ -1,6 +1,10 @@
 use super::{Bot, InnerBot};
 use crate::{
-    connectors::Client, errors, methods::LogOut, proxy::Proxy, token::Token,
+    connectors::Client,
+    errors,
+    methods::{Close, LogOut},
+    proxy::Proxy,
+    token::Token,
 };
 use std::sync::Arc;
 
@@ -125,7 +129,7 @@ impl Builder {
         self
     }
 
-    /// Logs out from the cloud Bot API server.
+    /// Logs out from the _cloud_ Bot API server.
     ///
     /// Note that after calling this method you must change the URI where `tbot`
     /// makes requests to your local Bot API server using [`server_uri`]. Once
@@ -139,6 +143,28 @@ impl Builder {
     /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
     pub async fn log_out(self) -> Result<Self, (errors::MethodCall, Self)> {
         match LogOut::new(&self.0).call().await {
+            Ok(()) => Ok(self),
+            Err(error) => Err((error, self)),
+        }
+    }
+
+    /// Logs out from a _self-hosted_ Bot API server.
+    ///
+    /// Note that after calling this method you must change the URI where `tbot`
+    /// makes requests to your local Bot API server using [`server_uri`]. Once
+    /// you log out, you cannot log back in this server for 10 minutes. You may
+    /// also need to call [`delete_webhook`] before calling this method
+    /// to ensure that the bot isn't launched on the old server if it restarts.
+    ///
+    /// [`server_uri`]: #method.server_uri
+    /// [`delete_webhook`]: #method.delete_webhook
+    ///
+    /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
+    /// returned in case you expect an error and can recover from it.
+    ///
+    /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
+    pub async fn close(self) -> Result<Self, (errors::MethodCall, Self)> {
+        match Close::new(&self.0).call().await {
             Ok(()) => Ok(self),
             Err(error) => Err((error, self)),
         }

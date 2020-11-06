@@ -50,6 +50,7 @@ mod answer_callback_query;
 mod answer_inline_query;
 mod answer_pre_checkout_query;
 mod answer_shipping_query;
+mod close;
 mod create_new_sticker_set;
 mod delete_chat_photo;
 mod delete_chat_sticker_set;
@@ -202,8 +203,8 @@ pub use unpin_chat_message::UnpinChatMessage;
 pub use upload_sticker_file::UploadStickerFile;
 
 pub(crate) use {
-    delete_webhook::DeleteWebhook, get_updates::GetUpdates, log_out::LogOut,
-    set_webhook::SetWebhook,
+    close::Close, delete_webhook::DeleteWebhook, get_updates::GetUpdates,
+    log_out::LogOut, set_webhook::SetWebhook,
 };
 
 mod call_method;
