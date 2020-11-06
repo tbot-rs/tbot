@@ -37,7 +37,7 @@ type Handler<T> = dyn Fn(Arc<T>) + Send + Sync;
 type AnimationHandler = Handler<contexts::Animation>;
 type AudioHandler = Handler<contexts::Audio>;
 type ChosenInlineHandler = Handler<contexts::ChosenInline>;
-type CommandHandler = Handler<contexts::Command<contexts::Text>>;
+type CommandHandler = Handler<contexts::Command>;
 type ConnectedWebsiteHandler = Handler<contexts::ConnectedWebsite>;
 type ContactHandler = Handler<contexts::Contact>;
 type CreatedGroupHandler = Handler<contexts::CreatedGroup>;
@@ -48,7 +48,7 @@ type DiceHandler = Handler<contexts::Dice>;
 type DocumentHandler = Handler<contexts::Document>;
 type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
 type EditedAudioHandler = Handler<contexts::EditedAudio>;
-type EditedCommandHandler = Handler<contexts::Command<contexts::EditedText>>;
+type EditedCommandHandler = Handler<contexts::EditedCommand>;
 type EditedDocumentHandler = Handler<contexts::EditedDocument>;
 type EditedLocationHandler = Handler<contexts::EditedLocation>;
 type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
@@ -258,10 +258,7 @@ impl EventLoop {
     /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_handlers
@@ -286,10 +283,7 @@ impl EventLoop {
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_description
@@ -312,15 +306,9 @@ impl EventLoop {
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -352,15 +340,9 @@ impl EventLoop {
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_description
@@ -380,10 +362,7 @@ impl EventLoop {
     where
         Cm: IntoIterator<Item = &'static str>,
         F: Future<Output = ()> + Send + 'static,
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
     {
         let handler = Arc::new(handler);
 
@@ -414,15 +393,9 @@ impl EventLoop {
         handler: H,
     ) where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -445,7 +418,7 @@ impl EventLoop {
     fn run_command_handlers(
         &self,
         command: &str,
-        context: &Arc<contexts::Command<contexts::Text>>,
+        context: &Arc<contexts::Command>,
     ) {
         if let Some(handlers) = self.command_handlers.get(command) {
             for handler in handlers {
@@ -457,10 +430,7 @@ impl EventLoop {
     /// Adds a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("start", handler);
@@ -472,10 +442,7 @@ impl EventLoop {
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("start", description, handler);
@@ -485,15 +452,9 @@ impl EventLoop {
     /// if the predicate returns true.
     pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -517,15 +478,9 @@ impl EventLoop {
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_with_description_if(
@@ -539,10 +494,7 @@ impl EventLoop {
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("settings", handler);
@@ -554,10 +506,7 @@ impl EventLoop {
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("settings", description, handler);
@@ -567,15 +516,9 @@ impl EventLoop {
     /// if the predicate returns true.
     pub fn settings_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -599,15 +542,9 @@ impl EventLoop {
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_with_description_if(
@@ -621,10 +558,7 @@ impl EventLoop {
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
@@ -636,10 +570,7 @@ impl EventLoop {
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("help", description, handler);
@@ -649,15 +580,9 @@ impl EventLoop {
     /// returns true.
     pub fn help_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -681,15 +606,9 @@ impl EventLoop {
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_with_description_if(
@@ -703,10 +622,7 @@ impl EventLoop {
     /// Adds a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::EditedCommand>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.edited_command_handlers
@@ -725,15 +641,9 @@ impl EventLoop {
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::EditedCommand>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::EditedCommand>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -754,10 +664,7 @@ impl EventLoop {
     where
         Cm: IntoIterator<Item = &'static str>,
         F: Future<Output = ()> + Send + 'static,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::EditedCommand>) -> F) + Send + Sync + 'static,
     {
         let handler = Arc::new(handler);
 
@@ -781,15 +688,9 @@ impl EventLoop {
         handler: H,
     ) where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::EditedCommand>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::EditedText>>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::EditedCommand>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -812,7 +713,7 @@ impl EventLoop {
     fn run_edited_command_handlers(
         &self,
         command: &str,
-        context: &Arc<contexts::Command<contexts::EditedText>>,
+        context: &Arc<contexts::EditedCommand>,
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(command) {
             for handler in handlers {
@@ -1625,8 +1526,10 @@ impl EventLoop {
                 if self.will_handle_command(&command) {
                     let text = trim_command(text);
                     let context = contexts::Command::new(
+                        self.bot.clone(),
+                        data,
+                        text,
                         command.clone(),
-                        contexts::Text::new(self.bot.clone(), data, text),
                     );
                     self.run_command_handlers(&command, &Arc::new(context));
                 } else if self.will_handle_unhandled() {
@@ -1797,14 +1700,12 @@ impl EventLoop {
 
                 if self.will_handle_edited_command(&command) {
                     let text = trim_command(text);
-                    let context = contexts::Command::new(
+                    let context = contexts::EditedCommand::new(
+                        self.bot.clone(),
+                        data,
+                        edit_date,
+                        text,
                         command.clone(),
-                        contexts::EditedText::new(
-                            self.bot.clone(),
-                            data,
-                            edit_date,
-                            text,
-                        ),
                     );
                     self.run_edited_command_handlers(
                         &command,

@@ -3,8 +3,8 @@ use crate::{
     types::message,
 };
 
-media_message! {
-    struct Command {
+edited_message! {
+    struct EditedCommand {
         /// The text of the message.
         text: message::Text,
         /// The command which triggered the handler.
@@ -18,14 +18,14 @@ media_message! {
     }
 }
 
-impl fields::Text for Command {
+impl fields::Text for EditedCommand {
     #[must_use]
     fn text(&self) -> &message::Text {
         &self.text
     }
 }
 
-impl AnyText for Command {
+impl AnyText for EditedCommand {
     #[must_use]
     fn text(&self) -> &message::Text {
         &self.text
