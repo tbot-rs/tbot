@@ -137,10 +137,7 @@ where
     /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         let state = Arc::clone(&self.state);
@@ -163,10 +160,7 @@ where
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         let state = Arc::clone(&self.state);
@@ -192,15 +186,9 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -232,15 +220,9 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -272,10 +254,7 @@ where
     pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         let state = Arc::clone(&self.state);
@@ -300,15 +279,9 @@ where
         handler: H,
     ) where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -327,10 +300,7 @@ where
     /// Adds a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("start", handler);
@@ -342,10 +312,7 @@ where
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("start", description, handler);
@@ -355,15 +322,9 @@ where
     /// if the predicate returns true.
     pub fn start_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -387,15 +348,9 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_with_description_if(
@@ -409,10 +364,7 @@ where
     /// Adds a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
@@ -424,10 +376,7 @@ where
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("help", description, handler);
@@ -437,15 +386,9 @@ where
     /// returns true.
     pub fn help_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -469,15 +412,9 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_with_description_if(
@@ -491,10 +428,7 @@ where
     /// Adds a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("settings", handler);
@@ -506,10 +440,7 @@ where
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> F)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("settings", description, handler);
@@ -519,15 +450,9 @@ where
     /// if the predicate returns true.
     pub fn settings_if<H, HF, P, PF>(&mut self, predicate: P, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         let predicate = Arc::new(predicate);
@@ -551,15 +476,9 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> HF)
-            + Send
-            + Sync
-            + 'static,
+        H: (Fn(Arc<contexts::Command>, Arc<S>) -> HF) + Send + Sync + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::Text>>, Arc<S>) -> PF)
-            + Send
-            + Sync
-            + 'static,
+        P: (Fn(Arc<contexts::Command>, Arc<S>) -> PF) + Send + Sync + 'static,
         PF: Future<Output = bool> + Send + 'static,
     {
         self.command_with_description_if(
@@ -573,7 +492,7 @@ where
     /// Adds a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -593,12 +512,12 @@ where
         predicate: P,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
@@ -621,7 +540,7 @@ where
     pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> F)
+        H: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> F)
             + Send
             + Sync
             + 'static,
@@ -642,12 +561,12 @@ where
         handler: H,
     ) where
         Cm: IntoIterator<Item = &'static str>,
-        H: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> HF)
+        H: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> HF)
             + Send
             + Sync
             + 'static,
         HF: Future<Output = ()> + Send + 'static,
-        P: (Fn(Arc<contexts::Command<contexts::EditedText>>, Arc<S>) -> PF)
+        P: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> PF)
             + Send
             + Sync
             + 'static,
