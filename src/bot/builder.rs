@@ -75,13 +75,19 @@ impl Builder {
     /// and only then you call `server_uri`:
     ///
     /// ```no_run
-    /// # async fn foo() -> Result<(), Box<dyn std::error::Error> {
+    /// # use tbot::{errors::MethodCall as C, bot::Builder as B};
+    /// # use hyper::http::uri::InvalidUri as I;
+    /// # struct Error;
+    /// # impl From<I> for Error { fn from(_: I) -> Self { Self } }
+    /// # impl From<(C, B)> for Error { fn from(_: (C, B)) -> Self { Self } }
+    /// # async fn foo() -> Result<(), Error> {
     /// use tbot::bot;
     ///
     /// let bot = bot::Builder::with_env_token("BOT_TOKEN")
     ///     .log_out().await? // log out from cloud Bot API first
     ///     .server_uri("http://localhost:8081".parse()?)
     ///     .build();
+    /// # Ok(())
     /// # }
     /// ```
     ///
@@ -90,12 +96,13 @@ impl Builder {
     /// again), so after you did it once, you can remove that line:
     ///
     /// ```
-    /// # fn main() -> Result<(), Box<dyn std::error::Error> {
+    /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// use tbot::bot;
     ///
     /// let bot = bot::Builder::with_env_token("BOT_TOKEN")
     ///     .server_uri("http://localhost:8081".parse()?)
     ///     .build();
+    /// # Ok(())
     /// # }
     /// ```
     ///
@@ -105,7 +112,12 @@ impl Builder {
     /// this method twice:
     ///
     /// ```no_run
-    /// # async fn foo() -> Result<(), Box<dyn std::any::Any> {
+    /// # use tbot::{errors::MethodCall as C, bot::Builder as B};
+    /// # use hyper::http::uri::InvalidUri as I;
+    /// # struct Error;
+    /// # impl From<I> for Error { fn from(_: I) -> Self { Self } }
+    /// # impl From<(C, B)> for Error { fn from(_: (C, B)) -> Self { Self } }
+    /// # async fn foo() -> Result<(), Error> {
     /// use tbot::bot;
     ///
     /// let bot = bot::Builder::with_env_token("BOT_TOKEN")
@@ -113,6 +125,7 @@ impl Builder {
     ///     .close().await? // close the bot on the old server first
     ///     .server_uri("http://localhost:8081".parse()?)
     ///     .build();
+    /// # Ok(())
     /// # }
     /// ```
     ///
