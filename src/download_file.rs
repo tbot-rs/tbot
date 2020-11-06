@@ -1,5 +1,34 @@
 use crate::{bot::InnerBot, errors, types::File};
-use hyper::{body::HttpBody, StatusCode, Uri};
+use hyper::{body::HttpBody, http::uri::PathAndQuery, StatusCode, Uri};
+use std::{error::Error, fmt::Write, path::Path};
+use tokio::fs;
+
+fn construct_uri(
+    bot: &InnerBot,
+    file_path: &str,
+) -> Result<Uri, Box<dyn Error>> {
+    let mut uri_parts = bot.uri().into_parts();
+    let path = uri_parts.path_and_query.as_ref().map_or("/", |x| x.path());
+    let query = uri_parts
+        .path_and_query
+        .as_ref()
+        .and_then(PathAndQuery::query);
+
+    let mut new_path = String::from(path);
+
+    if !new_path.ends_with('/') {
+        new_path.push('/');
+    }
+    write!(&mut new_path, "file/bot{}/{}", bot.token(), file_path)?;
+
+    if let Some(query) = query {
+        write!(&mut new_path, "?{}", query)?;
+    }
+
+    uri_parts.path_and_query = Some(new_path.parse()?);
+
+    Ok(Uri::from_parts(uri_parts)?)
+}
 
 pub async fn download_file(
     bot: &InnerBot,
@@ -10,14 +39,12 @@ pub async fn download_file(
         None => return Err(errors::Download::NoPath),
     };
 
-    let url = Uri::builder()
-        .scheme("https")
-        .authority("api.telegram.org")
-        .path_and_query(format!("/file/bot{}/{}", bot.token(), path).as_str())
-        .build()
-        .unwrap_or_else(|err| {
-            panic!("\n[tbot] Download URL construction failed: {:#?}\n", err);
-        });
+    if Path::new(&path).is_absolute() {
+        return Ok(fs::read(&path).await?);
+    }
+
+    let url = construct_uri(bot, path)
+        .expect("[tbot] Download URI construction failed");
 
     let (parts, mut body) = bot.client().get(url).await?.into_parts();
 

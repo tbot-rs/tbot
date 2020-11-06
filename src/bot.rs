@@ -145,6 +145,11 @@ impl Bot {
     }
 
     /// Downloads a file.
+    ///
+    /// If you use a self-hosted Bot API server, `file.path` may be an absolute
+    /// local path. In this case, `tbot` reads the file at the given and returns
+    /// it. If the server is running on another machine, you have to handle this
+    /// case manually before calling this method.
     pub async fn download_file(
         &self,
         file: &File,
