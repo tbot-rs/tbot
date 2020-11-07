@@ -9,11 +9,14 @@ edited_message! {
         document: Document,
         /// The caption of the document.
         caption: Text,
+        /// The media group's ID.
+        media_group_id: Option<String>,
     } -> EventLoop::edited_document
 
-    fn new(caption: Text,) -> Self {
+    fn new(caption: Text, media_group_id: Option<String>,) -> Self {
         Self {
             caption: caption,
+            media_group_id: media_group_id,
         }
     }
 }
