@@ -27,12 +27,13 @@ pub use https::Https;
 #[must_use = "webhook does not start unless `start` is called"]
 pub struct Webhook<'a> {
     event_loop: EventLoop,
-    ip: IpAddr,
+    bind_to: IpAddr,
     port: u16,
     request_timeout: Duration,
     updates_url: String,
 
     url: &'a str,
+    ip_address: Option<IpAddr>,
     certificate: Option<&'a str>,
     max_connections: Option<NonZeroU32>,
     allowed_updates: Option<&'a [UpdateKind]>,
@@ -42,12 +43,13 @@ impl<'a> Webhook<'a> {
     pub(crate) fn new(event_loop: EventLoop, url: &'a str, port: u16) -> Self {
         Self {
             event_loop,
-            ip: IpAddr::V4(Ipv4Addr::LOCALHOST),
+            bind_to: IpAddr::V4(Ipv4Addr::LOCALHOST),
             port,
             request_timeout: Duration::from_secs(60),
             updates_url: String::from("/"),
 
             url,
+            ip_address: None,
             certificate: None,
             max_connections: None,
             allowed_updates: None,
@@ -55,8 +57,8 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures the IP `tbot` will bind to.
-    pub const fn ip(mut self, ip: IpAddr) -> Self {
-        self.ip = ip;
+    pub const fn bind_to(mut self, bind_to: IpAddr) -> Self {
+        self.bind_to = bind_to;
         self
     }
 
@@ -75,6 +77,13 @@ impl<'a> Webhook<'a> {
         }
 
         self.updates_url = url;
+        self
+    }
+
+    /// Configures the IP address which the Bot API server will use to send
+    /// updates avoiding DNS. Reflects the `ip_address` parameter.
+    pub fn ip_address(mut self, ip_address: impl Into<IpAddr>) -> Self {
+        self.ip_address = Some(ip_address.into());
         self
     }
 
