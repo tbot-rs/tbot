@@ -112,7 +112,7 @@ impl<'a> Video<'a> {
         self
     }
 
-    pub(crate) fn serialize<S>(
+    pub(crate) fn serialize_with_names<S>(
         &self,
         serialize: S,
         video_name: &str,
@@ -168,6 +168,6 @@ impl<'a> serde::Serialize for Video<'a> {
     where
         S: serde::Serializer,
     {
-        self.serialize(serialize, "video", "thumb")
+        self.serialize_with_names(serialize, "video", "thumb")
     }
 }

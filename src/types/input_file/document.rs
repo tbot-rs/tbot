@@ -4,7 +4,7 @@ use crate::types::{
     parameters::{ParseMode, Text},
     InteriorBorrow,
 };
-use serde::ser::SerializeMap;
+use serde::{ser::SerializeMap, Serializer};
 use std::borrow::Cow;
 
 /// Represents a document to be sent.
@@ -82,6 +82,33 @@ impl<'a> Document<'a> {
         self.parse_mode = caption.parse_mode;
         self
     }
+
+    pub(crate) fn serialize_with_names<S>(
+        &self,
+        serializer: S,
+        document_name: &str,
+        thumb_name: &str,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(None)?;
+
+        map.serialize_entry("type", "document")?;
+        map.serialize_entry("media", &self.media.with_name(document_name))?;
+
+        if let Some(thumb) = &self.thumb {
+            map.serialize_entry("thumb", &thumb.with_name(thumb_name))?;
+        }
+        if let Some(caption) = &self.caption {
+            map.serialize_entry("caption", caption)?;
+        }
+        if let Some(parse_mode) = self.parse_mode {
+            map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+
+        map.end()
+    }
 }
 
 impl<'a> InteriorBorrow<'a> for Document<'a> {
@@ -96,22 +123,10 @@ impl<'a> InteriorBorrow<'a> for Document<'a> {
 }
 
 impl<'a> serde::Serialize for Document<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let mut map = s.serialize_map(None)?;
-
-        map.serialize_entry("type", "document")?;
-        map.serialize_entry("media", &self.media.with_name("document"))?;
-
-        if let Some(thumb) = &self.thumb {
-            map.serialize_entry("thumb", &thumb)?;
-        }
-        if let Some(caption) = &self.caption {
-            map.serialize_entry("caption", caption)?;
-        }
-        if let Some(parse_mode) = self.parse_mode {
-            map.serialize_entry("parse_mode", &parse_mode)?;
-        }
-
-        map.end()
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.serialize_with_names(serializer, "document", "thumb")
     }
 }

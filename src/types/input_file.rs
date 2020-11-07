@@ -1,13 +1,14 @@
 //! Types representing uploadable media.
 
 use crate::types::{file, InteriorBorrow};
+use std::borrow::Cow;
 
 mod animation;
 mod audio;
 mod chat_photo;
 mod document;
 mod editable_media;
-mod group_media;
+mod media_group;
 mod photo;
 mod png_sticker;
 mod sticker;
@@ -19,15 +20,24 @@ mod video;
 mod video_note;
 mod voice;
 
-pub(crate) use group_media::Album;
-use std::borrow::Cow;
+pub(crate) use media_group::{Album, AnyGroupMedia};
 pub use {
-    animation::Animation, audio::Audio, chat_photo::ChatPhoto,
-    document::Document, editable_media::EditableMedia, group_media::GroupMedia,
-    photo::Photo, png_sticker::PngSticker, sticker::Sticker,
+    animation::Animation,
+    audio::Audio,
+    chat_photo::ChatPhoto,
+    document::Document,
+    editable_media::EditableMedia,
+    media_group::{MediaGroup, PhotoOrVideo},
+    photo::Photo,
+    png_sticker::PngSticker,
+    sticker::Sticker,
     sticker_for_sticker_set::StickerForStickerSet,
-    sticker_set_thumb::StickerSetThumb, tgs_sticker::TgsSticker, thumb::Thumb,
-    video::Video, video_note::VideoNote, voice::Voice,
+    sticker_set_thumb::StickerSetThumb,
+    tgs_sticker::TgsSticker,
+    thumb::Thumb,
+    video::Video,
+    video_note::VideoNote,
+    voice::Voice,
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
