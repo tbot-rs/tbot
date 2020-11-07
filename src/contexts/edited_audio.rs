@@ -3,6 +3,8 @@ use crate::{
     types::{message::Text, Audio},
 };
 
+use super::fields::Album;
+
 edited_message! {
     struct EditedAudio {
         /// The audio.
@@ -39,5 +41,12 @@ impl AnyText for EditedAudio {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption
+    }
+}
+
+impl Album for EditedAudio {
+    #[must_use]
+    fn media_group_id(&self) -> Option<&str> {
+        self.media_group_id.as_ref().map(String::as_ref)
     }
 }
