@@ -1,7 +1,7 @@
 // Type out about 80 method names? No, thanks
 #![allow(clippy::wildcard_imports)]
 use crate::{
-    contexts::fields::Message,
+    contexts::fields,
     methods::*,
     types::{
         chat,
@@ -18,7 +18,7 @@ use crate::{
 use std::borrow::Cow;
 
 /// Provides methods appliable to all messages.
-pub trait ChatMethods: Message {
+pub trait Message: fields::Message {
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&self) -> DeleteChatPhoto<'_> {
         self.bot().delete_chat_photo(self.chat().id)
@@ -521,4 +521,4 @@ pub trait ChatMethods: Message {
     }
 }
 
-impl<T: Message> ChatMethods for T {}
+impl<T: fields::Message> Message for T {}
