@@ -4,7 +4,7 @@ use crate::types::parameters::UpdateKind;
 use serde::de::{
     Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
 };
-use std::num::NonZeroU32;
+use std::{net::IpAddr, num::NonZeroU32};
 
 /// Represents information about the last error.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -34,6 +34,8 @@ pub struct WebhookInfo {
     pub max_connections: Option<NonZeroU32>,
     /// A list of updates the bot is subscribed to.
     pub allowed_updates: Option<Vec<UpdateKind>>,
+    /// The IP address which Telegram uses to connect to your sever.
+    pub ip_address: Option<IpAddr>,
 }
 
 const URL: &str = "url";
@@ -43,6 +45,7 @@ const LAST_ERROR_DATE: &str = "last_error_date";
 const LAST_ERROR_MESSAGE: &str = "last_error_message";
 const MAX_CONNECTIONS: &str = "max_connections";
 const ALLOWED_UPDATES: &str = "allowed_updates";
+const IP_ADDRESS: &str = "ip_address";
 
 struct WebhookInfoVisitor;
 
@@ -64,6 +67,7 @@ impl<'v> Visitor<'v> for WebhookInfoVisitor {
         let mut last_error_message = None;
         let mut max_connections = None;
         let mut allowed_updates = None;
+        let mut ip_address = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -80,6 +84,7 @@ impl<'v> Visitor<'v> for WebhookInfoVisitor {
                 }
                 MAX_CONNECTIONS => max_connections = Some(map.next_value()?),
                 ALLOWED_UPDATES => allowed_updates = Some(map.next_value()?),
+                IP_ADDRESS => ip_address = Some(map.next_value()?),
                 _ => {
                     let _: IgnoredAny = map.next_value()?;
                 }
@@ -102,6 +107,7 @@ impl<'v> Visitor<'v> for WebhookInfoVisitor {
             last_error,
             max_connections,
             allowed_updates,
+            ip_address,
         })
     }
 }
