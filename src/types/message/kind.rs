@@ -12,10 +12,24 @@ use is_macro::Is;
 pub enum Kind {
     /// A text message.
     Text(Text),
-    /// An audio. The second item is the caption.
-    Audio(Box<Audio>, Text),
-    /// A document. The second item is the caption.
-    Document(Box<Document>, Text),
+    /// An audio.
+    Audio {
+        /// The audio itself.
+        audio: Box<Audio>,
+        /// The audio's caption.
+        caption: Text,
+        /// If the audio is a part of an album, this is the album's ID.
+        media_group_id: Option<String>,
+    },
+    /// A document.
+    Document {
+        /// The document itself.
+        document: Box<Document>,
+        /// The document's caption.
+        caption: Text,
+        /// If the document is a part of an album, this is the album's ID.
+        media_group_id: Option<String>,
+    },
     /// A dice.
     Dice(Dice),
     /// An invitation to play a game.

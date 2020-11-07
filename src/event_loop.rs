@@ -1362,14 +1362,17 @@ impl EventLoop {
                 );
                 self.run_animation_handlers(Arc::new(context));
             }
-            message::Kind::Audio(audio, caption)
-                if self.will_handle_audio() =>
-            {
+            message::Kind::Audio {
+                audio,
+                caption,
+                media_group_id,
+            } if self.will_handle_audio() => {
                 let context = contexts::Audio::new(
                     self.bot.clone(),
                     data,
                     *audio,
                     caption,
+                    media_group_id,
                 );
                 self.run_audio_handlers(Arc::new(context));
             }
@@ -1399,14 +1402,17 @@ impl EventLoop {
                 let context = contexts::Dice::new(self.bot.clone(), data, dice);
                 self.run_dice_handlers(Arc::new(context));
             }
-            message::Kind::Document(document, caption)
-                if self.will_handle_document() =>
-            {
+            message::Kind::Document {
+                document,
+                caption,
+                media_group_id,
+            } if self.will_handle_document() => {
                 let context = contexts::Document::new(
                     self.bot.clone(),
                     data,
                     *document,
                     caption,
+                    media_group_id,
                 );
                 self.run_document_handlers(Arc::new(context));
             }
@@ -1591,12 +1597,12 @@ impl EventLoop {
                 self.run_unhandled_handlers(update);
             }
             message::Kind::Animation(..)
-            | message::Kind::Audio(..)
+            | message::Kind::Audio { .. }
             | message::Kind::ChatPhotoDeleted
             | message::Kind::ConnectedWebsite(..)
             | message::Kind::Contact(..)
             | message::Kind::Dice(..)
-            | message::Kind::Document(..)
+            | message::Kind::Document { .. }
             | message::Kind::Game(..)
             | message::Kind::GroupCreated
             | message::Kind::Invoice(..)
@@ -1644,27 +1650,33 @@ impl EventLoop {
                 );
                 self.run_edited_animation_handlers(Arc::new(context));
             }
-            message::Kind::Audio(audio, caption)
-                if self.will_handle_edited_audio() =>
-            {
+            message::Kind::Audio {
+                audio,
+                caption,
+                media_group_id,
+            } if self.will_handle_edited_audio() => {
                 let context = contexts::EditedAudio::new(
                     self.bot.clone(),
                     data,
                     edit_date,
                     *audio,
                     caption,
+                    media_group_id,
                 );
                 self.run_edited_audio_handlers(Arc::new(context));
             }
-            message::Kind::Document(document, caption)
-                if self.will_handle_edited_document() =>
-            {
+            message::Kind::Document {
+                document,
+                caption,
+                media_group_id,
+            } if self.will_handle_edited_document() => {
                 let context = contexts::EditedDocument::new(
                     self.bot.clone(),
                     data,
                     edit_date,
                     *document,
                     caption,
+                    media_group_id,
                 );
                 self.run_edited_document_handlers(Arc::new(context));
             }
@@ -1774,8 +1786,8 @@ impl EventLoop {
                 self.run_unhandled_handlers(update)
             }
             message::Kind::Animation(..)
-            | message::Kind::Audio(..)
-            | message::Kind::Document(..)
+            | message::Kind::Audio { .. }
+            | message::Kind::Document { .. }
             | message::Kind::Location(..)
             | message::Kind::Photo(..)
             | message::Kind::Text(..)

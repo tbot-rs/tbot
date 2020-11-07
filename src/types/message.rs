@@ -325,7 +325,11 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
 
             Kind::Text(text)
         } else if let Some(audio) = audio {
-            Kind::Audio(audio, caption)
+            Kind::Audio {
+                audio,
+                caption,
+                media_group_id,
+            }
         } else if let Some(game) = game {
             Kind::Game(game)
         } else if let Some(photo) = photo {
@@ -349,7 +353,11 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         } else if let Some(animation) = animation {
             Kind::Animation(animation, caption)
         } else if let Some(document) = document {
-            Kind::Document(document, caption)
+            Kind::Document {
+                document,
+                caption,
+                media_group_id,
+            }
         } else if let Some(new_chat_members) = new_chat_members {
             Kind::NewChatMembers(new_chat_members)
         } else if let Some(left_chat_member) = left_chat_member {
