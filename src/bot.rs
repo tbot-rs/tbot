@@ -215,6 +215,16 @@ impl Bot {
         AnswerShippingQuery::new(&self.inner, shipping_query_id, result)
     }
 
+    /// Copies a message.
+    pub fn copy_message<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+        from_chat_id: impl ImplicitChatId<'a>,
+        message_id: message::Id,
+    ) -> CopyMessage<'a> {
+        CopyMessage::new(&self.inner, chat_id, from_chat_id, message_id)
+    }
+
     /// Creates a new sticker set.
     pub fn create_new_sticker_set<'a>(
         &'a self,

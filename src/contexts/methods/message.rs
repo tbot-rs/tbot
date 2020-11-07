@@ -19,6 +19,24 @@ use std::borrow::Cow;
 
 /// Provides methods appliable to all messages.
 pub trait Message: fields::Message {
+    /// Copies message from this chat.
+    fn copy_chat_message<'a>(
+        &'a self,
+        message_id: message::Id,
+        to_chat_id: impl ImplicitChatId<'a>,
+    ) -> CopyMessage<'_> {
+        self.bot()
+            .copy_message(to_chat_id, self.chat().id, message_id)
+    }
+
+    /// Copies this message.
+    fn copy_this_message<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+    ) -> CopyMessage<'_> {
+        self.copy_chat_message(self.message_id(), chat_id)
+    }
+
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&self) -> DeleteChatPhoto<'_> {
         self.bot().delete_chat_photo(self.chat().id)
