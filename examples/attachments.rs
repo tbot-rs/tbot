@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::input_file::{Animation, Document, Photo, Video},
+    types::input_file::{Animation, Document, Photo, PhotoOrVideo, Video},
     Bot,
 };
 
@@ -49,7 +49,7 @@ async fn main() {
     });
 
     bot.command("album", |context| async move {
-        let album: &[_] = &[
+        let album: &[PhotoOrVideo] = &[
             Photo::with_bytes(PHOTO).into(),
             Video::with_bytes(GIF).into(),
         ];

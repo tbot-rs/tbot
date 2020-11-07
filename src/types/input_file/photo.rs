@@ -71,7 +71,7 @@ impl<'a> Photo<'a> {
         self
     }
 
-    pub(crate) fn serialize<S>(
+    pub(crate) fn serialize_with_name<S>(
         &self,
         serializer: S,
         name: &str,
@@ -110,6 +110,6 @@ impl<'a> serde::Serialize for Photo<'a> {
     where
         S: serde::Serializer,
     {
-        self.serialize(serializer, "photo")
+        self.serialize_with_name(serializer, "photo")
     }
 }

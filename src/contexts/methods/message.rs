@@ -6,7 +6,7 @@ use crate::{
     types::{
         chat,
         input_file::{
-            Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
+            Animation, Audio, ChatPhoto, Document, EditableMedia, MediaGroup,
             Photo, Sticker, Video, VideoNote, Voice,
         },
         keyboard::inline,
@@ -323,7 +323,7 @@ pub trait Message: fields::Message {
     /// Sends an album to this chat.
     fn send_media_group<'a>(
         &'a self,
-        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
+        media: impl Into<MediaGroup<'a>>,
     ) -> SendMediaGroup<'a> {
         self.bot().send_media_group(self.chat().id, media)
     }
@@ -331,7 +331,7 @@ pub trait Message: fields::Message {
     /// Sends an album in reply to this message.
     fn send_media_group_in_reply<'a>(
         &'a self,
-        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
+        media: impl Into<MediaGroup<'a>>,
     ) -> SendMediaGroup<'a> {
         self.send_media_group(media).in_reply_to(self.message_id())
     }

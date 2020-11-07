@@ -3,13 +3,15 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
-        input_file::{Album, GroupMedia, InputFile, Photo, Thumb, Video},
+        input_file::{
+            Album, AnyGroupMedia, Audio, Document, InputFile, MediaGroup,
+            Photo, Thumb, Video,
+        },
         message::{self, Message},
         parameters::{ChatId, ImplicitChatId},
     },
     Multipart,
 };
-use std::borrow::Cow;
 
 /// Sends an album.
 ///
@@ -21,7 +23,7 @@ use std::borrow::Cow;
 pub struct SendMediaGroup<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId<'a>,
-    media: Cow<'a, [GroupMedia<'a>]>,
+    media: MediaGroup<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
 }
@@ -30,7 +32,7 @@ impl<'a> SendMediaGroup<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId<'a>,
-        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
+        media: impl Into<MediaGroup<'a>>,
     ) -> Self {
         Self {
             bot,
@@ -64,9 +66,22 @@ impl SendMediaGroup<'_> {
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id);
 
-        for (index, media) in self.media.iter().enumerate() {
+        let album = Album(self.media);
+
+        macro_rules! add_thumb {
+            ($thumb:expr, $index:expr) => {
+                if let Some(Thumb(InputFile::File { filename, bytes })) = $thumb
+                {
+                    let name = format!("thumb_{}", $index);
+                    multipart =
+                        multipart.file_owned_name(name, &filename, &bytes)
+                }
+            };
+        };
+
+        for (index, media) in album.0.iter().enumerate() {
             match media {
-                GroupMedia::Photo(Photo {
+                AnyGroupMedia::Photo(Photo {
                     media: InputFile::File { filename, bytes },
                     ..
                 }) => {
@@ -75,7 +90,7 @@ impl SendMediaGroup<'_> {
                     multipart =
                         multipart.file_owned_name(name, filename, bytes);
                 }
-                GroupMedia::Video(Video {
+                AnyGroupMedia::Video(Video {
                     media: InputFile::File { filename, bytes },
                     thumb,
                     ..
@@ -84,20 +99,38 @@ impl SendMediaGroup<'_> {
                     multipart =
                         multipart.file_owned_name(name, filename, bytes);
 
-                    if let Some(Thumb(InputFile::File { filename, bytes })) =
-                        thumb
-                    {
-                        let name = format!("thumb_{}", index);
-                        multipart =
-                            multipart.file_owned_name(name, filename, bytes);
-                    }
+                    add_thumb!(thumb, index);
                 }
-                _ => (),
+                AnyGroupMedia::Audio(Audio {
+                    media: InputFile::File { filename, bytes },
+                    thumb,
+                    ..
+                }) => {
+                    let name = format!("audio_{}", index);
+                    multipart =
+                        multipart.file_owned_name(name, filename, bytes);
+
+                    add_thumb!(thumb, index);
+                }
+                AnyGroupMedia::Document(Document {
+                    media: InputFile::File { filename, bytes },
+                    thumb,
+                    ..
+                }) => {
+                    let name = format!("document_{}", index);
+                    multipart =
+                        multipart.file_owned_name(name, filename, bytes);
+
+                    add_thumb!(thumb, index);
+                }
+                AnyGroupMedia::Photo(..)
+                | AnyGroupMedia::Video(..)
+                | AnyGroupMedia::Audio(..)
+                | AnyGroupMedia::Document(..) => (),
             }
         }
 
-        let media = Album(&self.media);
-        let (boundary, body) = multipart.json("media", &media).finish();
+        let (boundary, body) = multipart.json("media", &album).finish();
 
         call_method(self.bot, "sendMediaGroup", Some(boundary), body).await
     }

@@ -18,7 +18,7 @@ use crate::{
         file::{self, File},
         inline_query,
         input_file::{
-            Animation, Audio, ChatPhoto, Document, EditableMedia, GroupMedia,
+            Animation, Audio, ChatPhoto, Document, EditableMedia, MediaGroup,
             Photo, Sticker, StickerForStickerSet, StickerSetThumb, Video,
             VideoNote, Voice,
         },
@@ -636,7 +636,7 @@ impl Bot {
     pub fn send_media_group<'a>(
         &'a self,
         chat_id: impl ImplicitChatId<'a>,
-        media: impl Into<Cow<'a, [GroupMedia<'a>]>>,
+        media: impl Into<MediaGroup<'a>>,
     ) -> SendMediaGroup<'a> {
         SendMediaGroup::new(&self.inner, chat_id, media)
     }

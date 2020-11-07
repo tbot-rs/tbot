@@ -4,7 +4,7 @@ use crate::types::{
     parameters::{ParseMode, Text},
     InteriorBorrow,
 };
-use serde::ser::SerializeMap;
+use serde::{ser::SerializeMap, Serialize, Serializer};
 use std::borrow::Cow;
 
 /// Represents an audio to be sent.
@@ -103,30 +103,23 @@ impl<'a> Audio<'a> {
         self.title = Some(title.into());
         self
     }
-}
 
-impl<'a> InteriorBorrow<'a> for Audio<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            performer: self.performer.borrow_inside(),
-            title: self.title.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> serde::Serialize for Audio<'a> {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let mut map = s.serialize_map(None)?;
+    pub(crate) fn serialize_with_names<S>(
+        &self,
+        serializer: S,
+        audio_name: &str,
+        thumb_name: &str,
+    ) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(None)?;
 
         map.serialize_entry("type", "audio")?;
-        map.serialize_entry("media", &self.media.with_name("audio"))?;
+        map.serialize_entry("media", &self.media.with_name(audio_name))?;
 
         if let Some(thumb) = &self.thumb {
-            map.serialize_entry("thumb", &thumb)?;
+            map.serialize_entry("thumb", &thumb.with_name(thumb_name))?;
         }
         if let Some(caption) = &self.caption {
             map.serialize_entry("caption", caption)?;
@@ -145,5 +138,27 @@ impl<'a> serde::Serialize for Audio<'a> {
         }
 
         map.end()
+    }
+}
+
+impl<'a> InteriorBorrow<'a> for Audio<'a> {
+    fn borrow_inside(&'a self) -> Self {
+        Self {
+            media: self.media.borrow_inside(),
+            thumb: self.thumb.borrow_inside(),
+            caption: self.caption.borrow_inside(),
+            performer: self.performer.borrow_inside(),
+            title: self.title.borrow_inside(),
+            ..*self
+        }
+    }
+}
+
+impl<'a> Serialize for Audio<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.serialize_with_names(serializer, "audio", "thumb")
     }
 }
