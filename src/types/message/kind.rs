@@ -34,16 +34,33 @@ pub enum Kind {
     Dice(Dice),
     /// An invitation to play a game.
     Game(Box<Game>),
-    /// A photo. The second item is the caption, the third one is
-    /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Photo(Vec<PhotoSize>, Text, Option<String>),
+    /// A photo.
+    Photo {
+        /// The photo itself.
+        photo: Vec<PhotoSize>,
+        /// The photo's caption.
+        caption: Text,
+        /// If the photo is a part of an album, this is the album's ID.
+        media_group_id: Option<String>,
+    },
     /// A sticker.
     Sticker(Box<Sticker>),
-    /// A video. The second item is the caption, the third one is
-    /// `media_group_id`, i.e. this photo belongs to an album with this ID.
-    Video(Box<Video>, Text, Option<String>),
+    /// A video.
+    Video {
+        /// The video itself.
+        video: Box<Video>,
+        /// The video's caption.
+        caption: Text,
+        /// If the video is a part of an album, this is the album's ID.
+        media_group_id: Option<String>,
+    },
     /// A voice message. The second item is the caption.
-    Voice(Voice, Text),
+    Voice {
+        /// The voice itself.
+        voice: Voice,
+        /// The voice's caption.
+        caption: Text,
+    },
     /// A video note.
     VideoNote(VideoNote),
     /// A contact.
@@ -52,8 +69,13 @@ pub enum Kind {
     Location(Location),
     /// A venue.
     Venue(Venue),
-    /// An animation. The second item is the caption.
-    Animation(Box<Animation>, Text),
+    /// An animation.
+    Animation {
+        /// The animation itself.
+        animation: Box<Animation>,
+        /// The animation's caption.
+        caption: Text,
+    },
     /// A poll.
     Poll(Poll),
     /// A service message about new chat members.
