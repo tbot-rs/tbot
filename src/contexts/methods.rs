@@ -2,11 +2,11 @@
 //! the context.
 
 mod callback;
-mod chat_methods;
 mod forwardable;
+mod message;
 mod pinnable;
 
 pub use {
-    callback::Callback, chat_methods::ChatMethods, forwardable::Forwardable,
+    callback::Callback, forwardable::Forwardable, message::Message,
     pinnable::Pinnable,
 };

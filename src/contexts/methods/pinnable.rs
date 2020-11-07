@@ -1,8 +1,8 @@
-use super::ChatMethods;
+use super::Message;
 use crate::methods::PinChatMessage;
 
 /// Provides methods for pinnable messages.
-pub trait Pinnable: ChatMethods {
+pub trait Pinnable: Message {
     /// Pins this message.
     fn pin_this_message(&self) -> PinChatMessage<'_> {
         self.bot()
