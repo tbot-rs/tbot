@@ -3,6 +3,8 @@ use crate::{
     types::{message::Text, Document},
 };
 
+use super::fields::Album;
+
 edited_message! {
     struct EditedDocument {
         /// The document.
@@ -39,5 +41,12 @@ impl AnyText for EditedDocument {
     #[must_use]
     fn text(&self) -> &Text {
         &self.caption
+    }
+}
+
+impl Album for EditedDocument {
+    #[must_use]
+    fn media_group_id(&self) -> Option<&str> {
+        self.media_group_id.as_ref().map(String::as_ref)
     }
 }
