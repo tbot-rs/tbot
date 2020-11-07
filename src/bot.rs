@@ -31,7 +31,7 @@ use crate::{
         LabeledPrice,
     },
 };
-use std::{borrow::Cow, num::NonZeroU32, sync::Arc};
+use std::{borrow::Cow, net::IpAddr, num::NonZeroU32, sync::Arc};
 
 mod builder;
 mod inner_bot;
@@ -841,6 +841,7 @@ impl Bot {
     pub(crate) fn set_webhook<'a>(
         &'a self,
         url: &'a str,
+        ip_address: Option<IpAddr>,
         certificate: Option<&'a str>,
         max_connections: Option<NonZeroU32>,
         allowed_updates: Option<&'a [UpdateKind]>,
@@ -848,6 +849,7 @@ impl Bot {
         SetWebhook::new(
             &self.inner,
             url,
+            ip_address,
             certificate,
             max_connections,
             allowed_updates,

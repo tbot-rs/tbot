@@ -26,10 +26,11 @@ impl<'a> Http<'a> {
     pub async fn start(self) -> Result<Infallible, errors::HttpWebhook> {
         let Webhook {
             event_loop,
-            ip,
+            bind_to,
             port,
             updates_url,
             url,
+            ip_address,
             certificate,
             max_connections,
             allowed_updates,
@@ -38,7 +39,13 @@ impl<'a> Http<'a> {
 
         let set_webhook = event_loop
             .bot
-            .set_webhook(url, certificate, max_connections, allowed_updates)
+            .set_webhook(
+                url,
+                ip_address,
+                certificate,
+                max_connections,
+                allowed_updates,
+            )
             .call();
 
         timeout(request_timeout, set_webhook).await??;
@@ -55,7 +62,7 @@ impl<'a> Http<'a> {
         };
 
         let event_loop = Arc::new(event_loop);
-        let addr = SocketAddr::new(ip, port);
+        let addr = SocketAddr::new(bind_to, port);
         let updates_url = Arc::new(updates_url);
 
         Server::bind(&addr)
