@@ -1,7 +1,7 @@
 use crate::{
     contexts::{
         fields,
-        methods::{Forwardable, Pinnable},
+        methods::{Copyable, Forwardable, Pinnable},
     },
     types::{message, Chat},
 };
@@ -32,6 +32,7 @@ impl fields::Message for MessageGameCallback {
     }
 }
 
+impl Copyable for MessageGameCallback {}
 impl Forwardable for MessageGameCallback {}
 impl Pinnable for MessageGameCallback {}
 

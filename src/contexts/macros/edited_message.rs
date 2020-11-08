@@ -48,6 +48,7 @@ macro_rules! edited_message {
             }
         }
 
+        impl super::methods::Copyable for $name {}
         impl super::methods::Forwardable for $name {}
         impl super::methods::Pinnable for $name {}
 
