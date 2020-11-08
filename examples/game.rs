@@ -1,5 +1,5 @@
 use std::{collections::HashMap, sync::Arc};
-use tbot::{errors, prelude::*, Bot};
+use tbot::{errors, prelude::*, types::message::From, Bot};
 use tokio::sync::Mutex;
 
 const GAME: &str = "";
@@ -46,8 +46,8 @@ async fn main() {
             };
 
             let user = match &context.from {
-                Some(user) => user,
-                None => return,
+                Some(From::User(user)) => user,
+                _ => return,
             };
 
             let text = context.text.value.to_lowercase();

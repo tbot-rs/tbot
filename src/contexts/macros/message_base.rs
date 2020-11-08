@@ -25,7 +25,7 @@ macro_rules! message_base {
                 /// ID of the message.
                 message_id: crate::types::message::Id,
                 /// The author of the message.
-                from: Option<crate::types::User>,
+                from: Option<crate::types::message::From>,
                 /// The timestamp of the message.
                 date: i64,
                 /// The chat to which the message was sent.
@@ -60,7 +60,7 @@ macro_rules! message_base {
             }
 
             #[must_use]
-            fn from(&self) -> Option<&crate::types::User> {
+            fn from(&self) -> Option<&crate::types::message::From> {
                 self.from.as_ref()
             }
 

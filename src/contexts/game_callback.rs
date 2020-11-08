@@ -3,7 +3,7 @@ use crate::{
         fields,
         methods::{Forwardable, Pinnable},
     },
-    types::{message, Chat, User},
+    types::{message, Chat},
 };
 
 callback! {
@@ -19,7 +19,7 @@ impl fields::Message for MessageGameCallback {
         self.message.id
     }
 
-    fn from(&self) -> Option<&User> {
+    fn from(&self) -> Option<&message::From> {
         self.message.from.as_ref()
     }
 

@@ -3,13 +3,15 @@
 use crate::types::{Chat, User};
 
 pub mod forward;
+mod from;
 mod id;
 pub mod inline_markup;
 mod kind;
 pub mod text;
 
 pub use {
-    forward::Forward, id::Id, inline_markup::Keyboard, kind::Kind, text::Text,
+    forward::Forward, from::From, id::Id, inline_markup::Keyboard, kind::Kind,
+    text::Text,
 };
 
 /// Represents a message.
@@ -20,7 +22,7 @@ pub struct Message {
     pub id: Id,
     /// The author of the message. Note that this field is `None` for messages
     /// from channels.
-    pub from: Option<User>,
+    pub from: Option<From>,
     /// The timestamp of the message.
     pub date: i64,
     /// The chat to which the message was sent.
@@ -43,7 +45,7 @@ pub struct Message {
 
 pub(crate) struct Data {
     pub id: Id,
-    pub from: Option<User>,
+    pub from: Option<From>,
     pub date: i64,
     pub chat: Chat,
     pub forward: Option<Forward>,
@@ -93,6 +95,7 @@ impl Message {
 
 const MESSAGE_ID: &str = "message_id";
 const FROM: &str = "from";
+const SENDER_CHAT: &str = "sender_chat";
 const DATE: &str = "date";
 const CHAT: &str = "chat";
 const FORWARD_FROM: &str = "forward_from";
@@ -158,6 +161,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
     {
         let mut message_id = None;
         let mut from = None;
+        let mut sender_chat = None;
         let mut date = None;
         let mut chat = None;
         let mut forward_from = None;
@@ -210,6 +214,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             match key {
                 MESSAGE_ID => message_id = Some(map.next_value()?),
                 FROM => from = Some(map.next_value()?),
+                SENDER_CHAT => sender_chat = Some(map.next_value()?),
                 DATE => date = Some(map.next_value()?),
                 CHAT => chat = Some(map.next_value()?),
                 FORWARD_FROM => forward_from = Some(map.next_value()?),
@@ -402,6 +407,15 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::Unknown
         };
 
+        #[allow(clippy::option_if_let_else)]
+        let from = if let Some(chat) = sender_chat {
+            Some(From::Chat(chat))
+        } else if let Some(user) = from {
+            Some(From::User(user))
+        } else {
+            None
+        };
+
         Ok(Message {
             id: message_id
                 .ok_or_else(|| serde::de::Error::missing_field(MESSAGE_ID))?,
@@ -429,6 +443,7 @@ impl<'de> serde::Deserialize<'de> for Message {
             &[
                 MESSAGE_ID,
                 FROM,
+                SENDER_CHAT,
                 DATE,
                 CHAT,
                 FORWARD_FROM,

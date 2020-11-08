@@ -10,7 +10,7 @@ pub trait Message: Context {
     /// ID of the message.
     fn message_id(&self) -> message::Id;
     /// The author of the message.
-    fn from(&self) -> Option<&User>;
+    fn from(&self) -> Option<&message::From>;
     /// The timestamp of the message.
     fn date(&self) -> i64;
     /// The chat to which the message was sent.
