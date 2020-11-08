@@ -104,15 +104,13 @@ impl<'a> CopyMessage<'a> {
 
 impl CopyMessage<'_> {
     /// Calls the method.
-    pub async fn call(self) -> Result<(), errors::MethodCall> {
-        call_method::<bool>(
+    pub async fn call(self) -> Result<message::Id, errors::MethodCall> {
+        call_method::<message::Id>(
             self.bot,
             "copyMessage",
             None,
             serde_json::to_vec(&self).unwrap(),
         )
-        .await?;
-
-        Ok(())
+        .await
     }
 }
