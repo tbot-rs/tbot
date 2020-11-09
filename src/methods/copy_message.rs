@@ -69,7 +69,9 @@ impl<'a> CopyMessage<'a> {
     /// Replaces the original caption with the provided one.
     /// Reflects the `caption` and `parse_mode` parameters.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn caption(mut self, caption: Text<'a>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+        let caption = caption.into();
+
         self.caption = Some(caption.text);
         self.parse_mode = caption.parse_mode;
         self
