@@ -2,11 +2,12 @@
 //! the context.
 
 mod callback;
+mod copyable;
 mod forwardable;
 mod message;
 mod pinnable;
 
 pub use {
-    callback::Callback, forwardable::Forwardable, message::Message,
-    pinnable::Pinnable,
+    callback::Callback, copyable::Copyable, forwardable::Forwardable,
+    message::Message, pinnable::Pinnable,
 };

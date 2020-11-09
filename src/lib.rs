@@ -98,6 +98,7 @@ pub use {bot::Bot, event_loop::EventLoop};
 pub mod prelude {
     //! Traits needed when working with `tbot`.
     pub use super::contexts::methods::Callback as _;
+    pub use super::contexts::methods::Copyable as _;
     pub use super::contexts::methods::Forwardable as _;
     pub use super::contexts::methods::Message as _;
     pub use super::contexts::methods::Pinnable as _;
