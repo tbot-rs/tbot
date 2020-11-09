@@ -7,8 +7,16 @@ use crate::{
         parameters::{ChatId, ImplicitChatId, ParseMode, Text},
     },
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
+
+// Reflects the [`MessageId`][docs] type.
+//
+// [docs]: https://core.telegram.org/bots/api#messageid
+#[derive(Deserialize, Debug, Clone)]
+struct MessageId {
+    message_id: message::Id,
+}
 
 /// Copies a message.
 ///
@@ -105,12 +113,14 @@ impl<'a> CopyMessage<'a> {
 impl CopyMessage<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<message::Id, errors::MethodCall> {
-        call_method::<message::Id>(
+        let result = call_method::<MessageId>(
             self.bot,
             "copyMessage",
             None,
             serde_json::to_vec(&self).unwrap(),
         )
-        .await
+        .await?;
+
+        Ok(result.message_id)
     }
 }
