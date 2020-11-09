@@ -29,6 +29,17 @@ pub trait Message: fields::Message {
             .copy_message(self.chat().id, from_chat_id, message_id)
     }
 
+    /// Copies a message in reply to this message.
+    fn copy_here_in_reply<'a>(
+        &'a self,
+        from_chat_id: impl ImplicitChatId<'a>,
+        message_id: message::Id,
+    ) -> CopyMessage<'_> {
+        self.bot()
+            .copy_message(self.chat().id, from_chat_id, message_id)
+            .in_reply_to(self.message_id())
+    }
+
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&self) -> DeleteChatPhoto<'_> {
         self.bot().delete_chat_photo(self.chat().id)
