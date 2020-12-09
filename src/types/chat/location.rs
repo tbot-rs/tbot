@@ -1,8 +1,5 @@
-#![deny(clippy::module_name_repetitions)]
-
 use crate::types::location;
-use serde::{Deserialize};
-
+use serde::Deserialize;
 
 /// Represents a location to which a chat is connected.
 #[derive(Debug, PartialEq, Clone, Deserialize)]

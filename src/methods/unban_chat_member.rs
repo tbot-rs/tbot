@@ -38,6 +38,13 @@ impl<'a> UnbanChatMember<'a> {
             only_if_banned: None,
         }
     }
+
+    /// If `true`, unban only if the user is banned.
+    /// Reflects the `only_if_banned` parameter.
+    pub const fn only_if_banned(mut self, only_if_banned: bool) -> Self {
+        self.only_if_banned = Some(only_if_banned);
+        self
+    }
 }
 
 impl UnbanChatMember<'_> {
@@ -52,12 +59,5 @@ impl UnbanChatMember<'_> {
         .await?;
 
         Ok(())
-    }
-
-    /// If `true`, unban only if the user is banned.
-    /// Reflects the `only_if_banned` parameter.
-    pub const fn only_if_banned(mut self, only_if_banned: bool) -> Self {
-        self.only_if_banned = Some(only_if_banned);
-        self
     }
 }
