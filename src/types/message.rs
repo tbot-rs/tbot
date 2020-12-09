@@ -288,7 +288,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             }
         }
 
-        #[allow(clippy::option_as_ref_deref)]
+        #[allow(clippy::option_if_let_else)]
         let forward_source = if let Some(message_id) = forward_from_message_id {
             Some(forward::From::Channel {
                 chat: forward_from_chat.ok_or_else(|| {
@@ -321,7 +321,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             entities: caption_entities.unwrap_or_else(Vec::new),
         };
 
-        #[allow(clippy::option_as_ref_deref)]
+        #[allow(clippy::option_if_let_else)]
         let kind = if let Some(value) = text {
             let text = Text {
                 value,
@@ -407,7 +407,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::Unknown
         };
 
-        #[allow(clippy::option_as_ref_deref)]
+        #[allow(clippy::option_if_let_else)]
         let from = if let Some(chat) = sender_chat {
             Some(From::Chat(chat))
         } else if let Some(user) = from {
