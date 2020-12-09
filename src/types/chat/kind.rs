@@ -17,7 +17,7 @@ pub enum Kind {
         /// The Bio of the other party in a private chat. Returned only
         /// in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         bio: Option<String>,
     },
     /// The chat is a group.
