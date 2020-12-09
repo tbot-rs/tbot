@@ -54,7 +54,7 @@ impl UnbanChatMember<'_> {
         Ok(())
     }
 
-    /// Configures banning rule, tells to do nothing if the user is not banned.
+    /// If `true`, unban only if the user is banned.
     /// Reflects the `only_if_banned` parameter.
     pub const fn only_if_banned(mut self, only_if_banned: bool) -> Self {
         self.only_if_banned = Some(only_if_banned);
