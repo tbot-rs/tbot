@@ -14,6 +14,11 @@ pub enum Kind {
         first_name: String,
         /// The last name of the user.
         last_name: Option<String>,
+        /// The Bio of the other party in a private chat. Returned only
+        /// in [`GetChat`].
+        ///
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        bio: Option<String>,
     },
     /// The chat is a group.
     #[non_exhaustive]
@@ -59,6 +64,17 @@ pub enum Kind {
         ///
         /// [`GetChat`]: ../../methods/struct.GetChat.html
         permissions: Option<chat::Permissions>,
+        /// For supergroups, the location to which the supergroup is connected. Returned only
+        /// in [`GetChat`].
+        ///
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        location: Option<chat::Location>,
+        /// Unique identifier for the linked chat, i.e. the discussion group
+        /// identifier for a channel and vice versa; for supergroups and channel chats.
+        /// Returned only in [`GetChat`].
+        ///
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        linked_chat_id: Option<chat::Id>,
     },
     /// The chat is a channel.
     #[non_exhaustive]
@@ -73,5 +89,11 @@ pub enum Kind {
         invite_link: Option<String>,
         /// The pinned message of the channel.
         pinned_message: Option<Box<Message>>,
+        /// Unique identifier for the linked chat, i.e. the discussion group
+        /// identifier for a channel and vice versa; for supergroups and channel chats.
+        /// Returned only in [`GetChat`].
+        ///
+        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        linked_chat_id: Option<chat::Id>,
     },
 }

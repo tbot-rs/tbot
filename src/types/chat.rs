@@ -8,10 +8,11 @@ mod kind;
 pub mod member;
 mod permissions;
 mod photo;
+mod location;
 
 pub use {
     action::Action, id::Id, kind::Kind, member::Member,
-    permissions::Permissions, photo::Photo,
+    permissions::Permissions, photo::Photo, location::Location,
 };
 
 /// Represents a [`Chat`].
@@ -42,6 +43,9 @@ const PINNED_MESSAGE: &str = "pinned_message";
 const SLOW_MODE_DELAY: &str = "slow_mode_delay";
 const STICKER_SET_NAME: &str = "sticker_set_name";
 const CAN_SET_STICKER_SET: &str = "can_set_sticker_set";
+const LOCATION: &str = "location";
+const LINKED_CHAT_ID: &str = "linked_chat_id";
+const BIO: &str = "bio";
 
 const PRIVATE: &str = "private";
 const GROUP: &str = "group";
@@ -75,6 +79,9 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
         let mut slow_mode_delay = None;
         let mut sticker_set_name = None;
         let mut can_set_sticker_set = None;
+        let mut chat_location = None;
+        let mut linked_chat_id = None;
+        let mut bio = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -94,6 +101,9 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 CAN_SET_STICKER_SET => {
                     can_set_sticker_set = Some(map.next_value()?)
                 }
+                LOCATION => chat_location = Some(map.next_value()?),
+                LINKED_CHAT_ID => linked_chat_id = Some(map.next_value()?),
+                BIO => bio = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<serde::de::IgnoredAny>()?;
                 }
@@ -107,6 +117,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                     serde::de::Error::missing_field(FIRST_NAME)
                 })?,
                 last_name,
+                bio,
             },
             Some(GROUP) => Kind::Group {
                 title: title
@@ -127,6 +138,8 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 sticker_set_name,
                 can_set_sticker_set,
                 permissions,
+                linked_chat_id,
+                location: chat_location,
             },
             Some(CHANNEL) => Kind::Channel {
                 title: title
@@ -135,6 +148,7 @@ impl<'v> serde::de::Visitor<'v> for ChatVisitor {
                 description,
                 invite_link,
                 pinned_message,
+                linked_chat_id,
             },
             None => return Err(serde::de::Error::missing_field(KIND)),
             Some(unknown_kind) => {
@@ -174,6 +188,9 @@ impl<'de> Deserialize<'de> for Chat {
                 PINNED_MESSAGE,
                 STICKER_SET_NAME,
                 CAN_SET_STICKER_SET,
+                LOCATION,
+                LINKED_CHAT_ID,
+                BIO,
             ],
             ChatVisitor,
         )

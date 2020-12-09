@@ -21,6 +21,8 @@ pub struct UnbanChatMember<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId<'a>,
     user_id: user::Id,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    only_if_banned: Option<bool>,
 }
 
 impl<'a> UnbanChatMember<'a> {
@@ -33,6 +35,7 @@ impl<'a> UnbanChatMember<'a> {
             bot,
             chat_id: chat_id.into(),
             user_id,
+            only_if_banned: None,
         }
     }
 }
@@ -49,5 +52,12 @@ impl UnbanChatMember<'_> {
         .await?;
 
         Ok(())
+    }
+
+    /// Configures banning rule, tells to do nothing if the user is not banned.
+    /// Reflects the `only_if_banned` parameter.
+    pub const fn unban_if_already_banned(mut self, only_if_banned: bool) -> Self {
+        self.only_if_banned = Some(only_if_banned);
+        self
     }
 }
