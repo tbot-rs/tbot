@@ -7,7 +7,8 @@ pub struct LiveConfiguration {
     /// Time relative to the message sending date, during which the
     /// location can be updated, in seconds. For active live locations only.
     pub live_period: u32,
-    /// The direction in which user is moving, in degrees; 1-360. For active live locations only.
+    /// The direction in which user is moving, in degrees; 1-360.
+    /// For active live locations only.
     pub heading: Option<u16>,
     /// Maximum distance for proximity alerts about approaching another
     /// chat member, in meters. For sent live locations only
