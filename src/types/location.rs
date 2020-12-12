@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-/// Live location struct.
+/// Information about a live location.
 #[derive(Debug, PartialEq, Clone, Copy, Deserialize)]
 #[non_exhaustive]
 pub struct LiveConfiguration {
