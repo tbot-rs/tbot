@@ -3,7 +3,7 @@ use serde::Deserialize;
 /// Live location struct.
 #[derive(Debug, PartialEq, Clone, Copy, Deserialize)]
 #[non_exhaustive]
-pub struct LiveConfiguration {
+pub struct Live {
     /// Time relative to the message sending date, during which the
     /// location can be updated, in seconds. For active live locations only.
     pub live_period: u32,
@@ -28,5 +28,5 @@ pub struct Location {
     pub horizontal_accuracy: Option<f64>,
     /// The live location configurations.
     #[serde(flatten)]
-    pub live_location: Option<LiveConfiguration>,
+    pub live_location: Option<Live>,
 }
