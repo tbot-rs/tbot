@@ -1,13 +1,14 @@
 use serde::Deserialize;
 
-/// Live location struct.
+/// Information about a live location.
 #[derive(Debug, PartialEq, Clone, Copy, Deserialize)]
 #[non_exhaustive]
 pub struct Live {
     /// Time relative to the message sending date, during which the
     /// location can be updated, in seconds. For active live locations only.
     pub live_period: u32,
-    /// The direction in which user is moving, in degrees; 1-360. For active live locations only.
+    /// The direction in which user is moving, in degrees; 1-360.
+    /// For active live locations only.
     pub heading: Option<u16>,
     /// Maximum distance for proximity alerts about approaching another
     /// chat member, in meters. For sent live locations only
@@ -26,7 +27,7 @@ pub struct Location {
     pub latitude: f64,
     /// The radius of uncertainty for the location, measured in meters; 0-1500
     pub horizontal_accuracy: Option<f64>,
-    /// The live location configurations.
+    /// If this location is a live location, information about it.
     #[serde(flatten)]
     pub live_location: Option<Live>,
 }
