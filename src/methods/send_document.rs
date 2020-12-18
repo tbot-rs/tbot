@@ -26,6 +26,7 @@ pub struct SendDocument<'a> {
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
+    disable_content_type_detection: Option<bool>,
 }
 
 impl<'a> SendDocument<'a> {
@@ -41,6 +42,7 @@ impl<'a> SendDocument<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            disable_content_type_detection: None,
         }
     }
 
@@ -65,6 +67,16 @@ impl<'a> SendDocument<'a> {
         markup: impl Into<keyboard::Any<'a>>,
     ) -> Self {
         self.reply_markup = Some(markup.into());
+        self
+    }
+
+    /// Configures automatic server-side content type detection.
+    /// Reflects the `disable_content_type_detection` parameter.
+    pub const fn should_disable_content_type_detection(
+        mut self,
+        should_disable: bool,
+    ) -> Self {
+        self.disable_content_type_detection = Some(should_disable);
         self
     }
 }

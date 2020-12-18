@@ -1,4 +1,5 @@
 use super::call_method;
+use crate::types::{message::Id};
 use crate::{
     bot::InnerBot,
     errors,
@@ -17,6 +18,7 @@ pub struct UnpinChatMessage<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     chat_id: ChatId<'a>,
+    message_id: Option<Id>,
 }
 
 impl<'a> UnpinChatMessage<'a> {
@@ -27,7 +29,15 @@ impl<'a> UnpinChatMessage<'a> {
         Self {
             bot,
             chat_id: chat_id.into(),
+            message_id: None,
         }
+    }
+
+    /// Configure message identified to be unpinned.
+    /// Reflects `message_id` parameter.
+    pub const fn set_message_id(mut self, message_id: Id) -> Self {
+        self.message_id = Some(message_id);
+        self
     }
 }
 
