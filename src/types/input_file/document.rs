@@ -85,6 +85,12 @@ impl<'a> Document<'a> {
         self
     }
 
+    /// Configures `disable_content_type_detection`.
+    pub fn should_disable_content_type_detection(mut self, should_disable: bool) -> Self {
+        self.disable_content_type_detection = Some(should_disable);
+        self
+    }
+
     pub(crate) fn serialize_with_names<S>(
         &self,
         serializer: S,

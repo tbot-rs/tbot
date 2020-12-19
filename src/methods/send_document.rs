@@ -26,7 +26,6 @@ pub struct SendDocument<'a> {
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
-    disable_content_type_detection: Option<bool>,
 }
 
 impl<'a> SendDocument<'a> {
@@ -42,7 +41,6 @@ impl<'a> SendDocument<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
-            disable_content_type_detection: None,
         }
     }
 
@@ -69,28 +67,19 @@ impl<'a> SendDocument<'a> {
         self.reply_markup = Some(markup.into());
         self
     }
-
-    /// Configures automatic server-side content type detection.
-    /// Reflects the `disable_content_type_detection` parameter.
-    pub const fn should_disable_content_type_detection(
-        mut self,
-        should_disable: bool,
-    ) -> Self {
-        self.disable_content_type_detection = Some(should_disable);
-        self
-    }
 }
 
 impl SendDocument<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
-        let mut multipart = Multipart::new(8)
+        let mut multipart = Multipart::new(9)
             .chat_id("chat_id", &self.chat_id)
             .maybe_str("caption", self.document.caption.as_deref())
             .maybe_string("parse_mode", self.document.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
-            .maybe_json("reply_markup", self.reply_markup);
+            .maybe_json("reply_markup", self.reply_markup)
+            .maybe_string("disable_content_type_detection", self.document.disable_content_type_detection);
 
         match &self.document.media {
             InputFile::File {
