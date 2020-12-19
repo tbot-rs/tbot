@@ -19,7 +19,7 @@ pub struct Video {
     pub duration: u32,
     /// The thumb of the video.
     pub thumb: Option<PhotoSize>,
-    /// The original filename as defined by sender
+    /// The original file name as defined by sender.
     pub file_name: Option<String>,
     /// The MIME type of the video.
     pub mime_type: Option<String>,
