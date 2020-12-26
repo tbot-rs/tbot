@@ -8,5 +8,5 @@ pub enum From {
     User(User),
     /// A channel or a suoergroup sent this message.
     /// Reflects the `sender_chat` field.
-    Chat(Chat),
+    Chat(Box<Chat>),
 }
