@@ -69,9 +69,7 @@ pub enum Kind {
         ///
         /// [`GetChat`]: ../../methods/struct.GetChat.html
         location: Option<chat::Location>,
-        /// Unique identifier for the linked chat, i.e. the discussion group
-        /// identifier for a channel and vice versa; for supergroups and channel chats.
-        /// Returned only in [`GetChat`].
+        /// If this supergroup is linked to a channel, this field contains the channel's ID. Returned only in [`GetChat`].
         ///
         /// [`GetChat`]: ../../methods/struct.GetChat.html
         linked_chat_id: Option<chat::Id>,
