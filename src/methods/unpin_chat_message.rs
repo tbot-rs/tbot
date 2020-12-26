@@ -33,7 +33,7 @@ impl<'a> UnpinChatMessage<'a> {
         }
     }
 
-    /// Configure message identified to be unpinned.
+    /// Configures which message to unpin.
     /// Reflects `message_id` parameter.
     pub const fn message_id(mut self, message_id: Id) -> Self {
         self.message_id = Some(message_id);
