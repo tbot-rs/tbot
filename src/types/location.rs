@@ -25,7 +25,7 @@ pub struct Location {
     pub longitude: f64,
     /// The latitude of the location.
     pub latitude: f64,
-    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    /// The radius of uncertainty for the location, measured in meters and is in range `0..=1500`.
     pub horizontal_accuracy: Option<f64>,
     /// If this location is a live location, information about it.
     #[serde(flatten)]
