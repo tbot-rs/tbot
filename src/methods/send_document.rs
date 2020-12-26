@@ -72,13 +72,17 @@ impl<'a> SendDocument<'a> {
 impl SendDocument<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<Message, errors::MethodCall> {
-        let mut multipart = Multipart::new(8)
+        let mut multipart = Multipart::new(9)
             .chat_id("chat_id", &self.chat_id)
             .maybe_str("caption", self.document.caption.as_deref())
             .maybe_string("parse_mode", self.document.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
-            .maybe_json("reply_markup", self.reply_markup);
+            .maybe_json("reply_markup", self.reply_markup)
+            .maybe_string(
+                "disable_content_type_detection",
+                self.document.disable_content_type_detection,
+            );
 
         match &self.document.media {
             InputFile::File {

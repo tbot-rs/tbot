@@ -15,6 +15,7 @@ pub struct Document<'a> {
     pub(crate) thumb: Option<Thumb<'a>>,
     pub(crate) caption: Option<Cow<'a, str>>,
     pub(crate) parse_mode: Option<ParseMode>,
+    pub(crate) disable_content_type_detection: Option<bool>,
 }
 
 impl<'a> Document<'a> {
@@ -24,6 +25,7 @@ impl<'a> Document<'a> {
             thumb: None,
             caption: None,
             parse_mode: None,
+            disable_content_type_detection: None,
         }
     }
 
@@ -83,6 +85,15 @@ impl<'a> Document<'a> {
         self
     }
 
+    /// Configures `disable_content_type_detection`.
+    pub const fn should_disable_content_type_detection(
+        mut self,
+        should_disable: bool,
+    ) -> Self {
+        self.disable_content_type_detection = Some(should_disable);
+        self
+    }
+
     pub(crate) fn serialize_with_names<S>(
         &self,
         serializer: S,
@@ -105,6 +116,13 @@ impl<'a> Document<'a> {
         }
         if let Some(parse_mode) = self.parse_mode {
             map.serialize_entry("parse_mode", &parse_mode)?;
+        }
+        if let Some(disable_ct_detection) = &self.disable_content_type_detection
+        {
+            map.serialize_entry(
+                "disable_content_type_detection",
+                disable_ct_detection,
+            )?;
         }
 
         map.end()

@@ -17,6 +17,8 @@ pub struct Audio {
     pub performer: Option<String>,
     /// The title of the audio.
     pub title: Option<String>,
+    /// The original file name as defined by sender.
+    pub file_name: Option<String>,
     /// The MIME type of the audio.
     pub mime_type: Option<String>,
     /// The file size of the audio.
