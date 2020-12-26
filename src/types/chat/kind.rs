@@ -34,7 +34,7 @@ pub enum Kind {
         /// Default member permissions of the group. Returned only
         /// in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         permissions: Option<chat::Permissions>,
     },
     /// The chat is a supergroup.
@@ -50,28 +50,29 @@ pub enum Kind {
         invite_link: Option<String>,
         /// The pinned message of the supergroup.
         pinned_message: Option<Box<Message>>,
-        /// The minimum allowed delay between messages in the supergroup. Returned only
-        /// in [`GetChat`].
+        /// The minimum allowed delay between messages in the supergroup.
+        /// Returned only in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         slow_mode_delay: Option<u64>,
         /// The name of the sticker set of the supergroup.
         sticker_set_name: Option<String>,
         /// `true` if the bot can set the sticker set of the supergroup.
         can_set_sticker_set: Option<bool>,
-        /// Default member permissions of the supergroup. Returned only
-        /// in [`GetChat`].
+        /// Default member permissions of the supergroup.
+        /// Returned only in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         permissions: Option<chat::Permissions>,
-        /// For supergroups, the location to which the supergroup is connected. Returned only
-        /// in [`GetChat`].
+        /// For supergroups, the location to which the supergroup is connected.
+        /// Returned only in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         location: Option<chat::Location>,
-        /// If this supergroup is linked to a channel, this field contains the channel's ID. Returned only in [`GetChat`].
+        /// If this supergroup is linked to a channel, this field contains
+        /// the channel's ID. Returned only in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         linked_chat_id: Option<chat::Id>,
     },
     /// The chat is a channel.
@@ -87,9 +88,10 @@ pub enum Kind {
         invite_link: Option<String>,
         /// The pinned message of the channel.
         pinned_message: Option<Box<Message>>,
-        /// If this channel has a discussion group, this field contains the group's ID. Returned only in [`GetChat`].
+        /// If this channel has a discussion group, this field contains
+        /// the group's ID. Returned only in [`GetChat`].
         ///
-        /// [`GetChat`]: ../../methods/struct.GetChat.html
+        /// [`GetChat`]: crate::methods::GetChat
         linked_chat_id: Option<chat::Id>,
     },
 }
