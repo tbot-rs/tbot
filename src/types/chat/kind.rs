@@ -14,7 +14,7 @@ pub enum Kind {
         first_name: String,
         /// The last name of the user.
         last_name: Option<String>,
-        /// The Bio of the other party in a private chat. Returned only
+        /// The bio of the other party in a private chat. Returned only
         /// in [`GetChat`].
         ///
         /// [`GetChat`]: crate::methods::GetChat
