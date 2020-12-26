@@ -87,9 +87,7 @@ pub enum Kind {
         invite_link: Option<String>,
         /// The pinned message of the channel.
         pinned_message: Option<Box<Message>>,
-        /// Unique identifier for the linked chat, i.e. the discussion group
-        /// identifier for a channel and vice versa; for supergroups and channel chats.
-        /// Returned only in [`GetChat`].
+        /// If this channel has a discussion group, this field contains the group's ID. Returned only in [`GetChat`].
         ///
         /// [`GetChat`]: ../../methods/struct.GetChat.html
         linked_chat_id: Option<chat::Id>,
