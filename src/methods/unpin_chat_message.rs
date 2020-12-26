@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::types::{message::Id};
+use crate::types::message::Id;
 use crate::{
     bot::InnerBot,
     errors,

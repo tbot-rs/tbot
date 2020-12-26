@@ -79,7 +79,10 @@ impl SendDocument<'_> {
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
             .maybe_json("reply_markup", self.reply_markup)
-            .maybe_string("disable_content_type_detection", self.document.disable_content_type_detection);
+            .maybe_string(
+                "disable_content_type_detection",
+                self.document.disable_content_type_detection,
+            );
 
         match &self.document.media {
             InputFile::File {

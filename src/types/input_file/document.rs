@@ -86,7 +86,10 @@ impl<'a> Document<'a> {
     }
 
     /// Configures `disable_content_type_detection`.
-    pub fn should_disable_content_type_detection(mut self, should_disable: bool) -> Self {
+    pub const fn should_disable_content_type_detection(
+        mut self,
+        should_disable: bool,
+    ) -> Self {
         self.disable_content_type_detection = Some(should_disable);
         self
     }
