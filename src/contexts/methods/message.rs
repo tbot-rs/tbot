@@ -536,6 +536,11 @@ pub trait Message: fields::Message {
         self.bot().unban_chat_member(self.chat().id, user_id)
     }
 
+    /// Unpins all messages in this chat.
+    fn unpin_all_chat_messages(&self) -> UnpinAllChatMessages<'_> {
+        self.bot().unpin_all_chat_messages(self.chat().id)
+    }
+
     /// Unpins the pinned message in this chat.
     fn unpin_chat_message(&self) -> UnpinChatMessage<'_> {
         self.bot().unpin_chat_message(self.chat().id)

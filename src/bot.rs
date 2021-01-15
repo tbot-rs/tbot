@@ -901,6 +901,14 @@ impl Bot {
         UnbanChatMember::new(&self.inner, chat_id, user_id)
     }
 
+    /// Unpins all messages in a chat.
+    pub fn unpin_all_chat_messages<'a>(
+        &'a self,
+        chat_id: impl ImplicitChatId<'a>,
+    ) -> UnpinAllChatMessages<'a> {
+        UnpinAllChatMessages::new(&self.inner, chat_id)
+    }
+
     /// Unpins a chat message.
     pub fn unpin_chat_message<'a>(
         &'a self,
