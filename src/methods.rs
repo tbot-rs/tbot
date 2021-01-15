@@ -124,6 +124,7 @@ mod stop_inline_location;
 mod stop_message_location;
 mod stop_poll;
 mod unban_chat_member;
+mod unpin_all_chat_messages;
 mod unpin_chat_message;
 mod upload_sticker_file;
 
@@ -201,6 +202,7 @@ pub use stop_inline_location::StopInlineLocation;
 pub use stop_message_location::StopMessageLocation;
 pub use stop_poll::StopPoll;
 pub use unban_chat_member::UnbanChatMember;
+pub use unpin_all_chat_messages::UnpinAllChatMessages;
 pub use unpin_chat_message::UnpinChatMessage;
 pub use upload_sticker_file::UploadStickerFile;
 
