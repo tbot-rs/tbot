@@ -31,6 +31,10 @@ pub struct SendVenue<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_type: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    google_place_id: Option<Cow<'a, str>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    google_place_type: Option<Cow<'a, str>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
@@ -55,6 +59,8 @@ impl<'a> SendVenue<'a> {
             address: address.into(),
             foursquare_id: None,
             foursquare_type: None,
+            google_place_id: None,
+            google_place_type: None,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -72,6 +78,23 @@ impl<'a> SendVenue<'a> {
     /// Reflects the `foursquare_type` parameter.
     pub fn foursquare_type(mut self, fs_type: impl Into<Cow<'a, str>>) -> Self {
         self.foursquare_type = Some(fs_type.into());
+        self
+    }
+
+    /// Configures the Google Places ID of this venue.
+    /// Reflects the `google_place_id` parameter.
+    pub fn google_place_id(mut self, id: impl Into<Cow<'a, str>>) -> Self {
+        self.google_place_id = Some(id.into());
+        self
+    }
+
+    /// Configures the Google Places type of this venue.
+    /// Reflects the `google_place_type` parameter.
+    pub fn google_place_type(
+        mut self,
+        google_place_type: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        self.google_place_type = Some(google_place_type.into());
         self
     }
 
