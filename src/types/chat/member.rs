@@ -15,6 +15,8 @@ pub enum Status {
     Creator {
         /// Custom title of the creator.
         custom_title: Option<String>,
+        /// `true` if the creator is anonymous.
+        is_anonymous: bool,
     },
     /// The user is an administrator of the chat.
     #[non_exhaustive]
@@ -39,6 +41,8 @@ pub enum Status {
         can_pin_messages: Option<bool>,
         /// `true` if the admin can promote members.
         can_promote_members: bool,
+        /// `true` if the admin is anonymous.
+        is_anonymous: bool,
     },
     /// The user is a member of the chat.
     Member,
@@ -107,6 +111,7 @@ const CAN_SEND_MEDIA_MESSAGES: &str = "can_send_media_messages";
 const CAN_SEND_OTHER_MESSAGES: &str = "can_send_other_messages";
 const CAN_SEND_POLLS: &str = "can_send_polls";
 const CAN_ADD_WEB_PAGE_PREVIEWS: &str = "can_add_web_page_previews";
+const IS_ANONYMOUS: &str = "is_anonymous";
 
 const CREATOR: &str = "creator";
 const ADMINISTRATOR: &str = "administrator";
@@ -148,6 +153,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
         let mut can_send_other_messages = None;
         let mut can_send_polls = None;
         let mut can_add_web_page_previews = None;
+        let mut is_anonymous = None;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -188,6 +194,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 CAN_ADD_WEB_PAGE_PREVIEWS => {
                     can_add_web_page_previews = Some(map.next_value()?)
                 }
+                IS_ANONYMOUS => is_anonymous = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<IgnoredAny>()?;
                 }
@@ -195,7 +202,11 @@ impl<'v> Visitor<'v> for MemberVisitor {
         }
 
         let status = match &status {
-            Some(CREATOR) => Status::Creator { custom_title },
+            Some(CREATOR) => Status::Creator {
+                custom_title,
+                is_anonymous: is_anonymous
+                    .ok_or_else(|| Error::missing_field(IS_ANONYMOUS))?,
+            },
             Some(ADMINISTRATOR) => Status::Administrator {
                 custom_title,
                 can_be_edited: can_be_edited
@@ -214,6 +225,8 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 can_pin_messages,
                 can_promote_members: can_promote_members
                     .ok_or_else(|| Error::missing_field(CAN_PROMOTE_MEMBERS))?,
+                is_anonymous: is_anonymous
+                    .ok_or_else(|| Error::missing_field(IS_ANONYMOUS))?,
             },
             Some(MEMBER) => Status::Member,
             Some(RESTRICTED) => Status::Restricted {
@@ -285,6 +298,7 @@ impl<'de> Deserialize<'de> for Member {
                 CAN_SEND_MEDIA_MESSAGES,
                 CAN_SEND_OTHER_MESSAGES,
                 CAN_ADD_WEB_PAGE_PREVIEWS,
+                IS_ANONYMOUS,
             ],
             MemberVisitor,
         )
