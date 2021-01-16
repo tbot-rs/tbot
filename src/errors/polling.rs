@@ -1,6 +1,6 @@
 use super::MethodCall;
 use is_macro::Is;
-use tokio::time::Elapsed;
+use tokio::time::error::Elapsed;
 
 /// Represents possible errors that may happen during the polling event loop.
 #[derive(Debug, Is)]
