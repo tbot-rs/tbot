@@ -38,14 +38,13 @@ impl Client {
         let https_connector = HttpsConnector::with_native_roots();
         #[cfg(feature = "tls")]
         let https_connector = HttpsConnector::new();
-        let connector =
-            ProxyConnector::from_proxy(https_connector, proxy)
-                .unwrap_or_else(|error| {
-                    panic!(
-                        "[tbot] Failed to construct a proxy connector: {:#?}",
-                        error
-                    )
-                });
+        let connector = ProxyConnector::from_proxy(https_connector, proxy)
+            .unwrap_or_else(|error| {
+                panic!(
+                    "[tbot] Failed to construct a proxy connector: {:#?}",
+                    error
+                )
+            });
 
         Self::HttpsProxy(
             hyper::Client::builder()

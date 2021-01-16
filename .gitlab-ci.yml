@@ -22,9 +22,9 @@ check-formatting:
 run-clippy:
   stage: test
   script:
-    - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros tls" -- -D warnings
-    - cargo clippy --target-dir=../target --examples --no-default-features --features "tokio/macros rustls" -- -D warnings
-    - cargo clippy --target-dir=../target --examples --features "tokio/macros proxy" -- -D warnings
+    - cargo clippy --target-dir=../target --examples --no-default-features --features "tls" -- -D warnings
+    - cargo clippy --target-dir=../target --examples --no-default-features --features "rustls" -- -D warnings
+    - cargo clippy --target-dir=../target --examples --features "proxy" -- -D warnings
   only:
     changes:
         - "src/**/*"

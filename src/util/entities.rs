@@ -31,7 +31,7 @@ struct Token<'a> {
     token_kind: TokenKind,
 }
 
-fn tokenize<'a>(entities: &'a [RawEntity]) -> Vec<Token<'a>> {
+fn tokenize(entities: &[RawEntity]) -> Vec<Token> {
     let mut tokens = Vec::with_capacity(entities.len() * 2);
 
     entities.iter().for_each(|entity| match &entity.kind {

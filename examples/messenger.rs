@@ -244,6 +244,7 @@ async fn main() {
             let room = rand::thread_rng()
                 .sample_iter(&Alphanumeric)
                 .take(10)
+                .map(char::from)
                 .collect::<String>();
 
             let message = format!(

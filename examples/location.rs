@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::Duration};
 use tbot::{contexts::Command, prelude::*, Bot};
-use tokio::time::delay_for;
+use tokio::time::sleep;
 
 const INTERVAL: u64 = 15;
 const PLACES: [(f64, f64); 7] = [
@@ -41,7 +41,7 @@ async fn handle_location(context: Arc<Command>) {
     };
 
     for &place in places {
-        delay_for(Duration::from_secs(INTERVAL)).await;
+        sleep(Duration::from_secs(INTERVAL)).await;
 
         let call_result = context
             .edit_message_location(location.id, place)

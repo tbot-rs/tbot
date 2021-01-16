@@ -25,7 +25,7 @@ exclude = ["examples"]
 hyper = { version = "0.14.2", features = ["client", "http1", "server"], default-features = false }
 #hyper-proxy = { version = "0.8", default-features = false }
 hyper-proxy = { git = "https://github.com/nagua/hyper-proxy", branch="upgrade-tokio", default-features = false }
-tokio = { version = "1", features = ["time", "rt", "rt-multi-thread", "net", "fs"] }
+tokio = { version = "1", features = ["time", "rt", "net", "fs"] }
 futures = "0.3"
 serde_json = "1"
 serde = { version = "1.0.34", features = ["derive"] }
@@ -41,6 +41,7 @@ tracing-futures = "0.2"
 paste = "1"
 
 [dev-dependencies]
+tokio = { version = "1", features = ["time", "macros", "rt", "rt-multi-thread", "net", "fs"] }
 meval = "0.2"
 rand = "0.8"
 
@@ -52,75 +53,61 @@ default = ["tls"]
 
 [[example]]
 name = "attachments"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "commands"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "download"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "entities"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "echo"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "game"
-required-features = ["tokio/macros", "tokio/sync"]
+required-features = ["tokio/sync"]
 
 [[example]]
 name = "get_me"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "keyboard"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "location"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "messenger"
-required-features = ["tokio/macros", "tokio/sync"]
+required-features = ["tokio/sync"]
 
 [[example]]
 name = "payment"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "polls"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "proxy"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "predicates"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "questionary"
-required-features = ["tokio/macros", "tokio/sync"]
+required-features = ["tokio/sync"]
 
 [[example]]
 name = "sticker_packs"
-required-features = ["tokio/macros"]
 
 [[example]]
 name = "tutorial"
-required-features = ["tokio/macros", "tokio/sync"]
+required-features = ["tokio/sync"]
 
 [[example]]
 name = "webhook"
-required-features = ["tokio/macros"]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
