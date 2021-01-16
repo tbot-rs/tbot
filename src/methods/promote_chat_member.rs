@@ -37,6 +37,8 @@ pub struct PromoteChatMember<'a> {
     can_pin_messages: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_promote_members: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_anonymous: Option<bool>,
 }
 
 impl<'a> PromoteChatMember<'a> {
@@ -57,6 +59,7 @@ impl<'a> PromoteChatMember<'a> {
             can_restrict_members: None,
             can_pin_messages: None,
             can_promote_members: None,
+            is_anonymous: None,
         }
     }
 
@@ -113,6 +116,13 @@ impl<'a> PromoteChatMember<'a> {
     /// Reflects the `can_promote_members` parameter.
     pub const fn can_promote_members(mut self, can_promote: bool) -> Self {
         self.can_promote_members = Some(can_promote);
+        self
+    }
+
+    /// Configures if the user will be anonymous.
+    /// Reflects the `is_anonymous` parameter.
+    pub const fn is_anonymous(mut self, is_anonymous: bool) -> Self {
+        self.is_anonymous = Some(is_anonymous);
         self
     }
 }
