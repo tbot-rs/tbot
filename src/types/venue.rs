@@ -17,4 +17,8 @@ pub struct Venue {
     pub foursquare_id: Option<String>,
     /// The foursquare type of the venue.
     pub foursquare_type: Option<String>,
+    /// The Google Places ID of the venue.
+    pub google_place_id: Option<String>,
+    /// The Google Places type of the venue.
+    pub google_place_type: Option<String>,
 }

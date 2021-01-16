@@ -18,6 +18,10 @@ pub struct Venue<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_type: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    google_place_id: Option<Cow<'a, str>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    google_place_type: Option<Cow<'a, str>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
     thumb: Option<Thumb<'a>>,
@@ -37,6 +41,8 @@ impl<'a> Venue<'a> {
             address: address.into(),
             foursquare_id: None,
             foursquare_type: None,
+            google_place_id: None,
+            google_place_type: None,
             input_message_content: None,
             thumb: None,
         }
@@ -54,6 +60,21 @@ impl<'a> Venue<'a> {
         foursquare_type: impl Into<Cow<'a, str>>,
     ) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
+        self
+    }
+
+    /// Configures the Google Places ID.
+    pub fn google_place_id(mut self, id: impl Into<Cow<'a, str>>) -> Self {
+        self.google_place_id = Some(id.into());
+        self
+    }
+
+    /// Configures the Google Places type.
+    pub fn google_place_type(
+        mut self,
+        google_place_type: impl Into<Cow<'a, str>>,
+    ) -> Self {
+        self.google_place_type = Some(google_place_type.into());
         self
     }
 
@@ -81,6 +102,8 @@ impl<'a> InteriorBorrow<'a> for Venue<'a> {
             address: self.address.borrow_inside(),
             foursquare_id: self.foursquare_id.borrow_inside(),
             foursquare_type: self.foursquare_type.borrow_inside(),
+            google_place_id: self.google_place_id.borrow_inside(),
+            google_place_type: self.google_place_type.borrow_inside(),
             input_message_content: self.input_message_content.borrow_inside(),
             thumb: self.thumb.borrow_inside(),
             ..*self
