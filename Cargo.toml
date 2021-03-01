@@ -23,8 +23,7 @@ exclude = ["examples"]
 
 [dependencies]
 hyper = { version = "0.14.2", features = ["client", "http1", "server"], default-features = false }
-#hyper-proxy = { version = "0.8", default-features = false }
-hyper-proxy = { git = "https://github.com/nagua/hyper-proxy", branch="upgrade-tokio", default-features = false }
+hyper-proxy = { version = "0.9", default-features = false }
 tokio = { version = "1", features = ["time", "rt", "net", "fs"] }
 futures = "0.3"
 serde_json = "1"
