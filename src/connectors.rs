@@ -34,14 +34,17 @@ pub enum Client {
 
 impl Client {
     pub(crate) fn https_proxy(proxy: proxy::Proxy) -> Self {
-        let connector =
-            ProxyConnector::from_proxy(HttpsConnector::new(), proxy)
-                .unwrap_or_else(|error| {
-                    panic!(
-                        "[tbot] Failed to construct a proxy connector: {:#?}",
-                        error
-                    )
-                });
+        #[cfg(feature = "rustls")]
+        let https_connector = HttpsConnector::with_native_roots();
+        #[cfg(feature = "tls")]
+        let https_connector = HttpsConnector::new();
+        let connector = ProxyConnector::from_proxy(https_connector, proxy)
+            .unwrap_or_else(|error| {
+                panic!(
+                    "[tbot] Failed to construct a proxy connector: {:#?}",
+                    error
+                )
+            });
 
         Self::HttpsProxy(
             hyper::Client::builder()
@@ -51,10 +54,14 @@ impl Client {
     }
 
     pub(crate) fn socks_proxy(proxy_addr: Uri, auth: Option<Auth>) -> Self {
+        #[cfg(feature = "rustls")]
+        let https_connector = HttpsConnector::with_native_roots();
+        #[cfg(feature = "tls")]
+        let https_connector = HttpsConnector::new();
         let connector = SocksConnector {
             proxy_addr,
             auth,
-            connector: HttpsConnector::new(),
+            connector: https_connector,
         };
 
         let connector = connector.with_tls().unwrap_or_else(|error| {
@@ -73,6 +80,9 @@ impl Client {
 
     #[must_use]
     pub(crate) fn https() -> Self {
+        #[cfg(feature = "rustls")]
+        let connector = HttpsConnector::with_native_roots();
+        #[cfg(feature = "tls")]
         let connector = HttpsConnector::new();
 
         Self::Https(

@@ -6,7 +6,7 @@ use std::{
     sync::Arc,
     time::Duration,
 };
-use tokio::time::{delay_for, timeout as timeout_future};
+use tokio::time::{sleep, timeout as timeout_future};
 use tracing::instrument;
 
 type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
@@ -153,7 +153,7 @@ impl Polling {
         };
 
         loop {
-            let mut next_tick = delay_for(poll_interval);
+            let mut next_tick = sleep(poll_interval);
 
             let get_updates = event_loop
                 .bot
@@ -187,7 +187,7 @@ impl Polling {
                         ..
                     } = error
                     {
-                        next_tick = delay_for(Duration::from_secs(retry_after));
+                        next_tick = sleep(Duration::from_secs(retry_after));
                     }
 
                     error_handler(error.into());

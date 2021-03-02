@@ -92,12 +92,12 @@ impl<'a> Https<'a> {
         #[cfg(feature = "tls")]
         let tls_acceptor = {
             let tls_acceptor = TlsAcceptor::builder(self.identity).build()?;
-            tokio_tls::TlsAcceptor::from(tls_acceptor)
+            tokio_native_tls::TlsAcceptor::from(tls_acceptor)
         };
         #[cfg(feature = "rustls")]
         let tls_acceptor = TlsAcceptor::from(Arc::new(self.config));
 
-        let mut server = TcpListener::bind(&addr).await?;
+        let server = TcpListener::bind(&addr).await?;
 
         let http_proto = Http::new();
 

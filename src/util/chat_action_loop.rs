@@ -10,7 +10,7 @@ use crate::{
 };
 use futures::future::BoxFuture;
 use std::{convert::Infallible, time::Duration};
-use tokio::time::delay_for;
+use tokio::time::sleep;
 
 const INTERVAL: Duration = Duration::from_secs(5);
 
@@ -20,7 +20,7 @@ async fn send_chat_action_in_loop(
     action: chat::Action,
 ) -> Result<Infallible, errors::MethodCall> {
     loop {
-        let delay = delay_for(INTERVAL);
+        let delay = sleep(INTERVAL);
         bot.send_chat_action(&chat_id, action).call().await?;
         delay.await;
     }
