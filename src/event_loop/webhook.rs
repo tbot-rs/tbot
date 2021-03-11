@@ -37,6 +37,7 @@ pub struct Webhook<'a> {
     certificate: Option<&'a str>,
     max_connections: Option<NonZeroU32>,
     allowed_updates: Option<&'a [UpdateKind]>,
+    drop_pending_updates: bool,
 }
 
 impl<'a> Webhook<'a> {
@@ -53,6 +54,7 @@ impl<'a> Webhook<'a> {
             certificate: None,
             max_connections: None,
             allowed_updates: None,
+            drop_pending_updates: false,
         }
     }
 
@@ -102,6 +104,12 @@ impl<'a> Webhook<'a> {
     /// Configures `allowed_updates`.
     pub const fn allowed_updates(mut self, updates: &'a [UpdateKind]) -> Self {
         self.allowed_updates = Some(updates);
+        self
+    }
+
+    /// Sets `drop_pending_updates` to `true`.
+    pub const fn drop_pending_updates(mut self) -> Self {
+        self.drop_pending_updates = true;
         self
     }
 

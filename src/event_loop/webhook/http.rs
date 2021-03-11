@@ -35,6 +35,7 @@ impl<'a> Http<'a> {
             max_connections,
             allowed_updates,
             request_timeout,
+            drop_pending_updates,
         } = self.webhook;
 
         let set_webhook = event_loop
@@ -45,6 +46,7 @@ impl<'a> Http<'a> {
                 certificate,
                 max_connections,
                 allowed_updates,
+                drop_pending_updates,
             )
             .call();
 

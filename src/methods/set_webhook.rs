@@ -12,6 +12,7 @@ pub struct SetWebhook<'a> {
     certificate: Option<&'a str>,
     max_connections: Option<NonZeroU32>,
     allowed_updates: Option<&'a [UpdateKind]>,
+    drop_pending_updates: bool,
 }
 
 impl<'a> SetWebhook<'a> {
@@ -22,6 +23,7 @@ impl<'a> SetWebhook<'a> {
         certificate: Option<&'a str>,
         max_connections: Option<NonZeroU32>,
         allowed_updates: Option<&'a [UpdateKind]>,
+        drop_pending_updates: bool,
     ) -> Self {
         Self {
             bot,
@@ -30,6 +32,7 @@ impl<'a> SetWebhook<'a> {
             certificate,
             max_connections,
             allowed_updates,
+            drop_pending_updates,
         }
     }
 }
@@ -41,7 +44,8 @@ impl SetWebhook<'_> {
             .str("url", self.url)
             .maybe_string("ip_address", self.ip_address)
             .maybe_string("max_connections", self.max_connections)
-            .maybe_json("allowed_updates", self.allowed_updates);
+            .maybe_json("allowed_updates", self.allowed_updates)
+            .string("drop_pending_updates", &self.drop_pending_updates);
 
         if let Some(certificate) = self.certificate {
             multipart = multipart.file(
