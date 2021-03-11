@@ -35,8 +35,7 @@ where
     fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
         (&self.0)
             .into_iter()
-            .map(|x| formatter.write_str(&*x))
-            .collect()
+            .try_for_each(|x| formatter.write_str(&*x))
     }
 }
 

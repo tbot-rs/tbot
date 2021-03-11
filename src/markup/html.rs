@@ -39,8 +39,7 @@ impl Formattable for &'_ str {
         nesting: Nesting,
     ) -> fmt::Result {
         self.chars()
-            .map(|character| character.format(formatter, nesting))
-            .collect()
+            .try_for_each(|character| character.format(formatter, nesting))
     }
 }
 
@@ -60,7 +59,7 @@ impl<T: Formattable> Formattable for &'_ [T] {
         formatter: &mut Formatter,
         nesting: Nesting,
     ) -> fmt::Result {
-        self.iter().map(|x| x.format(formatter, nesting)).collect()
+        self.iter().try_for_each(|x| x.format(formatter, nesting))
     }
 }
 

@@ -25,15 +25,12 @@ where
 {
     fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
         formatter.write_char('`')?;
-        self.0
-            .chars()
-            .map(|x| {
-                if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
-                    formatter.write_char('\\')?;
-                }
-                formatter.write_char(x)
-            })
-            .collect::<Result<(), _>>()?;
+        self.0.chars().try_for_each(|x| {
+            if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
+                formatter.write_char('\\')?;
+            }
+            formatter.write_char(x)
+        })?;
         formatter.write_char('`')
     }
 }
