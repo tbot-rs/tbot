@@ -57,16 +57,12 @@ where
         formatter.write_str("](")?;
 
         match &self.link {
-            Kind::Link(link) => link
-                .deref()
-                .chars()
-                .map(|x| {
-                    if markdown_v2::ESCAPED_LINK_CHARACTERS.contains(&x) {
-                        formatter.write_char('\\')?;
-                    }
-                    formatter.write_char(x)
-                })
-                .collect::<Result<(), _>>()?,
+            Kind::Link(link) => link.deref().chars().try_for_each(|x| {
+                if markdown_v2::ESCAPED_LINK_CHARACTERS.contains(&x) {
+                    formatter.write_char('\\')?;
+                }
+                formatter.write_char(x)
+            })?,
             Kind::Mention(user::Id(id)) => {
                 write!(formatter, "tg://user?id={}", id)?
             }
@@ -88,16 +84,12 @@ where
         formatter.write_str("<a href=\"")?;
 
         match &self.link {
-            Kind::Link(link) => link
-                .deref()
-                .chars()
-                .map(|x| {
-                    if x == '"' {
-                        formatter.write_char('\\')?;
-                    }
-                    formatter.write_char(x)
-                })
-                .collect::<Result<(), _>>()?,
+            Kind::Link(link) => link.deref().chars().try_for_each(|x| {
+                if x == '"' {
+                    formatter.write_char('\\')?;
+                }
+                formatter.write_char(x)
+            })?,
             Kind::Mention(user::Id(id)) => {
                 write!(formatter, "tg://user?id={}", id)?
             }

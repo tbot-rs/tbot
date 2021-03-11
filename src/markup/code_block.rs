@@ -60,28 +60,21 @@ where
     fn format(&self, formatter: &mut Formatter, _: Nesting) -> fmt::Result {
         formatter.write_str("```")?;
         if let Some(language) = &self.language {
-            language
-                .deref()
-                .chars()
-                .map(|x| {
-                    if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
-                        formatter.write_char('\\')?;
-                    }
-                    formatter.write_char(x)
-                })
-                .collect::<Result<(), _>>()?;
-        }
-        formatter.write_char('\n')?;
-
-        self.code
-            .chars()
-            .map(|x| {
+            language.deref().chars().try_for_each(|x| {
                 if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
                     formatter.write_char('\\')?;
                 }
                 formatter.write_char(x)
-            })
-            .collect::<Result<(), _>>()?;
+            })?;
+        }
+        formatter.write_char('\n')?;
+
+        self.code.chars().try_for_each(|x| {
+            if markdown_v2::ESCAPED_CODE_CHARACTERS.contains(&x) {
+                formatter.write_char('\\')?;
+            }
+            formatter.write_char(x)
+        })?;
         formatter.write_str("\n```")
     }
 }
