@@ -855,6 +855,7 @@ impl Bot {
         certificate: Option<&'a str>,
         max_connections: Option<NonZeroU32>,
         allowed_updates: Option<&'a [UpdateKind]>,
+        drop_pending_updates: bool,
     ) -> SetWebhook<'a> {
         SetWebhook::new(
             &self.inner,
@@ -863,6 +864,7 @@ impl Bot {
             certificate,
             max_connections,
             allowed_updates,
+            drop_pending_updates,
         )
     }
 
