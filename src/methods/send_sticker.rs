@@ -25,6 +25,7 @@ pub struct SendSticker<'a> {
     sticker: Sticker<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
+    allow_sending_without_reply: Option<bool>,
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
@@ -40,6 +41,7 @@ impl<'a> SendSticker<'a> {
             sticker,
             disable_notification: None,
             reply_to_message_id: None,
+            allow_sending_without_reply: None,
             reply_markup: None,
         }
     }
@@ -55,6 +57,13 @@ impl<'a> SendSticker<'a> {
     /// Reflects the `reply_to_message_id` parameter.
     pub const fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
+        self
+    }
+
+    /// Configures whether this message should be sent even
+    /// if the replied-to message is not found.
+    pub const fn allow_sending_without_reply(mut self) -> Self {
+        self.allow_sending_without_reply = Some(true);
         self
     }
 
@@ -76,6 +85,10 @@ impl SendSticker<'_> {
             .chat_id("chat_id", &self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .maybe_string(
+                "allow_sending_without_reply",
+                self.allow_sending_without_reply,
+            )
             .maybe_json("reply_markup", self.reply_markup);
 
         match &self.sticker.media {
