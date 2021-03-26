@@ -23,6 +23,10 @@ impl Builder {
 
     /// Starts constructing a `Bot`, extracting the token from the provided
     /// environment variable.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the variable couldn't be found.
     pub fn with_env_token(env_var: &'static str) -> Self {
         let token = std::env::var(env_var).unwrap_or_else(|_| {
             panic!("[tbot] Bot's token in {} was not specified", env_var)

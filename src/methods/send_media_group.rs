@@ -77,7 +77,7 @@ impl SendMediaGroup<'_> {
                         multipart.file_owned_name(name, &filename, &bytes)
                 }
             };
-        };
+        }
 
         for (index, media) in album.0.iter().enumerate() {
             match media {

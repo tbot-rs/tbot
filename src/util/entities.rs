@@ -98,7 +98,7 @@ fn convert_kind(kind: &RawEntityKind) -> Kind {
 
 /// Parses the message's entities.
 #[must_use]
-#[allow(clippy::too_many_lines)]
+#[allow(clippy::too_many_lines, clippy::missing_panics_doc)]
 pub fn entities(text: &message::Text) -> Vec<Entity> {
     let tokens = tokenize(&text.entities);
 
