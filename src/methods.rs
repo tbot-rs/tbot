@@ -43,7 +43,7 @@
 //! [`EditInlineText`]: ./struct.EditInlineText.html
 //! [`types::Message`]: ../types/struct.Message.html
 
-#![allow(clippy::wrong_self_convention)]
+#![allow(clippy::wrong_self_convention, clippy::missing_panics_doc)]
 
 mod add_sticker_to_set;
 mod answer_callback_query;
