@@ -18,6 +18,12 @@ pub enum Kind {
     Dice,
     /// 🏀
     Basketball,
+    /// ⚽
+    Football,
+    /// 🎰
+    SlotMachine,
+    /// 🎳
+    Bowling,
     /// Some emoji `tbot` isn't aware of yet.
     ///
     /// Please note that this field exists only to prevent parsing errors caused
@@ -37,7 +43,8 @@ pub enum Kind {
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[non_exhaustive]
 pub struct Dice {
-    /// The value of the dice in the range [1, 6].
+    /// The value of the dice in the range [1, 6] for `🎲`, `🎯` and `🎳`;
+    /// [1, 5] for `🏀` and `⚽`; [1, 64] for `🎰`.
     pub value: u8,
     /// The kind of the thrown dice.
     pub kind: Kind,
@@ -76,6 +83,9 @@ impl<'v> Visitor<'v> for DiceVisitor {
             Some("🎯") => Kind::Darts,
             Some("🎲") => Kind::Dice,
             Some("🏀") => Kind::Basketball,
+            Some("⚽") => Kind::Football,
+            Some("🎰") => Kind::SlotMachine,
+            Some("🎳") => Kind::Bowling,
             Some(unknown) => Kind::Unknown(unknown.to_string()),
             None => return Err(de::Error::missing_field(EMOJI)),
         };
@@ -105,6 +115,9 @@ impl Serialize for Kind {
             Self::Dice => "🎲",
             Self::Darts => "🎯",
             Self::Basketball => "🏀",
+            Self::Football => "⚽",
+            Self::SlotMachine => "🎰",
+            Self::Bowling => "🎳",
             Self::Unknown(emoji) => emoji,
         })
     }
