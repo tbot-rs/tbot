@@ -89,6 +89,7 @@ impl<'a> SendContact<'a> {
 
     /// Configures whether this message should be sent even
     /// if the replied-to message is not found.
+    /// Reflects the `allow_sending_without_reply` parameter.
     pub const fn allow_sending_without_reply(mut self) -> Self {
         self.allow_sending_without_reply = Some(true);
         self
