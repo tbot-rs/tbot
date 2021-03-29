@@ -53,8 +53,7 @@ pub struct SendInvoice<'a> {
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
+    allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -93,7 +92,7 @@ impl<'a> SendInvoice<'a> {
             is_flexible: None,
             disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -189,7 +188,7 @@ impl<'a> SendInvoice<'a> {
     /// if the replied-to message is not found.
     /// Reflects the `allow_sending_without_reply` parameter.
     pub const fn allow_sending_without_reply(mut self) -> Self {
-        self.allow_sending_without_reply = Some(true);
+        self.allow_sending_without_reply = true;
         self
     }
 

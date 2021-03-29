@@ -25,7 +25,7 @@ pub struct SendVideoNote<'a> {
     video_note: VideoNote<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    allow_sending_without_reply: Option<bool>,
+    allow_sending_without_reply: bool,
     reply_markup: Option<keyboard::Any<'a>>,
 }
 
@@ -41,7 +41,7 @@ impl<'a> SendVideoNote<'a> {
             video_note,
             disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -64,7 +64,7 @@ impl<'a> SendVideoNote<'a> {
     /// if the replied-to message is not found.
     /// Reflects the `allow_sending_without_reply` parameter.
     pub const fn allow_sending_without_reply(mut self) -> Self {
-        self.allow_sending_without_reply = Some(true);
+        self.allow_sending_without_reply = true;
         self
     }
 
@@ -88,9 +88,9 @@ impl SendVideoNote<'_> {
             .maybe_string("length", self.video_note.length)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
-            .maybe_string(
+            .string(
                 "allow_sending_without_reply",
-                self.allow_sending_without_reply,
+                &self.allow_sending_without_reply,
             )
             .maybe_json("reply_markup", self.reply_markup);
 
