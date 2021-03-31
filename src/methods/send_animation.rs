@@ -26,6 +26,7 @@ pub struct SendAnimation<'a> {
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
+    allow_sending_without_reply: bool,
 }
 
 impl<'a> SendAnimation<'a> {
@@ -41,6 +42,7 @@ impl<'a> SendAnimation<'a> {
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
+            allow_sending_without_reply: false,
         }
     }
 
@@ -55,6 +57,14 @@ impl<'a> SendAnimation<'a> {
     /// Reflects the `reply_to_message_id` parameter.
     pub const fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
+        self
+    }
+
+    /// Configures whether this message should be sent even
+    /// if the replied-to message is not found.
+    /// Reflects the `allow_sending_without_reply` parameter.
+    pub const fn allow_sending_without_reply(mut self) -> Self {
+        self.allow_sending_without_reply = true;
         self
     }
 
@@ -81,6 +91,10 @@ impl SendAnimation<'_> {
             .maybe_string("parse_mode", self.animation.parse_mode)
             .maybe_string("disable_notification", self.disable_notification)
             .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .string(
+                "allow_sending_without_reply",
+                &self.allow_sending_without_reply,
+            )
             .maybe_json("reply_markup", self.reply_markup);
 
         match &self.animation.media {

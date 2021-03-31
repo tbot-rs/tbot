@@ -32,6 +32,7 @@ pub struct SendContact<'a> {
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
+    allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<keyboard::Any<'a>>,
 }
@@ -52,6 +53,7 @@ impl<'a> SendContact<'a> {
             vcard: None,
             disable_notification: None,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -81,6 +83,14 @@ impl<'a> SendContact<'a> {
     /// Reflects the `reply_to_message_id` parameter.
     pub const fn in_reply_to(mut self, id: message::Id) -> Self {
         self.reply_to_message_id = Some(id);
+        self
+    }
+
+    /// Configures whether this message should be sent even
+    /// if the replied-to message is not found.
+    /// Reflects the `allow_sending_without_reply` parameter.
+    pub const fn allow_sending_without_reply(mut self) -> Self {
+        self.allow_sending_without_reply = true;
         self
     }
 

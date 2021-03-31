@@ -37,8 +37,7 @@ pub struct CopyMessage<'a> {
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
+    allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -60,7 +59,7 @@ impl<'a> CopyMessage<'a> {
             caption: None,
             parse_mode: None,
             disable_notification: None,
-            allow_sending_without_reply: None,
+            allow_sending_without_reply: false,
             reply_to_message_id: None,
             reply_markup: None,
         }
@@ -84,13 +83,11 @@ impl<'a> CopyMessage<'a> {
         self
     }
 
-    /// If `true`, then you may reply to already-deleted messages.
-    /// Refelcts the `allow_sending_without_reply` parameter.
-    pub const fn is_sending_without_reply_allowed(
-        mut self,
-        is_allowed: bool,
-    ) -> Self {
-        self.allow_sending_without_reply = Some(is_allowed);
+    /// Configures whether this message should be sent even
+    /// if the replied-to message is not found.
+    /// Reflects the `allow_sending_without_reply` parameter.
+    pub const fn allow_sending_without_reply(mut self) -> Self {
+        self.allow_sending_without_reply = true;
         self
     }
 

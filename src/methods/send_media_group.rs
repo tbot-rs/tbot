@@ -26,6 +26,7 @@ pub struct SendMediaGroup<'a> {
     media: MediaGroup<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
+    allow_sending_without_reply: bool,
 }
 
 impl<'a> SendMediaGroup<'a> {
@@ -40,6 +41,7 @@ impl<'a> SendMediaGroup<'a> {
             media: media.into(),
             disable_notification: None,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
         }
     }
 
@@ -56,6 +58,14 @@ impl<'a> SendMediaGroup<'a> {
         self.reply_to_message_id = Some(id);
         self
     }
+
+    /// Configures whether this message should be sent even
+    /// if the replied-to message is not found.
+    /// Reflects the `allow_sending_without_reply` parameter.
+    pub const fn allow_sending_without_reply(mut self) -> Self {
+        self.allow_sending_without_reply = true;
+        self
+    }
 }
 
 impl SendMediaGroup<'_> {
@@ -64,7 +74,11 @@ impl SendMediaGroup<'_> {
         let mut multipart = Multipart::new(4 + self.media.len())
             .chat_id("chat_id", &self.chat_id)
             .maybe_string("disabled_notification", self.disable_notification)
-            .maybe_string("reply_to_message_id", self.reply_to_message_id);
+            .maybe_string("reply_to_message_id", self.reply_to_message_id)
+            .string(
+                "allow_sending_without_reply",
+                &self.allow_sending_without_reply,
+            );
 
         let album = Album(self.media);
 
