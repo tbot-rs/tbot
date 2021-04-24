@@ -1,5 +1,7 @@
 use super::Thumb;
-use crate::types::{InputMessageContent, InteriorBorrow};
+use crate::types::{
+    parameters::LiveLocation, InputMessageContent, InteriorBorrow,
+};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -12,8 +14,8 @@ pub struct Location<'a> {
     latitude: f64,
     longitude: f64,
     title: Cow<'a, str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    live_period: Option<u64>,
+    #[serde(flatten)]
+    live_location: Option<LiveLocation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent<'a>>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
@@ -30,15 +32,15 @@ impl<'a> Location<'a> {
             latitude,
             longitude,
             title: title.into(),
-            live_period: None,
+            live_location: None,
             input_message_content: None,
             thumb: None,
         }
     }
 
-    /// Configures the period while the location will be live.
-    pub const fn live_period(mut self, period: u64) -> Self {
-        self.live_period = Some(period);
+    /// Configures a live location.
+    pub const fn live_location(mut self, live_location: LiveLocation) -> Self {
+        self.live_location = Some(live_location);
         self
     }
 

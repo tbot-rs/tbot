@@ -5,7 +5,7 @@ use crate::{
     types::{
         keyboard,
         message::{self, Message},
-        parameters::{ChatId, ImplicitChatId},
+        parameters::{ChatId, ImplicitChatId, LiveLocation},
     },
 };
 use serde::Serialize;
@@ -23,8 +23,8 @@ pub struct SendLocation<'a> {
     chat_id: ChatId<'a>,
     latitude: f64,
     longitude: f64,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    live_period: Option<u32>,
+    #[serde(flatten)]
+    live_location: Option<LiveLocation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -45,7 +45,7 @@ impl<'a> SendLocation<'a> {
             chat_id: chat_id.into(),
             latitude,
             longitude,
-            live_period: None,
+            live_location: None,
             disable_notification: None,
             reply_to_message_id: None,
             allow_sending_without_reply: false,
@@ -53,10 +53,9 @@ impl<'a> SendLocation<'a> {
         }
     }
 
-    /// Confgiures for how long this location will be live and may be edited.
-    /// Reflects the `live_period` parameter.
-    pub const fn live_period(mut self, duration: u32) -> Self {
-        self.live_period = Some(duration);
+    /// Confgiures a live location.
+    pub const fn live_location(mut self, live_location: LiveLocation) -> Self {
+        self.live_location = Some(live_location);
         self
     }
 
