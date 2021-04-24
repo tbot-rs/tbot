@@ -1,3 +1,4 @@
+use crate::types::parameters::LiveLocation;
 use serde::Serialize;
 
 /// Represents an [`InputLocationMessageContent`][docs].
@@ -8,8 +9,8 @@ use serde::Serialize;
 pub struct Location {
     latitude: f64,
     longitude: f64,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    live_period: Option<u64>,
+    #[serde(flatten)]
+    live_location: Option<LiveLocation>,
 }
 
 impl Location {
@@ -19,13 +20,13 @@ impl Location {
         Self {
             latitude,
             longitude,
-            live_period: None,
+            live_location: None,
         }
     }
 
-    /// Configures the period while the location will be live.
-    pub const fn live_period(mut self, period: u64) -> Self {
-        self.live_period = Some(period);
+    /// Configures a live location.
+    pub const fn live_location(mut self, live_location: LiveLocation) -> Self {
+        self.live_location = Some(live_location);
         self
     }
 }
