@@ -184,7 +184,7 @@ impl Bot {
     pub(crate) fn answer_callback_query<'a>(
         &'a self,
         callback_query_id: callback::query::Id<'a>,
-        action: Option<CallbackAction<'a>>,
+        action: Option<CallbackAction>,
     ) -> AnswerCallbackQuery<'a> {
         AnswerCallbackQuery::new(&self.inner, callback_query_id, action)
     }

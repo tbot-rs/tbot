@@ -2,7 +2,6 @@ use crate::{
     contexts::fields, methods::AnswerCallbackQuery,
     types::parameters::CallbackAction,
 };
-use std::borrow::Cow;
 
 /// Provides methods appliable to callback queries.
 pub trait Callback: fields::Callback {
@@ -16,10 +15,10 @@ pub trait Callback: fields::Callback {
     /// [`open_url`]: #method.open_url
     /// [`notify`]: #method.notify
     /// [`alert`]: #method.alert
-    fn answer<'a>(
-        &'a self,
-        action: Option<CallbackAction<'a>>,
-    ) -> AnswerCallbackQuery<'a> {
+    fn answer(
+        &self,
+        action: Option<CallbackAction>,
+    ) -> AnswerCallbackQuery<'_> {
         self.bot().answer_callback_query(self.id().clone(), action)
     }
 
@@ -29,26 +28,17 @@ pub trait Callback: fields::Callback {
     }
 
     /// Opens a URL.
-    fn open_url<'a>(
-        &'a self,
-        url: impl Into<Cow<'a, str>>,
-    ) -> AnswerCallbackQuery<'a> {
+    fn open_url(&self, url: impl Into<String>) -> AnswerCallbackQuery<'_> {
         self.answer(Some(CallbackAction::with_url(url)))
     }
 
     /// Shows a notification to the user.
-    fn notify<'a>(
-        &'a self,
-        text: impl Into<Cow<'a, str>>,
-    ) -> AnswerCallbackQuery<'a> {
+    fn notify(&self, text: impl Into<String>) -> AnswerCallbackQuery<'_> {
         self.answer(Some(CallbackAction::with_notification(text)))
     }
 
     /// Shows an alert to the user.
-    fn alert<'a>(
-        &'a self,
-        text: impl Into<Cow<'a, str>>,
-    ) -> AnswerCallbackQuery<'a> {
+    fn alert(&self, text: impl Into<String>) -> AnswerCallbackQuery<'_> {
         self.answer(Some(CallbackAction::with_alert(text)))
     }
 }

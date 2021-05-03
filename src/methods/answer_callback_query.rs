@@ -5,7 +5,6 @@ use crate::{
     types::{callback, parameters::CallbackAction},
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Answers a callback query.
 ///
@@ -19,11 +18,11 @@ pub struct AnswerCallbackQuery<'a> {
     bot: &'a InnerBot,
     callback_query_id: callback::query::Id<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    text: Option<Cow<'a, str>>,
+    text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     show_alert: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<Cow<'a, str>>,
+    url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
 }
@@ -33,7 +32,7 @@ impl<'a> AnswerCallbackQuery<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         callback_query_id: callback::query::Id<'a>,
-        action: Option<CallbackAction<'a>>,
+        action: Option<CallbackAction>,
     ) -> Self {
         match action {
             None => Self {

@@ -1,5 +1,4 @@
 use is_macro::Is;
-use std::borrow::Cow;
 
 /// Represent possible actions for [`AnswerCallbackQuery`].
 ///
@@ -12,26 +11,26 @@ use std::borrow::Cow;
 /// [`with_url`]: #method.with_url
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[must_use]
-pub enum CallbackAction<'a> {
+pub enum CallbackAction {
     /// Show text to the user. The last item configures `show_alert`.
-    Text(Cow<'a, str>, bool),
+    Text(String, bool),
     /// Open a URL.
-    Url(Cow<'a, str>),
+    Url(String),
 }
 
-impl<'a> CallbackAction<'a> {
+impl CallbackAction {
     /// Constructs the `Text` variant that shows a simple notification.
-    pub fn with_notification(text: impl Into<Cow<'a, str>>) -> Self {
-        CallbackAction::Text(text.into(), false)
+    pub fn with_notification(text: impl Into<String>) -> Self {
+        Self::Text(text.into(), false)
     }
 
     /// Constructs the `Text` variant that shows an alert.
-    pub fn with_alert(text: impl Into<Cow<'a, str>>) -> Self {
-        CallbackAction::Text(text.into(), true)
+    pub fn with_alert(text: impl Into<String>) -> Self {
+        Self::Text(text.into(), true)
     }
 
     /// Constructs the `Url` variant.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
-        CallbackAction::Url(url.into())
+    pub fn with_url(url: impl Into<String>) -> Self {
+        Self::Url(url.into())
     }
 }
