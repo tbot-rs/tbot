@@ -3,7 +3,6 @@
 use super::{ParseMode, Text};
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 use std::convert::From;
 
 /// Configures whether multiple answers are allowed in a poll.
@@ -55,11 +54,11 @@ pub enum Kind {
 
 /// Represents a poll that will be sent to a user.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
-pub struct Any<'a> {
+pub struct Any {
     #[serde(flatten)]
     kind: Kind,
-    question: Cow<'a, str>,
-    options: Vec<Cow<'a, str>>,
+    question: String,
+    options: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,22 +99,18 @@ impl Poll {
     }
 }
 
-impl<'a> Any<'a> {
+impl Any {
     /// Constructs a poll.
     #[must_use]
-    pub fn new<O>(
-        question: impl Into<Cow<'a, str>>,
-        options: O,
+    pub fn new(
+        question: impl Into<String>,
+        options: impl Into<Vec<String>>,
         kind: impl Into<Kind>,
-    ) -> Self
-    where
-        O: IntoIterator,
-        O::Item: Into<Cow<'a, str>>,
-    {
+    ) -> Self {
         Self {
             kind: kind.into(),
             question: question.into(),
-            options: options.into_iter().map(Into::into).collect(),
+            options: options.into(),
             is_closed: None,
             is_anonymous: None,
             auto_close: None,

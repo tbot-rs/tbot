@@ -381,12 +381,12 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a poll to this chat.
-    fn send_poll<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
+    fn send_poll(&self, poll: poll::Any) -> SendPoll<'_> {
         self.bot().send_poll(self.chat().id, poll)
     }
 
     /// Sends a poll in reply to this message.
-    fn send_poll_in_reply<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
+    fn send_poll_in_reply(&self, poll: poll::Any) -> SendPoll<'_> {
         self.send_poll(poll).in_reply_to(self.message_id())
     }
 

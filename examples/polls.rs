@@ -4,16 +4,7 @@ use tbot::{
     Bot,
 };
 
-const QUESTION: &str = "Do you like tbot?";
-const OPTIONS: &[&str] =
-    &["Yes", "Also yes", "I like shooting myself in the foot more"];
 const SEND_IN_REPLY_ERROR: &str = "Please send the command in reply to a poll";
-
-const QUIZ_QUESTION: &str = "The best Telegram bot library is...";
-const QUIZ_OPTIONS: &[&str] = &["aiogram", "tbot", "python-telegram-bot"];
-const QUIZ_CORRECT_OPTION: usize = 1;
-const QUIZ_EXPLANATION: &str =
-    "Why would you want to use something else than tbot for writing bots?";
 
 #[tokio::main]
 async fn main() {
@@ -21,8 +12,12 @@ async fn main() {
 
     bot.command("poll", move |context| async move {
         let regular = poll::Any::new(
-            QUESTION,
-            OPTIONS.iter().copied(),
+            "Do you like tbot?",
+            [
+                "Yes".to_owned(),
+                "Also yes".to_owned(),
+                "I like shooting myself in the foot more".to_owned(),
+            ],
             Poll::new(Answer::Single),
         )
         .auto_close(AutoClose::OpenPeriod(60));
@@ -35,9 +30,16 @@ async fn main() {
 
     bot.command("quiz", move |context| async move {
         let quiz = poll::Any::new(
-            QUIZ_QUESTION,
-            QUIZ_OPTIONS.iter().copied(),
-            Quiz::new(QUIZ_CORRECT_OPTION).explanation(QUIZ_EXPLANATION),
+            "The best Telegram bot library is...",
+            [
+                "aiogram".to_owned(),
+                "tbot".to_owned(),
+                "python-telegram-bot".to_owned(),
+            ],
+            Quiz::new(1).explanation(
+                "Why would you want to use something else than tbot for \
+                 writing bots?",
+            ),
         )
         .is_anonymous(false);
 

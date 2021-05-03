@@ -662,11 +662,11 @@ impl Bot {
     }
 
     /// Sends a poll.
-    pub fn send_poll<'a>(
-        &'a self,
+    pub fn send_poll(
+        &self,
         chat_id: impl ImplicitChatId,
-        poll: poll::Any<'a>,
-    ) -> SendPoll<'a> {
+        poll: poll::Any,
+    ) -> SendPoll<'_> {
         SendPoll::new(&self.inner, chat_id, poll)
     }
 

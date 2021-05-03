@@ -22,7 +22,7 @@ pub struct SendPoll<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
     #[serde(flatten)]
-    poll: poll::Any<'a>,
+    poll: poll::Any,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,7 +36,7 @@ impl<'a> SendPoll<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        poll: poll::Any<'a>,
+        poll: poll::Any,
     ) -> Self {
         Self {
             bot,
