@@ -14,6 +14,8 @@ pub struct Location<'a> {
     latitude: f64,
     longitude: f64,
     title: Cow<'a, str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    horizontal_accuracy: Option<f64>,
     #[serde(flatten)]
     live_location: Option<LiveLocation>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32,10 +34,29 @@ impl<'a> Location<'a> {
             latitude,
             longitude,
             title: title.into(),
+            horizontal_accuracy: None,
             live_location: None,
             input_message_content: None,
             thumb: None,
         }
+    }
+
+    /// Configures the radius of uncertainty for the location in meters, in range `1.0..=1500.0`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `horizontal_accuracy` is not in range `1.0..=1500.0`.
+    pub fn horizontal_accuracy(mut self, horizontal_accuracy: f64) -> Self {
+        assert!(
+            (1.0..=1500.0).contains(&horizontal_accuracy),
+            "[tbot] Received invalid `horizontal_accuracy` in \
+             `Location::horizontal_accuracy`: {}, must be in range \
+             `1.0..=1500.0`",
+            horizontal_accuracy,
+        );
+
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
     }
 
     /// Configures a live location.
