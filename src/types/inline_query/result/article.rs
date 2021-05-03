@@ -5,30 +5,29 @@
 use super::Thumb;
 use crate::types::InputMessageContent;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultArticle`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultarticle
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Article<'a> {
-    title: Cow<'a, str>,
+pub struct Article {
+    title: String,
     input_message_content: InputMessageContent,
     #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<Cow<'a, str>>,
+    url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     hide_url: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<Cow<'a, str>>,
+    description: Option<String>,
     #[serde(flatten, skip_serializing_if = "Option::is_none")]
-    thumb: Option<Thumb<'a>>,
+    thumb: Option<Thumb>,
 }
 
-impl<'a> Article<'a> {
+impl Article {
     /// Constructs an `Article`.
     pub fn new(
-        title: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
         input_message_content: impl Into<InputMessageContent>,
     ) -> Self {
         Self {
@@ -42,7 +41,7 @@ impl<'a> Article<'a> {
     }
 
     /// Configures the URL of article.
-    pub fn url(mut self, url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn url(mut self, url: impl Into<String>) -> Self {
         self.url = Some(url.into());
         self
     }
@@ -55,13 +54,13 @@ impl<'a> Article<'a> {
 
     /// Configures the thumb of the article.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+    pub fn description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }

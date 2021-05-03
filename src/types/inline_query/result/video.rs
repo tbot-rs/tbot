@@ -9,7 +9,6 @@ use crate::types::{
 };
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible MIME types.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -28,11 +27,11 @@ pub enum MimeType {
 /// Represents a non-cached video.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
+pub struct Fresh {
     #[serde(rename = "video_url")]
-    url: Cow<'a, str>,
+    url: String,
     mime_type: MimeType,
-    thumb_url: Cow<'a, str>,
+    thumb_url: String,
     #[serde(skip_serializing_if = "Option::is_none", rename = "video_width")]
     width: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "video_height")]
@@ -52,7 +51,7 @@ enum Kind<'a> {
         #[serde(rename = "video_file_id")]
         id: file::Id<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultVideo`]/[`InlineQueryResultCachedVideo`].
@@ -64,9 +63,9 @@ enum Kind<'a> {
 pub struct Video<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
-    title: Cow<'a, str>,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<Cow<'a, str>>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -75,12 +74,12 @@ pub struct Video<'a> {
     input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` video.
     pub fn new(
-        url: impl Into<Cow<'a, str>>,
+        url: impl Into<String>,
         mime_type: MimeType,
-        thumb_url: impl Into<Cow<'a, str>>,
+        thumb_url: impl Into<String>,
     ) -> Self {
         Self {
             url: url.into(),
@@ -112,7 +111,7 @@ impl<'a> Fresh<'a> {
 }
 
 impl<'a> Video<'a> {
-    fn new(title: impl Into<Cow<'a, str>>, kind: Kind<'a>) -> Self {
+    fn new(title: impl Into<String>, kind: Kind<'a>) -> Self {
         Self {
             kind,
             title: title.into(),
@@ -124,23 +123,17 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a cached `Video` result.
-    pub fn with_cached(
-        title: impl Into<Cow<'a, str>>,
-        id: file::Id<'a>,
-    ) -> Self {
+    pub fn with_cached(title: impl Into<String>, id: file::Id<'a>) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Video` result.
-    pub fn with_fresh(
-        title: impl Into<Cow<'a, str>>,
-        video: Fresh<'a>,
-    ) -> Self {
+    pub fn with_fresh(title: impl Into<String>, video: Fresh) -> Self {
         Self::new(title, Kind::Fresh(video))
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+    pub fn description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }

@@ -8,17 +8,16 @@ use crate::types::{
     InputMessageContent,
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents a non-cached audio.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
+pub struct Fresh {
     #[serde(rename = "audio_url")]
-    url: Cow<'a, str>,
-    title: Cow<'a, str>,
+    url: String,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    performer: Option<Cow<'a, str>>,
+    performer: Option<String>,
     #[serde(
         rename = "audio_duration",
         skip_serializing_if = "Option::is_none"
@@ -34,7 +33,7 @@ enum Kind<'a> {
         #[serde(rename = "audio_file_id")]
         id: file::Id<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultAudio`]/[`InlineQueryResultCachedAudio`].
@@ -54,12 +53,9 @@ pub struct Audio<'a> {
     input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` audio.
-    pub fn new(
-        url: impl Into<Cow<'a, str>>,
-        title: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub fn new(url: impl Into<String>, title: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             title: title.into(),
@@ -69,7 +65,7 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the performer of the audio.
-    pub fn performer(mut self, performer: impl Into<Cow<'a, str>>) -> Self {
+    pub fn performer(mut self, performer: impl Into<String>) -> Self {
         self.performer = Some(performer.into());
         self
     }
@@ -97,7 +93,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs a fresh `Audio` result.
-    pub const fn with_fresh(audio: Fresh<'a>) -> Self {
+    pub const fn with_fresh(audio: Fresh) -> Self {
         Self::new(Kind::Fresh(audio))
     }
 

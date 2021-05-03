@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 macro_rules! doc {
     (
         $doc:expr,
@@ -11,15 +9,15 @@ macro_rules! doc {
 }
 
 /// Represents a `Fresh` GIF's thumb.
-pub struct GifThumb<'a> {
-    url: Cow<'a, str>,
+pub struct GifThumb {
+    url: String,
     mime: &'static str,
 }
 
-impl<'a> GifThumb<'a> {
+impl GifThumb {
     /// Constructs a JPEG thumb.
     #[must_use]
-    pub fn jpeg(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn jpeg(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             mime: "image/jpeg",
@@ -28,7 +26,7 @@ impl<'a> GifThumb<'a> {
 
     /// Constructs a GIF thumb.
     #[must_use]
-    pub fn gif(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn gif(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             mime: "image/gif",
@@ -37,7 +35,7 @@ impl<'a> GifThumb<'a> {
 
     /// Constructs a MP4 thumb.
     #[must_use]
-    pub fn mp4(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn mp4(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             mime: "video/mp4",
@@ -45,8 +43,8 @@ impl<'a> GifThumb<'a> {
     }
 }
 
-impl<'a> From<&'a str> for GifThumb<'a> {
-    fn from(url: &'a str) -> Self {
+impl<T: Into<String>> From<T> for GifThumb {
+    fn from(url: T) -> Self {
         Self::jpeg(url)
     }
 }
@@ -68,16 +66,15 @@ macro_rules! gif_base {
             parameters::{ParseMode, Text},
         };
         use serde::Serialize;
-        use std::borrow::Cow;
 
         /// Represents a non-cached GIF.
         #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[must_use]
-        pub struct Fresh<'a> {
-            thumb_url: Cow<'a, str>,
+        pub struct Fresh {
+            thumb_url: String,
             thumb_mime_type: &'static str,
             #[serde(rename = $url)]
-            url: Cow<'a, str>,
+            url: String,
             #[serde(
                 skip_serializing_if = "Option::is_none",
                 rename = $width
@@ -103,7 +100,7 @@ macro_rules! gif_base {
                 #[serde(rename = $file_id)]
                 id: file::Id<'a>,
             },
-            Fresh(Fresh<'a>),
+            Fresh(Fresh),
         }
 
         doc! {
@@ -124,7 +121,7 @@ macro_rules! gif_base {
                 #[serde(flatten)]
                 kind: Kind<'a>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                title: Option<Cow<'a, str>>,
+                title: Option<String>,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 caption: Option<String>,
                 #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,9 +131,9 @@ macro_rules! gif_base {
             }
         }
 
-        impl<'a> Fresh<'a> {
+        impl Fresh {
             /// Constructs a `Fresh` GIF.
-            pub fn new(thumb: impl Into<GifThumb<'a>>, url: impl Into<Cow<'a, str>>) -> Self {
+            pub fn new(thumb: impl Into<GifThumb>, url: impl Into<String>) -> Self {
                 let thumb = thumb.into();
 
                 Self {
@@ -192,13 +189,13 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a fresh `", stringify!($struct), "` result.",
                 ),
-                pub const fn with_fresh(gif: Fresh<'a>) -> Self {
+                pub const fn with_fresh(gif: Fresh) -> Self {
                     Self::new(Kind::Fresh(gif))
                 }
             }
 
             /// Configures the title of the GIF.
-            pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+            pub fn title(mut self, title: impl Into<String>) -> Self {
                 self.title = Some(title.into());
                 self
             }

@@ -10,7 +10,6 @@ use crate::types::{
 };
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible MIME types for a fresh document.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -28,12 +27,12 @@ pub enum MimeType {
 /// Represents a non-cached document.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
+pub struct Fresh {
     #[serde(rename = "document_url")]
-    url: Cow<'a, str>,
+    url: String,
     mime_type: MimeType,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    thumb: Option<Thumb<'a>>,
+    thumb: Option<Thumb>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
@@ -44,7 +43,7 @@ enum Kind<'a> {
         #[serde(rename = "document_file_id")]
         id: file::Id<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultDocument`]/[`InlineQueryResultCachedDocument`].
@@ -56,9 +55,9 @@ enum Kind<'a> {
 pub struct Document<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
-    title: Cow<'a, str>,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<Cow<'a, str>>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -67,9 +66,9 @@ pub struct Document<'a> {
     input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` document.
-    pub fn new(url: impl Into<Cow<'a, str>>, mime_type: MimeType) -> Self {
+    pub fn new(url: impl Into<String>, mime_type: MimeType) -> Self {
         Self {
             url: url.into(),
             mime_type,
@@ -79,14 +78,14 @@ impl<'a> Fresh<'a> {
 
     /// Configures the thumb of the document.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
 }
 
 impl<'a> Document<'a> {
-    fn new(title: impl Into<Cow<'a, str>>, kind: Kind<'a>) -> Self {
+    fn new(title: impl Into<String>, kind: Kind<'a>) -> Self {
         Self {
             kind,
             title: title.into(),
@@ -98,23 +97,17 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub fn with_cached(
-        title: impl Into<Cow<'a, str>>,
-        id: file::Id<'a>,
-    ) -> Self {
+    pub fn with_cached(title: impl Into<String>, id: file::Id<'a>) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Document` result.
-    pub fn with_fresh(
-        title: impl Into<Cow<'a, str>>,
-        document: Fresh<'a>,
-    ) -> Self {
+    pub fn with_fresh(title: impl Into<String>, document: Fresh) -> Self {
         Self::new(title, Kind::Fresh(document))
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+    pub fn description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }

@@ -8,15 +8,14 @@ use crate::types::{
     InputMessageContent,
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents a non-cached photo.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
-    thumb_url: Cow<'a, str>,
+pub struct Fresh {
+    thumb_url: String,
     #[serde(rename = "photo_url")]
-    url: Cow<'a, str>,
+    url: String,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_width")]
     width: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_height")]
@@ -31,7 +30,7 @@ enum Kind<'a> {
         #[serde(rename = "photo_file_id")]
         id: file::Id<'a>,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultPhoto`]/[`InlineQueryResultCachedPhoto`].
@@ -44,9 +43,9 @@ pub struct Photo<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    title: Option<Cow<'a, str>>,
+    title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<Cow<'a, str>>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,12 +54,9 @@ pub struct Photo<'a> {
     input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` photo.
-    pub fn new(
-        thumb_url: impl Into<Cow<'a, str>>,
-        url: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub fn new(thumb_url: impl Into<String>, url: impl Into<String>) -> Self {
         Self {
             thumb_url: thumb_url.into(),
             url: url.into(),
@@ -100,18 +96,18 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a fresh `Photo` result.
-    pub const fn with_fresh(photo: Fresh<'a>) -> Self {
+    pub const fn with_fresh(photo: Fresh) -> Self {
         Self::new(Kind::Fresh(photo))
     }
 
     /// Configures the title of the photo.
-    pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+    pub fn title(mut self, title: impl Into<String>) -> Self {
         self.title = Some(title.into());
         self
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+    pub fn description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }
