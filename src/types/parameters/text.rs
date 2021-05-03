@@ -92,9 +92,3 @@ impl<T: Into<String>> From<T> for Text {
         Self::with_plain(text)
     }
 }
-
-impl<'a> From<&'a Text> for Text {
-    fn from(text: &'a Self) -> Self {
-        text.clone()
-    }
-}

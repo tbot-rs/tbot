@@ -50,12 +50,6 @@ impl<'a> From<&'a str> for ChatId {
     }
 }
 
-impl<'a> From<&'a ChatId> for ChatId {
-    fn from(chat_id: &'a Self) -> Self {
-        chat_id.clone()
-    }
-}
-
 /// Allows certain types to be turned into `ChatId` implicitly.
 ///
 /// Implicit turning is safe for chat ID wrappers. However, turning primitives
@@ -68,6 +62,5 @@ impl<'a> From<&'a ChatId> for ChatId {
 pub trait ImplicitChatId: Into<ChatId> {}
 
 impl ImplicitChatId for ChatId {}
-impl ImplicitChatId for &'_ ChatId {}
 impl ImplicitChatId for chat::Id {}
 impl ImplicitChatId for user::Id {}
