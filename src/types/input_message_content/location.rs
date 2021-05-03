@@ -27,7 +27,7 @@ impl Location {
         }
     }
 
-    /// Confgiures a horizontal accuracy.
+    /// Configures the radius of uncertainty for the location in meters, in range `1.0..=1500.0`.
     ///
     /// # Panics
     ///
@@ -36,8 +36,8 @@ impl Location {
         assert!(
             (1.0..=1500.0).contains(&horizontal_accuracy),
             "[tbot] Received invalid `horizontal_accuracy` in \
-                 `Location::horizontal_accuracy`: \
-                 {}, must be in range `1.0..=1500.0`",
+             `Location::horizontal_accuracy`: {}, must be in range \
+             `1.0..=1500.0`",
             horizontal_accuracy,
         );
 

@@ -56,7 +56,7 @@ impl<'a> SendLocation<'a> {
         }
     }
 
-    /// Confgiures a horizontal accuracy.
+    /// Configures the radius of uncertainty for the location in meters, in range `1.0..=1500.0`.
     ///
     /// # Panics
     ///
