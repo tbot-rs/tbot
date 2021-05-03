@@ -1,5 +1,7 @@
 use super::call_method;
-use crate::{bot::InnerBot, errors, types::parameters::UpdateKind, Multipart};
+use crate::{
+    bot::InnerBot, errors, types::parameters::AllowedUpdates, Multipart,
+};
 use std::{net::IpAddr, num::NonZeroU32};
 
 /// This method isn't meant to be used by users directly.
@@ -11,7 +13,7 @@ pub struct SetWebhook<'a> {
     ip_address: Option<IpAddr>,
     certificate: Option<&'a str>,
     max_connections: Option<NonZeroU32>,
-    allowed_updates: Option<&'a [UpdateKind]>,
+    allowed_updates: Option<AllowedUpdates>,
     drop_pending_updates: bool,
 }
 
@@ -22,7 +24,7 @@ impl<'a> SetWebhook<'a> {
         ip_address: Option<IpAddr>,
         certificate: Option<&'a str>,
         max_connections: Option<NonZeroU32>,
-        allowed_updates: Option<&'a [UpdateKind]>,
+        allowed_updates: Option<AllowedUpdates>,
         drop_pending_updates: bool,
     ) -> Self {
         Self {

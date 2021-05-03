@@ -25,7 +25,8 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{
-            poll, BotCommand, CallbackAction, ImplicitChatId, Text, UpdateKind,
+            poll, AllowedUpdates, BotCommand, CallbackAction, ImplicitChatId,
+            Text,
         },
         passport, pre_checkout_query, shipping, user, InlineMessageId,
         LabeledPrice,
@@ -476,13 +477,13 @@ impl Bot {
         GetStickerSet::new(&self.inner, name)
     }
 
-    pub(crate) fn get_updates<'a>(
-        &'a self,
+    pub(crate) fn get_updates(
+        &self,
         offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
-        allowed_updates: Option<&'a [UpdateKind]>,
-    ) -> GetUpdates<'a> {
+        allowed_updates: Option<AllowedUpdates>,
+    ) -> GetUpdates<'_> {
         GetUpdates::new(&self.inner, offset, limit, timeout, allowed_updates)
     }
 
@@ -854,7 +855,7 @@ impl Bot {
         ip_address: Option<IpAddr>,
         certificate: Option<&'a str>,
         max_connections: Option<NonZeroU32>,
-        allowed_updates: Option<&'a [UpdateKind]>,
+        allowed_updates: Option<AllowedUpdates>,
         drop_pending_updates: bool,
     ) -> SetWebhook<'a> {
         SetWebhook::new(

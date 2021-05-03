@@ -1,7 +1,7 @@
 //! Types related to the webhook event loop.
 
 use super::EventLoop;
-use crate::types::parameters::UpdateKind;
+use crate::types::parameters::AllowedUpdates;
 use hyper::{
     body::{Body, HttpBody},
     Method, Request, Response,
@@ -36,7 +36,7 @@ pub struct Webhook<'a> {
     ip_address: Option<IpAddr>,
     certificate: Option<&'a str>,
     max_connections: Option<NonZeroU32>,
-    allowed_updates: Option<&'a [UpdateKind]>,
+    allowed_updates: Option<AllowedUpdates>,
     drop_pending_updates: bool,
 }
 
@@ -102,7 +102,7 @@ impl<'a> Webhook<'a> {
     }
 
     /// Configures `allowed_updates`.
-    pub const fn allowed_updates(mut self, updates: &'a [UpdateKind]) -> Self {
+    pub const fn allowed_updates(mut self, updates: AllowedUpdates) -> Self {
         self.allowed_updates = Some(updates);
         self
     }

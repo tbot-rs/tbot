@@ -1,6 +1,6 @@
 //! Types related to webhook information.
 
-use crate::types::parameters::UpdateKind;
+use crate::types::parameters::AllowedUpdates;
 use serde::de::{
     Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
 };
@@ -33,7 +33,7 @@ pub struct WebhookInfo {
     /// Maximum allowed number of connections at a time.
     pub max_connections: Option<NonZeroU32>,
     /// A list of updates the bot is subscribed to.
-    pub allowed_updates: Option<Vec<UpdateKind>>,
+    pub allowed_updates: Option<AllowedUpdates>,
     /// The IP address which Telegram uses to connect to your sever.
     pub ip_address: Option<IpAddr>,
 }

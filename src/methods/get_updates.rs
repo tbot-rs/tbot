@@ -2,7 +2,7 @@ use super::call_method;
 use crate::{
     bot::InnerBot,
     errors,
-    types::{parameters::UpdateKind, update::RawUpdate},
+    types::{parameters::AllowedUpdates, update::RawUpdate},
 };
 use serde::Serialize;
 
@@ -18,7 +18,7 @@ pub struct GetUpdates<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     timeout: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allowed_updates: Option<&'a [UpdateKind]>,
+    allowed_updates: Option<AllowedUpdates>,
 }
 
 impl<'a> GetUpdates<'a> {
@@ -27,7 +27,7 @@ impl<'a> GetUpdates<'a> {
         offset: Option<isize>,
         limit: Option<u8>,
         timeout: Option<u64>,
-        allowed_updates: Option<&'a [UpdateKind]>,
+        allowed_updates: Option<AllowedUpdates>,
     ) -> Self {
         Self {
             bot,
