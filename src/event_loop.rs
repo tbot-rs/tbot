@@ -1823,7 +1823,7 @@ impl EventLoop {
             .map(|(name, description)| BotCommand::new(name, description))
             .collect();
 
-        self.bot.set_my_commands(&commands).call().await?;
+        self.bot.set_my_commands(commands).call().await?;
 
         Ok(())
     }

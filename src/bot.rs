@@ -805,10 +805,10 @@ impl Bot {
     }
 
     /// Sets the list of the bot's commands.
-    pub fn set_my_commands<'a>(
-        &'a self,
-        commands: impl Into<Cow<'a, [BotCommand<'a>]>>,
-    ) -> SetMyCommands<'a> {
+    pub fn set_my_commands(
+        &self,
+        commands: impl Into<Vec<BotCommand>>,
+    ) -> SetMyCommands<'_> {
         SetMyCommands::new(&self.inner, commands)
     }
 
