@@ -34,7 +34,7 @@ pub struct SendInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     provider_data: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    photo: Option<Photo<'a>>,
+    photo: Option<Photo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     need_name: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -110,7 +110,7 @@ impl<'a> SendInvoice<'a> {
     /// Configures a photo for the invoice.
     /// Reflects the `photo_url`, `photo_width` and `photo_height` parameters.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn photo(mut self, photo: Photo<'a>) -> Self {
+    pub fn photo(mut self, photo: Photo) -> Self {
         self.photo = Some(photo);
         self
     }
