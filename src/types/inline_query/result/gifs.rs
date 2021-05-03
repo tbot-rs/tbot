@@ -74,7 +74,7 @@ macro_rules! gif_base {
     ) => {
         use super::GifThumb;
         use crate::types::{
-            InteriorBorrow, InputMessageContent, file,
+            InputMessageContent, file,
             parameters::{ParseMode, Text},
         };
         use serde::Serialize;
@@ -136,7 +136,7 @@ macro_rules! gif_base {
                 #[serde(skip_serializing_if = "Option::is_none")]
                 title: Option<Cow<'a, str>>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                caption: Option<Cow<'a, str>>,
+                caption: Option<String>,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 parse_mode: Option<ParseMode>,
                 #[serde(skip_serializing_if = "Option::is_none")]
@@ -214,7 +214,7 @@ macro_rules! gif_base {
             }
 
             /// Configures the caption of the GIF.
-            pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+            pub fn caption(mut self, caption: impl Into<Text>) -> Self {
                 let caption = caption.into();
 
                 self.caption = Some(caption.text.into());
@@ -229,39 +229,6 @@ macro_rules! gif_base {
             ) -> Self {
                 self.input_message_content = Some(content.into());
                 self
-            }
-        }
-
-        impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-            fn borrow_inside(&'a self) -> Self {
-                Self {
-                    thumb_url: self.thumb_url.borrow_inside(),
-                    url: self.url.borrow_inside(),
-                    ..*self
-                }
-            }
-        }
-
-        impl<'a> InteriorBorrow<'a> for Kind<'a> {
-            fn borrow_inside(&'a self) -> Self {
-                match self {
-                    Self::Cached { id } => Self::Cached {
-                        id: id.borrow_inside(),
-                    },
-                    Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-                }
-            }
-        }
-
-        impl<'a> InteriorBorrow<'a> for $struct<'a> {
-            fn borrow_inside(&'a self) -> Self {
-                Self {
-                    kind: self.kind.borrow_inside(),
-                    title: self.title.borrow_inside(),
-                    caption: self.caption.borrow_inside(),
-                    input_message_content: self.input_message_content.borrow_inside(),
-                    ..*self
-                }
             }
         }
     };

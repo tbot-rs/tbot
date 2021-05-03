@@ -2,7 +2,6 @@ use super::InputFile;
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InteriorBorrow,
 };
 use serde::ser::SerializeMap;
 use serde::{Serialize, Serializer};
@@ -14,7 +13,7 @@ use std::borrow::Cow;
 pub struct Voice<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) duration: Option<u32>,
-    pub(crate) caption: Option<Cow<'a, str>>,
+    pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -72,22 +71,12 @@ impl<'a> Voice<'a> {
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
         self.parse_mode = caption.parse_mode;
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Voice<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            ..*self
-        }
     }
 }
 

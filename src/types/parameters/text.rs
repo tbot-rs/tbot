@@ -1,8 +1,6 @@
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 use std::fmt::{self, Display};
-use std::ops::Deref;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
 #[must_use]
@@ -16,8 +14,8 @@ pub enum ParseMode {
 /// Represents input text.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Text<'a> {
-    pub(crate) text: Cow<'a, str>,
+pub struct Text {
+    pub(crate) text: String,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -31,9 +29,9 @@ impl Display for ParseMode {
     }
 }
 
-impl<'a> Text<'a> {
+impl Text {
     /// Constructs new `Text` without any parse mode.
-    pub fn with_plain(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_plain(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
             parse_mode: None,
@@ -41,7 +39,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `Markdown` parse mode.
-    pub fn with_markdown(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_markdown(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
             parse_mode: Some(ParseMode::Markdown),
@@ -49,7 +47,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `MarkdownV2` parse mode.
-    pub fn with_markdown_v2(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_markdown_v2(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
             parse_mode: Some(ParseMode::MarkdownV2),
@@ -57,7 +55,7 @@ impl<'a> Text<'a> {
     }
 
     /// Constructs new `Text` with `HTML` parse mode.
-    pub fn with_html(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_html(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
             parse_mode: Some(ParseMode::Html),
@@ -89,29 +87,14 @@ impl<'a> Text<'a> {
     }
 }
 
-impl<'a> From<&'a str> for Text<'a> {
-    fn from(text: &'a str) -> Self {
-        Text::with_plain(text)
+impl<T: Into<String>> From<T> for Text {
+    fn from(text: T) -> Self {
+        Self::with_plain(text)
     }
 }
 
-impl<'a> From<String> for Text<'a> {
-    fn from(text: String) -> Self {
-        Text::with_plain(text)
-    }
-}
-
-impl<'a> From<&'a String> for Text<'a> {
-    fn from(text: &'a String) -> Self {
-        Text::with_plain(text.as_str())
-    }
-}
-
-impl<'a> From<&'a Text<'a>> for Text<'a> {
-    fn from(text: &'a Text<'a>) -> Self {
-        Self {
-            text: text.text.deref().into(),
-            parse_mode: text.parse_mode,
-        }
+impl<'a> From<&'a Text> for Text {
+    fn from(text: &'a Self) -> Self {
+        text.clone()
     }
 }

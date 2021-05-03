@@ -8,7 +8,6 @@ use crate::{
     },
 };
 use serde::{Deserialize, Serialize};
-use std::borrow::Cow;
 
 // Reflects the [`MessageId`][docs] type.
 //
@@ -32,7 +31,7 @@ pub struct CopyMessage<'a> {
     from_chat_id: ChatId,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<Cow<'a, str>>,
+    caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,7 +67,7 @@ impl<'a> CopyMessage<'a> {
     /// Replaces the original caption with the provided one.
     /// Reflects the `caption` and `parse_mode` parameters.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);

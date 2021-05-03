@@ -61,11 +61,11 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the caption of a message in this group.
-    fn edit_message_caption<'a>(
-        &'a self,
+    fn edit_message_caption(
+        &self,
         message_id: message::Id,
-        caption: impl Into<Text<'a>>,
-    ) -> EditMessageCaption<'a> {
+        caption: impl Into<Text>,
+    ) -> EditMessageCaption<'_> {
         self.bot()
             .edit_message_caption(self.chat().id, message_id, caption)
     }
@@ -104,11 +104,11 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the text of a message in this group.
-    fn edit_message_text<'a>(
-        &'a self,
+    fn edit_message_text(
+        &self,
         message_id: message::Id,
-        text: impl Into<Text<'a>>,
-    ) -> EditMessageText<'a> {
+        text: impl Into<Text>,
+    ) -> EditMessageText<'_> {
         self.bot()
             .edit_message_text(self.chat().id, message_id, text)
     }
@@ -358,18 +358,15 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a message to this chat.
-    fn send_message<'a>(
-        &'a self,
-        text: impl Into<Text<'a>>,
-    ) -> SendMessage<'a> {
+    fn send_message(&self, text: impl Into<Text>) -> SendMessage<'_> {
         self.bot().send_message(self.chat().id, text)
     }
 
     /// Sends a message in reply to this message.
-    fn send_message_in_reply<'a>(
-        &'a self,
-        text: impl Into<Text<'a>>,
-    ) -> SendMessage<'a> {
+    fn send_message_in_reply(
+        &self,
+        text: impl Into<Text>,
+    ) -> SendMessage<'_> {
         self.send_message(text).in_reply_to(self.message_id())
     }
 

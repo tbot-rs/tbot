@@ -2,7 +2,6 @@ use super::InputFile;
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InteriorBorrow,
 };
 use serde::ser::SerializeMap;
 use std::borrow::Cow;
@@ -12,7 +11,7 @@ use std::borrow::Cow;
 #[must_use]
 pub struct Photo<'a> {
     pub(crate) media: InputFile<'a>,
-    pub(crate) caption: Option<Cow<'a, str>>,
+    pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
@@ -63,7 +62,7 @@ impl<'a> Photo<'a> {
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -92,16 +91,6 @@ impl<'a> Photo<'a> {
         }
 
         map.end()
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Photo<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            ..*self
-        }
     }
 }
 

@@ -9,7 +9,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Edits the text of a message sent via the inline mode.
 ///
@@ -22,7 +21,7 @@ pub struct EditInlineText<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     inline_message_id: InlineMessageId<'a>,
-    text: Cow<'a, str>,
+    text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +34,7 @@ impl<'a> EditInlineText<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         inline_message_id: InlineMessageId<'a>,
-        text: impl Into<Text<'a>>,
+        text: impl Into<Text>,
     ) -> Self {
         let text = text.into();
 

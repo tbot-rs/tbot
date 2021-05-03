@@ -3,7 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Article
 
 use super::Thumb;
-use crate::types::{InputMessageContent, InteriorBorrow};
+use crate::types::{InputMessageContent};
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -64,18 +64,5 @@ impl<'a> Article<'a> {
     pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
         self.description = Some(description.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Article<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            title: self.title.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            url: self.url.borrow_inside(),
-            description: self.description.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            ..*self
-        }
     }
 }

@@ -57,7 +57,7 @@ impl State {
         }
     }
 
-    async fn notify(&self, bot: &Bot, room: &str, message: Text<'_>) {
+    async fn notify(&self, bot: &Bot, room: &str, message: Text) {
         let participants = self.participants(room).await;
 
         for id in participants {

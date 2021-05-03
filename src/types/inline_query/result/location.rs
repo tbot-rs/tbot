@@ -1,6 +1,6 @@
 use super::Thumb;
 use crate::types::{
-    parameters::LiveLocation, InputMessageContent, InteriorBorrow,
+    parameters::LiveLocation, InputMessageContent,
 };
 use serde::Serialize;
 use std::borrow::Cow;
@@ -79,16 +79,5 @@ impl<'a> Location<'a> {
     pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
         self.thumb = Some(thumb);
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Location<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            title: self.title.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            ..*self
-        }
     }
 }

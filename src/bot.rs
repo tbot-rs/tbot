@@ -286,7 +286,7 @@ impl Bot {
     pub fn edit_inline_caption<'a>(
         &'a self,
         inline_message_id: InlineMessageId<'a>,
-        caption: impl Into<Text<'a>>,
+        caption: impl Into<Text>,
     ) -> EditInlineCaption<'a> {
         EditInlineCaption::new(&self.inner, inline_message_id, caption)
     }
@@ -322,18 +322,18 @@ impl Bot {
     pub fn edit_inline_text<'a>(
         &'a self,
         inline_message_id: InlineMessageId<'a>,
-        text: impl Into<Text<'a>>,
-    ) -> EditInlineText<'a> {
+        text: impl Into<Text>,
+    ) -> EditInlineText {
         EditInlineText::new(&self.inner, inline_message_id, text)
     }
 
     /// Edits the caption of a media message sent by the bot itself.
-    pub fn edit_message_caption<'a>(
-        &'a self,
+    pub fn edit_message_caption(
+        &self,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        caption: impl Into<Text<'a>>,
-    ) -> EditMessageCaption<'a> {
+        caption: impl Into<Text>,
+    ) -> EditMessageCaption<'_> {
         EditMessageCaption::new(&self.inner, chat_id, message_id, caption)
     }
 
@@ -373,12 +373,12 @@ impl Bot {
     }
 
     /// Edits the text of a message sent by the bot itself.
-    pub fn edit_message_text<'a>(
-        &'a self,
+    pub fn edit_message_text(
+        &self,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        text: impl Into<Text<'a>>,
-    ) -> EditMessageText<'a> {
+        text: impl Into<Text>,
+    ) -> EditMessageText<'_> {
         EditMessageText::new(&self.inner, chat_id, message_id, text)
     }
 
@@ -644,11 +644,11 @@ impl Bot {
     }
 
     /// Sends a text message.
-    pub fn send_message<'a>(
-        &'a self,
+    pub fn send_message(
+        &self,
         chat_id: impl ImplicitChatId,
-        text: impl Into<Text<'a>>,
-    ) -> SendMessage<'a> {
+        text: impl Into<Text>,
+    ) -> SendMessage<'_> {
         SendMessage::new(&self.inner, chat_id, text)
     }
 
@@ -897,7 +897,7 @@ impl Bot {
 
     /// Unpins all messages in a chat.
     pub fn unpin_all_chat_messages(
-        & self,
+        &self,
         chat_id: impl ImplicitChatId,
     ) -> UnpinAllChatMessages<'_> {
         UnpinAllChatMessages::new(&self.inner, chat_id)
@@ -905,7 +905,7 @@ impl Bot {
 
     /// Unpins a chat message.
     pub fn unpin_chat_message(
-        & self,
+        &self,
         chat_id: impl ImplicitChatId,
     ) -> UnpinChatMessage<'_> {
         UnpinChatMessage::new(&self.inner, chat_id)

@@ -1,5 +1,5 @@
 use super::Thumb;
-use crate::types::{InputMessageContent, InteriorBorrow};
+use crate::types::InputMessageContent;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -92,21 +92,5 @@ impl<'a> Venue<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Venue<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            title: self.title.borrow_inside(),
-            address: self.address.borrow_inside(),
-            foursquare_id: self.foursquare_id.borrow_inside(),
-            foursquare_type: self.foursquare_type.borrow_inside(),
-            google_place_id: self.google_place_id.borrow_inside(),
-            google_place_type: self.google_place_type.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            ..*self
-        }
     }
 }

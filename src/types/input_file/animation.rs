@@ -2,7 +2,6 @@ use super::{InputFile, Thumb};
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InteriorBorrow,
 };
 use serde::ser::SerializeMap;
 use std::borrow::Cow;
@@ -13,7 +12,7 @@ use std::borrow::Cow;
 pub struct Animation<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<Thumb<'a>>,
-    pub(crate) caption: Option<Cow<'a, str>>,
+    pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) width: Option<u32>,
     pub(crate) height: Option<u32>,
@@ -78,7 +77,7 @@ impl<'a> Animation<'a> {
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -102,17 +101,6 @@ impl<'a> Animation<'a> {
     pub const fn height(mut self, height: u32) -> Self {
         self.height = Some(height);
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Animation<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            ..*self
-        }
     }
 }
 

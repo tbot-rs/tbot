@@ -9,7 +9,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Edits the caption of a media message sent by the bot itself.
 ///
@@ -23,7 +22,7 @@ pub struct EditMessageCaption<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
     message_id: message::Id,
-    caption: Cow<'a, str>,
+    caption: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +34,7 @@ impl<'a> EditMessageCaption<'a> {
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        caption: impl Into<Text<'a>>,
+        caption: impl Into<Text>,
     ) -> Self {
         let caption = caption.into();
 

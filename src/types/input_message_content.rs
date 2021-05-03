@@ -1,6 +1,5 @@
 //! Types related to input message contents.
 
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 
@@ -19,7 +18,7 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 #[non_exhaustive]
 pub enum InputMessageContent<'a> {
     /// A text message.
-    Text(Text<'a>),
+    Text(Text),
     /// A location.
     Location(Location),
     /// A venue.
@@ -28,9 +27,9 @@ pub enum InputMessageContent<'a> {
     Contact(Contact<'a>),
 }
 
-impl<'a> From<Text<'a>> for InputMessageContent<'a> {
+impl<'a> From<Text> for InputMessageContent<'a> {
     #[must_use]
-    fn from(text: Text<'a>) -> Self {
+    fn from(text: Text) -> Self {
         InputMessageContent::Text(text)
     }
 }
@@ -53,16 +52,5 @@ impl<'a> From<Contact<'a>> for InputMessageContent<'a> {
     #[must_use]
     fn from(contact: Contact<'a>) -> Self {
         InputMessageContent::Contact(contact)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for InputMessageContent<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Text(text) => Self::Text(text.borrow_inside()),
-            Self::Location(location) => Self::Location(*location),
-            Self::Venue(venue) => Self::Venue(venue.borrow_inside()),
-            Self::Contact(contact) => Self::Contact(contact.borrow_inside()),
-        }
     }
 }

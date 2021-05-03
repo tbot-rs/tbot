@@ -1,7 +1,6 @@
 use std::{borrow::Cow, slice};
 
 use super::{Audio, Document, Photo, Video};
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::{
     ser::{SerializeSeq, Serializer},
@@ -93,15 +92,6 @@ impl<'a> From<Photo<'a>> for PhotoOrVideo<'a> {
 impl<'a> From<Video<'a>> for PhotoOrVideo<'a> {
     fn from(video: Video<'a>) -> Self {
         Self::Video(video)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for PhotoOrVideo<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Photo(photo) => Self::Photo(photo.borrow_inside()),
-            Self::Video(video) => Self::Video(video.borrow_inside()),
-        }
     }
 }
 
@@ -203,20 +193,6 @@ impl<'a> From<&'a Vec<Document<'a>>> for MediaGroup<'a> {
 impl<'a> From<Vec<Document<'a>>> for MediaGroup<'a> {
     fn from(documents: Vec<Document<'a>>) -> Self {
         MediaGroup::Documents(Cow::Owned(documents))
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for MediaGroup<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::PhotosAndVideos(album) => {
-                Self::PhotosAndVideos(album.borrow_inside())
-            }
-            Self::Audios(audios) => Self::Audios(audios.borrow_inside()),
-            Self::Documents(documents) => {
-                Self::Documents(documents.borrow_inside())
-            }
-        }
     }
 }
 

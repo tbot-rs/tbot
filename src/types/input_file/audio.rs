@@ -2,7 +2,6 @@ use super::{InputFile, Thumb};
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InteriorBorrow,
 };
 use serde::{ser::SerializeMap, Serialize, Serializer};
 use std::borrow::Cow;
@@ -13,7 +12,7 @@ use std::borrow::Cow;
 pub struct Audio<'a> {
     pub(crate) media: InputFile<'a>,
     pub(crate) thumb: Option<Thumb<'a>>,
-    pub(crate) caption: Option<Cow<'a, str>>,
+    pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) duration: Option<u32>,
     pub(crate) performer: Option<Cow<'a, str>>,
@@ -78,7 +77,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -138,19 +137,6 @@ impl<'a> Audio<'a> {
         }
 
         map.end()
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Audio<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            performer: self.performer.borrow_inside(),
-            title: self.title.borrow_inside(),
-            ..*self
-        }
     }
 }
 

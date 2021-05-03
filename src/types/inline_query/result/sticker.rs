@@ -1,4 +1,4 @@
-use crate::types::{file, InputMessageContent, InteriorBorrow};
+use crate::types::{file, InputMessageContent};
 use serde::Serialize;
 
 /// Represents an [`InlineQueryResultCachedSticker`][docs].
@@ -29,14 +29,5 @@ impl<'a> Sticker<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Sticker<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            id: self.id.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-        }
     }
 }

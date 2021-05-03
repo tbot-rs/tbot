@@ -2,7 +2,7 @@
 //!
 //! [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 
-use crate::types::{keyboard::inline, InteriorBorrow};
+use crate::types::keyboard::inline;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -186,39 +186,5 @@ impl<'a> From<Location<'a>> for Kind<'a> {
 impl<'a> From<Venue<'a>> for Kind<'a> {
     fn from(venue: Venue<'a>) -> Self {
         Kind::Venue(venue)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Kind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Article(article) => Self::Article(article.borrow_inside()),
-            Self::Audio(audio) => Self::Audio(audio.borrow_inside()),
-            Self::Contact(contact) => Self::Contact(contact.borrow_inside()),
-            Self::Document(document) => {
-                Self::Document(document.borrow_inside())
-            }
-            Self::Game(game) => Self::Game(game.borrow_inside()),
-            Self::Gif(gif) => Self::Gif(gif.borrow_inside()),
-            Self::Location(location) => {
-                Self::Location(location.borrow_inside())
-            }
-            Self::Mpeg4Gif(gif) => Self::Mpeg4Gif(gif.borrow_inside()),
-            Self::Photo(photo) => Self::Photo(photo.borrow_inside()),
-            Self::Sticker(sticker) => Self::Sticker(sticker.borrow_inside()),
-            Self::Venue(venue) => Self::Venue(venue.borrow_inside()),
-            Self::Video(video) => Self::Video(video.borrow_inside()),
-            Self::Voice(voice) => Self::Voice(voice.borrow_inside()),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Result<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            id: self.id.borrow_inside(),
-            kind: self.kind.borrow_inside(),
-            reply_markup: self.reply_markup.borrow_inside(),
-        }
     }
 }

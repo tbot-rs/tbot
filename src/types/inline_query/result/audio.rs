@@ -5,7 +5,7 @@
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InputMessageContent, InteriorBorrow,
+    InputMessageContent,
 };
 use serde::Serialize;
 use std::borrow::Cow;
@@ -47,7 +47,7 @@ pub struct Audio<'a> {
     #[serde(flatten)]
     kind: Kind<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<Cow<'a, str>>,
+    caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -102,7 +102,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures the caption of the audio.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -117,38 +117,5 @@ impl<'a> Audio<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            title: self.title.borrow_inside(),
-            performer: self.performer.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Kind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Cached { id } => Self::Cached {
-                id: id.borrow_inside(),
-            },
-            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Audio<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            kind: self.kind.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            ..*self
-        }
     }
 }
