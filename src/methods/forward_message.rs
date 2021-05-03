@@ -19,8 +19,8 @@ use serde::Serialize;
 pub struct ForwardMessage<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
-    from_chat_id: ChatId<'a>,
+    chat_id: ChatId,
+    from_chat_id: ChatId,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
@@ -29,8 +29,8 @@ pub struct ForwardMessage<'a> {
 impl<'a> ForwardMessage<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-        from_chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> Self {
         Self {

@@ -1,64 +1,58 @@
-use crate::types::{chat, user, InteriorBorrow};
+use crate::types::{chat, user};
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible ways to specify the destination chat.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
-pub enum ChatId<'a> {
+pub enum ChatId {
     /// The ID of a chat.
     Id(chat::Id),
     /// The `@username` of a chat.
-    Username(Cow<'a, str>),
+    Username(String),
 }
 
-impl<'a> From<i64> for ChatId<'a> {
+impl From<i64> for ChatId {
     fn from(id: i64) -> Self {
-        ChatId::Id(chat::Id(id))
+        Self::Id(chat::Id(id))
     }
 }
 
-impl<'a> From<chat::Id> for ChatId<'a> {
+impl From<chat::Id> for ChatId {
     fn from(id: chat::Id) -> Self {
-        ChatId::Id(id)
+        Self::Id(id)
     }
 }
 
-impl<'a> From<user::Id> for ChatId<'a> {
+impl From<user::Id> for ChatId {
     fn from(id: user::Id) -> Self {
-        ChatId::Id(chat::Id(id.0))
+        Self::Id(chat::Id(id.0))
     }
 }
 
-impl<'a> From<&'a str> for ChatId<'a> {
-    fn from(username: &'a str) -> Self {
-        ChatId::Username(username.into())
-    }
-}
-
-impl<'a> From<String> for ChatId<'a> {
+impl<'a> From<String> for ChatId {
     fn from(username: String) -> Self {
-        ChatId::Username(username.into())
+        Self::Username(username)
     }
 }
 
-impl<'a> From<&'a ChatId<'a>> for ChatId<'a> {
+impl<'a> From<&'a String> for ChatId {
+    fn from(username: &'a String) -> Self {
+        Self::Username(username.to_owned())
+    }
+}
+
+impl<'a> From<&'a str> for ChatId {
+    fn from(username: &'a str) -> Self {
+        Self::Username(username.to_owned())
+    }
+}
+
+impl<'a> From<&'a ChatId> for ChatId {
     fn from(chat_id: &'a Self) -> Self {
-        chat_id.borrow_inside()
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for ChatId<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            ChatId::Id(id) => ChatId::Id(*id),
-            ChatId::Username(username) => {
-                ChatId::Username(username.borrow_inside())
-            }
-        }
+        chat_id.clone()
     }
 }
 
@@ -71,8 +65,9 @@ impl<'a> InteriorBorrow<'a> for ChatId<'a> {
 #[allow(clippy::module_name_repetitions)]
 // `parameters::chat_id::Implicit` is a less obvious name than
 // `parameters::ImplicitChatId`
-pub trait ImplicitChatId<'a>: Into<ChatId<'a>> {}
-impl<'a> ImplicitChatId<'a> for ChatId<'a> {}
-impl<'a> ImplicitChatId<'a> for &'a ChatId<'a> {}
-impl ImplicitChatId<'_> for chat::Id {}
-impl ImplicitChatId<'_> for user::Id {}
+pub trait ImplicitChatId: Into<ChatId> {}
+
+impl ImplicitChatId for ChatId {}
+impl ImplicitChatId for &'_ ChatId {}
+impl ImplicitChatId for chat::Id {}
+impl ImplicitChatId for user::Id {}

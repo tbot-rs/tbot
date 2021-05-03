@@ -21,7 +21,7 @@ use std::borrow::Cow;
 pub struct SendVenue<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     latitude: f64,
     longitude: f64,
     title: Cow<'a, str>,
@@ -46,7 +46,7 @@ pub struct SendVenue<'a> {
 impl<'a> SendVenue<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         (latitude, longitude): (f64, f64),
         title: impl Into<Cow<'a, str>>,
         address: impl Into<Cow<'a, str>>,

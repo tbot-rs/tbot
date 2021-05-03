@@ -20,7 +20,7 @@ use serde::Serialize;
 pub struct SendPoll<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     #[serde(flatten)]
     poll: poll::Any<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +35,7 @@ pub struct SendPoll<'a> {
 impl<'a> SendPoll<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         poll: poll::Any<'a>,
     ) -> Self {
         Self {

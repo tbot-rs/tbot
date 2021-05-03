@@ -21,7 +21,7 @@ use serde::Serialize;
 pub struct SendDice<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     #[serde(rename = "emoji")]
     kind: Kind,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -34,10 +34,7 @@ pub struct SendDice<'a> {
 }
 
 impl<'a> SendDice<'a> {
-    pub(crate) fn new(
-        bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> Self {
+    pub(crate) fn new(bot: &'a InnerBot, chat_id: impl ImplicitChatId) -> Self {
         Self {
             bot,
             chat_id: chat_id.into(),

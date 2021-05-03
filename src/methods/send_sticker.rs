@@ -21,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendSticker<'a> {
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     sticker: Sticker<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
@@ -32,7 +32,7 @@ pub struct SendSticker<'a> {
 impl<'a> SendSticker<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         sticker: Sticker<'a>,
     ) -> Self {
         Self {

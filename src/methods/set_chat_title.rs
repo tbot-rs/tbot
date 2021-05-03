@@ -17,14 +17,14 @@ use std::borrow::Cow;
 pub struct SetChatTitle<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     title: Cow<'a, str>,
 }
 
 impl<'a> SetChatTitle<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         title: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {

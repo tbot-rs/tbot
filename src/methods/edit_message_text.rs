@@ -21,7 +21,7 @@ use std::borrow::Cow;
 pub struct EditMessageText<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
     text: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +35,7 @@ pub struct EditMessageText<'a> {
 impl<'a> EditMessageText<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         text: impl Into<Text<'a>>,
     ) -> Self {

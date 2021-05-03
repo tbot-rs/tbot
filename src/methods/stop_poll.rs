@@ -21,7 +21,7 @@ use serde::Serialize;
 pub struct StopPoll<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
@@ -30,7 +30,7 @@ pub struct StopPoll<'a> {
 impl<'a> StopPoll<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> Self {
         Self {

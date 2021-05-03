@@ -24,7 +24,7 @@ use std::{
 pub struct EditMessageLocation<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
     latitude: f64,
     longitude: f64,
@@ -41,7 +41,7 @@ pub struct EditMessageLocation<'a> {
 impl<'a> EditMessageLocation<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         (latitude, longitude): (f64, f64),
     ) -> Self {

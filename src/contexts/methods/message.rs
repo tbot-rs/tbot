@@ -20,9 +20,9 @@ use std::borrow::Cow;
 /// Provides methods appliable to all messages.
 pub trait Message: fields::Message {
     /// Copies a message to this chat.
-    fn copy_here<'a>(
-        &'a self,
-        from_chat_id: impl ImplicitChatId<'a>,
+    fn copy_here(
+        &self,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> CopyMessage<'_> {
         self.bot()
@@ -30,9 +30,9 @@ pub trait Message: fields::Message {
     }
 
     /// Copies a message in reply to this message.
-    fn copy_here_in_reply<'a>(
-        &'a self,
-        from_chat_id: impl ImplicitChatId<'a>,
+    fn copy_here_in_reply(
+        &self,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> CopyMessage<'_> {
         self.bot()
@@ -119,11 +119,11 @@ pub trait Message: fields::Message {
     }
 
     /// Forwards a message to this chat.
-    fn forward_here<'a>(
-        &'a self,
-        from_chat_id: impl ImplicitChatId<'a>,
+    fn forward_here(
+        &self,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> ForwardMessage<'a> {
+    ) -> ForwardMessage<'_> {
         self.bot()
             .forward_message(self.chat().id, from_chat_id, message_id)
     }

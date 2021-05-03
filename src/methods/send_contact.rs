@@ -21,7 +21,7 @@ use std::borrow::Cow;
 pub struct SendContact<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     phone_number: Cow<'a, str>,
     first_name: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40,7 +40,7 @@ pub struct SendContact<'a> {
 impl<'a> SendContact<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         phone_number: impl Into<Cow<'a, str>>,
         first_name: impl Into<Cow<'a, str>>,
     ) -> Self {

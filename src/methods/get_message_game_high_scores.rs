@@ -22,14 +22,14 @@ pub struct GetMessageGameHighScores<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     user_id: user::Id,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
 }
 
 impl<'a> GetMessageGameHighScores<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         user_id: user::Id,
     ) -> Self {

@@ -20,7 +20,7 @@ use serde::Serialize;
 pub struct EditMessageReplyMarkup<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
     reply_markup: inline::Keyboard<'a>,
 }
@@ -28,7 +28,7 @@ pub struct EditMessageReplyMarkup<'a> {
 impl<'a> EditMessageReplyMarkup<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         reply_markup: inline::Keyboard<'a>,
     ) -> Self {

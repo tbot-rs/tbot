@@ -19,14 +19,14 @@ use serde::Serialize;
 pub struct SetChatPermissions<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     permissions: chat::Permissions,
 }
 
 impl<'a> SetChatPermissions<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         permissions: chat::Permissions,
     ) -> Self {
         Self {

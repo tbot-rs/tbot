@@ -217,12 +217,12 @@ impl Bot {
     }
 
     /// Copies a message.
-    pub fn copy_message<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-        from_chat_id: impl ImplicitChatId<'a>,
+    pub fn copy_message(
+        &self,
+        chat_id: impl ImplicitChatId,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> CopyMessage<'a> {
+    ) -> CopyMessage<'_> {
         CopyMessage::new(&self.inner, chat_id, from_chat_id, message_id)
     }
 
@@ -246,27 +246,27 @@ impl Bot {
     }
 
     /// Deletes a chat's photo.
-    pub fn delete_chat_photo<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> DeleteChatPhoto<'a> {
+    pub fn delete_chat_photo(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> DeleteChatPhoto<'_> {
         DeleteChatPhoto::new(&self.inner, chat_id)
     }
 
     /// Deletes a chat's sticker set.
-    pub fn delete_chat_sticker_set<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> DeleteChatStickerSet<'a> {
+    pub fn delete_chat_sticker_set(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> DeleteChatStickerSet<'_> {
         DeleteChatStickerSet::new(&self.inner, chat_id)
     }
 
     /// Deletes a message from a chat.
-    pub fn delete_message<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn delete_message(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> DeleteMessage<'a> {
+    ) -> DeleteMessage<'_> {
         DeleteMessage::new(&self.inner, chat_id, message_id)
     }
 
@@ -330,7 +330,7 @@ impl Bot {
     /// Edits the caption of a media message sent by the bot itself.
     pub fn edit_message_caption<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         caption: impl Into<Text<'a>>,
     ) -> EditMessageCaption<'a> {
@@ -338,19 +338,19 @@ impl Bot {
     }
 
     /// Edits a live location sent by the bot itself.
-    pub fn edit_message_location<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn edit_message_location(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         position: (f64, f64),
-    ) -> EditMessageLocation<'a> {
+    ) -> EditMessageLocation<'_> {
         EditMessageLocation::new(&self.inner, chat_id, message_id, position)
     }
 
     /// Edits a live location sent by the bot itself.
     pub fn edit_message_media<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         media: impl Into<EditableMedia<'a>>,
     ) -> EditMessageMedia<'a> {
@@ -360,7 +360,7 @@ impl Bot {
     /// Edits the inline keyboard of a message sent by the bot itself.
     pub fn edit_message_reply_markup<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         reply_markup: inline::Keyboard<'a>,
     ) -> EditMessageReplyMarkup<'a> {
@@ -375,7 +375,7 @@ impl Bot {
     /// Edits the text of a message sent by the bot itself.
     pub fn edit_message_text<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         text: impl Into<Text<'a>>,
     ) -> EditMessageText<'a> {
@@ -383,28 +383,25 @@ impl Bot {
     }
 
     /// Exports a chat's invite link.
-    pub fn export_chat_invite_link<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> ExportChatInviteLink<'a> {
+    pub fn export_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> ExportChatInviteLink<'_> {
         ExportChatInviteLink::new(&self.inner, chat_id)
     }
 
     /// Forwards a message.
-    pub fn forward_message<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-        from_chat_id: impl ImplicitChatId<'a>,
+    pub fn forward_message(
+        &self,
+        chat_id: impl ImplicitChatId,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> ForwardMessage<'a> {
+    ) -> ForwardMessage<'_> {
         ForwardMessage::new(&self.inner, chat_id, from_chat_id, message_id)
     }
 
     /// Gets information about a chat.
-    pub fn get_chat<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> GetChat<'a> {
+    pub fn get_chat(&self, chat_id: impl ImplicitChatId) -> GetChat<'_> {
         GetChat::new(&self.inner, chat_id)
     }
 
@@ -424,38 +421,38 @@ impl Bot {
     }
 
     /// Gets information about a chat's admins.
-    pub fn get_chat_administrators<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> GetChatAdministrators<'a> {
+    pub fn get_chat_administrators(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> GetChatAdministrators<'_> {
         GetChatAdministrators::new(&self.inner, chat_id)
     }
 
     /// Gets information about a chat's member.
-    pub fn get_chat_member<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn get_chat_member(
+        &self,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
-    ) -> GetChatMember<'a> {
+    ) -> GetChatMember<'_> {
         GetChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Gets a chat's member count.
-    pub fn get_chat_members_count<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> GetChatMembersCount<'a> {
+    pub fn get_chat_members_count(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> GetChatMembersCount<'_> {
         GetChatMembersCount::new(&self.inner, chat_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent by the bot
     /// itself.
-    pub fn get_message_game_high_scores<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn get_message_game_high_scores(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         user_id: user::Id,
-    ) -> GetMessageGameHighScores<'a> {
+    ) -> GetMessageGameHighScores<'_> {
         GetMessageGameHighScores::new(&self.inner, chat_id, message_id, user_id)
     }
 
@@ -501,54 +498,51 @@ impl Bot {
     }
 
     /// Kicks a member out of a chat.
-    pub fn kick_chat_member<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn kick_chat_member(
+        &self,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
-    ) -> KickChatMember<'a> {
+    ) -> KickChatMember<'_> {
         KickChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Leaves a chat.
-    pub fn leave_chat<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> LeaveChat<'a> {
+    pub fn leave_chat(&self, chat_id: impl ImplicitChatId) -> LeaveChat<'_> {
         LeaveChat::new(&self.inner, chat_id)
     }
 
     /// Pins a message in a chat.
-    pub fn pin_chat_message<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn pin_chat_message(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> PinChatMessage<'a> {
+    ) -> PinChatMessage<'_> {
         PinChatMessage::new(&self.inner, chat_id, message_id)
     }
 
     /// Promotes a chat member to an admin.
-    pub fn promote_chat_member<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn promote_chat_member(
+        &self,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
-    ) -> PromoteChatMember<'a> {
+    ) -> PromoteChatMember<'_> {
         PromoteChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Restricts a chat member.
-    pub fn restrict_chat_member<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn restrict_chat_member(
+        &self,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
         permissions: chat::Permissions,
-    ) -> RestrictChatMember<'a> {
+    ) -> RestrictChatMember<'_> {
         RestrictChatMember::new(&self.inner, chat_id, user_id, permissions)
     }
 
     /// Sends an animation.
     pub fn send_animation<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         animation: Animation<'a>,
     ) -> SendAnimation<'a> {
         SendAnimation::new(&self.inner, chat_id, animation)
@@ -557,25 +551,25 @@ impl Bot {
     /// Sends an audio.
     pub fn send_audio<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         audio: Audio<'a>,
     ) -> SendAudio<'a> {
         SendAudio::new(&self.inner, chat_id, audio)
     }
 
     /// Sends a chat action.
-    pub fn send_chat_action<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn send_chat_action(
+        &self,
+        chat_id: impl ImplicitChatId,
         action: chat::Action,
-    ) -> SendChatAction<'a> {
+    ) -> SendChatAction<'_> {
         SendChatAction::new(&self.inner, chat_id, action)
     }
 
     /// Sends a contact.
     pub fn send_contact<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         phone_number: impl Into<Cow<'a, str>>,
         first_name: impl Into<Cow<'a, str>>,
     ) -> SendContact<'a> {
@@ -585,24 +579,21 @@ impl Bot {
     /// Sends a game.
     pub fn send_game<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         game_short_name: impl Into<Cow<'a, str>>,
     ) -> SendGame<'a> {
         SendGame::new(&self.inner, chat_id, game_short_name)
     }
 
     /// Sends a dice.
-    pub fn send_dice<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> SendDice<'a> {
+    pub fn send_dice(&self, chat_id: impl ImplicitChatId) -> SendDice<'_> {
         SendDice::new(&self.inner, chat_id)
     }
 
     /// Sends a document.
     pub fn send_document<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         document: Document<'a>,
     ) -> SendDocument<'a> {
         SendDocument::new(&self.inner, chat_id, document)
@@ -635,18 +626,18 @@ impl Bot {
     }
 
     /// Sends a location.
-    pub fn send_location<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn send_location(
+        &self,
+        chat_id: impl ImplicitChatId,
         position: (f64, f64),
-    ) -> SendLocation<'a> {
+    ) -> SendLocation<'_> {
         SendLocation::new(&self.inner, chat_id, position)
     }
 
     /// Sends an album.
     pub fn send_media_group<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         media: impl Into<MediaGroup<'a>>,
     ) -> SendMediaGroup<'a> {
         SendMediaGroup::new(&self.inner, chat_id, media)
@@ -655,7 +646,7 @@ impl Bot {
     /// Sends a text message.
     pub fn send_message<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         text: impl Into<Text<'a>>,
     ) -> SendMessage<'a> {
         SendMessage::new(&self.inner, chat_id, text)
@@ -664,7 +655,7 @@ impl Bot {
     /// Sends a photo.
     pub fn send_photo<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         photo: Photo<'a>,
     ) -> SendPhoto<'a> {
         SendPhoto::new(&self.inner, chat_id, photo)
@@ -673,7 +664,7 @@ impl Bot {
     /// Sends a poll.
     pub fn send_poll<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         poll: poll::Any<'a>,
     ) -> SendPoll<'a> {
         SendPoll::new(&self.inner, chat_id, poll)
@@ -682,7 +673,7 @@ impl Bot {
     /// Sends a sticker.
     pub fn send_sticker<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         sticker: Sticker<'a>,
     ) -> SendSticker<'a> {
         SendSticker::new(&self.inner, chat_id, sticker)
@@ -691,7 +682,7 @@ impl Bot {
     /// Sends a venue.
     pub fn send_venue<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         position: (f64, f64),
         title: impl Into<Cow<'a, str>>,
         address: impl Into<Cow<'a, str>>,
@@ -702,7 +693,7 @@ impl Bot {
     /// Sends a video note.
     pub fn send_video_note<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         video_note: VideoNote<'a>,
     ) -> SendVideoNote<'a> {
         SendVideoNote::new(&self.inner, chat_id, video_note)
@@ -711,7 +702,7 @@ impl Bot {
     /// Sends a video.
     pub fn send_video<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         video: Video<'a>,
     ) -> SendVideo<'a> {
         SendVideo::new(&self.inner, chat_id, video)
@@ -720,7 +711,7 @@ impl Bot {
     /// Sends a voice.
     pub fn send_voice<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         voice: Voice<'a>,
     ) -> SendVoice<'a> {
         SendVoice::new(&self.inner, chat_id, voice)
@@ -729,7 +720,7 @@ impl Bot {
     /// Sets a custom title for an admin in a chat.
     pub fn set_chat_administrator_custom_title<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
         custom_title: impl Into<Cow<'a, str>>,
     ) -> SetChatAdministratorCustomTitle<'a> {
@@ -744,25 +735,25 @@ impl Bot {
     /// Sets a chat's description.
     pub fn set_chat_description<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         description: impl Into<Cow<'a, str>>,
     ) -> SetChatDescription<'a> {
         SetChatDescription::new(&self.inner, chat_id, description)
     }
 
     /// Sets a group's global permissions.
-    pub fn set_chat_permissions<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn set_chat_permissions(
+        &self,
+        chat_id: impl ImplicitChatId,
         permissions: chat::Permissions,
-    ) -> SetChatPermissions<'a> {
+    ) -> SetChatPermissions<'_> {
         SetChatPermissions::new(&self.inner, chat_id, permissions)
     }
 
     /// Sets a chat's photo.
     pub fn set_chat_photo<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         photo: ChatPhoto<'a>,
     ) -> SetChatPhoto<'a> {
         SetChatPhoto::new(&self.inner, chat_id, photo)
@@ -771,7 +762,7 @@ impl Bot {
     /// Sets a group's sticker set.
     pub fn set_chat_sticker_set<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         sticker_set_name: impl Into<Cow<'a, str>>,
     ) -> SetChatStickerSet<'a> {
         SetChatStickerSet::new(&self.inner, chat_id, sticker_set_name)
@@ -780,7 +771,7 @@ impl Bot {
     /// Sets a group's title.
     pub fn set_chat_title<'a>(
         &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         title: impl Into<Cow<'a, str>>,
     ) -> SetChatTitle<'a> {
         SetChatTitle::new(&self.inner, chat_id, title)
@@ -797,13 +788,13 @@ impl Bot {
     }
 
     /// Sets a user's new high score in a game sent by the bot itself.
-    pub fn set_message_game_score<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn set_message_game_score(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         user_id: user::Id,
         score: u32,
-    ) -> SetMessageGameScore<'a> {
+    ) -> SetMessageGameScore<'_> {
         SetMessageGameScore::new(
             &self.inner,
             chat_id,
@@ -878,45 +869,45 @@ impl Bot {
     }
 
     /// Stops a live location sent by the bot itself.
-    pub fn stop_message_location<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn stop_message_location(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> StopMessageLocation<'a> {
+    ) -> StopMessageLocation<'_> {
         StopMessageLocation::new(&self.inner, chat_id, message_id)
     }
 
     /// Stops a poll.
-    pub fn stop_poll<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn stop_poll(
+        &self,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> StopPoll<'a> {
+    ) -> StopPoll<'_> {
         StopPoll::new(&self.inner, chat_id, message_id)
     }
 
     /// Lifts all restrictions from a group's member.
-    pub fn unban_chat_member<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
+    pub fn unban_chat_member(
+        &self,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
-    ) -> UnbanChatMember<'a> {
+    ) -> UnbanChatMember<'_> {
         UnbanChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Unpins all messages in a chat.
-    pub fn unpin_all_chat_messages<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> UnpinAllChatMessages<'a> {
+    pub fn unpin_all_chat_messages(
+        & self,
+        chat_id: impl ImplicitChatId,
+    ) -> UnpinAllChatMessages<'_> {
         UnpinAllChatMessages::new(&self.inner, chat_id)
     }
 
     /// Unpins a chat message.
-    pub fn unpin_chat_message<'a>(
-        &'a self,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> UnpinChatMessage<'a> {
+    pub fn unpin_chat_message(
+        & self,
+        chat_id: impl ImplicitChatId,
+    ) -> UnpinChatMessage<'_> {
         UnpinChatMessage::new(&self.inner, chat_id)
     }
 

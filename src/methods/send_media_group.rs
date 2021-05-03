@@ -22,7 +22,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendMediaGroup<'a> {
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     media: MediaGroup<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
@@ -32,7 +32,7 @@ pub struct SendMediaGroup<'a> {
 impl<'a> SendMediaGroup<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         media: impl Into<MediaGroup<'a>>,
     ) -> Self {
         Self {

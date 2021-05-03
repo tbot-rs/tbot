@@ -20,7 +20,7 @@ use serde::Serialize;
 pub struct SendLocation<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,7 +39,7 @@ pub struct SendLocation<'a> {
 impl<'a> SendLocation<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {

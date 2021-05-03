@@ -20,7 +20,7 @@ use std::borrow::Cow;
 pub struct SetChatAdministratorCustomTitle<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     user_id: user::Id,
     custom_title: Cow<'a, str>,
 }
@@ -28,7 +28,7 @@ pub struct SetChatAdministratorCustomTitle<'a> {
 impl<'a> SetChatAdministratorCustomTitle<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
         custom_title: impl Into<Cow<'a, str>>,
     ) -> Self {

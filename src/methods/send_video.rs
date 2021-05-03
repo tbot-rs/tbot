@@ -21,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendVideo<'a> {
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     video: Video<'a>,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
@@ -32,7 +32,7 @@ pub struct SendVideo<'a> {
 impl<'a> SendVideo<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         video: Video<'a>,
     ) -> Self {
         Self {

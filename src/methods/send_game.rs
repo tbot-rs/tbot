@@ -21,7 +21,7 @@ use std::borrow::Cow;
 pub struct SendGame<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     game_short_name: Cow<'a, str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
@@ -35,7 +35,7 @@ pub struct SendGame<'a> {
 impl<'a> SendGame<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         game_short_name: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
