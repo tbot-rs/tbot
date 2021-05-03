@@ -1,6 +1,6 @@
 //! Types representing inline keyboards.
 
-use crate::types::{callback::Game, InteriorBorrow, LoginUrl};
+use crate::types::{callback::Game, LoginUrl};
 use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
 use std::borrow::Cow;
@@ -72,32 +72,6 @@ impl<'a> ButtonKind<'a> {
     }
 }
 
-impl<'a> InteriorBorrow<'a> for ButtonKind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Url(url) => Self::Url(url.borrow_inside()),
-            Self::LoginUrl(login_url) => {
-                Self::LoginUrl(login_url.borrow_inside())
-            }
-            Self::CallbackData(callback_data) => {
-                Self::CallbackData(callback_data.borrow_inside())
-            }
-            Self::SwitchInlineQuery(switch_inline_query) => {
-                Self::SwitchInlineQuery(switch_inline_query.borrow_inside())
-            }
-            Self::SwitchInlineQueryCurrentChat(
-                switch_inline_query_current_chat,
-            ) => Self::SwitchInlineQueryCurrentChat(
-                switch_inline_query_current_chat.borrow_inside(),
-            ),
-            Self::CallbackGame(callback_game) => {
-                Self::CallbackGame(*callback_game)
-            }
-            Self::Pay => Self::Pay,
-        }
-    }
-}
-
 /// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
@@ -158,15 +132,6 @@ impl Serialize for Button<'_> {
     }
 }
 
-impl<'a> InteriorBorrow<'a> for Button<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            text: self.text.borrow_inside(),
-            kind: self.kind.borrow_inside(),
-        }
-    }
-}
-
 impl<'a> Keyboard<'a> {
     /// Constructs an inline `Keyboard`.
     pub const fn new(buttons: Markup<'a>) -> Self {
@@ -179,11 +144,5 @@ impl<'a> Keyboard<'a> {
 impl<'a> From<Markup<'a>> for Keyboard<'a> {
     fn from(markup: Markup<'a>) -> Self {
         Self::new(markup)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Keyboard<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self { ..*self }
     }
 }

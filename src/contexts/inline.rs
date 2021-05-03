@@ -1,6 +1,6 @@
 use crate::{
     methods::AnswerInlineQuery,
-    types::{inline_query, InlineQuery, InteriorBorrow, Location, User},
+    types::{inline_query, InlineQuery, Location, User},
     Bot,
 };
 use std::borrow::Cow;
@@ -42,6 +42,6 @@ impl Inline {
         results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
         self.bot
-            .answer_inline_query(self.id.borrow_inside(), results)
+            .answer_inline_query(self.id.clone(), results)
     }
 }

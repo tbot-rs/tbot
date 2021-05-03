@@ -1,6 +1,6 @@
 //! Types representing uploadable media.
 
-use crate::types::{file, InteriorBorrow};
+use crate::types::{file};
 use std::borrow::Cow;
 
 mod animation;
@@ -73,19 +73,6 @@ impl<'a> InputFile<'a> {
 
     const fn with_name(&'a self, name: &'a str) -> WithName<'a> {
         WithName { file: self, name }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for InputFile<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::File { filename, bytes } => Self::File {
-                filename: filename.borrow_inside(),
-                bytes: bytes.borrow_inside(),
-            },
-            Self::Url(url) => Self::Url(url.borrow_inside()),
-            Self::Id(id) => Self::Id(id.borrow_inside()),
-        }
     }
 }
 

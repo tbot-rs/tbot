@@ -1,6 +1,5 @@
 //! Types representing an inline message ID.
 
-use crate::types::InteriorBorrow;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
@@ -20,11 +19,5 @@ impl<'a> From<&'a str> for InlineMessageId<'a> {
     #[must_use]
     fn from(id: &'a str) -> Self {
         Self(id.into())
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for InlineMessageId<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self(self.0.borrow_inside())
     }
 }

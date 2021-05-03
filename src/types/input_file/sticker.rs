@@ -1,5 +1,5 @@
 use super::InputFile;
-use crate::types::{file, InteriorBorrow};
+use crate::types::file;
 use serde::ser::SerializeMap;
 use std::borrow::Cow;
 
@@ -52,15 +52,6 @@ impl<'a> Sticker<'a> {
         Self::new(InputFile::Url(url))
     }
 }
-
-impl<'a> InteriorBorrow<'a> for Sticker<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-        }
-    }
-}
-
 impl<'a> serde::Serialize for Sticker<'a> {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(None)?;

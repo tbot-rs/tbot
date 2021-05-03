@@ -1,4 +1,3 @@
-use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -24,15 +23,6 @@ impl<'a> BotCommand<'a> {
         Self {
             command: command.into(),
             description: description.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for BotCommand<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            command: self.command.borrow_inside(),
-            description: self.description.borrow_inside(),
         }
     }
 }

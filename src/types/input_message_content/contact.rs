@@ -1,4 +1,3 @@
-use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -40,16 +39,5 @@ impl<'a> Contact<'a> {
     pub fn vcard(mut self, vcard: impl Into<Cow<'a, str>>) -> Self {
         self.vcard = Some(vcard.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Contact<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            phone_number: self.phone_number.borrow_inside(),
-            first_name: self.first_name.borrow_inside(),
-            last_name: self.last_name.borrow_inside(),
-            vcard: self.vcard.borrow_inside(),
-        }
     }
 }

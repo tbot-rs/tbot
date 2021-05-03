@@ -1,4 +1,3 @@
-use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -47,16 +46,5 @@ impl<'a> LoginUrl<'a> {
     ) -> Self {
         self.request_write_access = Some(should_request);
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for LoginUrl<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            forward_text: self.forward_text.borrow_inside(),
-            bot_username: self.bot_username.borrow_inside(),
-            ..*self
-        }
     }
 }

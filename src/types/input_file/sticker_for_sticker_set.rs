@@ -1,5 +1,4 @@
 use super::{PngSticker, TgsSticker};
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 
 /// Represents a sticker that can be added to a sticker set.
@@ -20,14 +19,5 @@ impl<'a> From<PngSticker<'a>> for StickerForStickerSet<'a> {
 impl<'a> From<TgsSticker<'a>> for StickerForStickerSet<'a> {
     fn from(sticker: TgsSticker<'a>) -> Self {
         Self::Tgs(sticker)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for StickerForStickerSet<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Png(png_sticker) => Self::Png(png_sticker.borrow_inside()),
-            Self::Tgs(tgs_sticker) => Self::Tgs(tgs_sticker.borrow_inside()),
-        }
     }
 }

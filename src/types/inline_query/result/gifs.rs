@@ -1,4 +1,3 @@
-use crate::types::InteriorBorrow;
 use std::borrow::Cow;
 
 macro_rules! doc {
@@ -49,15 +48,6 @@ impl<'a> GifThumb<'a> {
 impl<'a> From<&'a str> for GifThumb<'a> {
     fn from(url: &'a str) -> Self {
         Self::jpeg(url)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for GifThumb<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            ..*self
-        }
     }
 }
 

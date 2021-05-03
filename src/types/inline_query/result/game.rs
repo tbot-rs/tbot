@@ -1,4 +1,3 @@
-use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -16,14 +15,6 @@ impl<'a> Game<'a> {
     pub fn new(game_short_name: impl Into<Cow<'a, str>>) -> Self {
         Self {
             game_short_name: game_short_name.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Game<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            game_short_name: self.game_short_name.borrow_inside(),
         }
     }
 }

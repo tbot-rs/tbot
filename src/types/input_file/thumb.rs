@@ -1,5 +1,4 @@
 use super::{InputFile, WithName};
-use crate::types::InteriorBorrow;
 use serde::{ser::Serializer, Serialize};
 use std::borrow::Cow;
 
@@ -30,11 +29,5 @@ impl<'a> Serialize for Thumb<'a> {
         S: Serializer,
     {
         self.0.serialize(serializer, "thumb")
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Thumb<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self(self.0.borrow_inside())
     }
 }

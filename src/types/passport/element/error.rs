@@ -1,6 +1,5 @@
 //! Types related to passport element errors.
 
-use crate::types::InteriorBorrow;
 use serde::Serialize;
 use std::borrow::Cow;
 
@@ -28,15 +27,6 @@ impl<'a> Error<'a> {
         Self {
             source: source.into(),
             message: message.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Error<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            source: self.source.borrow_inside(),
-            message: self.message.borrow_inside(),
         }
     }
 }

@@ -1,5 +1,5 @@
 use super::InputFile;
-use crate::types::{file, InteriorBorrow};
+use crate::types::file;
 use std::borrow::Cow;
 
 /// Represents a sticker set thumb to be sent.
@@ -57,13 +57,5 @@ impl<'a> StickerSetThumb<'a> {
         );
 
         Self::new(InputFile::Url(url))
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for StickerSetThumb<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-        }
     }
 }

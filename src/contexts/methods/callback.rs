@@ -1,7 +1,6 @@
 use crate::{
-    contexts::fields,
-    methods::AnswerCallbackQuery,
-    types::{parameters::CallbackAction, InteriorBorrow},
+    contexts::fields, methods::AnswerCallbackQuery,
+    types::parameters::CallbackAction,
 };
 use std::borrow::Cow;
 
@@ -21,8 +20,7 @@ pub trait Callback: fields::Callback {
         &'a self,
         action: Option<CallbackAction<'a>>,
     ) -> AnswerCallbackQuery<'a> {
-        self.bot()
-            .answer_callback_query(self.id().borrow_inside(), action)
+        self.bot().answer_callback_query(self.id().clone(), action)
     }
 
     /// Answers the query without any action.

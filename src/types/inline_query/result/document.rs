@@ -6,7 +6,7 @@ use super::Thumb;
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InputMessageContent, InteriorBorrow,
+    InputMessageContent,
 };
 use is_macro::Is;
 use serde::Serialize;
@@ -135,26 +135,5 @@ impl<'a> Document<'a> {
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Kind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Cached { id } => Self::Cached {
-                id: id.borrow_inside(),
-            },
-            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-        }
     }
 }

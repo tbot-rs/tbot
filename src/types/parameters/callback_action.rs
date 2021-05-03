@@ -1,4 +1,3 @@
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use std::borrow::Cow;
 
@@ -34,16 +33,5 @@ impl<'a> CallbackAction<'a> {
     /// Constructs the `Url` variant.
     pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
         CallbackAction::Url(url.into())
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for CallbackAction<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Text(text, show_alert) => {
-                Self::Text(text.borrow_inside(), *show_alert)
-            }
-            Self::Url(url) => Self::Url(url.borrow_inside()),
-        }
     }
 }

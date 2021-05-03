@@ -1,6 +1,5 @@
 //! Types related to data passport errors.
 
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 use std::borrow::Cow;
@@ -48,16 +47,6 @@ impl<'a> Data<'a> {
             kind,
             field_name: field_name.into(),
             data_hash: data_hash.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Data<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            field_name: self.field_name.borrow_inside(),
-            data_hash: self.data_hash.borrow_inside(),
-            ..*self
         }
     }
 }
