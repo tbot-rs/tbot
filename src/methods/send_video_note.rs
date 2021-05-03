@@ -22,7 +22,7 @@ use crate::{
 pub struct SendVideoNote<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    video_note: VideoNote<'a>,
+    video_note: VideoNote,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
@@ -33,7 +33,7 @@ impl<'a> SendVideoNote<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        video_note: VideoNote<'a>,
+        video_note: VideoNote,
     ) -> Self {
         Self {
             bot,

@@ -5,20 +5,19 @@ use crate::types::{
 };
 use serde::ser::SerializeMap;
 use serde::{Serialize, Serializer};
-use std::borrow::Cow;
 
 /// Represents a voice to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Voice<'a> {
-    pub(crate) media: InputFile<'a>,
+pub struct Voice {
+    pub(crate) media: InputFile,
     pub(crate) duration: Option<u32>,
     pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
-impl<'a> Voice<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl Voice {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             duration: None,
@@ -28,7 +27,7 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a `Voice` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "voice.ogg".into(),
             bytes: bytes.into(),
@@ -54,7 +53,7 @@ impl<'a> Voice<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -80,7 +79,7 @@ impl<'a> Voice<'a> {
     }
 }
 
-impl<'a> Serialize for Voice<'a> {
+impl Serialize for Voice {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

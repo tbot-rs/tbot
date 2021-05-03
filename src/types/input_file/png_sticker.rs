@@ -1,21 +1,20 @@
 use super::InputFile;
 use crate::types::file;
-use std::borrow::Cow;
 
 /// Represents a PNG sticker to be uploaded in a sticker set.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct PngSticker<'a> {
-    pub(crate) media: InputFile<'a>,
+pub struct PngSticker {
+    pub(crate) media: InputFile,
 }
 
-impl<'a> PngSticker<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl PngSticker {
+    const fn new(media: InputFile) -> Self {
         Self { media }
     }
 
     /// Constructs a `PngSticker` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "sticker.png".into(),
             bytes: bytes.into(),
@@ -41,7 +40,7 @@ impl<'a> PngSticker<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),

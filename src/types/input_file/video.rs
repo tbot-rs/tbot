@@ -4,14 +4,13 @@ use crate::types::{
     parameters::{ParseMode, Text},
 };
 use serde::ser::SerializeMap;
-use std::borrow::Cow;
 
 /// Represents a video to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Video<'a> {
-    pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<Thumb<'a>>,
+pub struct Video {
+    pub(crate) media: InputFile,
+    pub(crate) thumb: Option<Thumb>,
     pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) width: Option<u32>,
@@ -20,8 +19,8 @@ pub struct Video<'a> {
     pub(crate) duration: Option<u32>,
 }
 
-impl<'a> Video<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl Video {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             thumb: None,
@@ -35,7 +34,7 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a `Video` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "video.mp4".into(),
             bytes: bytes.into(),
@@ -61,7 +60,7 @@ impl<'a> Video<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -73,7 +72,7 @@ impl<'a> Video<'a> {
 
     /// Configures `thumb`.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: super::Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: super::Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -151,7 +150,7 @@ impl<'a> Video<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Video<'a> {
+impl serde::Serialize for Video {
     fn serialize<S>(&self, serialize: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

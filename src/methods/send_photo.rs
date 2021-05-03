@@ -22,7 +22,7 @@ use crate::{
 pub struct SendPhoto<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    photo: Photo<'a>,
+    photo: Photo,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
@@ -33,7 +33,7 @@ impl<'a> SendPhoto<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        photo: Photo<'a>,
+        photo: Photo,
     ) -> Self {
         Self {
             bot,

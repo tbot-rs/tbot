@@ -22,7 +22,7 @@ use crate::{
 pub struct SendVoice<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    voice: Voice<'a>,
+    voice: Voice,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
@@ -33,7 +33,7 @@ impl<'a> SendVoice<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        voice: Voice<'a>,
+        voice: Voice,
     ) -> Self {
         Self {
             bot,

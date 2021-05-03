@@ -1,4 +1,4 @@
-use std::{borrow::Cow, slice};
+use std::slice;
 
 use super::{Audio, Document, Photo, Video};
 use is_macro::Is;
@@ -11,31 +11,31 @@ use serde::{
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
-pub enum PhotoOrVideo<'a> {
+pub enum PhotoOrVideo {
     /// A group's photo.
-    Photo(Photo<'a>),
+    Photo(Photo),
     /// A group's video.
-    Video(Video<'a>),
+    Video(Video),
 }
 
 /// Represents a possible media group.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
-pub enum MediaGroup<'a> {
+pub enum MediaGroup {
     /// An album of photos and videos.
-    PhotosAndVideos(Cow<'a, [PhotoOrVideo<'a>]>),
+    PhotosAndVideos(Vec<PhotoOrVideo>),
     /// A group of audios.
-    Audios(Cow<'a, [Audio<'a>]>),
+    Audios(Vec<Audio>),
     /// A group of documents.
-    Documents(Cow<'a, [Document<'a>]>),
+    Documents(Vec<Document>),
 }
 
 pub enum AnyGroupMedia<'a> {
-    Photo(&'a Photo<'a>),
-    Video(&'a Video<'a>),
-    Audio(&'a Audio<'a>),
-    Document(&'a Document<'a>),
+    Photo(&'a Photo),
+    Video(&'a Video),
+    Audio(&'a Audio),
+    Document(&'a Document),
 }
 
 struct WithIndex<'a> {
@@ -44,7 +44,7 @@ struct WithIndex<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct Album<'a>(pub MediaGroup<'a>);
+pub struct Album(pub MediaGroup);
 
 impl AnyGroupMedia<'_> {
     fn serialize<S>(
@@ -83,19 +83,19 @@ impl AnyGroupMedia<'_> {
     }
 }
 
-impl<'a> From<Photo<'a>> for PhotoOrVideo<'a> {
-    fn from(photo: Photo<'a>) -> Self {
+impl From<Photo> for PhotoOrVideo {
+    fn from(photo: Photo) -> Self {
         Self::Photo(photo)
     }
 }
 
-impl<'a> From<Video<'a>> for PhotoOrVideo<'a> {
-    fn from(video: Video<'a>) -> Self {
+impl From<Video> for PhotoOrVideo {
+    fn from(video: Video) -> Self {
         Self::Video(video)
     }
 }
 
-impl MediaGroup<'_> {
+impl MediaGroup {
     pub(crate) fn len(&self) -> usize {
         match self {
             Self::PhotosAndVideos(album) => album.len(),
@@ -106,9 +106,9 @@ impl MediaGroup<'_> {
 
     pub(crate) fn iter(&self) -> impl Iterator<Item = AnyGroupMedia<'_>> {
         enum Iter<'a> {
-            PhotosAndVideos(slice::Iter<'a, PhotoOrVideo<'a>>),
-            Audios(slice::Iter<'a, Audio<'a>>),
-            Documents(slice::Iter<'a, Document<'a>>),
+            PhotosAndVideos(slice::Iter<'a, PhotoOrVideo>),
+            Audios(slice::Iter<'a, Audio>),
+            Documents(slice::Iter<'a, Document>),
         }
 
         impl<'a> Iterator for Iter<'a> {
@@ -142,61 +142,25 @@ impl MediaGroup<'_> {
     }
 }
 
-impl<'a> From<&'a [PhotoOrVideo<'a>]> for MediaGroup<'a> {
-    fn from(album: &'a [PhotoOrVideo<'a>]) -> Self {
-        MediaGroup::PhotosAndVideos(Cow::Borrowed(album))
+impl From<Vec<PhotoOrVideo>> for MediaGroup {
+    fn from(album: Vec<PhotoOrVideo>) -> Self {
+        Self::PhotosAndVideos(album)
     }
 }
 
-impl<'a> From<&'a Vec<PhotoOrVideo<'a>>> for MediaGroup<'a> {
-    fn from(album: &'a Vec<PhotoOrVideo<'a>>) -> Self {
-        MediaGroup::PhotosAndVideos(Cow::Borrowed(album.as_slice()))
+impl From<Vec<Audio>> for MediaGroup {
+    fn from(audios: Vec<Audio>) -> Self {
+        Self::Audios(audios)
     }
 }
 
-impl<'a> From<Vec<PhotoOrVideo<'a>>> for MediaGroup<'a> {
-    fn from(album: Vec<PhotoOrVideo<'a>>) -> Self {
-        MediaGroup::PhotosAndVideos(Cow::Owned(album))
+impl From<Vec<Document>> for MediaGroup {
+    fn from(documents: Vec<Document>) -> Self {
+        Self::Documents(documents)
     }
 }
 
-impl<'a> From<&'a [Audio<'a>]> for MediaGroup<'a> {
-    fn from(audios: &'a [Audio<'a>]) -> Self {
-        MediaGroup::Audios(Cow::Borrowed(audios))
-    }
-}
-
-impl<'a> From<&'a Vec<Audio<'a>>> for MediaGroup<'a> {
-    fn from(audios: &'a Vec<Audio<'a>>) -> Self {
-        MediaGroup::Audios(Cow::Borrowed(audios.as_slice()))
-    }
-}
-
-impl<'a> From<Vec<Audio<'a>>> for MediaGroup<'a> {
-    fn from(audios: Vec<Audio<'a>>) -> Self {
-        MediaGroup::Audios(Cow::Owned(audios))
-    }
-}
-
-impl<'a> From<&'a [Document<'a>]> for MediaGroup<'a> {
-    fn from(documents: &'a [Document<'a>]) -> Self {
-        MediaGroup::Documents(Cow::Borrowed(documents))
-    }
-}
-
-impl<'a> From<&'a Vec<Document<'a>>> for MediaGroup<'a> {
-    fn from(documents: &'a Vec<Document<'a>>) -> Self {
-        MediaGroup::Documents(Cow::Borrowed(documents.as_slice()))
-    }
-}
-
-impl<'a> From<Vec<Document<'a>>> for MediaGroup<'a> {
-    fn from(documents: Vec<Document<'a>>) -> Self {
-        MediaGroup::Documents(Cow::Owned(documents))
-    }
-}
-
-impl<'a> Serialize for Album<'a> {
+impl Serialize for Album {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

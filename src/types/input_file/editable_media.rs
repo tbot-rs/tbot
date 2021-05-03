@@ -7,57 +7,57 @@ use serde::Serialize;
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
-pub enum EditableMedia<'a> {
+pub enum EditableMedia {
     /// An animation that will replace the old media.
-    Animation(Animation<'a>),
+    Animation(Animation),
     /// An audio that will replace the old media.
-    Audio(Audio<'a>),
+    Audio(Audio),
     /// A document that will replace the old media.
-    Document(Document<'a>),
+    Document(Document),
     /// A photo that will replace the old media.
-    Photo(Photo<'a>),
+    Photo(Photo),
     /// A video that will replace the old media.
-    Video(Video<'a>),
+    Video(Video),
 }
 
-impl EditableMedia<'_> {
+impl EditableMedia {
     pub(crate) const fn name(&self) -> &'static str {
         match self {
-            EditableMedia::Animation(..) => "animation",
-            EditableMedia::Audio(..) => "audio",
-            EditableMedia::Document(..) => "document",
-            EditableMedia::Photo(..) => "photo",
-            EditableMedia::Video(..) => "video",
+            Self::Animation(..) => "animation",
+            Self::Audio(..) => "audio",
+            Self::Document(..) => "document",
+            Self::Photo(..) => "photo",
+            Self::Video(..) => "video",
         }
     }
 }
 
-impl<'a> From<Animation<'a>> for EditableMedia<'a> {
-    fn from(animation: Animation<'a>) -> Self {
-        EditableMedia::Animation(animation)
+impl From<Animation> for EditableMedia {
+    fn from(animation: Animation) -> Self {
+        Self::Animation(animation)
     }
 }
 
-impl<'a> From<Audio<'a>> for EditableMedia<'a> {
-    fn from(audio: Audio<'a>) -> Self {
-        EditableMedia::Audio(audio)
+impl From<Audio> for EditableMedia {
+    fn from(audio: Audio) -> Self {
+        Self::Audio(audio)
     }
 }
 
-impl<'a> From<Document<'a>> for EditableMedia<'a> {
-    fn from(document: Document<'a>) -> Self {
-        EditableMedia::Document(document)
+impl From<Document> for EditableMedia {
+    fn from(document: Document) -> Self {
+        Self::Document(document)
     }
 }
 
-impl<'a> From<Photo<'a>> for EditableMedia<'a> {
-    fn from(photo: Photo<'a>) -> Self {
-        EditableMedia::Photo(photo)
+impl From<Photo> for EditableMedia {
+    fn from(photo: Photo) -> Self {
+        Self::Photo(photo)
     }
 }
 
-impl<'a> From<Video<'a>> for EditableMedia<'a> {
-    fn from(video: Video<'a>) -> Self {
-        EditableMedia::Video(video)
+impl From<Video> for EditableMedia {
+    fn from(video: Video) -> Self {
+        Self::Video(video)
     }
 }

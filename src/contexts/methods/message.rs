@@ -81,11 +81,11 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the media of a message in this group.
-    fn edit_message_media<'a>(
-        &'a self,
+    fn edit_message_media(
+        &self,
         message_id: message::Id,
-        media: impl Into<EditableMedia<'a>>,
-    ) -> EditMessageMedia<'a> {
+        media: impl Into<EditableMedia>,
+    ) -> EditMessageMedia<'_> {
         self.bot()
             .edit_message_media(self.chat().id, message_id, media)
     }
@@ -192,29 +192,26 @@ pub trait Message: fields::Message {
     }
 
     /// Send an animation to this chat.
-    fn send_animation<'a>(
-        &'a self,
-        animation: Animation<'a>,
-    ) -> SendAnimation<'a> {
+    fn send_animation(&self, animation: Animation) -> SendAnimation<'_> {
         self.bot().send_animation(self.chat().id, animation)
     }
 
     /// Sends an animation in reply to this message.
-    fn send_animation_in_reply<'a>(
-        &'a self,
-        animation: Animation<'a>,
-    ) -> SendAnimation<'a> {
+    fn send_animation_in_reply(
+        &self,
+        animation: Animation,
+    ) -> SendAnimation<'_> {
         self.send_animation(animation)
             .in_reply_to(self.message_id())
     }
 
     /// Sends an audio to this chat.
-    fn send_audio<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio(&self, audio: Audio) -> SendAudio<'_> {
         self.bot().send_audio(self.chat().id, audio)
     }
 
     /// Sends an audio in reply to this message.
-    fn send_audio_in_reply<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio_in_reply(&self, audio: Audio) -> SendAudio<'_> {
         self.send_audio(audio).in_reply_to(self.message_id())
     }
 
@@ -271,15 +268,12 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a document to this chat.
-    fn send_document<'a>(&'a self, document: Document<'a>) -> SendDocument<'a> {
+    fn send_document(&self, document: Document) -> SendDocument<'_> {
         self.bot().send_document(self.chat().id, document)
     }
 
     /// Sends a document in reply to this message.
-    fn send_document_in_reply<'a>(
-        &'a self,
-        document: Document<'a>,
-    ) -> SendDocument<'a> {
+    fn send_document_in_reply(&self, document: Document) -> SendDocument<'_> {
         self.send_document(document).in_reply_to(self.message_id())
     }
 
@@ -342,18 +336,18 @@ pub trait Message: fields::Message {
     }
 
     /// Sends an album to this chat.
-    fn send_media_group<'a>(
-        &'a self,
-        media: impl Into<MediaGroup<'a>>,
-    ) -> SendMediaGroup<'a> {
+    fn send_media_group(
+        &self,
+        media: impl Into<MediaGroup>,
+    ) -> SendMediaGroup<'_> {
         self.bot().send_media_group(self.chat().id, media)
     }
 
     /// Sends an album in reply to this message.
-    fn send_media_group_in_reply<'a>(
-        &'a self,
-        media: impl Into<MediaGroup<'a>>,
-    ) -> SendMediaGroup<'a> {
+    fn send_media_group_in_reply(
+        &self,
+        media: impl Into<MediaGroup>,
+    ) -> SendMediaGroup<'_> {
         self.send_media_group(media).in_reply_to(self.message_id())
     }
 
@@ -368,12 +362,12 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a photo to this chat.
-    fn send_photo<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo(&self, photo: Photo) -> SendPhoto<'_> {
         self.bot().send_photo(self.chat().id, photo)
     }
 
     /// Sends a photo in reply to this message.
-    fn send_photo_in_reply<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo_in_reply(&self, photo: Photo) -> SendPhoto<'_> {
         self.send_photo(photo).in_reply_to(self.message_id())
     }
 
@@ -388,15 +382,12 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a sticker to this chat.
-    fn send_sticker<'a>(&'a self, sticker: Sticker<'a>) -> SendSticker<'a> {
+    fn send_sticker(&self, sticker: Sticker) -> SendSticker<'_> {
         self.bot().send_sticker(self.chat().id, sticker)
     }
 
     /// Sends a sticker in reply to this message.
-    fn send_sticker_in_reply<'a>(
-        &'a self,
-        sticker: Sticker<'a>,
-    ) -> SendSticker<'a> {
+    fn send_sticker_in_reply(&self, sticker: Sticker) -> SendSticker<'_> {
         self.send_sticker(sticker).in_reply_to(self.message_id())
     }
 
@@ -423,39 +414,36 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a video to this chat.
-    fn send_video<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video(&self, video: Video) -> SendVideo<'_> {
         self.bot().send_video(self.chat().id, video)
     }
 
     /// Sends a video in reply to this message.
-    fn send_video_in_reply<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video_in_reply(&self, video: Video) -> SendVideo<'_> {
         self.send_video(video).in_reply_to(self.message_id())
     }
 
     /// Sends a video note to this chat.
-    fn send_video_note<'a>(
-        &'a self,
-        video_note: VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+    fn send_video_note(&self, video_note: VideoNote) -> SendVideoNote<'_> {
         self.bot().send_video_note(self.chat().id, video_note)
     }
 
     /// Sends a video note in reply to this message.
-    fn send_video_note_in_reply<'a>(
-        &'a self,
-        video_note: VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+    fn send_video_note_in_reply(
+        &self,
+        video_note: VideoNote,
+    ) -> SendVideoNote<'_> {
         self.send_video_note(video_note)
             .in_reply_to(self.message_id())
     }
 
     /// Sends a voice to this chat.
-    fn send_voice<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice(&self, voice: Voice) -> SendVoice<'_> {
         self.bot().send_voice(self.chat().id, voice)
     }
 
     /// Sends a voice in reply to this message.
-    fn send_voice_in_reply<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice_in_reply(&self, voice: Voice) -> SendVoice<'_> {
         self.send_voice(voice).in_reply_to(self.message_id())
     }
 
@@ -489,7 +477,7 @@ pub trait Message: fields::Message {
     }
 
     /// Sets a new photo of this chat.
-    fn set_chat_photo<'a>(&'a self, photo: ChatPhoto<'a>) -> SetChatPhoto<'a> {
+    fn set_chat_photo(&self, photo: ChatPhoto) -> SetChatPhoto<'_> {
         self.bot().set_chat_photo(self.chat().id, photo)
     }
 

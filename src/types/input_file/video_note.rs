@@ -2,20 +2,19 @@ use super::{InputFile, Thumb};
 use crate::types::file;
 use serde::ser::SerializeMap;
 use serde::{Serialize, Serializer};
-use std::borrow::Cow;
 
 /// Represents a video note to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct VideoNote<'a> {
-    pub(crate) media: InputFile<'a>,
+pub struct VideoNote {
+    pub(crate) media: InputFile,
     pub(crate) duration: Option<u32>,
     pub(crate) length: Option<u32>,
-    pub(crate) thumb: Option<Thumb<'a>>,
+    pub(crate) thumb: Option<Thumb>,
 }
 
-impl<'a> VideoNote<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl VideoNote {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             duration: None,
@@ -25,7 +24,7 @@ impl<'a> VideoNote<'a> {
     }
 
     /// Constructs an `VideoNote` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "video_note.mp4".into(),
             bytes: bytes.into(),
@@ -51,7 +50,7 @@ impl<'a> VideoNote<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -75,13 +74,13 @@ impl<'a> VideoNote<'a> {
 
     /// Configures `thumb`.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
 }
 
-impl<'a> Serialize for VideoNote<'a> {
+impl Serialize for VideoNote {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

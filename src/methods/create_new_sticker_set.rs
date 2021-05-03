@@ -24,7 +24,7 @@ pub struct CreateNewStickerSet<'a> {
     user_id: user::Id,
     name: Cow<'a, str>,
     title: Cow<'a, str>,
-    sticker: StickerForStickerSet<'a>,
+    sticker: StickerForStickerSet,
     emojis: Cow<'a, str>,
     contains_masks: Option<bool>,
     mask_position: Option<MaskPosition>,
@@ -36,7 +36,7 @@ impl<'a> CreateNewStickerSet<'a> {
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
         title: impl Into<Cow<'a, str>>,
-        sticker: impl Into<StickerForStickerSet<'a>>,
+        sticker: impl Into<StickerForStickerSet>,
         emojis: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {

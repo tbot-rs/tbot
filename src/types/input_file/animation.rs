@@ -4,14 +4,13 @@ use crate::types::{
     parameters::{ParseMode, Text},
 };
 use serde::ser::SerializeMap;
-use std::borrow::Cow;
 
 /// Represents an animation to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Animation<'a> {
-    pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<Thumb<'a>>,
+pub struct Animation {
+    pub(crate) media: InputFile,
+    pub(crate) thumb: Option<Thumb>,
     pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) width: Option<u32>,
@@ -19,8 +18,8 @@ pub struct Animation<'a> {
     pub(crate) duration: Option<u32>,
 }
 
-impl<'a> Animation<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl Animation {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             thumb: None,
@@ -33,7 +32,7 @@ impl<'a> Animation<'a> {
     }
 
     /// Constructs an `Animation` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "animation.mp4".into(),
             bytes: bytes.into(),
@@ -59,7 +58,7 @@ impl<'a> Animation<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -71,7 +70,7 @@ impl<'a> Animation<'a> {
 
     /// Configures `thumb`.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -104,7 +103,7 @@ impl<'a> Animation<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Animation<'a> {
+impl serde::Serialize for Animation {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(None)?;
 

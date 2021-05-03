@@ -19,14 +19,14 @@ use crate::{
 pub struct SetChatPhoto<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    photo: ChatPhoto<'a>,
+    photo: ChatPhoto,
 }
 
 impl<'a> SetChatPhoto<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        photo: ChatPhoto<'a>,
+        photo: ChatPhoto,
     ) -> Self {
         Self {
             bot,

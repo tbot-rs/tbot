@@ -1,7 +1,6 @@
 //! Types representing uploadable media.
 
 use crate::types::file;
-use std::borrow::Cow;
 
 mod animation;
 mod audio;
@@ -41,42 +40,39 @@ pub use {
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub(crate) enum InputFile<'a> {
-    File {
-        filename: Cow<'a, str>,
-        bytes: Cow<'a, [u8]>,
-    },
-    Url(Cow<'a, str>),
+pub(crate) enum InputFile {
+    File { filename: String, bytes: Vec<u8> },
+    Url(String),
     Id(file::Id),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 struct WithName<'a> {
-    pub(crate) file: &'a InputFile<'a>,
+    pub(crate) file: &'a InputFile,
     pub(crate) name: &'a str,
 }
 
-impl<'a> InputFile<'a> {
+impl InputFile {
     fn serialize<S>(&self, serializer: S, name: &str) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
         match self {
-            InputFile::File { .. } => {
+            Self::File { .. } => {
                 serializer.serialize_str(&format!("attach://{}", name))
             }
-            InputFile::Url(file) | InputFile::Id(file::Id(file)) => {
+            Self::Url(file) | Self::Id(file::Id(file)) => {
                 serializer.serialize_str(file)
             }
         }
     }
 
-    const fn with_name(&'a self, name: &'a str) -> WithName<'a> {
+    const fn with_name<'a>(&'a self, name: &'a str) -> WithName<'a> {
         WithName { file: self, name }
     }
 }
 
-impl<'a> serde::Serialize for WithName<'a> {
+impl serde::Serialize for WithName<'_> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

@@ -22,7 +22,7 @@ use crate::{
 pub struct SendAnimation<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    animation: Animation<'a>,
+    animation: Animation,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     reply_markup: Option<keyboard::Any<'a>>,
@@ -33,7 +33,7 @@ impl<'a> SendAnimation<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        animation: Animation<'a>,
+        animation: Animation,
     ) -> Self {
         Self {
             bot,

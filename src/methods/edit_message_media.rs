@@ -24,7 +24,7 @@ pub struct EditMessageMedia<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
     message_id: message::Id,
-    media: EditableMedia<'a>,
+    media: EditableMedia,
     reply_markup: Option<inline::Keyboard<'a>>,
 }
 
@@ -33,7 +33,7 @@ impl<'a> EditMessageMedia<'a> {
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        media: impl Into<EditableMedia<'a>>,
+        media: impl Into<EditableMedia>,
     ) -> Self {
         Self {
             bot,

@@ -175,7 +175,7 @@ impl Bot {
         &'a self,
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
-        png_sticker: impl Into<StickerForStickerSet<'a>>,
+        png_sticker: impl Into<StickerForStickerSet>,
         emojis: impl Into<Cow<'a, str>>,
     ) -> AddStickerToSet<'a> {
         AddStickerToSet::new(&self.inner, user_id, name, png_sticker, emojis)
@@ -232,7 +232,7 @@ impl Bot {
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
         title: impl Into<Cow<'a, str>>,
-        png_sticker: impl Into<StickerForStickerSet<'a>>,
+        png_sticker: impl Into<StickerForStickerSet>,
         emojis: impl Into<Cow<'a, str>>,
     ) -> CreateNewStickerSet<'a> {
         CreateNewStickerSet::new(
@@ -304,7 +304,7 @@ impl Bot {
     pub fn edit_inline_media<'a>(
         &'a self,
         inline_message_id: InlineMessageId<'a>,
-        media: impl Into<EditableMedia<'a>>,
+        media: impl Into<EditableMedia>,
     ) -> EditInlineMedia<'a> {
         EditInlineMedia::new(&self.inner, inline_message_id, media)
     }
@@ -348,12 +348,12 @@ impl Bot {
     }
 
     /// Edits a live location sent by the bot itself.
-    pub fn edit_message_media<'a>(
-        &'a self,
+    pub fn edit_message_media(
+        &self,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        media: impl Into<EditableMedia<'a>>,
-    ) -> EditMessageMedia<'a> {
+        media: impl Into<EditableMedia>,
+    ) -> EditMessageMedia<'_> {
         EditMessageMedia::new(&self.inner, chat_id, message_id, media)
     }
 
@@ -540,20 +540,20 @@ impl Bot {
     }
 
     /// Sends an animation.
-    pub fn send_animation<'a>(
-        &'a self,
+    pub fn send_animation(
+        &self,
         chat_id: impl ImplicitChatId,
-        animation: Animation<'a>,
-    ) -> SendAnimation<'a> {
+        animation: Animation,
+    ) -> SendAnimation<'_> {
         SendAnimation::new(&self.inner, chat_id, animation)
     }
 
     /// Sends an audio.
-    pub fn send_audio<'a>(
-        &'a self,
+    pub fn send_audio(
+        &self,
         chat_id: impl ImplicitChatId,
-        audio: Audio<'a>,
-    ) -> SendAudio<'a> {
+        audio: Audio,
+    ) -> SendAudio<'_> {
         SendAudio::new(&self.inner, chat_id, audio)
     }
 
@@ -591,11 +591,11 @@ impl Bot {
     }
 
     /// Sends a document.
-    pub fn send_document<'a>(
-        &'a self,
+    pub fn send_document(
+        &self,
         chat_id: impl ImplicitChatId,
-        document: Document<'a>,
-    ) -> SendDocument<'a> {
+        document: Document,
+    ) -> SendDocument<'_> {
         SendDocument::new(&self.inner, chat_id, document)
     }
 
@@ -635,11 +635,11 @@ impl Bot {
     }
 
     /// Sends an album.
-    pub fn send_media_group<'a>(
-        &'a self,
+    pub fn send_media_group(
+        &self,
         chat_id: impl ImplicitChatId,
-        media: impl Into<MediaGroup<'a>>,
-    ) -> SendMediaGroup<'a> {
+        media: impl Into<MediaGroup>,
+    ) -> SendMediaGroup<'_> {
         SendMediaGroup::new(&self.inner, chat_id, media)
     }
 
@@ -653,11 +653,11 @@ impl Bot {
     }
 
     /// Sends a photo.
-    pub fn send_photo<'a>(
-        &'a self,
+    pub fn send_photo(
+        &self,
         chat_id: impl ImplicitChatId,
-        photo: Photo<'a>,
-    ) -> SendPhoto<'a> {
+        photo: Photo,
+    ) -> SendPhoto<'_> {
         SendPhoto::new(&self.inner, chat_id, photo)
     }
 
@@ -671,11 +671,11 @@ impl Bot {
     }
 
     /// Sends a sticker.
-    pub fn send_sticker<'a>(
-        &'a self,
+    pub fn send_sticker(
+        &self,
         chat_id: impl ImplicitChatId,
-        sticker: Sticker<'a>,
-    ) -> SendSticker<'a> {
+        sticker: Sticker,
+    ) -> SendSticker<'_> {
         SendSticker::new(&self.inner, chat_id, sticker)
     }
 
@@ -691,29 +691,29 @@ impl Bot {
     }
 
     /// Sends a video note.
-    pub fn send_video_note<'a>(
-        &'a self,
+    pub fn send_video_note(
+        &self,
         chat_id: impl ImplicitChatId,
-        video_note: VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+        video_note: VideoNote,
+    ) -> SendVideoNote<'_> {
         SendVideoNote::new(&self.inner, chat_id, video_note)
     }
 
     /// Sends a video.
-    pub fn send_video<'a>(
-        &'a self,
+    pub fn send_video(
+        &self,
         chat_id: impl ImplicitChatId,
-        video: Video<'a>,
-    ) -> SendVideo<'a> {
+        video: Video,
+    ) -> SendVideo<'_> {
         SendVideo::new(&self.inner, chat_id, video)
     }
 
     /// Sends a voice.
-    pub fn send_voice<'a>(
-        &'a self,
+    pub fn send_voice(
+        &self,
         chat_id: impl ImplicitChatId,
-        voice: Voice<'a>,
-    ) -> SendVoice<'a> {
+        voice: Voice,
+    ) -> SendVoice<'_> {
         SendVoice::new(&self.inner, chat_id, voice)
     }
 
@@ -751,11 +751,11 @@ impl Bot {
     }
 
     /// Sets a chat's photo.
-    pub fn set_chat_photo<'a>(
-        &'a self,
+    pub fn set_chat_photo(
+        &self,
         chat_id: impl ImplicitChatId,
-        photo: ChatPhoto<'a>,
-    ) -> SetChatPhoto<'a> {
+        photo: ChatPhoto,
+    ) -> SetChatPhoto<'_> {
         SetChatPhoto::new(&self.inner, chat_id, photo)
     }
 
@@ -835,7 +835,7 @@ impl Bot {
         &'a self,
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
-        thumb: Option<&'a StickerSetThumb<'a>>,
+        thumb: Option<StickerSetThumb>,
     ) -> SetStickerSetThumb<'a> {
         SetStickerSetThumb::new(&self.inner, user_id, name, thumb)
     }

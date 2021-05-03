@@ -22,7 +22,7 @@ use crate::{
 pub struct SendDocument<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    document: Document<'a>,
+    document: Document,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
@@ -33,7 +33,7 @@ impl<'a> SendDocument<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        document: Document<'a>,
+        document: Document,
     ) -> Self {
         Self {
             bot,

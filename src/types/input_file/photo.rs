@@ -4,19 +4,18 @@ use crate::types::{
     parameters::{ParseMode, Text},
 };
 use serde::ser::SerializeMap;
-use std::borrow::Cow;
 
 /// Represents a photo to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Photo<'a> {
-    pub(crate) media: InputFile<'a>,
+pub struct Photo {
+    pub(crate) media: InputFile,
     pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
 }
 
-impl<'a> Photo<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl Photo {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             caption: None,
@@ -25,7 +24,7 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a `Photo` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "photo.jpg".into(),
             bytes: bytes.into(),
@@ -51,7 +50,7 @@ impl<'a> Photo<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -94,7 +93,7 @@ impl<'a> Photo<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Photo<'a> {
+impl serde::Serialize for Photo {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,

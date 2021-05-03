@@ -23,7 +23,7 @@ use crate::{
 pub struct SendMediaGroup<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
-    media: MediaGroup<'a>,
+    media: MediaGroup,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
@@ -33,7 +33,7 @@ impl<'a> SendMediaGroup<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        media: impl Into<MediaGroup<'a>>,
+        media: impl Into<MediaGroup>,
     ) -> Self {
         Self {
             bot,

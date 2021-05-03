@@ -4,21 +4,20 @@ use crate::types::{
     parameters::{ParseMode, Text},
 };
 use serde::{ser::SerializeMap, Serializer};
-use std::borrow::Cow;
 
 /// Represents a document to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Document<'a> {
-    pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<Thumb<'a>>,
+pub struct Document {
+    pub(crate) media: InputFile,
+    pub(crate) thumb: Option<Thumb>,
     pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) disable_content_type_detection: Option<bool>,
 }
 
-impl<'a> Document<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl Document {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             thumb: None,
@@ -30,8 +29,8 @@ impl<'a> Document<'a> {
 
     /// Constructs a `Document` from bytes.
     pub fn with_bytes(
-        filename: impl Into<Cow<'a, str>>,
-        bytes: impl Into<Cow<'a, [u8]>>,
+        filename: impl Into<String>,
+        bytes: impl Into<Vec<u8>>,
     ) -> Self {
         Self::new(InputFile::File {
             filename: filename.into(),
@@ -58,7 +57,7 @@ impl<'a> Document<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -70,7 +69,7 @@ impl<'a> Document<'a> {
 
     /// Configures `thumb`.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -128,7 +127,7 @@ impl<'a> Document<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Document<'a> {
+impl serde::Serialize for Document {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

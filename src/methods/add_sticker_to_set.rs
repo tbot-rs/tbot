@@ -23,7 +23,7 @@ pub struct AddStickerToSet<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
     name: Cow<'a, str>,
-    sticker: StickerForStickerSet<'a>,
+    sticker: StickerForStickerSet,
     emojis: Cow<'a, str>,
     mask_position: Option<MaskPosition>,
 }
@@ -33,7 +33,7 @@ impl<'a> AddStickerToSet<'a> {
         bot: &'a InnerBot,
         user_id: user::Id,
         name: impl Into<Cow<'a, str>>,
-        sticker: impl Into<StickerForStickerSet<'a>>,
+        sticker: impl Into<StickerForStickerSet>,
         emojis: impl Into<Cow<'a, str>>,
     ) -> Self {
         Self {
