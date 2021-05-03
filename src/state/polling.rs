@@ -1,7 +1,7 @@
 use crate::{
     errors,
     event_loop::{self, EventLoop},
-    types::parameters::UpdateKind,
+    types::parameters::AllowedUpdates,
 };
 use std::{convert::Infallible, num::NonZeroUsize, sync::Arc, time::Duration};
 
@@ -63,10 +63,7 @@ impl<S> Polling<S> {
     /// Configures which updates you'd like to listen to.
     // https://github.com/rust-lang/rust-clippy/issues/4041
     #[allow(clippy::missing_const_for_fn)]
-    pub fn allowed_updates(
-        mut self,
-        allowed_updates: &'static [UpdateKind],
-    ) -> Self {
+    pub fn allowed_updates(mut self, allowed_updates: AllowedUpdates) -> Self {
         self.inner = self.inner.allowed_updates(allowed_updates);
         self
     }
