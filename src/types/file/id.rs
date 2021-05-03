@@ -1,23 +1,29 @@
 //! Types representing a file ID.
 
 use serde::{Deserialize, Serialize};
-use std::borrow::Cow;
 
 /// Represents a file ID.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct Id<'a>(pub Cow<'a, str>);
+pub struct Id(pub String);
 
-impl<'a> From<String> for Id<'a> {
+impl From<String> for Id {
     #[must_use]
     fn from(id: String) -> Self {
-        Self(id.into())
+        Self(id)
     }
 }
 
-impl<'a> From<&'a str> for Id<'a> {
+impl<'a> From<&'a String> for Id {
+    #[must_use]
+    fn from(id: &'a String) -> Self {
+        Self(id.to_owned())
+    }
+}
+
+impl<'a> From<&'a str> for Id {
     #[must_use]
     fn from(id: &'a str) -> Self {
-        Self(id.into())
+        Self(id.to_owned())
     }
 }

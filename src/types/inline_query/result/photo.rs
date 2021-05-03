@@ -25,10 +25,10 @@ pub struct Fresh {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "photo_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
     Fresh(Fresh),
 }
@@ -39,9 +39,9 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedPhoto`]: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Photo<'a> {
+pub struct Photo {
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Kind,
     #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -78,8 +78,8 @@ impl Fresh {
     }
 }
 
-impl<'a> Photo<'a> {
-    const fn new(kind: Kind<'a>) -> Self {
+impl Photo {
+    const fn new(kind: Kind) -> Self {
         Self {
             kind,
             title: None,
@@ -91,7 +91,7 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a cached `Photo` result.
-    pub const fn with_cached(id: file::Id<'a>) -> Self {
+    pub const fn with_cached(id: file::Id) -> Self {
         Self::new(Kind::Cached { id })
     }
 

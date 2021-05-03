@@ -45,7 +45,7 @@ impl<'a> Audio<'a> {
     /// # Panics
     ///
     /// Panics if the ID starts with `attach://`.
-    pub fn with_id(id: file::Id<'a>) -> Self {
+    pub fn with_id(id: file::Id) -> Self {
         assert!(
             !id.0.starts_with("attach://"),
             "\n[tbot] Audio's ID cannot start with `attach://`\n",

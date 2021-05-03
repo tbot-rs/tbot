@@ -35,7 +35,7 @@ impl<'a> StickerSetThumb<'a> {
     /// # Panics
     ///
     /// Panics if the ID starts with `attach://`.
-    pub fn id(id: file::Id<'a>) -> Self {
+    pub fn id(id: file::Id) -> Self {
         assert!(
             !id.0.starts_with("attach://"),
             "\n[tbot] StickerSetThumb's ID cannot start with `attach://`\n",

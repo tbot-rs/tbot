@@ -46,10 +46,10 @@ pub struct Fresh {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "video_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
     Fresh(Fresh),
 }
@@ -60,9 +60,9 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedVideo`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Video<'a> {
+pub struct Video {
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Kind,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -110,8 +110,8 @@ impl Fresh {
     }
 }
 
-impl<'a> Video<'a> {
-    fn new(title: impl Into<String>, kind: Kind<'a>) -> Self {
+impl Video {
+    fn new(title: impl Into<String>, kind: Kind) -> Self {
         Self {
             kind,
             title: title.into(),
@@ -123,7 +123,7 @@ impl<'a> Video<'a> {
     }
 
     /// Constructs a cached `Video` result.
-    pub fn with_cached(title: impl Into<String>, id: file::Id<'a>) -> Self {
+    pub fn with_cached(title: impl Into<String>, id: file::Id) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 

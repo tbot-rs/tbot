@@ -38,10 +38,10 @@ pub struct Fresh {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "document_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
     Fresh(Fresh),
 }
@@ -52,9 +52,9 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedDocument`]: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Document<'a> {
+pub struct Document {
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Kind,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -84,8 +84,8 @@ impl Fresh {
     }
 }
 
-impl<'a> Document<'a> {
-    fn new(title: impl Into<String>, kind: Kind<'a>) -> Self {
+impl Document {
+    fn new(title: impl Into<String>, kind: Kind) -> Self {
         Self {
             kind,
             title: title.into(),
@@ -97,7 +97,7 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub fn with_cached(title: impl Into<String>, id: file::Id<'a>) -> Self {
+    pub fn with_cached(title: impl Into<String>, id: file::Id) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 

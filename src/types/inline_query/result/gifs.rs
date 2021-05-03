@@ -95,10 +95,10 @@ macro_rules! gif_base {
         #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[serde(untagged)]
         #[must_use]
-        enum Kind<'a> {
+        enum Kind {
             Cached {
                 #[serde(rename = $file_id)]
-                id: file::Id<'a>,
+                id: file::Id,
             },
             Fresh(Fresh),
         }
@@ -117,9 +117,9 @@ macro_rules! gif_base {
             ),
             #[derive(Debug, PartialEq, Clone, Serialize)]
             #[must_use]
-            pub struct $struct<'a> {
+            pub struct $struct {
                 #[serde(flatten)]
-                kind: Kind<'a>,
+                kind: Kind,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 title: Option<String>,
                 #[serde(skip_serializing_if = "Option::is_none")]
@@ -165,8 +165,8 @@ macro_rules! gif_base {
             }
         }
 
-        impl<'a> $struct<'a> {
-            const fn new(kind: Kind<'a>) -> Self {
+        impl $struct {
+            const fn new(kind: Kind) -> Self {
                 Self {
                     kind,
                     title: None,
@@ -180,7 +180,7 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub const fn with_cached(id: file::Id<'a>) -> Self {
+                pub const fn with_cached(id: file::Id) -> Self {
                     Self::new(Kind::Cached { id })
                 }
             }

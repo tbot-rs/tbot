@@ -16,11 +16,11 @@ use serde::Serialize;
 pub struct GetFile<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    file_id: file::Id<'a>,
+    file_id: file::Id,
 }
 
 impl<'a> GetFile<'a> {
-    pub(crate) const fn new(bot: &'a InnerBot, file_id: file::Id<'a>) -> Self {
+    pub(crate) const fn new(bot: &'a InnerBot, file_id: file::Id) -> Self {
         Self { bot, file_id }
     }
 }

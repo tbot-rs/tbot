@@ -406,7 +406,7 @@ impl Bot {
     }
 
     /// Gets information about a file.
-    pub fn get_file<'a>(&'a self, file_id: file::Id<'a>) -> GetFile<'a> {
+    pub fn get_file(&self, file_id: file::Id) -> GetFile<'_> {
         GetFile::new(&self.inner, file_id)
     }
 

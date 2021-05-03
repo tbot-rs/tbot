@@ -8,7 +8,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct File {
     /// The ID of the file.
-    pub id: file::Id<'static>,
+    pub id: file::Id,
     /// The unique ID of the file.
     pub unique_id: String,
     /// The size of the file.

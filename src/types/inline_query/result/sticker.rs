@@ -6,16 +6,16 @@ use serde::Serialize;
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Sticker<'a> {
+pub struct Sticker {
     #[serde(rename = "sticker_file_id")]
-    id: file::Id<'a>,
+    id: file::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Sticker<'a> {
+impl Sticker {
     /// Constructs a `Sticker`.
-    pub const fn new(id: file::Id<'a>) -> Self {
+    pub const fn new(id: file::Id) -> Self {
         Self {
             id,
             input_message_content: None,

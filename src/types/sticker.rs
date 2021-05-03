@@ -31,7 +31,7 @@ pub enum Kind {
 #[non_exhaustive]
 pub struct Sticker {
     /// The file ID of the sticker.
-    pub file_id: file::Id<'static>,
+    pub file_id: file::Id,
     /// The unique ID of the sticker.
     pub file_unique_id: String,
     /// The width of the sticker.

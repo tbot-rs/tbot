@@ -47,7 +47,7 @@ pub(crate) enum InputFile<'a> {
         bytes: Cow<'a, [u8]>,
     },
     Url(Cow<'a, str>),
-    Id(file::Id<'a>),
+    Id(file::Id),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]

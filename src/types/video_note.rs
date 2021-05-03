@@ -8,7 +8,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct VideoNote {
     /// The file ID of the video note.
-    pub file_id: file::Id<'static>,
+    pub file_id: file::Id,
     /// The unique ID of the video note.
     pub file_unique_id: String,
     /// The length of the video note.

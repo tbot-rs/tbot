@@ -25,10 +25,10 @@ pub struct Fresh {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "voice_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
     Fresh(Fresh),
 }
@@ -39,9 +39,9 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedVoice`]: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Voice<'a> {
+pub struct Voice {
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Kind,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
@@ -67,8 +67,8 @@ impl Fresh {
     }
 }
 
-impl<'a> Voice<'a> {
-    fn new(title: impl Into<String>, kind: Kind<'a>) -> Self {
+impl Voice {
+    fn new(title: impl Into<String>, kind: Kind) -> Self {
         Self {
             kind,
             title: title.into(),
@@ -79,7 +79,7 @@ impl<'a> Voice<'a> {
     }
 
     /// Constructs a cached `Voice` result.
-    pub fn with_cached(title: impl Into<String>, id: file::Id<'a>) -> Self {
+    pub fn with_cached(title: impl Into<String>, id: file::Id) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
