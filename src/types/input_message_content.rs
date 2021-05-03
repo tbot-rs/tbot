@@ -16,41 +16,41 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 #[derive(Debug, PartialEq, Clone, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
-pub enum InputMessageContent<'a> {
+pub enum InputMessageContent {
     /// A text message.
     Text(Text),
     /// A location.
     Location(Location),
     /// A venue.
-    Venue(Venue<'a>),
+    Venue(Venue),
     /// A contact.
-    Contact(Contact<'a>),
+    Contact(Contact),
 }
 
-impl<'a> From<Text> for InputMessageContent<'a> {
+impl From<Text> for InputMessageContent {
     #[must_use]
     fn from(text: Text) -> Self {
-        InputMessageContent::Text(text)
+        Self::Text(text)
     }
 }
 
-impl<'a> From<Location> for InputMessageContent<'a> {
+impl From<Location> for InputMessageContent {
     #[must_use]
     fn from(location: Location) -> Self {
-        InputMessageContent::Location(location)
+        Self::Location(location)
     }
 }
 
-impl<'a> From<Venue<'a>> for InputMessageContent<'a> {
+impl From<Venue> for InputMessageContent {
     #[must_use]
-    fn from(venue: Venue<'a>) -> Self {
-        InputMessageContent::Venue(venue)
+    fn from(venue: Venue) -> Self {
+        Self::Venue(venue)
     }
 }
 
-impl<'a> From<Contact<'a>> for InputMessageContent<'a> {
+impl From<Contact> for InputMessageContent {
     #[must_use]
-    fn from(contact: Contact<'a>) -> Self {
-        InputMessageContent::Contact(contact)
+    fn from(contact: Contact) -> Self {
+        Self::Contact(contact)
     }
 }

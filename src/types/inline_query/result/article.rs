@@ -14,7 +14,7 @@ use std::borrow::Cow;
 #[must_use]
 pub struct Article<'a> {
     title: Cow<'a, str>,
-    input_message_content: InputMessageContent<'a>,
+    input_message_content: InputMessageContent,
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,7 +29,7 @@ impl<'a> Article<'a> {
     /// Constructs an `Article`.
     pub fn new(
         title: impl Into<Cow<'a, str>>,
-        input_message_content: impl Into<InputMessageContent<'a>>,
+        input_message_content: impl Into<InputMessageContent>,
     ) -> Self {
         Self {
             title: title.into(),

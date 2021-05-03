@@ -1,25 +1,24 @@
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents an [`InputContactMessageContent`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inputcontactmessagecontent
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Contact<'a> {
-    phone_number: Cow<'a, str>,
-    first_name: Cow<'a, str>,
+pub struct Contact {
+    phone_number: String,
+    first_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<Cow<'a, str>>,
+    last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<Cow<'a, str>>,
+    vcard: Option<String>,
 }
 
-impl<'a> Contact<'a> {
+impl Contact {
     /// Constructs a `Contact`.
     pub fn new(
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
     ) -> Self {
         Self {
             phone_number: phone_number.into(),
@@ -30,13 +29,13 @@ impl<'a> Contact<'a> {
     }
 
     /// Configures the last name.
-    pub fn last_name(mut self, last_name: impl Into<Cow<'a, str>>) -> Self {
+    pub fn last_name(mut self, last_name: impl Into<String>) -> Self {
         self.last_name = Some(last_name.into());
         self
     }
 
     /// Configures the vCard.
-    pub fn vcard(mut self, vcard: impl Into<Cow<'a, str>>) -> Self {
+    pub fn vcard(mut self, vcard: impl Into<String>) -> Self {
         self.vcard = Some(vcard.into());
         self
     }

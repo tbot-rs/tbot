@@ -130,7 +130,7 @@ macro_rules! gif_base {
                 #[serde(skip_serializing_if = "Option::is_none")]
                 parse_mode: Option<ParseMode>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                input_message_content: Option<InputMessageContent<'a>>,
+                input_message_content: Option<InputMessageContent>,
             }
         }
 
@@ -215,7 +215,7 @@ macro_rules! gif_base {
             /// Configures the content shown after sending the message.
             pub fn input_message_content(
                 mut self,
-                content: impl Into<InputMessageContent<'a>>,
+                content: impl Into<InputMessageContent>,
             ) -> Self {
                 self.input_message_content = Some(content.into());
                 self

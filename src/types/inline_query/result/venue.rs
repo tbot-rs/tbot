@@ -22,7 +22,7 @@ pub struct Venue<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     google_place_type: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
     thumb: Option<Thumb<'a>>,
 }
@@ -88,7 +88,7 @@ impl<'a> Venue<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self

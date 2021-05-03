@@ -10,7 +10,7 @@ pub struct Sticker<'a> {
     #[serde(rename = "sticker_file_id")]
     id: file::Id<'a>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl<'a> Sticker<'a> {
@@ -25,7 +25,7 @@ impl<'a> Sticker<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
