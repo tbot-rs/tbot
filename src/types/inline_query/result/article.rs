@@ -3,7 +3,7 @@
 //! [docs]: ../enum.InlineQueryResult.html#variant.Article
 
 use super::Thumb;
-use crate::types::{InputMessageContent};
+use crate::types::InputMessageContent;
 use serde::Serialize;
 use std::borrow::Cow;
 

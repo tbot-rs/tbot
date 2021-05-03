@@ -1,4 +1,4 @@
-use crate::types::{LabeledPrice};
+use crate::types::LabeledPrice;
 use serde::Serialize;
 use std::borrow::Cow;
 

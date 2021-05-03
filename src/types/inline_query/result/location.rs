@@ -1,7 +1,5 @@
 use super::Thumb;
-use crate::types::{
-    parameters::LiveLocation, InputMessageContent,
-};
+use crate::types::{parameters::LiveLocation, InputMessageContent};
 use serde::Serialize;
 use std::borrow::Cow;
 

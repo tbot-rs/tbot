@@ -41,7 +41,6 @@ impl Inline {
         &'a self,
         results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
-        self.bot
-            .answer_inline_query(self.id.clone(), results)
+        self.bot.answer_inline_query(self.id.clone(), results)
     }
 }

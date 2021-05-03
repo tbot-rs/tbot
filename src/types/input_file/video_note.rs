@@ -1,5 +1,5 @@
 use super::{InputFile, Thumb};
-use crate::types::{file};
+use crate::types::file;
 use serde::ser::SerializeMap;
 use serde::{Serialize, Serializer};
 use std::borrow::Cow;

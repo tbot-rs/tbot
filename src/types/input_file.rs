@@ -1,6 +1,6 @@
 //! Types representing uploadable media.
 
-use crate::types::{file};
+use crate::types::file;
 use std::borrow::Cow;
 
 mod animation;

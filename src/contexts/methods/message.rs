@@ -363,10 +363,7 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a message in reply to this message.
-    fn send_message_in_reply(
-        &self,
-        text: impl Into<Text>,
-    ) -> SendMessage<'_> {
+    fn send_message_in_reply(&self, text: impl Into<Text>) -> SendMessage<'_> {
         self.send_message(text).in_reply_to(self.message_id())
     }
 
