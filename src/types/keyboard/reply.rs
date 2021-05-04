@@ -2,10 +2,9 @@
 
 use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
-use std::borrow::Cow;
 
 /// A shorthand for reply markup.
-pub type Markup<'a> = &'a [&'a [Button<'a>]];
+pub type Markup = Vec<Vec<Button>>;
 
 const REGULAR: &str = "regular";
 const QUIZ: &str = "quiz";
@@ -24,7 +23,7 @@ pub enum RequestPollKind {
     Quiz,
 }
 
-impl<'a> serde::Serialize for RequestPollKind {
+impl serde::Serialize for RequestPollKind {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map =
             s.serialize_map(Some(if *self == Self::Any { 0 } else { 1 }))?;
@@ -58,8 +57,8 @@ pub enum RequestKind {
 /// [`KeyboardButton`]: https://core.telegram.org/bots/api#keyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Button<'a> {
-    text: Cow<'a, str>,
+pub struct Button {
+    text: String,
     request: Option<RequestKind>,
 }
 
@@ -68,8 +67,8 @@ pub struct Button<'a> {
 /// [`ReplyKeyboardMarkup`]: https://core.telegram.org/bots/api#replykeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Keyboard<'a> {
-    keyboard: Markup<'a>,
+pub struct Keyboard {
+    keyboard: Markup,
     #[serde(skip_serializing_if = "Option::is_none")]
     resize_keyboard: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -88,9 +87,9 @@ pub struct Remove {
     selective: Option<bool>,
 }
 
-impl<'a> Button<'a> {
+impl Button {
     /// Constructs a reply `Button`.
-    pub fn new(text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
             request: None,
@@ -104,7 +103,7 @@ impl<'a> Button<'a> {
     }
 }
 
-impl<'a> serde::Serialize for Button<'a> {
+impl serde::Serialize for Button {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let len = if self.request.is_some() { 2 } else { 1 };
 
@@ -129,11 +128,11 @@ impl<'a> serde::Serialize for Button<'a> {
     }
 }
 
-impl<'a> Keyboard<'a> {
+impl Keyboard {
     /// Constructs a reply `Keyboard`.
-    pub const fn new(keyboard: Markup<'a>) -> Self {
+    pub fn new(markup: impl Into<Markup>) -> Self {
         Self {
-            keyboard,
+            keyboard: markup.into(),
             resize_keyboard: None,
             one_time_keyboard: None,
             selective: None,
@@ -159,8 +158,8 @@ impl<'a> Keyboard<'a> {
     }
 }
 
-impl<'a> From<Markup<'a>> for Keyboard<'a> {
-    fn from(markup: Markup<'a>) -> Self {
+impl From<Markup> for Keyboard {
+    fn from(markup: Markup) -> Self {
         Self::new(markup)
     }
 }

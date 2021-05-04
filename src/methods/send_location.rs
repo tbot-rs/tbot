@@ -33,7 +33,7 @@ pub struct SendLocation<'a> {
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
 }
 
 impl<'a> SendLocation<'a> {
@@ -104,10 +104,7 @@ impl<'a> SendLocation<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

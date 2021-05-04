@@ -40,7 +40,7 @@ pub struct CopyMessage<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
 }
 
 impl<'a> CopyMessage<'a> {
@@ -99,10 +99,7 @@ impl<'a> CopyMessage<'a> {
 
     // Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

@@ -7,49 +7,49 @@ use serde::Serialize;
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
-pub enum Any<'a> {
+pub enum Any {
     /// An inline keyboard.
     Inline(inline::Keyboard),
     /// A reply markup.
-    Reply(reply::Keyboard<'a>),
+    Reply(reply::Keyboard),
     /// Removes reply markup.
     RemoveReply(reply::Remove),
     /// Forces reply.
     ForceReply(ForceReply),
 }
 
-impl From<inline::Keyboard> for Any<'_> {
+impl From<inline::Keyboard> for Any {
     fn from(keyboard: inline::Keyboard) -> Self {
-        Any::Inline(keyboard)
+        Self::Inline(keyboard)
     }
 }
 
-impl From<inline::Markup> for Any<'_> {
+impl From<inline::Markup> for Any {
     fn from(keyboard: inline::Markup) -> Self {
-        Any::Inline(keyboard.into())
+        Self::Inline(keyboard.into())
     }
 }
 
-impl<'a> From<reply::Keyboard<'a>> for Any<'a> {
-    fn from(keyboard: reply::Keyboard<'a>) -> Self {
-        Any::Reply(keyboard)
+impl From<reply::Keyboard> for Any {
+    fn from(keyboard: reply::Keyboard) -> Self {
+        Self::Reply(keyboard)
     }
 }
 
-impl<'a> From<reply::Markup<'a>> for Any<'a> {
-    fn from(keyboard: reply::Markup<'a>) -> Self {
-        Any::Reply(keyboard.into())
+impl From<reply::Markup> for Any {
+    fn from(keyboard: reply::Markup) -> Self {
+        Self::Reply(keyboard.into())
     }
 }
 
-impl<'a> From<reply::Remove> for Any<'a> {
+impl From<reply::Remove> for Any {
     fn from(keyboard: reply::Remove) -> Self {
-        Any::RemoveReply(keyboard)
+        Self::RemoveReply(keyboard)
     }
 }
 
-impl<'a> From<ForceReply> for Any<'a> {
+impl From<ForceReply> for Any {
     fn from(keyboard: ForceReply) -> Self {
-        Any::ForceReply(keyboard)
+        Self::ForceReply(keyboard)
     }
 }

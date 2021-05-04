@@ -26,7 +26,7 @@ pub struct SendVideoNote<'a> {
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
 }
 
 impl<'a> SendVideoNote<'a> {
@@ -70,10 +70,7 @@ impl<'a> SendVideoNote<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

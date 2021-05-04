@@ -25,7 +25,7 @@ pub struct SendAnimation<'a> {
     animation: Animation,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
     allow_sending_without_reply: bool,
 }
 
@@ -70,10 +70,7 @@ impl<'a> SendAnimation<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }
