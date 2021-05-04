@@ -22,7 +22,7 @@ macro_rules! media_message {
                 /// The origin of the message if it's a forward.
                 forward: Option<crate::types::message::Forward>,
                 /// The inline keyboard attached to the message.
-                reply_markup: Option<crate::types::message::inline_markup::Keyboard>,
+                reply_markup: Option<crate::types::keyboard::inline::Keyboard>,
                 /// The bot via which the message was sent.
                 via_bot: Option<crate::types::User>,
                 #[doc = $media_doc]
@@ -65,7 +65,7 @@ macro_rules! media_message {
             #[must_use]
             fn reply_markup(
                 &self
-            ) -> Option<&crate::types::message::inline_markup::Keyboard> {
+            ) -> Option<&crate::types::keyboard::inline::Keyboard> {
                 self.reply_markup.as_ref()
             }
 

@@ -1,18 +1,14 @@
 //! Types related to messages.
 
-use crate::types::{Chat, User};
+use crate::types::{keyboard::inline, Chat, User};
 
 pub mod forward;
 mod from;
 mod id;
-pub mod inline_markup;
 mod kind;
 pub mod text;
 
-pub use {
-    forward::Forward, from::From, id::Id, inline_markup::Keyboard, kind::Kind,
-    text::Text,
-};
+pub use {forward::Forward, from::From, id::Id, kind::Kind, text::Text};
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
@@ -36,7 +32,7 @@ pub struct Message {
     /// The author's signature, if enabled for the channel.
     pub author_signature: Option<String>,
     /// The inline keyboard attached to the message.
-    pub reply_markup: Option<Keyboard>,
+    pub reply_markup: Option<inline::Keyboard>,
     /// The kind of the message.
     pub kind: Kind,
     /// The bot via which the message was sent.
@@ -52,7 +48,7 @@ pub(crate) struct Data {
     pub reply_to: Option<Message>,
     pub edit_date: Option<i64>,
     pub author_signature: Option<String>,
-    pub reply_markup: Option<Keyboard>,
+    pub reply_markup: Option<inline::Keyboard>,
     pub via_bot: Option<User>,
 }
 
