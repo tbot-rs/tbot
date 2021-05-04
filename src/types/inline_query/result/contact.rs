@@ -1,31 +1,30 @@
 use super::Thumb;
-use crate::types::{InputMessageContent, InteriorBorrow};
+use crate::types::InputMessageContent;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultContact`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultcontact
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Contact<'a> {
-    phone_number: Cow<'a, str>,
-    first_name: Cow<'a, str>,
+pub struct Contact {
+    phone_number: String,
+    first_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<Cow<'a, str>>,
+    last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<Cow<'a, str>>,
+    vcard: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumb: Option<Thumb<'a>>,
+    thumb: Option<Thumb>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Contact<'a> {
+impl Contact {
     /// Constructs a 'Contact'.
     pub fn new(
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
     ) -> Self {
         Self {
             phone_number: phone_number.into(),
@@ -38,20 +37,20 @@ impl<'a> Contact<'a> {
     }
 
     /// Configures the last name of the contact.
-    pub fn last_name(mut self, name: impl Into<Cow<'a, str>>) -> Self {
+    pub fn last_name(mut self, name: impl Into<String>) -> Self {
         self.last_name = Some(name.into());
         self
     }
 
     /// Configures the contact's additional data.
-    pub fn vcard(mut self, vcard: impl Into<Cow<'a, str>>) -> Self {
+    pub fn vcard(mut self, vcard: impl Into<String>) -> Self {
         self.vcard = Some(vcard.into());
         self
     }
 
     /// Configures the thumb of the contact.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -59,22 +58,9 @@ impl<'a> Contact<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Contact<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            phone_number: self.phone_number.borrow_inside(),
-            first_name: self.first_name.borrow_inside(),
-            last_name: self.last_name.borrow_inside(),
-            vcard: self.vcard.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-        }
     }
 }

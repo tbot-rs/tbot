@@ -1,38 +1,37 @@
 use super::Thumb;
-use crate::types::{InputMessageContent, InteriorBorrow};
+use crate::types::InputMessageContent;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents an [`InlineQueryResultVenue`][docs].
 ///
 /// [docs]: https://core.telegram.org/bots/api#inlinequeryresultvenue
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Venue<'a> {
+pub struct Venue {
     latitude: f64,
     longitude: f64,
-    title: Cow<'a, str>,
-    address: Cow<'a, str>,
+    title: String,
+    address: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    foursquare_id: Option<Cow<'a, str>>,
+    foursquare_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    foursquare_type: Option<Cow<'a, str>>,
+    foursquare_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    google_place_id: Option<Cow<'a, str>>,
+    google_place_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    google_place_type: Option<Cow<'a, str>>,
+    google_place_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    thumb: Option<Thumb<'a>>,
+    thumb: Option<Thumb>,
 }
 
-impl<'a> Venue<'a> {
+impl Venue {
     /// Constructs a `Venue`.
     pub fn new(
-        title: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
         (latitude, longitude): (f64, f64),
-        address: impl Into<Cow<'a, str>>,
+        address: impl Into<String>,
     ) -> Self {
         Self {
             latitude,
@@ -49,7 +48,7 @@ impl<'a> Venue<'a> {
     }
 
     /// Configures the Foursquare ID.
-    pub fn foursquare_id(mut self, id: impl Into<Cow<'a, str>>) -> Self {
+    pub fn foursquare_id(mut self, id: impl Into<String>) -> Self {
         self.foursquare_id = Some(id.into());
         self
     }
@@ -57,14 +56,14 @@ impl<'a> Venue<'a> {
     /// Configures the Foursquare type.
     pub fn foursquare_type(
         mut self,
-        foursquare_type: impl Into<Cow<'a, str>>,
+        foursquare_type: impl Into<String>,
     ) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
         self
     }
 
     /// Configures the Google Places ID.
-    pub fn google_place_id(mut self, id: impl Into<Cow<'a, str>>) -> Self {
+    pub fn google_place_id(mut self, id: impl Into<String>) -> Self {
         self.google_place_id = Some(id.into());
         self
     }
@@ -72,7 +71,7 @@ impl<'a> Venue<'a> {
     /// Configures the Google Places type.
     pub fn google_place_type(
         mut self,
-        google_place_type: impl Into<Cow<'a, str>>,
+        google_place_type: impl Into<String>,
     ) -> Self {
         self.google_place_type = Some(google_place_type.into());
         self
@@ -80,7 +79,7 @@ impl<'a> Venue<'a> {
 
     /// Configures the thumb of the venue.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
@@ -88,25 +87,9 @@ impl<'a> Venue<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Venue<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            title: self.title.borrow_inside(),
-            address: self.address.borrow_inside(),
-            foursquare_id: self.foursquare_id.borrow_inside(),
-            foursquare_type: self.foursquare_type.borrow_inside(),
-            google_place_id: self.google_place_id.borrow_inside(),
-            google_place_type: self.google_place_type.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            ..*self
-        }
     }
 }

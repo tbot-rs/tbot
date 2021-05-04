@@ -90,7 +90,7 @@ impl<'a> Multipart<'a> {
         }
     }
 
-    pub fn chat_id(self, name: &'static str, id: &'a ChatId<'a>) -> Self {
+    pub fn chat_id(self, name: &'static str, id: &'a ChatId) -> Self {
         match id {
             ChatId::Id(id) => self.string(name, &id),
             ChatId::Username(username) => self.str(name, username),

@@ -5,18 +5,17 @@
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InputMessageContent, InteriorBorrow,
+    InputMessageContent,
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents a non-cached photo.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
-    thumb_url: Cow<'a, str>,
+pub struct Fresh {
+    thumb_url: String,
     #[serde(rename = "photo_url")]
-    url: Cow<'a, str>,
+    url: String,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_width")]
     width: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_height")]
@@ -26,12 +25,12 @@ pub struct Fresh<'a> {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "photo_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultPhoto`]/[`InlineQueryResultCachedPhoto`].
@@ -40,27 +39,24 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedPhoto`]: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Photo<'a> {
+pub struct Photo {
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Kind,
     #[serde(skip_serializing_if = "Option::is_none")]
-    title: Option<Cow<'a, str>>,
+    title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<Cow<'a, str>>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<Cow<'a, str>>,
+    caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` photo.
-    pub fn new(
-        thumb_url: impl Into<Cow<'a, str>>,
-        url: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub fn new(thumb_url: impl Into<String>, url: impl Into<String>) -> Self {
         Self {
             thumb_url: thumb_url.into(),
             url: url.into(),
@@ -82,8 +78,8 @@ impl<'a> Fresh<'a> {
     }
 }
 
-impl<'a> Photo<'a> {
-    const fn new(kind: Kind<'a>) -> Self {
+impl Photo {
+    const fn new(kind: Kind) -> Self {
         Self {
             kind,
             title: None,
@@ -95,29 +91,29 @@ impl<'a> Photo<'a> {
     }
 
     /// Constructs a cached `Photo` result.
-    pub const fn with_cached(id: file::Id<'a>) -> Self {
+    pub const fn with_cached(id: file::Id) -> Self {
         Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Photo` result.
-    pub const fn with_fresh(photo: Fresh<'a>) -> Self {
+    pub const fn with_fresh(photo: Fresh) -> Self {
         Self::new(Kind::Fresh(photo))
     }
 
     /// Configures the title of the photo.
-    pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+    pub fn title(mut self, title: impl Into<String>) -> Self {
         self.title = Some(title.into());
         self
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+    pub fn description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }
 
     /// Configures the caption of the photo.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -128,43 +124,9 @@ impl<'a> Photo<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            thumb_url: self.thumb_url.borrow_inside(),
-            url: self.url.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Kind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Cached { id } => Self::Cached {
-                id: id.borrow_inside(),
-            },
-            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Photo<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            kind: self.kind.borrow_inside(),
-            title: self.title.borrow_inside(),
-            description: self.description.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            ..*self
-        }
     }
 }

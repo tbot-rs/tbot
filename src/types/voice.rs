@@ -8,7 +8,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct Voice {
     /// The file ID of the voice.
-    pub file_id: file::Id<'static>,
+    pub file_id: file::Id,
     /// The unique ID of the voice.
     pub file_unique_id: String,
     /// The duration of the voice.

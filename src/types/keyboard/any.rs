@@ -1,5 +1,4 @@
 use super::{inline, reply, ForceReply};
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 
@@ -8,60 +7,49 @@ use serde::Serialize;
 #[serde(untagged)]
 #[non_exhaustive]
 #[must_use]
-pub enum Any<'a> {
+pub enum Any {
     /// An inline keyboard.
-    Inline(inline::Keyboard<'a>),
+    Inline(inline::Keyboard),
     /// A reply markup.
-    Reply(reply::Keyboard<'a>),
+    Reply(reply::Keyboard),
     /// Removes reply markup.
     RemoveReply(reply::Remove),
     /// Forces reply.
     ForceReply(ForceReply),
 }
 
-impl<'a> From<inline::Keyboard<'a>> for Any<'a> {
-    fn from(keyboard: inline::Keyboard<'a>) -> Self {
-        Any::Inline(keyboard)
+impl From<inline::Keyboard> for Any {
+    fn from(keyboard: inline::Keyboard) -> Self {
+        Self::Inline(keyboard)
     }
 }
 
-impl<'a> From<inline::Markup<'a>> for Any<'a> {
-    fn from(keyboard: inline::Markup<'a>) -> Self {
-        Any::Inline(keyboard.into())
+impl From<inline::Markup> for Any {
+    fn from(keyboard: inline::Markup) -> Self {
+        Self::Inline(keyboard.into())
     }
 }
 
-impl<'a> From<reply::Keyboard<'a>> for Any<'a> {
-    fn from(keyboard: reply::Keyboard<'a>) -> Self {
-        Any::Reply(keyboard)
+impl From<reply::Keyboard> for Any {
+    fn from(keyboard: reply::Keyboard) -> Self {
+        Self::Reply(keyboard)
     }
 }
 
-impl<'a> From<reply::Markup<'a>> for Any<'a> {
-    fn from(keyboard: reply::Markup<'a>) -> Self {
-        Any::Reply(keyboard.into())
+impl From<reply::Markup> for Any {
+    fn from(keyboard: reply::Markup) -> Self {
+        Self::Reply(keyboard.into())
     }
 }
 
-impl<'a> From<reply::Remove> for Any<'a> {
+impl From<reply::Remove> for Any {
     fn from(keyboard: reply::Remove) -> Self {
-        Any::RemoveReply(keyboard)
+        Self::RemoveReply(keyboard)
     }
 }
 
-impl<'a> From<ForceReply> for Any<'a> {
+impl From<ForceReply> for Any {
     fn from(keyboard: ForceReply) -> Self {
-        Any::ForceReply(keyboard)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Any<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Inline(inline) => Self::Inline(inline.borrow_inside()),
-            Self::Reply(reply) => Self::Reply(reply.borrow_inside()),
-            Self::RemoveReply(remove_reply) => Self::RemoveReply(*remove_reply),
-            Self::ForceReply(force_reply) => Self::ForceReply(*force_reply),
-        }
+        Self::ForceReply(keyboard)
     }
 }

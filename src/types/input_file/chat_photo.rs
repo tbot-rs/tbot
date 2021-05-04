@@ -1,34 +1,26 @@
 use super::InputFile;
-use crate::types::InteriorBorrow;
 use serde::{Serialize, Serializer};
-use std::borrow::Cow;
 
 /// Represents a chat photo to be set.
 ///
 /// Note that a chat photo cannot be set via either a file ID or a URL.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct ChatPhoto<'a>(pub(crate) InputFile<'a>);
+pub struct ChatPhoto(pub(crate) InputFile);
 
-impl<'a> ChatPhoto<'a> {
+impl ChatPhoto {
     /// Constructs a `ChatPhoto`.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         let file = InputFile::File {
             filename: "photo.jpg".into(),
             bytes: bytes.into(),
         };
 
-        ChatPhoto(file)
+        Self(file)
     }
 }
 
-impl<'a> InteriorBorrow<'a> for ChatPhoto<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self(self.0.borrow_inside())
-    }
-}
-
-impl<'a> Serialize for ChatPhoto<'a> {
+impl Serialize for ChatPhoto {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

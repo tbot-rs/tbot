@@ -1,12 +1,11 @@
 //! Types representing inline keyboards.
 
-use crate::types::{callback::Game, InteriorBorrow, LoginUrl};
+use crate::types::{callback::Game, LoginUrl};
 use is_macro::Is;
 use serde::{ser::SerializeMap, Serialize};
-use std::borrow::Cow;
 
 /// A shorthand for inline markup.
-pub type Markup<'a> = &'a [&'a [Button<'a>]];
+pub type Markup = Vec<Vec<Button>>;
 
 /// Represents different types an inline button can be.
 ///
@@ -16,47 +15,47 @@ pub type Markup<'a> = &'a [&'a [Button<'a>]];
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]
-pub enum ButtonKind<'a> {
+pub enum ButtonKind {
     /// Represents a URL button.
-    Url(Cow<'a, str>),
+    Url(String),
     /// Represents a login button.
-    LoginUrl(LoginUrl<'a>),
+    LoginUrl(LoginUrl),
     /// Represents callback data.
-    CallbackData(Cow<'a, str>),
+    CallbackData(String),
     /// Represents query inserted when switched to inline.
-    SwitchInlineQuery(Cow<'a, str>),
+    SwitchInlineQuery(String),
     /// Represents query inserted when switched to inline in the curent chat.
-    SwitchInlineQueryCurrentChat(Cow<'a, str>),
+    SwitchInlineQueryCurrentChat(String),
     /// Represent a description of the game to be laucnhed.
     CallbackGame(Game),
     /// Represents a pay button.
     Pay,
 }
 
-impl<'a> ButtonKind<'a> {
+impl ButtonKind {
     /// Constructs a `ButtonKind::Url`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         Self::Url(url.into())
     }
 
     /// Constructs a `ButtonKind::LoginUrl`.
-    pub const fn with_login_url(login_url: LoginUrl<'a>) -> Self {
+    pub const fn with_login_url(login_url: LoginUrl) -> Self {
         Self::LoginUrl(login_url)
     }
 
     /// Constructs a `ButtonKind::CallbackData`.
-    pub fn with_callback_data(data: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_callback_data(data: impl Into<String>) -> Self {
         Self::CallbackData(data.into())
     }
 
     /// Constructs a `ButtonKind::SwitchInlineQuery`.
-    pub fn with_switch_inline_query(query: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_switch_inline_query(query: impl Into<String>) -> Self {
         Self::SwitchInlineQuery(query.into())
     }
 
     /// Constructs a `ButtonKind::SwitchInlineQueryCurrentChat`.
     pub fn with_switch_inline_query_current_chat(
-        query: impl Into<Cow<'a, str>>,
+        query: impl Into<String>,
     ) -> Self {
         Self::SwitchInlineQueryCurrentChat(query.into())
     }
@@ -72,41 +71,15 @@ impl<'a> ButtonKind<'a> {
     }
 }
 
-impl<'a> InteriorBorrow<'a> for ButtonKind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Url(url) => Self::Url(url.borrow_inside()),
-            Self::LoginUrl(login_url) => {
-                Self::LoginUrl(login_url.borrow_inside())
-            }
-            Self::CallbackData(callback_data) => {
-                Self::CallbackData(callback_data.borrow_inside())
-            }
-            Self::SwitchInlineQuery(switch_inline_query) => {
-                Self::SwitchInlineQuery(switch_inline_query.borrow_inside())
-            }
-            Self::SwitchInlineQueryCurrentChat(
-                switch_inline_query_current_chat,
-            ) => Self::SwitchInlineQueryCurrentChat(
-                switch_inline_query_current_chat.borrow_inside(),
-            ),
-            Self::CallbackGame(callback_game) => {
-                Self::CallbackGame(*callback_game)
-            }
-            Self::Pay => Self::Pay,
-        }
-    }
-}
-
 /// Represents an [`InlineKeyboardButton`].
 ///
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
 #[must_use]
-pub struct Button<'a> {
-    text: Cow<'a, str>,
-    kind: ButtonKind<'a>,
+pub struct Button {
+    text: String,
+    kind: ButtonKind,
 }
 
 /// Represents an [`InlineKeyboardMarkup`].
@@ -114,13 +87,13 @@ pub struct Button<'a> {
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Keyboard<'a> {
-    inline_keyboard: Markup<'a>,
+pub struct Keyboard {
+    inline_keyboard: Markup,
 }
 
-impl<'a> Button<'a> {
+impl Button {
     /// Constructs an inline `Button`.
-    pub fn new(text: impl Into<Cow<'a, str>>, kind: ButtonKind<'a>) -> Self {
+    pub fn new(text: impl Into<String>, kind: ButtonKind) -> Self {
         Self {
             text: text.into(),
             kind,
@@ -128,7 +101,7 @@ impl<'a> Button<'a> {
     }
 }
 
-impl Serialize for Button<'_> {
+impl Serialize for Button {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         let mut map = s.serialize_map(Some(2))?;
 
@@ -158,32 +131,17 @@ impl Serialize for Button<'_> {
     }
 }
 
-impl<'a> InteriorBorrow<'a> for Button<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            text: self.text.borrow_inside(),
-            kind: self.kind.borrow_inside(),
-        }
-    }
-}
-
-impl<'a> Keyboard<'a> {
+impl Keyboard {
     /// Constructs an inline `Keyboard`.
-    pub const fn new(buttons: Markup<'a>) -> Self {
+    pub fn new(markup: impl Into<Markup>) -> Self {
         Self {
-            inline_keyboard: buttons,
+            inline_keyboard: markup.into(),
         }
     }
 }
 
-impl<'a> From<Markup<'a>> for Keyboard<'a> {
-    fn from(markup: Markup<'a>) -> Self {
+impl From<Markup> for Keyboard {
+    fn from(markup: Markup) -> Self {
         Self::new(markup)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Keyboard<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self { ..*self }
     }
 }

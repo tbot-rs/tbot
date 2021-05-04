@@ -15,7 +15,7 @@ pub use {id::Id, result::Result};
 #[non_exhaustive]
 pub struct InlineQuery {
     /// The ID of the query.
-    pub id: Id<'static>,
+    pub id: Id,
     /// The user who sent the query.
     pub from: User,
     /// The location of the user, if enabled and allowed.

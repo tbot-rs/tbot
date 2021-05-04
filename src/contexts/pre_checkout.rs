@@ -1,11 +1,8 @@
 use crate::{
     methods::AnswerPreCheckoutQuery,
-    types::{
-        pre_checkout_query, InteriorBorrow, OrderInfo, PreCheckoutQuery, User,
-    },
+    types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User},
     Bot,
 };
-use std::borrow::Cow;
 
 common! {
     /// The context for [`pre_checkout`][handler] handlers.
@@ -13,7 +10,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.pre_checkout
     struct PreCheckout {
         /// The ID of the query.
-        id: pre_checkout_query::Id<'static>,
+        id: pre_checkout_query::Id,
         /// The user who sent the query.
         from: User,
         /// The currency of of the invoice.
@@ -52,12 +49,11 @@ impl PreCheckout {
     ///
     /// [`ok`]: #method.ok
     /// [`err`]: #method.err
-    pub fn answer<'a>(
-        &'a self,
-        result: Result<(), impl Into<Cow<'a, str>>>,
-    ) -> AnswerPreCheckoutQuery<'a> {
-        self.bot
-            .answer_pre_checkout_query(self.id.borrow_inside(), result)
+    pub fn answer(
+        &self,
+        result: Result<(), impl Into<String>>,
+    ) -> AnswerPreCheckoutQuery<'_> {
+        self.bot.answer_pre_checkout_query(self.id.clone(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.
@@ -67,10 +63,7 @@ impl PreCheckout {
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(
-        &'a self,
-        err: impl Into<Cow<'a, str>>,
-    ) -> AnswerPreCheckoutQuery<'a> {
+    pub fn err(&self, err: impl Into<String>) -> AnswerPreCheckoutQuery<'_> {
         self.answer(Err(err))
     }
 }

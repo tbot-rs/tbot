@@ -15,14 +15,13 @@ use crate::{
         user, LabeledPrice,
     },
 };
-use std::borrow::Cow;
 
 /// Provides methods appliable to all messages.
 pub trait Message: fields::Message {
     /// Copies a message to this chat.
-    fn copy_here<'a>(
-        &'a self,
-        from_chat_id: impl ImplicitChatId<'a>,
+    fn copy_here(
+        &self,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> CopyMessage<'_> {
         self.bot()
@@ -30,9 +29,9 @@ pub trait Message: fields::Message {
     }
 
     /// Copies a message in reply to this message.
-    fn copy_here_in_reply<'a>(
-        &'a self,
-        from_chat_id: impl ImplicitChatId<'a>,
+    fn copy_here_in_reply(
+        &self,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> CopyMessage<'_> {
         self.bot()
@@ -61,11 +60,11 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the caption of a message in this group.
-    fn edit_message_caption<'a>(
-        &'a self,
+    fn edit_message_caption(
+        &self,
         message_id: message::Id,
-        caption: impl Into<Text<'a>>,
-    ) -> EditMessageCaption<'a> {
+        caption: impl Into<Text>,
+    ) -> EditMessageCaption<'_> {
         self.bot()
             .edit_message_caption(self.chat().id, message_id, caption)
     }
@@ -81,21 +80,21 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the media of a message in this group.
-    fn edit_message_media<'a>(
-        &'a self,
+    fn edit_message_media(
+        &self,
         message_id: message::Id,
-        media: impl Into<EditableMedia<'a>>,
-    ) -> EditMessageMedia<'a> {
+        media: impl Into<EditableMedia>,
+    ) -> EditMessageMedia<'_> {
         self.bot()
             .edit_message_media(self.chat().id, message_id, media)
     }
 
     /// Updates the reply markup of a message in this group.
-    fn edit_message_reply_markup<'a>(
-        &'a self,
+    fn edit_message_reply_markup(
+        &self,
         message_id: message::Id,
-        reply_markup: inline::Keyboard<'a>,
-    ) -> EditMessageReplyMarkup<'a> {
+        reply_markup: inline::Keyboard,
+    ) -> EditMessageReplyMarkup<'_> {
         self.bot().edit_message_reply_markup(
             self.chat().id,
             message_id,
@@ -104,11 +103,11 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the text of a message in this group.
-    fn edit_message_text<'a>(
-        &'a self,
+    fn edit_message_text(
+        &self,
         message_id: message::Id,
-        text: impl Into<Text<'a>>,
-    ) -> EditMessageText<'a> {
+        text: impl Into<Text>,
+    ) -> EditMessageText<'_> {
         self.bot()
             .edit_message_text(self.chat().id, message_id, text)
     }
@@ -119,11 +118,11 @@ pub trait Message: fields::Message {
     }
 
     /// Forwards a message to this chat.
-    fn forward_here<'a>(
-        &'a self,
-        from_chat_id: impl ImplicitChatId<'a>,
+    fn forward_here(
+        &self,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
-    ) -> ForwardMessage<'a> {
+    ) -> ForwardMessage<'_> {
         self.bot()
             .forward_message(self.chat().id, from_chat_id, message_id)
     }
@@ -192,70 +191,64 @@ pub trait Message: fields::Message {
     }
 
     /// Send an animation to this chat.
-    fn send_animation<'a>(
-        &'a self,
-        animation: Animation<'a>,
-    ) -> SendAnimation<'a> {
+    fn send_animation(&self, animation: Animation) -> SendAnimation<'_> {
         self.bot().send_animation(self.chat().id, animation)
     }
 
     /// Sends an animation in reply to this message.
-    fn send_animation_in_reply<'a>(
-        &'a self,
-        animation: Animation<'a>,
-    ) -> SendAnimation<'a> {
+    fn send_animation_in_reply(
+        &self,
+        animation: Animation,
+    ) -> SendAnimation<'_> {
         self.send_animation(animation)
             .in_reply_to(self.message_id())
     }
 
     /// Sends an audio to this chat.
-    fn send_audio<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio(&self, audio: Audio) -> SendAudio<'_> {
         self.bot().send_audio(self.chat().id, audio)
     }
 
     /// Sends an audio in reply to this message.
-    fn send_audio_in_reply<'a>(&'a self, audio: Audio<'a>) -> SendAudio<'a> {
+    fn send_audio_in_reply(&self, audio: Audio) -> SendAudio<'_> {
         self.send_audio(audio).in_reply_to(self.message_id())
     }
 
     /// Sends an action to this group.
-    fn send_chat_action(&self, action: chat::Action) -> SendChatAction {
+    fn send_chat_action(&self, action: chat::Action) -> SendChatAction<'_> {
         self.bot().send_chat_action(self.chat().id, action)
     }
 
     /// Sends a contact to this group.
-    fn send_contact<'a>(
-        &'a self,
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
-    ) -> SendContact<'a> {
+    fn send_contact(
+        &self,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
+    ) -> SendContact<'_> {
         self.bot()
             .send_contact(self.chat().id, phone_number, first_name)
     }
 
     /// Sends a contact in reply to this message.
-    fn send_contact_in_reply<'a>(
-        &'a self,
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
-    ) -> SendContact<'a> {
+    fn send_contact_in_reply(
+        &self,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
+    ) -> SendContact<'_> {
         self.send_contact(phone_number, first_name)
             .in_reply_to(self.message_id())
     }
 
     /// Sends a game to this chat.
-    fn send_game<'a>(
-        &'a self,
-        game_short_name: impl Into<Cow<'a, str>>,
-    ) -> SendGame<'a> {
+    fn send_game(&self, game_short_name: impl Into<String>) -> SendGame<'_> {
         self.bot().send_game(self.chat().id, game_short_name)
     }
 
     /// Sends a game in reply to this message.
-    fn send_game_in_reply<'a>(
-        &'a self,
-        game_short_name: impl Into<Cow<'a, str>>,
-    ) -> SendGame<'a> {
+    fn send_game_in_reply(
+        &self,
+        game_short_name: impl Into<String>,
+    ) -> SendGame<'_> {
         self.send_game(game_short_name)
             .in_reply_to(self.message_id())
     }
@@ -271,30 +264,27 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a document to this chat.
-    fn send_document<'a>(&'a self, document: Document<'a>) -> SendDocument<'a> {
+    fn send_document(&self, document: Document) -> SendDocument<'_> {
         self.bot().send_document(self.chat().id, document)
     }
 
     /// Sends a document in reply to this message.
-    fn send_document_in_reply<'a>(
-        &'a self,
-        document: Document<'a>,
-    ) -> SendDocument<'a> {
+    fn send_document_in_reply(&self, document: Document) -> SendDocument<'_> {
         self.send_document(document).in_reply_to(self.message_id())
     }
 
     /// Sends an invoice to this chat.
     #[allow(clippy::too_many_arguments)]
-    fn send_invoice<'a>(
-        &'a self,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
-        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
-    ) -> SendInvoice<'a> {
+    fn send_invoice(
+        &self,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
+        prices: impl Into<Vec<LabeledPrice>>,
+    ) -> SendInvoice<'_> {
         self.bot().send_invoice(
             self.chat().id,
             title,
@@ -309,16 +299,16 @@ pub trait Message: fields::Message {
 
     /// Sends an invoice in reply to this message.
     #[allow(clippy::too_many_arguments)]
-    fn send_invoice_in_reply<'a>(
-        &'a self,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
-        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
-    ) -> SendInvoice<'a> {
+    fn send_invoice_in_reply(
+        &self,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
+        prices: impl Into<Vec<LabeledPrice>>,
+    ) -> SendInvoice<'_> {
         self.send_invoice(
             title,
             description,
@@ -332,145 +322,133 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a location to this chat.
-    fn send_location(&self, location: (f64, f64)) -> SendLocation {
+    fn send_location(&self, location: (f64, f64)) -> SendLocation<'_> {
         self.bot().send_location(self.chat().id, location)
     }
 
     /// Sends a location in reply to this message.
-    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation {
+    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation<'_> {
         self.send_location(location).in_reply_to(self.message_id())
     }
 
     /// Sends an album to this chat.
-    fn send_media_group<'a>(
-        &'a self,
-        media: impl Into<MediaGroup<'a>>,
-    ) -> SendMediaGroup<'a> {
+    fn send_media_group(
+        &self,
+        media: impl Into<MediaGroup>,
+    ) -> SendMediaGroup<'_> {
         self.bot().send_media_group(self.chat().id, media)
     }
 
     /// Sends an album in reply to this message.
-    fn send_media_group_in_reply<'a>(
-        &'a self,
-        media: impl Into<MediaGroup<'a>>,
-    ) -> SendMediaGroup<'a> {
+    fn send_media_group_in_reply(
+        &self,
+        media: impl Into<MediaGroup>,
+    ) -> SendMediaGroup<'_> {
         self.send_media_group(media).in_reply_to(self.message_id())
     }
 
     /// Sends a message to this chat.
-    fn send_message<'a>(
-        &'a self,
-        text: impl Into<Text<'a>>,
-    ) -> SendMessage<'a> {
+    fn send_message(&self, text: impl Into<Text>) -> SendMessage<'_> {
         self.bot().send_message(self.chat().id, text)
     }
 
     /// Sends a message in reply to this message.
-    fn send_message_in_reply<'a>(
-        &'a self,
-        text: impl Into<Text<'a>>,
-    ) -> SendMessage<'a> {
+    fn send_message_in_reply(&self, text: impl Into<Text>) -> SendMessage<'_> {
         self.send_message(text).in_reply_to(self.message_id())
     }
 
     /// Sends a photo to this chat.
-    fn send_photo<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo(&self, photo: Photo) -> SendPhoto<'_> {
         self.bot().send_photo(self.chat().id, photo)
     }
 
     /// Sends a photo in reply to this message.
-    fn send_photo_in_reply<'a>(&'a self, photo: Photo<'a>) -> SendPhoto<'a> {
+    fn send_photo_in_reply(&self, photo: Photo) -> SendPhoto<'_> {
         self.send_photo(photo).in_reply_to(self.message_id())
     }
 
     /// Sends a poll to this chat.
-    fn send_poll<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
+    fn send_poll(&self, poll: poll::Any) -> SendPoll<'_> {
         self.bot().send_poll(self.chat().id, poll)
     }
 
     /// Sends a poll in reply to this message.
-    fn send_poll_in_reply<'a>(&'a self, poll: poll::Any<'a>) -> SendPoll<'a> {
+    fn send_poll_in_reply(&self, poll: poll::Any) -> SendPoll<'_> {
         self.send_poll(poll).in_reply_to(self.message_id())
     }
 
     /// Sends a sticker to this chat.
-    fn send_sticker<'a>(&'a self, sticker: Sticker<'a>) -> SendSticker<'a> {
+    fn send_sticker(&self, sticker: Sticker) -> SendSticker<'_> {
         self.bot().send_sticker(self.chat().id, sticker)
     }
 
     /// Sends a sticker in reply to this message.
-    fn send_sticker_in_reply<'a>(
-        &'a self,
-        sticker: Sticker<'a>,
-    ) -> SendSticker<'a> {
+    fn send_sticker_in_reply(&self, sticker: Sticker) -> SendSticker<'_> {
         self.send_sticker(sticker).in_reply_to(self.message_id())
     }
 
     /// Sends a venue to this chat.
-    fn send_venue<'a>(
-        &'a self,
+    fn send_venue(
+        &self,
         location: (f64, f64),
-        title: impl Into<Cow<'a, str>>,
-        address: impl Into<Cow<'a, str>>,
-    ) -> SendVenue<'a> {
+        title: impl Into<String>,
+        address: impl Into<String>,
+    ) -> SendVenue<'_> {
         self.bot()
             .send_venue(self.chat().id, location, title, address)
     }
 
     /// Sends a venue in reply to this message.
-    fn send_venue_in_reply<'a>(
-        &'a self,
+    fn send_venue_in_reply(
+        &self,
         location: (f64, f64),
-        title: impl Into<Cow<'a, str>>,
-        address: impl Into<Cow<'a, str>>,
-    ) -> SendVenue<'a> {
+        title: impl Into<String>,
+        address: impl Into<String>,
+    ) -> SendVenue<'_> {
         self.send_venue(location, title, address)
             .in_reply_to(self.message_id())
     }
 
     /// Sends a video to this chat.
-    fn send_video<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video(&self, video: Video) -> SendVideo<'_> {
         self.bot().send_video(self.chat().id, video)
     }
 
     /// Sends a video in reply to this message.
-    fn send_video_in_reply<'a>(&'a self, video: Video<'a>) -> SendVideo<'a> {
+    fn send_video_in_reply(&self, video: Video) -> SendVideo<'_> {
         self.send_video(video).in_reply_to(self.message_id())
     }
 
     /// Sends a video note to this chat.
-    fn send_video_note<'a>(
-        &'a self,
-        video_note: VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+    fn send_video_note(&self, video_note: VideoNote) -> SendVideoNote<'_> {
         self.bot().send_video_note(self.chat().id, video_note)
     }
 
     /// Sends a video note in reply to this message.
-    fn send_video_note_in_reply<'a>(
-        &'a self,
-        video_note: VideoNote<'a>,
-    ) -> SendVideoNote<'a> {
+    fn send_video_note_in_reply(
+        &self,
+        video_note: VideoNote,
+    ) -> SendVideoNote<'_> {
         self.send_video_note(video_note)
             .in_reply_to(self.message_id())
     }
 
     /// Sends a voice to this chat.
-    fn send_voice<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice(&self, voice: Voice) -> SendVoice<'_> {
         self.bot().send_voice(self.chat().id, voice)
     }
 
     /// Sends a voice in reply to this message.
-    fn send_voice_in_reply<'a>(&'a self, voice: Voice<'a>) -> SendVoice<'a> {
+    fn send_voice_in_reply(&self, voice: Voice) -> SendVoice<'_> {
         self.send_voice(voice).in_reply_to(self.message_id())
     }
 
     /// Sets a custom title for an admin in this chat.
-    fn set_chat_administrator_custom_title<'a>(
-        &'a self,
+    fn set_chat_administrator_custom_title(
+        &self,
         user_id: user::Id,
-        custom_title: impl Into<Cow<'a, str>>,
-    ) -> SetChatAdministratorCustomTitle<'a> {
+        custom_title: impl Into<String>,
+    ) -> SetChatAdministratorCustomTitle<'_> {
         self.bot().set_chat_administrator_custom_title(
             self.chat().id,
             user_id,
@@ -479,10 +457,10 @@ pub trait Message: fields::Message {
     }
 
     /// Sets a new description of this chat.
-    fn set_chat_description<'a>(
-        &'a self,
-        description: impl Into<Cow<'a, str>>,
-    ) -> SetChatDescription<'a> {
+    fn set_chat_description(
+        &self,
+        description: impl Into<String>,
+    ) -> SetChatDescription<'_> {
         self.bot().set_chat_description(self.chat().id, description)
     }
 
@@ -495,24 +473,21 @@ pub trait Message: fields::Message {
     }
 
     /// Sets a new photo of this chat.
-    fn set_chat_photo<'a>(&'a self, photo: ChatPhoto<'a>) -> SetChatPhoto<'a> {
+    fn set_chat_photo(&self, photo: ChatPhoto) -> SetChatPhoto<'_> {
         self.bot().set_chat_photo(self.chat().id, photo)
     }
 
     /// Sets a new sticker set of this chat.
-    fn set_chat_sticker_set<'a>(
-        &'a self,
-        sticker_set_name: impl Into<Cow<'a, str>>,
-    ) -> SetChatStickerSet<'a> {
+    fn set_chat_sticker_set(
+        &self,
+        sticker_set_name: impl Into<String>,
+    ) -> SetChatStickerSet<'_> {
         self.bot()
             .set_chat_sticker_set(self.chat().id, sticker_set_name)
     }
 
     /// Sets a new chat title of this chat.
-    fn set_chat_title<'a>(
-        &'a self,
-        title: impl Into<Cow<'a, str>>,
-    ) -> SetChatTitle<'a> {
+    fn set_chat_title(&self, title: impl Into<String>) -> SetChatTitle<'_> {
         self.bot().set_chat_title(self.chat().id, title)
     }
 

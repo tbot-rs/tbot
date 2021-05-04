@@ -19,7 +19,7 @@ use serde::Serialize;
 pub struct PromoteChatMember<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_change_info: Option<bool>,
@@ -44,7 +44,7 @@ pub struct PromoteChatMember<'a> {
 impl<'a> PromoteChatMember<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
     ) -> Self {
         Self {

@@ -9,7 +9,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Sends a contact.
 ///
@@ -21,28 +20,28 @@ use std::borrow::Cow;
 pub struct SendContact<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
-    phone_number: Cow<'a, str>,
-    first_name: Cow<'a, str>,
+    chat_id: ChatId,
+    phone_number: String,
+    first_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<Cow<'a, str>>,
+    last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<Cow<'a, str>>,
+    vcard: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
 }
 
 impl<'a> SendContact<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
+        chat_id: impl ImplicitChatId,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
     ) -> Self {
         Self {
             bot,
@@ -60,14 +59,14 @@ impl<'a> SendContact<'a> {
 
     /// Configures the last name of the contact.
     /// Reflects the `last_name` parameter.
-    pub fn last_name(mut self, last_name: impl Into<Cow<'a, str>>) -> Self {
+    pub fn last_name(mut self, last_name: impl Into<String>) -> Self {
         self.last_name = Some(last_name.into());
         self
     }
 
     /// Configures a VCard for the contact. Reflects the `vcard` parameter.
     #[allow(clippy::doc_markdown)] // no, I don't need to put VCard in backticks
-    pub fn vcard(mut self, vcard: impl Into<Cow<'a, str>>) -> Self {
+    pub fn vcard(mut self, vcard: impl Into<String>) -> Self {
         self.vcard = Some(vcard.into());
         self
     }
@@ -96,10 +95,7 @@ impl<'a> SendContact<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

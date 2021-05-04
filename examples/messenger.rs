@@ -57,11 +57,12 @@ impl State {
         }
     }
 
-    async fn notify(&self, bot: &Bot, room: &str, message: Text<'_>) {
+    async fn notify(&self, bot: &Bot, room: &str, message: Text) {
         let participants = self.participants(room).await;
 
         for id in participants {
-            let call_result = bot.send_message(id, &message).call().await;
+            let call_result =
+                bot.send_message(id, message.clone()).call().await;
 
             if let Err(err) = call_result {
                 dbg!(err);

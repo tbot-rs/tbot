@@ -16,12 +16,12 @@ const INTERVAL: Duration = Duration::from_secs(5);
 
 async fn send_chat_action_in_loop(
     bot: Bot,
-    chat_id: ChatId<'_>,
+    chat_id: ChatId,
     action: chat::Action,
 ) -> Result<Infallible, errors::MethodCall> {
     loop {
         let delay = sleep(INTERVAL);
-        bot.send_chat_action(&chat_id, action).call().await?;
+        bot.send_chat_action(chat_id.clone(), action).call().await?;
         delay.await;
     }
 }
@@ -39,19 +39,19 @@ pub trait ChatActionLoopBotExt: Sealed {
     /// and the chat action is no longer sent.
     ///
     /// [`select!`]: https://docs.rs/tokio/0.2.*/tokio/macro.select.html
-    fn send_chat_action_in_loop<'a>(
+    fn send_chat_action_in_loop(
         &self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         action: chat::Action,
-    ) -> BoxFuture<'a, Result<Infallible, errors::MethodCall>>;
+    ) -> BoxFuture<'_, Result<Infallible, errors::MethodCall>>;
 }
 
 impl ChatActionLoopBotExt for Bot {
-    fn send_chat_action_in_loop<'a>(
+    fn send_chat_action_in_loop(
         &self,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         action: chat::Action,
-    ) -> BoxFuture<'a, Result<Infallible, errors::MethodCall>> {
+    ) -> BoxFuture<'_, Result<Infallible, errors::MethodCall>> {
         let chat_id: ChatId = chat_id.into();
         Box::pin(send_chat_action_in_loop(self.clone(), chat_id, action))
     }

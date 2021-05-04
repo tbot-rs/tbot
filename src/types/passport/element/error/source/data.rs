@@ -1,9 +1,7 @@
 //! Types related to data passport errors.
 
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible element kinds for data error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -30,34 +28,24 @@ pub enum Kind {
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrordatafield
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Data<'a> {
+pub struct Data {
     #[serde(rename = "type")]
     kind: Kind,
-    field_name: Cow<'a, str>,
-    data_hash: Cow<'a, str>,
+    field_name: String,
+    data_hash: String,
 }
 
-impl<'a> Data<'a> {
+impl Data {
     /// Constructs a new `Data`.
     pub fn new(
         kind: Kind,
-        field_name: impl Into<Cow<'a, str>>,
-        data_hash: impl Into<Cow<'a, str>>,
+        field_name: impl Into<String>,
+        data_hash: impl Into<String>,
     ) -> Self {
         Self {
             kind,
             field_name: field_name.into(),
             data_hash: data_hash.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Data<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            field_name: self.field_name.borrow_inside(),
-            data_hash: self.data_hash.borrow_inside(),
-            ..*self
         }
     }
 }

@@ -1,33 +1,23 @@
 use super::{PngSticker, TgsSticker};
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 
 /// Represents a sticker that can be added to a sticker set.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
-pub enum StickerForStickerSet<'a> {
+pub enum StickerForStickerSet {
     /// A PNG sticker.
-    Png(PngSticker<'a>),
+    Png(PngSticker),
     /// A TGS (animated) sticker.
-    Tgs(TgsSticker<'a>),
+    Tgs(TgsSticker),
 }
 
-impl<'a> From<PngSticker<'a>> for StickerForStickerSet<'a> {
-    fn from(sticker: PngSticker<'a>) -> Self {
+impl From<PngSticker> for StickerForStickerSet {
+    fn from(sticker: PngSticker) -> Self {
         Self::Png(sticker)
     }
 }
 
-impl<'a> From<TgsSticker<'a>> for StickerForStickerSet<'a> {
-    fn from(sticker: TgsSticker<'a>) -> Self {
+impl From<TgsSticker> for StickerForStickerSet {
+    fn from(sticker: TgsSticker) -> Self {
         Self::Tgs(sticker)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for StickerForStickerSet<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Png(png_sticker) => Self::Png(png_sticker.borrow_inside()),
-            Self::Tgs(tgs_sticker) => Self::Tgs(tgs_sticker.borrow_inside()),
-        }
     }
 }

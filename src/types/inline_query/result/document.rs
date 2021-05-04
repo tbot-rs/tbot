@@ -6,11 +6,10 @@ use super::Thumb;
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InputMessageContent, InteriorBorrow,
+    InputMessageContent,
 };
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible MIME types for a fresh document.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -28,23 +27,23 @@ pub enum MimeType {
 /// Represents a non-cached document.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
+pub struct Fresh {
     #[serde(rename = "document_url")]
-    url: Cow<'a, str>,
+    url: String,
     mime_type: MimeType,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    thumb: Option<Thumb<'a>>,
+    thumb: Option<Thumb>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "document_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultDocument`]/[`InlineQueryResultCachedDocument`].
@@ -53,23 +52,23 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedDocument`]: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Document<'a> {
+pub struct Document {
     #[serde(flatten)]
-    kind: Kind<'a>,
-    title: Cow<'a, str>,
+    kind: Kind,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<Cow<'a, str>>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<Cow<'a, str>>,
+    caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` document.
-    pub fn new(url: impl Into<Cow<'a, str>>, mime_type: MimeType) -> Self {
+    pub fn new(url: impl Into<String>, mime_type: MimeType) -> Self {
         Self {
             url: url.into(),
             mime_type,
@@ -79,14 +78,14 @@ impl<'a> Fresh<'a> {
 
     /// Configures the thumb of the document.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
 }
 
-impl<'a> Document<'a> {
-    fn new(title: impl Into<Cow<'a, str>>, kind: Kind<'a>) -> Self {
+impl Document {
+    fn new(title: impl Into<String>, kind: Kind) -> Self {
         Self {
             kind,
             title: title.into(),
@@ -98,29 +97,23 @@ impl<'a> Document<'a> {
     }
 
     /// Constructs a cached `Document` result.
-    pub fn with_cached(
-        title: impl Into<Cow<'a, str>>,
-        id: file::Id<'a>,
-    ) -> Self {
+    pub fn with_cached(title: impl Into<String>, id: file::Id) -> Self {
         Self::new(title, Kind::Cached { id })
     }
 
     /// Constructs a fresh `Document` result.
-    pub fn with_fresh(
-        title: impl Into<Cow<'a, str>>,
-        document: Fresh<'a>,
-    ) -> Self {
+    pub fn with_fresh(title: impl Into<String>, document: Fresh) -> Self {
         Self::new(title, Kind::Fresh(document))
     }
 
     /// Configures the description of the result.
-    pub fn description(mut self, description: impl Into<Cow<'a, str>>) -> Self {
+    pub fn description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }
 
     /// Configures the caption of the document.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -131,43 +124,9 @@ impl<'a> Document<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Kind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Cached { id } => Self::Cached {
-                id: id.borrow_inside(),
-            },
-            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Document<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            kind: self.kind.borrow_inside(),
-            title: self.title.borrow_inside(),
-            description: self.description.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            ..*self
-        }
     }
 }

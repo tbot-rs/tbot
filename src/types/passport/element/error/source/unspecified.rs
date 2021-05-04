@@ -1,9 +1,7 @@
 //! Types related to unspecified errors.
 
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible element kinds for unspecified error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -44,27 +42,18 @@ pub enum Kind {
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorunspecified
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Unspecified<'a> {
+pub struct Unspecified {
     #[serde(rename = "type")]
     kind: Kind,
-    element_hash: Cow<'a, str>,
+    element_hash: String,
 }
 
-impl<'a> Unspecified<'a> {
+impl Unspecified {
     /// Constructs a new `Unspecified`.
-    pub fn new(kind: Kind, element_hash: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(kind: Kind, element_hash: impl Into<String>) -> Self {
         Self {
             kind,
             element_hash: element_hash.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Unspecified<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            element_hash: self.element_hash.borrow_inside(),
-            ..*self
         }
     }
 }

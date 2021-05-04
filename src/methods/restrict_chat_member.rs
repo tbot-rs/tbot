@@ -20,7 +20,7 @@ use serde::Serialize;
 pub struct RestrictChatMember<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     user_id: user::Id,
     permissions: chat::Permissions,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -30,7 +30,7 @@ pub struct RestrictChatMember<'a> {
 impl<'a> RestrictChatMember<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
         permissions: chat::Permissions,
     ) -> Self {

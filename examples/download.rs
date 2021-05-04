@@ -1,4 +1,4 @@
-use tbot::{types::InteriorBorrow, Bot};
+use tbot::Bot;
 
 #[tokio::main]
 async fn main() {
@@ -7,7 +7,7 @@ async fn main() {
     bot.document(|context| async move {
         let call_result = context
             .bot
-            .get_file(context.document.file_id.borrow_inside())
+            .get_file(context.document.file_id.clone())
             .call()
             .await;
         let file = match call_result {

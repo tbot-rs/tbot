@@ -21,16 +21,16 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineMedia<'a> {
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
-    media: EditableMedia<'a>,
-    reply_markup: Option<inline::Keyboard<'a>>,
+    inline_message_id: InlineMessageId,
+    media: EditableMedia,
+    reply_markup: Option<inline::Keyboard>,
 }
 
 impl<'a> EditInlineMedia<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
-        media: impl Into<EditableMedia<'a>>,
+        inline_message_id: InlineMessageId,
+        media: impl Into<EditableMedia>,
     ) -> Self {
         Self {
             bot,
@@ -42,7 +42,8 @@ impl<'a> EditInlineMedia<'a> {
 
     /// Configures an inline keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

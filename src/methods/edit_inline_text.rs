@@ -9,7 +9,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Edits the text of a message sent via the inline mode.
 ///
@@ -21,21 +20,21 @@ use std::borrow::Cow;
 pub struct EditInlineText<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
-    text: Cow<'a, str>,
+    inline_message_id: InlineMessageId,
+    text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<inline::Keyboard>,
 }
 
 impl<'a> EditInlineText<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
-        text: impl Into<Text<'a>>,
+        inline_message_id: InlineMessageId,
+        text: impl Into<Text>,
     ) -> Self {
         let text = text.into();
 
@@ -61,7 +60,8 @@ impl<'a> EditInlineText<'a> {
 
     /// Configures an inline keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

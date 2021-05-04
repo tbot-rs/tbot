@@ -18,15 +18,15 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SetChatPhoto<'a> {
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
-    photo: ChatPhoto<'a>,
+    chat_id: ChatId,
+    photo: ChatPhoto,
 }
 
 impl<'a> SetChatPhoto<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-        photo: ChatPhoto<'a>,
+        chat_id: impl ImplicitChatId,
+        photo: ChatPhoto,
     ) -> Self {
         Self {
             bot,
@@ -41,7 +41,7 @@ impl SetChatPhoto<'_> {
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         let chat_id = match self.chat_id {
             ChatId::Id(id) => id.to_string(),
-            ChatId::Username(username) => username.into(),
+            ChatId::Username(username) => username,
         };
 
         let mut multipart = Multipart::new(2).str("chat_id", &chat_id);

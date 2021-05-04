@@ -5,20 +5,19 @@
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InputMessageContent, InteriorBorrow,
+    InputMessageContent,
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents a non-cached audio.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Fresh<'a> {
+pub struct Fresh {
     #[serde(rename = "audio_url")]
-    url: Cow<'a, str>,
-    title: Cow<'a, str>,
+    url: String,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    performer: Option<Cow<'a, str>>,
+    performer: Option<String>,
     #[serde(
         rename = "audio_duration",
         skip_serializing_if = "Option::is_none"
@@ -29,12 +28,12 @@ pub struct Fresh<'a> {
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[serde(untagged)]
 #[must_use]
-enum Kind<'a> {
+enum Kind {
     Cached {
         #[serde(rename = "audio_file_id")]
-        id: file::Id<'a>,
+        id: file::Id,
     },
-    Fresh(Fresh<'a>),
+    Fresh(Fresh),
 }
 
 /// Represents an [`InlineQueryResultAudio`]/[`InlineQueryResultCachedAudio`].
@@ -43,23 +42,20 @@ enum Kind<'a> {
 /// [`InlineQueryResultCachedAudio`]: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Audio<'a> {
+pub struct Audio {
     #[serde(flatten)]
-    kind: Kind<'a>,
+    kind: Kind,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<Cow<'a, str>>,
+    caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent<'a>>,
+    input_message_content: Option<InputMessageContent>,
 }
 
-impl<'a> Fresh<'a> {
+impl Fresh {
     /// Constructs a `Fresh` audio.
-    pub fn new(
-        url: impl Into<Cow<'a, str>>,
-        title: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub fn new(url: impl Into<String>, title: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             title: title.into(),
@@ -69,7 +65,7 @@ impl<'a> Fresh<'a> {
     }
 
     /// Configures the performer of the audio.
-    pub fn performer(mut self, performer: impl Into<Cow<'a, str>>) -> Self {
+    pub fn performer(mut self, performer: impl Into<String>) -> Self {
         self.performer = Some(performer.into());
         self
     }
@@ -81,8 +77,8 @@ impl<'a> Fresh<'a> {
     }
 }
 
-impl<'a> Audio<'a> {
-    const fn new(kind: Kind<'a>) -> Self {
+impl Audio {
+    const fn new(kind: Kind) -> Self {
         Self {
             kind,
             caption: None,
@@ -92,17 +88,17 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs a cached `Audio` result.
-    pub const fn with_cached(id: file::Id<'a>) -> Self {
+    pub const fn with_cached(id: file::Id) -> Self {
         Self::new(Kind::Cached { id })
     }
 
     /// Constructs a fresh `Audio` result.
-    pub const fn with_fresh(audio: Fresh<'a>) -> Self {
+    pub const fn with_fresh(audio: Fresh) -> Self {
         Self::new(Kind::Fresh(audio))
     }
 
     /// Configures the caption of the audio.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -113,42 +109,9 @@ impl<'a> Audio<'a> {
     /// Configures the content shown after sending the message.
     pub fn input_message_content(
         mut self,
-        content: impl Into<InputMessageContent<'a>>,
+        content: impl Into<InputMessageContent>,
     ) -> Self {
         self.input_message_content = Some(content.into());
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            title: self.title.borrow_inside(),
-            performer: self.performer.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Kind<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Cached { id } => Self::Cached {
-                id: id.borrow_inside(),
-            },
-            Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Audio<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            kind: self.kind.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            input_message_content: self.input_message_content.borrow_inside(),
-            ..*self
-        }
     }
 }

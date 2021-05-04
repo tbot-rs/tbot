@@ -1,9 +1,8 @@
 use crate::{
     methods::AnswerShippingQuery,
-    types::{shipping, InteriorBorrow, User},
+    types::{shipping, User},
     Bot,
 };
-use std::borrow::Cow;
 
 common! {
     /// The context for [`shipping`][handler] handlers.
@@ -11,7 +10,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.shipping
     struct Shipping {
         /// The ID of the query.
-        id: shipping::query::Id<'static>,
+        id: shipping::query::Id,
         /// The user who sent the query.
         from: User,
         /// The invoice payload sent previously by the bot.
@@ -41,31 +40,24 @@ impl Shipping {
     ///
     /// [`ok`]: #method.ok
     /// [`err`]: #method.err
-    pub fn answer<'a>(
-        &'a self,
-        result: Result<
-            impl Into<Cow<'a, [shipping::Option<'a>]>>,
-            impl Into<Cow<'a, str>>,
-        >,
-    ) -> AnswerShippingQuery<'a> {
-        self.bot
-            .answer_shipping_query(self.id.borrow_inside(), result)
+    pub fn answer(
+        &self,
+        result: Result<impl Into<Vec<shipping::Option>>, impl Into<String>>,
+    ) -> AnswerShippingQuery<'_> {
+        self.bot.answer_shipping_query(self.id.clone(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.
-    pub fn ok<'a>(
-        &'a self,
-        options: impl Into<Cow<'a, [shipping::Option<'a>]>>,
-    ) -> AnswerShippingQuery<'a> {
+    pub fn ok(
+        &self,
+        options: impl Into<Vec<shipping::Option>>,
+    ) -> AnswerShippingQuery<'_> {
         let answer: Result<_, String> = Ok(options);
         self.answer(answer)
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(
-        &'a self,
-        err: impl Into<Cow<'a, str>>,
-    ) -> AnswerShippingQuery<'a> {
+    pub fn err(&self, err: impl Into<String>) -> AnswerShippingQuery<'_> {
         let answer: Result<Vec<_>, _> = Err(err);
         self.answer(answer)
     }

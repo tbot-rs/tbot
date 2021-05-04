@@ -14,7 +14,7 @@ pub use id::Id;
 #[non_exhaustive]
 pub struct PreCheckoutQuery {
     /// The ID of the query.
-    pub id: Id<'static>,
+    pub id: Id,
     /// The user who sent the query.
     pub from: User,
     /// The currency of of the invoice.

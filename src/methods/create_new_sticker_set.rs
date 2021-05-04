@@ -10,7 +10,6 @@ use crate::{
     },
     Multipart,
 };
-use std::borrow::Cow;
 
 /// Creates a new sticker set.
 ///
@@ -22,10 +21,10 @@ use std::borrow::Cow;
 pub struct CreateNewStickerSet<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
-    name: Cow<'a, str>,
-    title: Cow<'a, str>,
-    sticker: StickerForStickerSet<'a>,
-    emojis: Cow<'a, str>,
+    name: String,
+    title: String,
+    sticker: StickerForStickerSet,
+    emojis: String,
     contains_masks: Option<bool>,
     mask_position: Option<MaskPosition>,
 }
@@ -34,10 +33,10 @@ impl<'a> CreateNewStickerSet<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         user_id: user::Id,
-        name: impl Into<Cow<'a, str>>,
-        title: impl Into<Cow<'a, str>>,
-        sticker: impl Into<StickerForStickerSet<'a>>,
-        emojis: impl Into<Cow<'a, str>>,
+        name: impl Into<String>,
+        title: impl Into<String>,
+        sticker: impl Into<StickerForStickerSet>,
+        emojis: impl Into<String>,
     ) -> Self {
         Self {
             bot,

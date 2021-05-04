@@ -1,7 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors, types::parameters::BotCommand};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Sets the list of the bot's commands.
 ///
@@ -13,13 +12,13 @@ use std::borrow::Cow;
 pub struct SetMyCommands<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    commands: Cow<'a, [BotCommand<'a>]>,
+    commands: Vec<BotCommand>,
 }
 
 impl<'a> SetMyCommands<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        commands: impl Into<Cow<'a, [BotCommand<'a>]>>,
+        commands: impl Into<Vec<BotCommand>>,
     ) -> Self {
         Self {
             bot,

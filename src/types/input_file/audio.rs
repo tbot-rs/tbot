@@ -2,26 +2,24 @@ use super::{InputFile, Thumb};
 use crate::types::{
     file,
     parameters::{ParseMode, Text},
-    InteriorBorrow,
 };
 use serde::{ser::SerializeMap, Serialize, Serializer};
-use std::borrow::Cow;
 
 /// Represents an audio to be sent.
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-pub struct Audio<'a> {
-    pub(crate) media: InputFile<'a>,
-    pub(crate) thumb: Option<Thumb<'a>>,
-    pub(crate) caption: Option<Cow<'a, str>>,
+pub struct Audio {
+    pub(crate) media: InputFile,
+    pub(crate) thumb: Option<Thumb>,
+    pub(crate) caption: Option<String>,
     pub(crate) parse_mode: Option<ParseMode>,
     pub(crate) duration: Option<u32>,
-    pub(crate) performer: Option<Cow<'a, str>>,
-    pub(crate) title: Option<Cow<'a, str>>,
+    pub(crate) performer: Option<String>,
+    pub(crate) title: Option<String>,
 }
 
-impl<'a> Audio<'a> {
-    const fn new(media: InputFile<'a>) -> Self {
+impl Audio {
+    const fn new(media: InputFile) -> Self {
         Self {
             media,
             thumb: None,
@@ -34,7 +32,7 @@ impl<'a> Audio<'a> {
     }
 
     /// Constructs an `Audio` from bytes.
-    pub fn with_bytes(bytes: impl Into<Cow<'a, [u8]>>) -> Self {
+    pub fn with_bytes(bytes: impl Into<Vec<u8>>) -> Self {
         Self::new(InputFile::File {
             filename: "audio.mp3".into(),
             bytes: bytes.into(),
@@ -46,7 +44,7 @@ impl<'a> Audio<'a> {
     /// # Panics
     ///
     /// Panics if the ID starts with `attach://`.
-    pub fn with_id(id: file::Id<'a>) -> Self {
+    pub fn with_id(id: file::Id) -> Self {
         assert!(
             !id.0.starts_with("attach://"),
             "\n[tbot] Audio's ID cannot start with `attach://`\n",
@@ -60,7 +58,7 @@ impl<'a> Audio<'a> {
     /// # Panics
     ///
     /// Panics if the URL starts with `attach://`.
-    pub fn with_url(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn with_url(url: impl Into<String>) -> Self {
         let url = url.into();
         assert!(
             !url.starts_with("attach://"),
@@ -72,13 +70,13 @@ impl<'a> Audio<'a> {
 
     /// Configures `thumb`.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn thumb(mut self, thumb: Thumb<'a>) -> Self {
+    pub fn thumb(mut self, thumb: Thumb) -> Self {
         self.thumb = Some(thumb);
         self
     }
 
     /// Configures `caption`.
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -93,13 +91,13 @@ impl<'a> Audio<'a> {
     }
 
     /// Configures `performer`.
-    pub fn performer(mut self, performer: impl Into<Cow<'a, str>>) -> Self {
+    pub fn performer(mut self, performer: impl Into<String>) -> Self {
         self.performer = Some(performer.into());
         self
     }
 
     /// Configures `title`.
-    pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+    pub fn title(mut self, title: impl Into<String>) -> Self {
         self.title = Some(title.into());
         self
     }
@@ -141,20 +139,7 @@ impl<'a> Audio<'a> {
     }
 }
 
-impl<'a> InteriorBorrow<'a> for Audio<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            media: self.media.borrow_inside(),
-            thumb: self.thumb.borrow_inside(),
-            caption: self.caption.borrow_inside(),
-            performer: self.performer.borrow_inside(),
-            title: self.title.borrow_inside(),
-            ..*self
-        }
-    }
-}
-
-impl<'a> Serialize for Audio<'a> {
+impl Serialize for Audio {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

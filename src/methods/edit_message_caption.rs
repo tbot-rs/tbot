@@ -9,7 +9,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Edits the caption of a media message sent by the bot itself.
 ///
@@ -21,21 +20,21 @@ use std::borrow::Cow;
 pub struct EditMessageCaption<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
-    caption: Cow<'a, str>,
+    caption: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<inline::Keyboard>,
 }
 
 impl<'a> EditMessageCaption<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        caption: impl Into<Text<'a>>,
+        caption: impl Into<Text>,
     ) -> Self {
         let caption = caption.into();
 
@@ -51,7 +50,8 @@ impl<'a> EditMessageCaption<'a> {
 
     /// Configures an inline keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

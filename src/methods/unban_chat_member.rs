@@ -19,7 +19,7 @@ use serde::Serialize;
 pub struct UnbanChatMember<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     only_if_banned: Option<bool>,
@@ -28,7 +28,7 @@ pub struct UnbanChatMember<'a> {
 impl<'a> UnbanChatMember<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
     ) -> Self {
         Self {

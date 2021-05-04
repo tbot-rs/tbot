@@ -8,7 +8,6 @@ use crate::{
     },
 };
 use serde::{Deserialize, Serialize};
-use std::borrow::Cow;
 
 // Reflects the [`MessageId`][docs] type.
 //
@@ -28,11 +27,11 @@ struct MessageId {
 pub struct CopyMessage<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
-    from_chat_id: ChatId<'a>,
+    chat_id: ChatId,
+    from_chat_id: ChatId,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption: Option<Cow<'a, str>>,
+    caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,14 +40,14 @@ pub struct CopyMessage<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<message::Id>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
 }
 
 impl<'a> CopyMessage<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-        from_chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
+        from_chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> Self {
         Self {
@@ -68,7 +67,7 @@ impl<'a> CopyMessage<'a> {
     /// Replaces the original caption with the provided one.
     /// Reflects the `caption` and `parse_mode` parameters.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+    pub fn caption(mut self, caption: impl Into<Text>) -> Self {
         let caption = caption.into();
 
         self.caption = Some(caption.text);
@@ -100,10 +99,7 @@ impl<'a> CopyMessage<'a> {
 
     // Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

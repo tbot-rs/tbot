@@ -8,7 +8,7 @@ use serde::Deserialize;
 #[non_exhaustive]
 pub struct Document {
     /// The file ID of the document.
-    pub file_id: file::Id<'static>,
+    pub file_id: file::Id,
     /// The unique ID of the document.
     pub file_unique_id: String,
     /// The thumb of the document.

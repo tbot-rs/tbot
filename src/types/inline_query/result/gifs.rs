@@ -1,6 +1,3 @@
-use crate::types::InteriorBorrow;
-use std::borrow::Cow;
-
 macro_rules! doc {
     (
         $doc:expr,
@@ -12,15 +9,15 @@ macro_rules! doc {
 }
 
 /// Represents a `Fresh` GIF's thumb.
-pub struct GifThumb<'a> {
-    url: Cow<'a, str>,
+pub struct GifThumb {
+    url: String,
     mime: &'static str,
 }
 
-impl<'a> GifThumb<'a> {
+impl GifThumb {
     /// Constructs a JPEG thumb.
     #[must_use]
-    pub fn jpeg(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn jpeg(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             mime: "image/jpeg",
@@ -29,7 +26,7 @@ impl<'a> GifThumb<'a> {
 
     /// Constructs a GIF thumb.
     #[must_use]
-    pub fn gif(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn gif(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             mime: "image/gif",
@@ -38,7 +35,7 @@ impl<'a> GifThumb<'a> {
 
     /// Constructs a MP4 thumb.
     #[must_use]
-    pub fn mp4(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn mp4(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             mime: "video/mp4",
@@ -46,18 +43,9 @@ impl<'a> GifThumb<'a> {
     }
 }
 
-impl<'a> From<&'a str> for GifThumb<'a> {
-    fn from(url: &'a str) -> Self {
+impl<T: Into<String>> From<T> for GifThumb {
+    fn from(url: T) -> Self {
         Self::jpeg(url)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for GifThumb<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            ..*self
-        }
     }
 }
 
@@ -74,20 +62,19 @@ macro_rules! gif_base {
     ) => {
         use super::GifThumb;
         use crate::types::{
-            InteriorBorrow, InputMessageContent, file,
+            InputMessageContent, file,
             parameters::{ParseMode, Text},
         };
         use serde::Serialize;
-        use std::borrow::Cow;
 
         /// Represents a non-cached GIF.
         #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[must_use]
-        pub struct Fresh<'a> {
-            thumb_url: Cow<'a, str>,
+        pub struct Fresh {
+            thumb_url: String,
             thumb_mime_type: &'static str,
             #[serde(rename = $url)]
-            url: Cow<'a, str>,
+            url: String,
             #[serde(
                 skip_serializing_if = "Option::is_none",
                 rename = $width
@@ -108,12 +95,12 @@ macro_rules! gif_base {
         #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
         #[serde(untagged)]
         #[must_use]
-        enum Kind<'a> {
+        enum Kind {
             Cached {
                 #[serde(rename = $file_id)]
-                id: file::Id<'a>,
+                id: file::Id,
             },
-            Fresh(Fresh<'a>),
+            Fresh(Fresh),
         }
 
         doc! {
@@ -130,23 +117,23 @@ macro_rules! gif_base {
             ),
             #[derive(Debug, PartialEq, Clone, Serialize)]
             #[must_use]
-            pub struct $struct<'a> {
+            pub struct $struct {
                 #[serde(flatten)]
-                kind: Kind<'a>,
+                kind: Kind,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                title: Option<Cow<'a, str>>,
+                title: Option<String>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                caption: Option<Cow<'a, str>>,
+                caption: Option<String>,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 parse_mode: Option<ParseMode>,
                 #[serde(skip_serializing_if = "Option::is_none")]
-                input_message_content: Option<InputMessageContent<'a>>,
+                input_message_content: Option<InputMessageContent>,
             }
         }
 
-        impl<'a> Fresh<'a> {
+        impl Fresh {
             /// Constructs a `Fresh` GIF.
-            pub fn new(thumb: impl Into<GifThumb<'a>>, url: impl Into<Cow<'a, str>>) -> Self {
+            pub fn new(thumb: impl Into<GifThumb>, url: impl Into<String>) -> Self {
                 let thumb = thumb.into();
 
                 Self {
@@ -178,8 +165,8 @@ macro_rules! gif_base {
             }
         }
 
-        impl<'a> $struct<'a> {
-            const fn new(kind: Kind<'a>) -> Self {
+        impl $struct {
+            const fn new(kind: Kind) -> Self {
                 Self {
                     kind,
                     title: None,
@@ -193,7 +180,7 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a cached `", stringify!($struct), "` result.",
                 ),
-                pub const fn with_cached(id: file::Id<'a>) -> Self {
+                pub const fn with_cached(id: file::Id) -> Self {
                     Self::new(Kind::Cached { id })
                 }
             }
@@ -202,19 +189,19 @@ macro_rules! gif_base {
                 concat!(
                     "Constructs a fresh `", stringify!($struct), "` result.",
                 ),
-                pub const fn with_fresh(gif: Fresh<'a>) -> Self {
+                pub const fn with_fresh(gif: Fresh) -> Self {
                     Self::new(Kind::Fresh(gif))
                 }
             }
 
             /// Configures the title of the GIF.
-            pub fn title(mut self, title: impl Into<Cow<'a, str>>) -> Self {
+            pub fn title(mut self, title: impl Into<String>) -> Self {
                 self.title = Some(title.into());
                 self
             }
 
             /// Configures the caption of the GIF.
-            pub fn caption(mut self, caption: impl Into<Text<'a>>) -> Self {
+            pub fn caption(mut self, caption: impl Into<Text>) -> Self {
                 let caption = caption.into();
 
                 self.caption = Some(caption.text.into());
@@ -225,43 +212,10 @@ macro_rules! gif_base {
             /// Configures the content shown after sending the message.
             pub fn input_message_content(
                 mut self,
-                content: impl Into<InputMessageContent<'a>>,
+                content: impl Into<InputMessageContent>,
             ) -> Self {
                 self.input_message_content = Some(content.into());
                 self
-            }
-        }
-
-        impl<'a> InteriorBorrow<'a> for Fresh<'a> {
-            fn borrow_inside(&'a self) -> Self {
-                Self {
-                    thumb_url: self.thumb_url.borrow_inside(),
-                    url: self.url.borrow_inside(),
-                    ..*self
-                }
-            }
-        }
-
-        impl<'a> InteriorBorrow<'a> for Kind<'a> {
-            fn borrow_inside(&'a self) -> Self {
-                match self {
-                    Self::Cached { id } => Self::Cached {
-                        id: id.borrow_inside(),
-                    },
-                    Self::Fresh(fresh) => Self::Fresh(fresh.borrow_inside()),
-                }
-            }
-        }
-
-        impl<'a> InteriorBorrow<'a> for $struct<'a> {
-            fn borrow_inside(&'a self) -> Self {
-                Self {
-                    kind: self.kind.borrow_inside(),
-                    title: self.title.borrow_inside(),
-                    caption: self.caption.borrow_inside(),
-                    input_message_content: self.input_message_content.borrow_inside(),
-                    ..*self
-                }
             }
         }
     };

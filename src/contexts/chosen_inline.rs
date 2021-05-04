@@ -15,7 +15,7 @@ common! {
         /// The location of the user, if enabled and allowed.
         location: Option<Location>,
         /// The ID of the sent message.
-        inline_message_id: Option<InlineMessageId<'static>>,
+        inline_message_id: Option<InlineMessageId>,
         /// The query used to obtain the result.
         query: String,
     }

@@ -9,7 +9,6 @@ use crate::{
     },
     Multipart,
 };
-use std::borrow::Cow;
 
 /// Sets the thumb of a sticker set.
 ///
@@ -21,16 +20,16 @@ use std::borrow::Cow;
 pub struct SetStickerSetThumb<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
-    name: Cow<'a, str>,
-    thumb: Option<&'a StickerSetThumb<'a>>,
+    name: String,
+    thumb: Option<StickerSetThumb>,
 }
 
 impl<'a> SetStickerSetThumb<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         user_id: user::Id,
-        name: impl Into<Cow<'a, str>>,
-        thumb: Option<&'a StickerSetThumb<'a>>,
+        name: impl Into<String>,
+        thumb: Option<StickerSetThumb>,
     ) -> Self {
         Self {
             bot,
@@ -48,7 +47,7 @@ impl SetStickerSetThumb<'_> {
             .string("user_id", &self.user_id)
             .str("name", &self.name);
 
-        if let Some(thumb) = self.thumb {
+        if let Some(thumb) = &self.thumb {
             match &thumb.media {
                 InputFile::File {
                     filename, bytes, ..

@@ -18,7 +18,7 @@ pub struct SetInlineGameScore<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
     score: u32,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28,7 +28,7 @@ pub struct SetInlineGameScore<'a> {
 impl<'a> SetInlineGameScore<'a> {
     pub(crate) const fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
         user_id: user::Id,
         score: u32,
     ) -> Self {

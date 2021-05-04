@@ -19,7 +19,7 @@ use serde::Serialize;
 pub struct KickChatMember<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<i64>,
@@ -28,7 +28,7 @@ pub struct KickChatMember<'a> {
 impl<'a> KickChatMember<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         user_id: user::Id,
     ) -> Self {
         Self {

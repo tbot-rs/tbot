@@ -49,7 +49,7 @@ async fn main() {
     });
 
     bot.command("album", |context| async move {
-        let album: &[PhotoOrVideo] = &[
+        let album: Vec<PhotoOrVideo> = vec![
             Photo::with_bytes(PHOTO).into(),
             Video::with_bytes(GIF).into(),
         ];

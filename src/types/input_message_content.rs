@@ -1,6 +1,5 @@
 //! Types related to input message contents.
 
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
 
@@ -17,52 +16,41 @@ pub use {contact::Contact, location::Location, text::Text, venue::Venue};
 #[derive(Debug, PartialEq, Clone, Serialize, Is)]
 #[serde(untagged)]
 #[non_exhaustive]
-pub enum InputMessageContent<'a> {
+pub enum InputMessageContent {
     /// A text message.
-    Text(Text<'a>),
+    Text(Text),
     /// A location.
     Location(Location),
     /// A venue.
-    Venue(Venue<'a>),
+    Venue(Venue),
     /// A contact.
-    Contact(Contact<'a>),
+    Contact(Contact),
 }
 
-impl<'a> From<Text<'a>> for InputMessageContent<'a> {
+impl From<Text> for InputMessageContent {
     #[must_use]
-    fn from(text: Text<'a>) -> Self {
-        InputMessageContent::Text(text)
+    fn from(text: Text) -> Self {
+        Self::Text(text)
     }
 }
 
-impl<'a> From<Location> for InputMessageContent<'a> {
+impl From<Location> for InputMessageContent {
     #[must_use]
     fn from(location: Location) -> Self {
-        InputMessageContent::Location(location)
+        Self::Location(location)
     }
 }
 
-impl<'a> From<Venue<'a>> for InputMessageContent<'a> {
+impl From<Venue> for InputMessageContent {
     #[must_use]
-    fn from(venue: Venue<'a>) -> Self {
-        InputMessageContent::Venue(venue)
+    fn from(venue: Venue) -> Self {
+        Self::Venue(venue)
     }
 }
 
-impl<'a> From<Contact<'a>> for InputMessageContent<'a> {
+impl From<Contact> for InputMessageContent {
     #[must_use]
-    fn from(contact: Contact<'a>) -> Self {
-        InputMessageContent::Contact(contact)
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for InputMessageContent<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        match self {
-            Self::Text(text) => Self::Text(text.borrow_inside()),
-            Self::Location(location) => Self::Location(*location),
-            Self::Venue(venue) => Self::Venue(venue.borrow_inside()),
-            Self::Contact(contact) => Self::Contact(contact.borrow_inside()),
-        }
+    fn from(contact: Contact) -> Self {
+        Self::Contact(contact)
     }
 }

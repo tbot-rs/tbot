@@ -9,7 +9,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Sends a text message.
 ///
@@ -21,8 +20,8 @@ use std::borrow::Cow;
 pub struct SendMessage<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
-    text: Cow<'a, str>,
+    chat_id: ChatId,
+    text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,14 +32,14 @@ pub struct SendMessage<'a> {
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
 }
 
 impl<'a> SendMessage<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-        text: impl Into<Text<'a>>,
+        chat_id: impl ImplicitChatId,
+        text: impl Into<Text>,
     ) -> Self {
         let text = text.into();
 
@@ -91,10 +90,7 @@ impl<'a> SendMessage<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

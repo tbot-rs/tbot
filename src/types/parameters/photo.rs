@@ -1,13 +1,11 @@
-use crate::types::InteriorBorrow;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents a photo to be sent as an invoice preview.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Photo<'a> {
+pub struct Photo {
     #[serde(rename = "photo_url")]
-    url: Cow<'a, str>,
+    url: String,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_size")]
     size: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none", rename = "photo_width")]
@@ -16,9 +14,9 @@ pub struct Photo<'a> {
     height: Option<usize>,
 }
 
-impl<'a> Photo<'a> {
+impl Photo {
     /// Constructs a `Photo`.
-    pub fn new(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             size: None,
@@ -43,14 +41,5 @@ impl<'a> Photo<'a> {
     pub const fn height(mut self, height: usize) -> Self {
         self.height = Some(height);
         self
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for Photo<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            url: self.url.borrow_inside(),
-            ..*self
-        }
     }
 }

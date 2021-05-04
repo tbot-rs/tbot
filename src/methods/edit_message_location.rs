@@ -24,7 +24,7 @@ use std::{
 pub struct EditMessageLocation<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
     latitude: f64,
     longitude: f64,
@@ -35,13 +35,13 @@ pub struct EditMessageLocation<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<NonZeroU32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<inline::Keyboard>,
 }
 
 impl<'a> EditMessageLocation<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         (latitude, longitude): (f64, f64),
     ) -> Self {
@@ -116,7 +116,8 @@ impl<'a> EditMessageLocation<'a> {
 
     /// Configures an inline keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

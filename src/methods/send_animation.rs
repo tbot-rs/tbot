@@ -21,19 +21,19 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct SendAnimation<'a> {
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
-    animation: Animation<'a>,
+    chat_id: ChatId,
+    animation: Animation,
     disable_notification: Option<bool>,
     reply_to_message_id: Option<message::Id>,
-    reply_markup: Option<keyboard::Any<'a>>,
+    reply_markup: Option<keyboard::Any>,
     allow_sending_without_reply: bool,
 }
 
 impl<'a> SendAnimation<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-        animation: Animation<'a>,
+        chat_id: impl ImplicitChatId,
+        animation: Animation,
     ) -> Self {
         Self {
             bot,
@@ -70,10 +70,7 @@ impl<'a> SendAnimation<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub fn reply_markup(
-        mut self,
-        markup: impl Into<keyboard::Any<'a>>,
-    ) -> Self {
+    pub fn reply_markup(mut self, markup: impl Into<keyboard::Any>) -> Self {
         self.reply_markup = Some(markup.into());
         self
     }

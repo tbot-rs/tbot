@@ -19,14 +19,14 @@ use serde::Serialize;
 pub struct DeleteMessage<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
 }
 
 impl<'a> DeleteMessage<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
     ) -> Self {
         Self {

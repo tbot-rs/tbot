@@ -22,7 +22,7 @@ pub struct SetMessageGameScore<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
     score: u32,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
     message_id: message::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
@@ -33,7 +33,7 @@ pub struct SetMessageGameScore<'a> {
 impl<'a> SetMessageGameScore<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
+        chat_id: impl ImplicitChatId,
         message_id: message::Id,
         user_id: user::Id,
         score: u32,

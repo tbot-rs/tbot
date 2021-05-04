@@ -11,7 +11,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Sends an invoice.
 ///
@@ -24,17 +23,17 @@ pub struct SendInvoice<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     chat_id: chat::Id,
-    title: Cow<'a, str>,
-    description: Cow<'a, str>,
-    payload: Cow<'a, str>,
-    provider_token: Cow<'a, str>,
-    start_parameter: Cow<'a, str>,
-    currency: Cow<'a, str>,
-    prices: Cow<'a, [LabeledPrice<'a>]>,
+    title: String,
+    description: String,
+    payload: String,
+    provider_token: String,
+    start_parameter: String,
+    currency: String,
+    prices: Vec<LabeledPrice>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    provider_data: Option<Cow<'a, str>>,
+    provider_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
-    photo: Option<Photo<'a>>,
+    photo: Option<Photo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     need_name: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,7 +54,7 @@ pub struct SendInvoice<'a> {
     reply_to_message_id: Option<message::Id>,
     allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<inline::Keyboard>,
 }
 
 impl<'a> SendInvoice<'a> {
@@ -63,13 +62,13 @@ impl<'a> SendInvoice<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl Into<chat::Id>,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
-        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
+        prices: impl Into<Vec<LabeledPrice>>,
     ) -> Self {
         Self {
             bot,
@@ -99,10 +98,7 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures data for your payment provider.
     /// Reflects the `provider_data` parameter.
-    pub fn provider_data(
-        mut self,
-        provider_data: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub fn provider_data(mut self, provider_data: impl Into<String>) -> Self {
         self.provider_data = Some(provider_data.into());
         self
     }
@@ -110,7 +106,7 @@ impl<'a> SendInvoice<'a> {
     /// Configures a photo for the invoice.
     /// Reflects the `photo_url`, `photo_width` and `photo_height` parameters.
     #[allow(clippy::missing_const_for_fn)]
-    pub fn photo(mut self, photo: Photo<'a>) -> Self {
+    pub fn photo(mut self, photo: Photo) -> Self {
         self.photo = Some(photo);
         self
     }
@@ -194,7 +190,8 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures a keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

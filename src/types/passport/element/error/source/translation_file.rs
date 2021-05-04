@@ -1,9 +1,7 @@
 //! Types related to translation file errors.
 
-use crate::types::InteriorBorrow;
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible element kinds for translation error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -36,27 +34,18 @@ pub enum Kind {
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrortranslationfile
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct TranslationFile<'a> {
+pub struct TranslationFile {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hash: Cow<'a, str>,
+    file_hash: String,
 }
 
-impl<'a> TranslationFile<'a> {
+impl TranslationFile {
     /// Constructs a new `TranslationFile`.
-    pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(kind: Kind, file_hash: impl Into<String>) -> Self {
         Self {
             kind,
             file_hash: file_hash.into(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for TranslationFile<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            file_hash: self.file_hash.borrow_inside(),
-            ..*self
         }
     }
 }
@@ -66,31 +55,18 @@ impl<'a> InteriorBorrow<'a> for TranslationFile<'a> {
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrortranslationfiles
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct TranslationFiles<'a> {
+pub struct TranslationFiles {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hashes: Vec<Cow<'a, str>>,
+    file_hashes: Vec<String>,
 }
 
-impl<'a> TranslationFiles<'a> {
+impl TranslationFiles {
     /// Constructs new `TranslationFiles`.
-    pub fn new<F>(kind: Kind, file_hashes: F) -> Self
-    where
-        F: IntoIterator,
-        F::Item: Into<Cow<'a, str>>,
-    {
+    pub fn new(kind: Kind, file_hashes: impl Into<Vec<String>>) -> Self {
         Self {
             kind,
-            file_hashes: file_hashes.into_iter().map(Into::into).collect(),
-        }
-    }
-}
-
-impl<'a> InteriorBorrow<'a> for TranslationFiles<'a> {
-    fn borrow_inside(&'a self) -> Self {
-        Self {
-            file_hashes: self.file_hashes.borrow_inside(),
-            ..*self
+            file_hashes: file_hashes.into(),
         }
     }
 }

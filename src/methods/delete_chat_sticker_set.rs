@@ -16,14 +16,11 @@ use serde::Serialize;
 pub struct DeleteChatStickerSet<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    chat_id: ChatId<'a>,
+    chat_id: ChatId,
 }
 
 impl<'a> DeleteChatStickerSet<'a> {
-    pub(crate) fn new(
-        bot: &'a InnerBot,
-        chat_id: impl ImplicitChatId<'a>,
-    ) -> Self {
+    pub(crate) fn new(bot: &'a InnerBot, chat_id: impl ImplicitChatId) -> Self {
         Self {
             bot,
             chat_id: chat_id.into(),
