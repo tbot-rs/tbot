@@ -1,6 +1,6 @@
 //! Types representing inline keyboards.
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 pub mod button;
 
@@ -12,7 +12,7 @@ pub type Markup = Vec<Vec<Button>>;
 /// Represents an [`InlineKeyboardMarkup`].
 ///
 /// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize, Deserialize)]
 #[must_use]
 pub struct Keyboard {
     inline_keyboard: Markup,

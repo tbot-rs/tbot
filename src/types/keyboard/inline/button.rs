@@ -2,7 +2,11 @@
 
 use crate::types::{callback::Game, LoginUrl};
 use is_macro::Is;
-use serde::ser::{Serialize, SerializeMap, Serializer};
+use serde::{
+    de::{self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor},
+    ser::{Serialize, SerializeMap, Serializer},
+};
+use std::fmt::{self, Formatter};
 
 /// Represents different types an inline button can be.
 ///
@@ -118,5 +122,100 @@ impl Serialize for Button {
         }?;
 
         map.end()
+    }
+}
+
+const TEXT: &str = "text";
+const URL: &str = "url";
+const CALLBACK_DATA: &str = "callback_data";
+const SWITCH_INLINE_QUERY: &str = "switch_inline_query";
+const SWITCH_INLINE_QUERY_CURRENT_CHAT: &str =
+    "switch_inline_query_current_chat";
+const CALLBACK_GAME: &str = "callback_game";
+const PAY: &str = "pay";
+
+struct ButtonVisitor;
+
+impl<'v> Visitor<'v> for ButtonVisitor {
+    type Value = Button;
+
+    fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
+        write!(fmt, "struct Button")
+    }
+
+    fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
+    where
+        V: MapAccess<'v>,
+    {
+        let mut text = None;
+        let mut url = None;
+        let mut callback_data = None;
+        let mut switch_inline_query = None;
+        let mut switch_inline_query_current_chat = None;
+        let mut callback_game = None;
+        let mut pay = None;
+
+        while let Some(key) = map.next_key()? {
+            match key {
+                TEXT => text = Some(map.next_value()?),
+                URL => url = Some(map.next_value()?),
+                CALLBACK_DATA => callback_data = Some(map.next_value()?),
+                SWITCH_INLINE_QUERY => {
+                    switch_inline_query = Some(map.next_value()?)
+                }
+                SWITCH_INLINE_QUERY_CURRENT_CHAT => {
+                    switch_inline_query_current_chat = Some(map.next_value()?)
+                }
+                CALLBACK_GAME => callback_game = Some(map.next_value()?),
+                PAY => pay = Some(map.next_value()?),
+                _ => {
+                    let _ = map.next_value::<IgnoredAny>()?;
+                }
+            }
+        }
+
+        let kind = if let Some(url) = url {
+            Kind::Url(url)
+        } else if let Some(callback_data) = callback_data {
+            Kind::CallbackData(callback_data)
+        } else if let Some(callback_game) = callback_game {
+            Kind::CallbackGame(callback_game)
+        } else if let Some(switch_inline_query) = switch_inline_query {
+            Kind::SwitchInlineQuery(switch_inline_query)
+        } else if let Some(switch_inline_query_current_chat) =
+            switch_inline_query_current_chat
+        {
+            Kind::SwitchInlineQueryCurrentChat(switch_inline_query_current_chat)
+        } else if pay.is_some() {
+            Kind::Pay
+        } else {
+            return Err(de::Error::custom("Could not construct Button's kind"));
+        };
+
+        Ok(Button {
+            text: text.ok_or_else(|| de::Error::missing_field(TEXT))?,
+            kind,
+        })
+    }
+}
+
+impl<'de> Deserialize<'de> for Button {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_struct(
+            "Button",
+            &[
+                TEXT,
+                URL,
+                CALLBACK_DATA,
+                SWITCH_INLINE_QUERY,
+                SWITCH_INLINE_QUERY_CURRENT_CHAT,
+                CALLBACK_GAME,
+                PAY,
+            ],
+            ButtonVisitor,
+        )
     }
 }
