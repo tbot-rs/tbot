@@ -1,5 +1,4 @@
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents an [`LabeledPrice`].
 ///
@@ -7,14 +6,14 @@ use std::borrow::Cow;
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[non_exhaustive]
 #[must_use]
-pub struct LabeledPrice<'a> {
-    label: Cow<'a, str>,
+pub struct LabeledPrice {
+    label: String,
     amount: u32,
 }
 
-impl<'a> LabeledPrice<'a> {
+impl LabeledPrice {
     /// Constructs a `LabeledPrice`.
-    pub fn new(label: impl Into<Cow<'a, str>>, amount: u32) -> Self {
+    pub fn new(label: impl Into<String>, amount: u32) -> Self {
         Self {
             label: label.into(),
             amount,

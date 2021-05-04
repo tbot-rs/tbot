@@ -10,7 +10,7 @@ use std::borrow::Cow;
 pub struct Option<'a> {
     id: Cow<'a, str>,
     title: Cow<'a, str>,
-    prices: Cow<'a, [LabeledPrice<'a>]>,
+    prices: Cow<'a, [LabeledPrice]>,
 }
 
 impl<'a> Option<'a> {
@@ -18,7 +18,7 @@ impl<'a> Option<'a> {
     pub fn new(
         id: impl Into<Cow<'a, str>>,
         title: impl Into<Cow<'a, str>>,
-        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
+        prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> Self {
         Self {
             id: id.into(),

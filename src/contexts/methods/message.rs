@@ -287,7 +287,7 @@ pub trait Message: fields::Message {
         provider_token: impl Into<Cow<'a, str>>,
         start_parameter: impl Into<Cow<'a, str>>,
         currency: impl Into<Cow<'a, str>>,
-        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
+        prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> SendInvoice<'a> {
         self.bot().send_invoice(
             self.chat().id,
@@ -311,7 +311,7 @@ pub trait Message: fields::Message {
         provider_token: impl Into<Cow<'a, str>>,
         start_parameter: impl Into<Cow<'a, str>>,
         currency: impl Into<Cow<'a, str>>,
-        prices: impl Into<Cow<'a, [LabeledPrice<'a>]>>,
+        prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> SendInvoice<'a> {
         self.send_invoice(
             title,
