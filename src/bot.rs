@@ -199,7 +199,7 @@ impl Bot {
 
     pub(crate) fn answer_pre_checkout_query<'a>(
         &'a self,
-        pre_checkout_query_id: pre_checkout_query::Id<'a>,
+        pre_checkout_query_id: pre_checkout_query::Id,
         result: Result<(), impl Into<Cow<'a, str>>>,
     ) -> AnswerPreCheckoutQuery<'a> {
         AnswerPreCheckoutQuery::new(&self.inner, pre_checkout_query_id, result)

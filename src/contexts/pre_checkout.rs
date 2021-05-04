@@ -11,7 +11,7 @@ common! {
     /// [handler]: ../event_loop/struct.EventLoop.html#method.pre_checkout
     struct PreCheckout {
         /// The ID of the query.
-        id: pre_checkout_query::Id<'static>,
+        id: pre_checkout_query::Id,
         /// The user who sent the query.
         from: User,
         /// The currency of of the invoice.
