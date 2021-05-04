@@ -5,7 +5,6 @@ use crate::{
     types::{user, File},
     Multipart,
 };
-use std::borrow::Cow;
 
 /// Uploads a sticker file.
 ///
@@ -17,14 +16,14 @@ use std::borrow::Cow;
 pub struct UploadStickerFile<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
-    png_sticker: Cow<'a, [u8]>,
+    png_sticker: Vec<u8>,
 }
 
 impl<'a> UploadStickerFile<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         user_id: user::Id,
-        png_sticker: impl Into<Cow<'a, [u8]>>,
+        png_sticker: impl Into<Vec<u8>>,
     ) -> Self {
         Self {
             bot,

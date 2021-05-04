@@ -3,7 +3,6 @@ use crate::{
     types::{shipping, User},
     Bot,
 };
-use std::borrow::Cow;
 
 common! {
     /// The context for [`shipping`][handler] handlers.
@@ -41,21 +40,18 @@ impl Shipping {
     ///
     /// [`ok`]: #method.ok
     /// [`err`]: #method.err
-    pub fn answer<'a>(
-        &'a self,
-        result: Result<
-            impl Into<Cow<'a, [shipping::Option]>>,
-            impl Into<String>,
-        >,
-    ) -> AnswerShippingQuery<'a> {
+    pub fn answer(
+        &self,
+        result: Result<impl Into<Vec<shipping::Option>>, impl Into<String>>,
+    ) -> AnswerShippingQuery<'_> {
         self.bot.answer_shipping_query(self.id.clone(), result)
     }
 
     /// Reports that shipping is possible and shows possible shipping options.
-    pub fn ok<'a>(
-        &'a self,
-        options: impl Into<Cow<'a, [shipping::Option]>>,
-    ) -> AnswerShippingQuery<'a> {
+    pub fn ok(
+        &self,
+        options: impl Into<Vec<shipping::Option>>,
+    ) -> AnswerShippingQuery<'_> {
         let answer: Result<_, String> = Ok(options);
         self.answer(answer)
     }

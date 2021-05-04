@@ -11,7 +11,6 @@ use crate::{
     },
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Sends an invoice.
 ///
@@ -30,7 +29,7 @@ pub struct SendInvoice<'a> {
     provider_token: String,
     start_parameter: String,
     currency: String,
-    prices: Cow<'a, [LabeledPrice]>,
+    prices: Vec<LabeledPrice>,
     #[serde(skip_serializing_if = "Option::is_none")]
     provider_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
@@ -69,7 +68,7 @@ impl<'a> SendInvoice<'a> {
         provider_token: impl Into<String>,
         start_parameter: impl Into<String>,
         currency: impl Into<String>,
-        prices: impl Into<Cow<'a, [LabeledPrice]>>,
+        prices: impl Into<Vec<LabeledPrice>>,
     ) -> Self {
         Self {
             bot,

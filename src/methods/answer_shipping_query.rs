@@ -1,7 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors, types::shipping};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Answers a shipping query.
 ///
@@ -16,7 +15,7 @@ pub struct AnswerShippingQuery<'a> {
     shipping_query_id: shipping::query::Id,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_options: Option<Cow<'a, [shipping::Option]>>,
+    shipping_options: Option<Vec<shipping::Option>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     error_message: Option<String>,
 }
@@ -25,10 +24,7 @@ impl<'a> AnswerShippingQuery<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         shipping_query_id: shipping::query::Id,
-        result: Result<
-            impl Into<Cow<'a, [shipping::Option]>>,
-            impl Into<String>,
-        >,
+        result: Result<impl Into<Vec<shipping::Option>>, impl Into<String>>,
     ) -> Self {
         if result.is_ok() {
             Self {

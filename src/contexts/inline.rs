@@ -3,7 +3,6 @@ use crate::{
     types::{inline_query, InlineQuery, Location, User},
     Bot,
 };
-use std::borrow::Cow;
 
 common! {
     /// The context for [`inline`][handler] handlers.
@@ -37,10 +36,10 @@ impl Inline {
     }
 
     /// Answers the query.
-    pub fn answer<'a>(
-        &'a self,
-        results: impl Into<Cow<'a, [inline_query::Result]>>,
-    ) -> AnswerInlineQuery<'a> {
+    pub fn answer(
+        &self,
+        results: impl Into<Vec<inline_query::Result>>,
+    ) -> AnswerInlineQuery<'_> {
         self.bot.answer_inline_query(self.id.clone(), results)
     }
 }

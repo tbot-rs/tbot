@@ -32,7 +32,7 @@ use crate::{
         LabeledPrice,
     },
 };
-use std::{borrow::Cow, net::IpAddr, num::NonZeroU32, sync::Arc};
+use std::{net::IpAddr, num::NonZeroU32, sync::Arc};
 
 mod builder;
 mod inner_bot;
@@ -189,11 +189,11 @@ impl Bot {
         AnswerCallbackQuery::new(&self.inner, callback_query_id, action)
     }
 
-    pub(crate) fn answer_inline_query<'a>(
-        &'a self,
+    pub(crate) fn answer_inline_query(
+        &self,
         inline_query_id: inline_query::Id,
-        results: impl Into<Cow<'a, [inline_query::Result]>>,
-    ) -> AnswerInlineQuery<'a> {
+        results: impl Into<Vec<inline_query::Result>>,
+    ) -> AnswerInlineQuery<'_> {
         AnswerInlineQuery::new(&self.inner, inline_query_id, results)
     }
 
@@ -205,14 +205,11 @@ impl Bot {
         AnswerPreCheckoutQuery::new(&self.inner, pre_checkout_query_id, result)
     }
 
-    pub(crate) fn answer_shipping_query<'a>(
-        &'a self,
+    pub(crate) fn answer_shipping_query(
+        &self,
         shipping_query_id: shipping::query::Id,
-        result: Result<
-            impl Into<Cow<'a, [shipping::Option]>>,
-            impl Into<String>,
-        >,
-    ) -> AnswerShippingQuery<'a> {
+        result: Result<impl Into<Vec<shipping::Option>>, impl Into<String>>,
+    ) -> AnswerShippingQuery<'_> {
         AnswerShippingQuery::new(&self.inner, shipping_query_id, result)
     }
 
@@ -601,8 +598,8 @@ impl Bot {
 
     /// Sends an invoice.
     #[allow(clippy::too_many_arguments)]
-    pub fn send_invoice<'a>(
-        &'a self,
+    pub fn send_invoice(
+        &self,
         chat_id: impl Into<chat::Id>,
         title: impl Into<String>,
         description: impl Into<String>,
@@ -610,8 +607,8 @@ impl Bot {
         provider_token: impl Into<String>,
         start_parameter: impl Into<String>,
         currency: impl Into<String>,
-        prices: impl Into<Cow<'a, [LabeledPrice]>>,
-    ) -> SendInvoice<'a> {
+        prices: impl Into<Vec<LabeledPrice>>,
+    ) -> SendInvoice<'_> {
         SendInvoice::new(
             &self.inner,
             chat_id,
@@ -912,11 +909,11 @@ impl Bot {
     }
 
     /// Uploads a sticker file.
-    pub fn upload_sticker_file<'a>(
-        &'a self,
+    pub fn upload_sticker_file(
+        &self,
         user_id: user::Id,
-        png_sticker: impl Into<Cow<'a, [u8]>>,
-    ) -> UploadStickerFile<'a> {
+        png_sticker: impl Into<Vec<u8>>,
+    ) -> UploadStickerFile<'_> {
         UploadStickerFile::new(&self.inner, user_id, png_sticker)
     }
 }
