@@ -2,7 +2,6 @@
 
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible element kinds for reverse side error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -21,15 +20,15 @@ pub enum Kind {
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorreverseside
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct ReverseSide<'a> {
+pub struct ReverseSide {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hash: Cow<'a, str>,
+    file_hash: String,
 }
 
-impl<'a> ReverseSide<'a> {
+impl ReverseSide {
     /// Constructs a new `ReverseSide`.
-    pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(kind: Kind, file_hash: impl Into<String>) -> Self {
         Self {
             kind,
             file_hash: file_hash.into(),

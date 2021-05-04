@@ -1,7 +1,6 @@
 //! Types related to passport element errors.
 
 use serde::Serialize;
-use std::borrow::Cow;
 
 mod source;
 
@@ -12,17 +11,17 @@ pub use source::*;
 /// [docs]: https://core.telegram.org/bots/api#passportelementerror
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Error<'a> {
+pub struct Error {
     #[serde(flatten)]
-    source: Source<'a>,
-    message: Cow<'a, str>,
+    source: Source,
+    message: String,
 }
 
-impl<'a> Error<'a> {
+impl Error {
     /// Constructs a passport element `Error`.
     pub fn new(
-        source: impl Into<Source<'a>>,
-        message: impl Into<Cow<'a, str>>,
+        source: impl Into<Source>,
+        message: impl Into<String>,
     ) -> Self {
         Self {
             source: source.into(),

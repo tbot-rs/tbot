@@ -2,7 +2,6 @@
 
 use is_macro::Is;
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents possible element kinds for selfie error.
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Serialize, Is)]
@@ -25,15 +24,15 @@ pub enum Kind {
 /// [docs]: https://core.telegram.org/bots/api#passportelementerrorselfie
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct Selfie<'a> {
+pub struct Selfie {
     #[serde(rename = "type")]
     kind: Kind,
-    file_hash: Cow<'a, str>,
+    file_hash: String,
 }
 
-impl<'a> Selfie<'a> {
+impl Selfie {
     /// Constructs a new `Selfie`.
-    pub fn new(kind: Kind, file_hash: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(kind: Kind, file_hash: impl Into<String>) -> Self {
         Self {
             kind,
             file_hash: file_hash.into(),

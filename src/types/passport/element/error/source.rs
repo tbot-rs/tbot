@@ -24,77 +24,77 @@ pub use {
 #[serde(rename_all = "snake_case", tag = "source")]
 #[non_exhaustive]
 #[must_use]
-pub enum Source<'a> {
+pub enum Source {
     /// An error with data.
-    Data(Data<'a>),
+    Data(Data),
     /// An error with a front side.
-    FrontSide(FrontSide<'a>),
+    FrontSide(FrontSide),
     /// An error with a reverse side.
-    ReverseSide(ReverseSide<'a>),
+    ReverseSide(ReverseSide),
     /// An error with a selfie.
-    Selfie(Selfie<'a>),
+    Selfie(Selfie),
     /// An error with a file.
-    File(File<'a>),
+    File(File),
     /// An error with several files.
-    Files(Files<'a>),
+    Files(Files),
     /// An error with a translation file.
-    TranslationFile(TranslationFile<'a>),
+    TranslationFile(TranslationFile),
     /// An error with translation files.
-    TranslationFiles(TranslationFiles<'a>),
+    TranslationFiles(TranslationFiles),
     /// An unspecified error.
-    Unspecified(Unspecified<'a>),
+    Unspecified(Unspecified),
 }
 
-impl<'a> From<Data<'a>> for Source<'a> {
-    fn from(source: Data<'a>) -> Self {
+impl From<Data> for Source {
+    fn from(source: Data) -> Self {
         Self::Data(source)
     }
 }
 
-impl<'a> From<FrontSide<'a>> for Source<'a> {
-    fn from(source: FrontSide<'a>) -> Self {
+impl From<FrontSide> for Source {
+    fn from(source: FrontSide) -> Self {
         Self::FrontSide(source)
     }
 }
 
-impl<'a> From<ReverseSide<'a>> for Source<'a> {
-    fn from(source: ReverseSide<'a>) -> Self {
+impl From<ReverseSide> for Source {
+    fn from(source: ReverseSide) -> Self {
         Self::ReverseSide(source)
     }
 }
 
-impl<'a> From<Selfie<'a>> for Source<'a> {
-    fn from(source: Selfie<'a>) -> Self {
+impl From<Selfie> for Source {
+    fn from(source: Selfie) -> Self {
         Self::Selfie(source)
     }
 }
 
-impl<'a> From<File<'a>> for Source<'a> {
-    fn from(source: File<'a>) -> Self {
+impl From<File> for Source {
+    fn from(source: File) -> Self {
         Self::File(source)
     }
 }
 
-impl<'a> From<Files<'a>> for Source<'a> {
-    fn from(source: Files<'a>) -> Self {
+impl From<Files> for Source {
+    fn from(source: Files) -> Self {
         Self::Files(source)
     }
 }
 
-impl<'a> From<TranslationFile<'a>> for Source<'a> {
-    fn from(source: TranslationFile<'a>) -> Self {
+impl From<TranslationFile> for Source {
+    fn from(source: TranslationFile) -> Self {
         Self::TranslationFile(source)
     }
 }
 
-impl<'a> From<TranslationFiles<'a>> for Source<'a> {
-    fn from(source: TranslationFiles<'a>) -> Self {
+impl From<TranslationFiles> for Source {
+    fn from(source: TranslationFiles) -> Self {
         Self::TranslationFiles(source)
     }
 }
 
-impl<'a> From<Unspecified<'a>> for Source<'a> {
-    fn from(source: Unspecified<'a>) -> Self {
+impl From<Unspecified> for Source {
+    fn from(source: Unspecified) -> Self {
         Self::Unspecified(source)
     }
 }

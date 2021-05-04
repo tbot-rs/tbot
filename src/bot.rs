@@ -813,11 +813,11 @@ impl Bot {
     }
 
     /// Reports passport errors to the user.
-    pub fn set_passport_data_errors<'a>(
-        &'a self,
+    pub fn set_passport_data_errors(
+        &self,
         user_id: user::Id,
-        errors: impl Into<Cow<'a, [passport::element::Error<'a>]>>,
-    ) -> SetPassportDataErrors<'a> {
+        errors: impl Into<Vec<passport::element::Error>>,
+    ) -> SetPassportDataErrors<'_> {
         SetPassportDataErrors::new(&self.inner, user_id, errors)
     }
 

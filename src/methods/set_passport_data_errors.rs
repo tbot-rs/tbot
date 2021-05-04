@@ -5,7 +5,6 @@ use crate::{
     types::{passport, user},
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Reports passport errors to the user.
 ///
@@ -18,14 +17,14 @@ pub struct SetPassportDataErrors<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     user_id: user::Id,
-    errors: Cow<'a, [passport::element::Error<'a>]>,
+    errors: Vec<passport::element::Error>,
 }
 
 impl<'a> SetPassportDataErrors<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         user_id: user::Id,
-        errors: impl Into<Cow<'a, [passport::element::Error<'a>]>>,
+        errors: impl Into<Vec<passport::element::Error>>,
     ) -> Self {
         Self {
             bot,
