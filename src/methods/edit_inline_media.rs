@@ -23,7 +23,7 @@ pub struct EditInlineMedia<'a> {
     bot: &'a InnerBot,
     inline_message_id: InlineMessageId,
     media: EditableMedia,
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<inline::Keyboard>,
 }
 
 impl<'a> EditInlineMedia<'a> {
@@ -42,7 +42,8 @@ impl<'a> EditInlineMedia<'a> {
 
     /// Configures an inline keyboard for the message.
     /// Reflects the `reply_markup` parameter.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

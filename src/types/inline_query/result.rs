@@ -85,15 +85,15 @@ pub enum Kind {
 /// [docs]: https://core.telegram.org/bots/api#inputmessagecontent
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[must_use]
-pub struct Result<'a> {
+pub struct Result {
     id: String,
     #[serde(flatten)]
     kind: Kind,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<inline::Keyboard<'a>>,
+    reply_markup: Option<inline::Keyboard>,
 }
 
-impl<'a> Result<'a> {
+impl Result {
     /// Constructs an inline query `Result`.
     pub fn new(id: impl Into<String>, kind: impl Into<Kind>) -> Self {
         Self {
@@ -104,7 +104,8 @@ impl<'a> Result<'a> {
     }
 
     /// Configures `reply_markup`.
-    pub const fn reply_markup(mut self, markup: inline::Keyboard<'a>) -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
         self
     }

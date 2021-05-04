@@ -192,7 +192,7 @@ impl Bot {
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
         inline_query_id: inline_query::Id,
-        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
+        results: impl Into<Cow<'a, [inline_query::Result]>>,
     ) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery::new(&self.inner, inline_query_id, results)
     }
@@ -310,11 +310,11 @@ impl Bot {
     }
 
     /// Edits the inline keyboard of a message sent via the inline mode.
-    pub fn edit_inline_reply_markup<'a>(
-        &'a self,
+    pub fn edit_inline_reply_markup(
+        &self,
         inline_message_id: InlineMessageId,
-        reply_markup: inline::Keyboard<'a>,
-    ) -> EditInlineReplyMarkup<'a> {
+        reply_markup: inline::Keyboard,
+    ) -> EditInlineReplyMarkup<'_> {
         EditInlineReplyMarkup::new(&self.inner, inline_message_id, reply_markup)
     }
 
@@ -358,12 +358,12 @@ impl Bot {
     }
 
     /// Edits the inline keyboard of a message sent by the bot itself.
-    pub fn edit_message_reply_markup<'a>(
-        &'a self,
+    pub fn edit_message_reply_markup(
+        &self,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        reply_markup: inline::Keyboard<'a>,
-    ) -> EditMessageReplyMarkup<'a> {
+        reply_markup: inline::Keyboard,
+    ) -> EditMessageReplyMarkup<'_> {
         EditMessageReplyMarkup::new(
             &self.inner,
             chat_id,

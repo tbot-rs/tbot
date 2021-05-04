@@ -91,11 +91,11 @@ pub trait Message: fields::Message {
     }
 
     /// Updates the reply markup of a message in this group.
-    fn edit_message_reply_markup<'a>(
-        &'a self,
+    fn edit_message_reply_markup(
+        &self,
         message_id: message::Id,
-        reply_markup: inline::Keyboard<'a>,
-    ) -> EditMessageReplyMarkup<'a> {
+        reply_markup: inline::Keyboard,
+    ) -> EditMessageReplyMarkup<'_> {
         self.bot().edit_message_reply_markup(
             self.chat().id,
             message_id,

@@ -39,7 +39,7 @@ impl Inline {
     /// Answers the query.
     pub fn answer<'a>(
         &'a self,
-        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
+        results: impl Into<Cow<'a, [inline_query::Result]>>,
     ) -> AnswerInlineQuery<'a> {
         self.bot.answer_inline_query(self.id.clone(), results)
     }

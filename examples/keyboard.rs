@@ -11,15 +11,15 @@ async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
     bot.command("keyboard", |context| async move {
-        let keyboard: &[&[_]] = &[
-            &[
+        let keyboard = vec![
+            vec![
                 Button::new("Cool!", ButtonKind::with_callback_data("cool")),
                 Button::new(
                     "Amazing!",
                     ButtonKind::with_callback_data("amazing"),
                 ),
             ],
-            &[Button::new(
+            vec![Button::new(
                 "I wanna get started with it!",
                 ButtonKind::with_url(TUTORIAL),
             )],

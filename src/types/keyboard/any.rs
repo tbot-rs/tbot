@@ -9,7 +9,7 @@ use serde::Serialize;
 #[must_use]
 pub enum Any<'a> {
     /// An inline keyboard.
-    Inline(inline::Keyboard<'a>),
+    Inline(inline::Keyboard),
     /// A reply markup.
     Reply(reply::Keyboard<'a>),
     /// Removes reply markup.
@@ -18,14 +18,14 @@ pub enum Any<'a> {
     ForceReply(ForceReply),
 }
 
-impl<'a> From<inline::Keyboard<'a>> for Any<'a> {
-    fn from(keyboard: inline::Keyboard<'a>) -> Self {
+impl From<inline::Keyboard> for Any<'_> {
+    fn from(keyboard: inline::Keyboard) -> Self {
         Any::Inline(keyboard)
     }
 }
 
-impl<'a> From<inline::Markup<'a>> for Any<'a> {
-    fn from(keyboard: inline::Markup<'a>) -> Self {
+impl From<inline::Markup> for Any<'_> {
+    fn from(keyboard: inline::Markup) -> Self {
         Any::Inline(keyboard.into())
     }
 }

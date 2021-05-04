@@ -17,14 +17,14 @@ pub struct EditInlineReplyMarkup<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     inline_message_id: InlineMessageId,
-    reply_markup: inline::Keyboard<'a>,
+    reply_markup: inline::Keyboard,
 }
 
 impl<'a> EditInlineReplyMarkup<'a> {
     pub(crate) const fn new(
         bot: &'a InnerBot,
         inline_message_id: InlineMessageId,
-        reply_markup: inline::Keyboard<'a>,
+        reply_markup: inline::Keyboard,
     ) -> Self {
         Self {
             bot,

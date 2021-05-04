@@ -14,7 +14,7 @@ pub struct AnswerInlineQuery<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     inline_query_id: inline_query::Id,
-    results: Cow<'a, [inline_query::Result<'a>]>,
+    results: Cow<'a, [inline_query::Result]>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31,7 +31,7 @@ impl<'a> AnswerInlineQuery<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         inline_query_id: inline_query::Id,
-        results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
+        results: impl Into<Cow<'a, [inline_query::Result]>>,
     ) -> Self {
         Self {
             bot,

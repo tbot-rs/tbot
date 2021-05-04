@@ -22,7 +22,7 @@ pub struct EditMessageReplyMarkup<'a> {
     bot: &'a InnerBot,
     chat_id: ChatId,
     message_id: message::Id,
-    reply_markup: inline::Keyboard<'a>,
+    reply_markup: inline::Keyboard,
 }
 
 impl<'a> EditMessageReplyMarkup<'a> {
@@ -30,7 +30,7 @@ impl<'a> EditMessageReplyMarkup<'a> {
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
         message_id: message::Id,
-        reply_markup: inline::Keyboard<'a>,
+        reply_markup: inline::Keyboard,
     ) -> Self {
         Self {
             bot,
