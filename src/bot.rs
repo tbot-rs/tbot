@@ -181,11 +181,11 @@ impl Bot {
         AddStickerToSet::new(&self.inner, user_id, name, png_sticker, emojis)
     }
 
-    pub(crate) fn answer_callback_query<'a>(
-        &'a self,
-        callback_query_id: callback::query::Id<'a>,
+    pub(crate) fn answer_callback_query(
+        &self,
+        callback_query_id: callback::query::Id,
         action: Option<CallbackAction>,
-    ) -> AnswerCallbackQuery<'a> {
+    ) -> AnswerCallbackQuery<'_> {
         AnswerCallbackQuery::new(&self.inner, callback_query_id, action)
     }
 

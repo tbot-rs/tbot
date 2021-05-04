@@ -16,7 +16,7 @@ use serde::Serialize;
 pub struct AnswerCallbackQuery<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    callback_query_id: callback::query::Id<'a>,
+    callback_query_id: callback::query::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31,7 +31,7 @@ impl<'a> AnswerCallbackQuery<'a> {
     #[allow(clippy::missing_const_for_fn)]
     pub(crate) fn new(
         bot: &'a InnerBot,
-        callback_query_id: callback::query::Id<'a>,
+        callback_query_id: callback::query::Id,
         action: Option<CallbackAction>,
     ) -> Self {
         match action {
