@@ -14,7 +14,7 @@ pub struct Text {
     disable_web_page_preview: Option<bool>,
 }
 
-impl<'a> Text {
+impl Text {
     /// Constructs a new `Text`.
     pub fn new(message_text: impl Into<parameters::Text>) -> Self {
         let message_text = message_text.into();

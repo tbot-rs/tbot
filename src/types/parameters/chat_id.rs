@@ -32,7 +32,7 @@ impl From<user::Id> for ChatId {
     }
 }
 
-impl<'a> From<String> for ChatId {
+impl From<String> for ChatId {
     fn from(username: String) -> Self {
         Self::Username(username)
     }
