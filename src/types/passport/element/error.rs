@@ -19,10 +19,7 @@ pub struct Error {
 
 impl Error {
     /// Constructs a passport element `Error`.
-    pub fn new(
-        source: impl Into<Source>,
-        message: impl Into<String>,
-    ) -> Self {
+    pub fn new(source: impl Into<Source>, message: impl Into<String>) -> Self {
         Self {
             source: source.into(),
             message: message.into(),
