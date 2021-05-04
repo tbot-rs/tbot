@@ -191,7 +191,7 @@ impl Bot {
 
     pub(crate) fn answer_inline_query<'a>(
         &'a self,
-        inline_query_id: inline_query::Id<'a>,
+        inline_query_id: inline_query::Id,
         results: impl Into<Cow<'a, [inline_query::Result<'a>]>>,
     ) -> AnswerInlineQuery<'a> {
         AnswerInlineQuery::new(&self.inner, inline_query_id, results)
