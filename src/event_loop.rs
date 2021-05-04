@@ -1,7 +1,8 @@
 //! The event loop for handling bot updates.
 
 use crate::{
-    contexts, errors,
+    contexts,
+    errors::{self, MethodCall},
     state::StatefulEventLoop,
     types::{
         self, callback,
@@ -11,7 +12,7 @@ use crate::{
             text::{Entity, EntityKind, Text},
             Message,
         },
-        update,
+        update, BotCommand,
     },
     Bot,
 };
@@ -24,8 +25,6 @@ mod handlers_macros;
 mod polling;
 pub mod webhook;
 
-use errors::MethodCall;
-use types::parameters::BotCommand;
 pub use {polling::Polling, webhook::Webhook};
 
 type Handlers<T> = Vec<Box<T>>;

@@ -1,5 +1,5 @@
 use super::call_method;
-use crate::{bot::InnerBot, errors, types::parameters::BotCommand};
+use crate::{bot::InnerBot, errors, types::BotCommand};
 use serde::Serialize;
 
 /// Sets the list of the bot's commands.

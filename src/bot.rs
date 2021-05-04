@@ -14,6 +14,7 @@ use crate::{
     methods::*,
     state::StatefulEventLoop,
     types::{
+        BotCommand,
         callback, chat,
         file::{self, File},
         inline_query,
@@ -25,7 +26,7 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{
-            poll, AllowedUpdates, BotCommand, CallbackAction, ImplicitChatId,
+            poll, AllowedUpdates, CallbackAction, ImplicitChatId,
             Text,
         },
         passport, pre_checkout_query, shipping, user, InlineMessageId,
