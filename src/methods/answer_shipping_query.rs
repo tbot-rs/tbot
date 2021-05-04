@@ -13,7 +13,7 @@ use std::borrow::Cow;
 pub struct AnswerShippingQuery<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    shipping_query_id: shipping::query::Id<'a>,
+    shipping_query_id: shipping::query::Id,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Cow<'a, [shipping::Option<'a>]>>,
@@ -24,7 +24,7 @@ pub struct AnswerShippingQuery<'a> {
 impl<'a> AnswerShippingQuery<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        shipping_query_id: shipping::query::Id<'a>,
+        shipping_query_id: shipping::query::Id,
         result: Result<
             impl Into<Cow<'a, [shipping::Option<'a>]>>,
             impl Into<Cow<'a, str>>,

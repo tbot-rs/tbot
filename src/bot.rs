@@ -207,7 +207,7 @@ impl Bot {
 
     pub(crate) fn answer_shipping_query<'a>(
         &'a self,
-        shipping_query_id: shipping::query::Id<'a>,
+        shipping_query_id: shipping::query::Id,
         result: Result<
             impl Into<Cow<'a, [shipping::Option<'a>]>>,
             impl Into<Cow<'a, str>>,
