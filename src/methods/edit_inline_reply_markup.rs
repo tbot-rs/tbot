@@ -16,14 +16,14 @@ use serde::Serialize;
 pub struct EditInlineReplyMarkup<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
     reply_markup: inline::Keyboard<'a>,
 }
 
 impl<'a> EditInlineReplyMarkup<'a> {
     pub(crate) const fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
         reply_markup: inline::Keyboard<'a>,
     ) -> Self {
         Self {

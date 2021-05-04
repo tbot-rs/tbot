@@ -16,7 +16,7 @@ use serde::Serialize;
 pub struct EditInlineLocation<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
     latitude: f64,
     longitude: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26,7 +26,7 @@ pub struct EditInlineLocation<'a> {
 impl<'a> EditInlineLocation<'a> {
     pub(crate) const fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
         (latitude, longitude): (f64, f64),
     ) -> Self {
         Self {

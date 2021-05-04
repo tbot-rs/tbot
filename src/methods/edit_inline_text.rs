@@ -20,7 +20,7 @@ use serde::Serialize;
 pub struct EditInlineText<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
     text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
@@ -33,7 +33,7 @@ pub struct EditInlineText<'a> {
 impl<'a> EditInlineText<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
         text: impl Into<Text>,
     ) -> Self {
         let text = text.into();

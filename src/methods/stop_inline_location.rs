@@ -16,7 +16,7 @@ use serde::Serialize;
 pub struct StopInlineLocation<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -24,7 +24,7 @@ pub struct StopInlineLocation<'a> {
 impl<'a> StopInlineLocation<'a> {
     pub(crate) const fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
     ) -> Self {
         Self {
             bot,

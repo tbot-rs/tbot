@@ -18,13 +18,13 @@ pub struct GetInlineGameHighScores<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     user_id: user::Id,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
 }
 
 impl<'a> GetInlineGameHighScores<'a> {
     pub(crate) const fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
         user_id: user::Id,
     ) -> Self {
         Self {

@@ -21,7 +21,7 @@ use crate::{
 #[must_use = "methods do nothing unless turned into a future"]
 pub struct EditInlineMedia<'a> {
     bot: &'a InnerBot,
-    inline_message_id: InlineMessageId<'a>,
+    inline_message_id: InlineMessageId,
     media: EditableMedia,
     reply_markup: Option<inline::Keyboard<'a>>,
 }
@@ -29,7 +29,7 @@ pub struct EditInlineMedia<'a> {
 impl<'a> EditInlineMedia<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        inline_message_id: InlineMessageId<'a>,
+        inline_message_id: InlineMessageId,
         media: impl Into<EditableMedia>,
     ) -> Self {
         Self {
