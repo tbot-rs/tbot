@@ -16,7 +16,7 @@ pub struct AnswerShippingQuery<'a> {
     shipping_query_id: shipping::query::Id,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping_options: Option<Cow<'a, [shipping::Option<'a>]>>,
+    shipping_options: Option<Cow<'a, [shipping::Option]>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     error_message: Option<Cow<'a, str>>,
 }
@@ -26,7 +26,7 @@ impl<'a> AnswerShippingQuery<'a> {
         bot: &'a InnerBot,
         shipping_query_id: shipping::query::Id,
         result: Result<
-            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, [shipping::Option]>>,
             impl Into<Cow<'a, str>>,
         >,
     ) -> Self {

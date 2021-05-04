@@ -44,7 +44,7 @@ impl Shipping {
     pub fn answer<'a>(
         &'a self,
         result: Result<
-            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, [shipping::Option]>>,
             impl Into<Cow<'a, str>>,
         >,
     ) -> AnswerShippingQuery<'a> {
@@ -54,7 +54,7 @@ impl Shipping {
     /// Reports that shipping is possible and shows possible shipping options.
     pub fn ok<'a>(
         &'a self,
-        options: impl Into<Cow<'a, [shipping::Option<'a>]>>,
+        options: impl Into<Cow<'a, [shipping::Option]>>,
     ) -> AnswerShippingQuery<'a> {
         let answer: Result<_, String> = Ok(options);
         self.answer(answer)

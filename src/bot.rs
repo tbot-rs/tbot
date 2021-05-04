@@ -209,7 +209,7 @@ impl Bot {
         &'a self,
         shipping_query_id: shipping::query::Id,
         result: Result<
-            impl Into<Cow<'a, [shipping::Option<'a>]>>,
+            impl Into<Cow<'a, [shipping::Option]>>,
             impl Into<Cow<'a, str>>,
         >,
     ) -> AnswerShippingQuery<'a> {
