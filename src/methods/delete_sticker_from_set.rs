@@ -1,7 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Deletes a sticker from a sticker set.
 ///
@@ -13,14 +12,11 @@ use std::borrow::Cow;
 pub struct DeleteStickerFromSet<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    sticker: Cow<'a, str>,
+    sticker: String,
 }
 
 impl<'a> DeleteStickerFromSet<'a> {
-    pub(crate) fn new(
-        bot: &'a InnerBot,
-        sticker: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub(crate) fn new(bot: &'a InnerBot, sticker: impl Into<String>) -> Self {
         Self {
             bot,
             sticker: sticker.into(),

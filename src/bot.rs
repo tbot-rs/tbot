@@ -171,13 +171,13 @@ impl Bot {
     }
 
     /// Adds a new sticker to an existing sticker set.
-    pub fn add_sticker_to_set<'a>(
-        &'a self,
+    pub fn add_sticker_to_set(
+        &self,
         user_id: user::Id,
-        name: impl Into<Cow<'a, str>>,
+        name: impl Into<String>,
         png_sticker: impl Into<StickerForStickerSet>,
-        emojis: impl Into<Cow<'a, str>>,
-    ) -> AddStickerToSet<'a> {
+        emojis: impl Into<String>,
+    ) -> AddStickerToSet<'_> {
         AddStickerToSet::new(&self.inner, user_id, name, png_sticker, emojis)
     }
 
@@ -197,11 +197,11 @@ impl Bot {
         AnswerInlineQuery::new(&self.inner, inline_query_id, results)
     }
 
-    pub(crate) fn answer_pre_checkout_query<'a>(
-        &'a self,
+    pub(crate) fn answer_pre_checkout_query(
+        &self,
         pre_checkout_query_id: pre_checkout_query::Id,
-        result: Result<(), impl Into<Cow<'a, str>>>,
-    ) -> AnswerPreCheckoutQuery<'a> {
+        result: Result<(), impl Into<String>>,
+    ) -> AnswerPreCheckoutQuery<'_> {
         AnswerPreCheckoutQuery::new(&self.inner, pre_checkout_query_id, result)
     }
 
@@ -210,7 +210,7 @@ impl Bot {
         shipping_query_id: shipping::query::Id,
         result: Result<
             impl Into<Cow<'a, [shipping::Option]>>,
-            impl Into<Cow<'a, str>>,
+            impl Into<String>,
         >,
     ) -> AnswerShippingQuery<'a> {
         AnswerShippingQuery::new(&self.inner, shipping_query_id, result)
@@ -227,14 +227,14 @@ impl Bot {
     }
 
     /// Creates a new sticker set.
-    pub fn create_new_sticker_set<'a>(
-        &'a self,
+    pub fn create_new_sticker_set(
+        &self,
         user_id: user::Id,
-        name: impl Into<Cow<'a, str>>,
-        title: impl Into<Cow<'a, str>>,
+        name: impl Into<String>,
+        title: impl Into<String>,
         png_sticker: impl Into<StickerForStickerSet>,
-        emojis: impl Into<Cow<'a, str>>,
-    ) -> CreateNewStickerSet<'a> {
+        emojis: impl Into<String>,
+    ) -> CreateNewStickerSet<'_> {
         CreateNewStickerSet::new(
             &self.inner,
             user_id,
@@ -271,10 +271,10 @@ impl Bot {
     }
 
     /// Deletes a sticker from a sticker set.
-    pub fn delete_sticker_from_set<'a>(
-        &'a self,
-        sticker: impl Into<Cow<'a, str>>,
-    ) -> DeleteStickerFromSet<'a> {
+    pub fn delete_sticker_from_set(
+        &self,
+        sticker: impl Into<String>,
+    ) -> DeleteStickerFromSet<'_> {
         DeleteStickerFromSet::new(&self.inner, sticker)
     }
 
@@ -467,10 +467,10 @@ impl Bot {
     }
 
     /// Gets a sticker set by its name.
-    pub fn get_sticker_set<'a>(
-        &'a self,
-        name: impl Into<Cow<'a, str>>,
-    ) -> GetStickerSet<'a> {
+    pub fn get_sticker_set(
+        &self,
+        name: impl Into<String>,
+    ) -> GetStickerSet<'_> {
         GetStickerSet::new(&self.inner, name)
     }
 
@@ -567,21 +567,21 @@ impl Bot {
     }
 
     /// Sends a contact.
-    pub fn send_contact<'a>(
-        &'a self,
+    pub fn send_contact(
+        &self,
         chat_id: impl ImplicitChatId,
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
-    ) -> SendContact<'a> {
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
+    ) -> SendContact<'_> {
         SendContact::new(&self.inner, chat_id, phone_number, first_name)
     }
 
     /// Sends a game.
-    pub fn send_game<'a>(
-        &'a self,
+    pub fn send_game(
+        &self,
         chat_id: impl ImplicitChatId,
-        game_short_name: impl Into<Cow<'a, str>>,
-    ) -> SendGame<'a> {
+        game_short_name: impl Into<String>,
+    ) -> SendGame<'_> {
         SendGame::new(&self.inner, chat_id, game_short_name)
     }
 
@@ -604,12 +604,12 @@ impl Bot {
     pub fn send_invoice<'a>(
         &'a self,
         chat_id: impl Into<chat::Id>,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
         prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> SendInvoice<'a> {
         SendInvoice::new(
@@ -680,13 +680,13 @@ impl Bot {
     }
 
     /// Sends a venue.
-    pub fn send_venue<'a>(
-        &'a self,
+    pub fn send_venue(
+        &self,
         chat_id: impl ImplicitChatId,
         position: (f64, f64),
-        title: impl Into<Cow<'a, str>>,
-        address: impl Into<Cow<'a, str>>,
-    ) -> SendVenue<'a> {
+        title: impl Into<String>,
+        address: impl Into<String>,
+    ) -> SendVenue<'_> {
         SendVenue::new(&self.inner, chat_id, position, title, address)
     }
 
@@ -718,12 +718,12 @@ impl Bot {
     }
 
     /// Sets a custom title for an admin in a chat.
-    pub fn set_chat_administrator_custom_title<'a>(
-        &'a self,
+    pub fn set_chat_administrator_custom_title(
+        &self,
         chat_id: impl ImplicitChatId,
         user_id: user::Id,
-        custom_title: impl Into<Cow<'a, str>>,
-    ) -> SetChatAdministratorCustomTitle<'a> {
+        custom_title: impl Into<String>,
+    ) -> SetChatAdministratorCustomTitle<'_> {
         SetChatAdministratorCustomTitle::new(
             &self.inner,
             chat_id,
@@ -733,11 +733,11 @@ impl Bot {
     }
 
     /// Sets a chat's description.
-    pub fn set_chat_description<'a>(
-        &'a self,
+    pub fn set_chat_description(
+        &self,
         chat_id: impl ImplicitChatId,
-        description: impl Into<Cow<'a, str>>,
-    ) -> SetChatDescription<'a> {
+        description: impl Into<String>,
+    ) -> SetChatDescription<'_> {
         SetChatDescription::new(&self.inner, chat_id, description)
     }
 
@@ -760,20 +760,20 @@ impl Bot {
     }
 
     /// Sets a group's sticker set.
-    pub fn set_chat_sticker_set<'a>(
-        &'a self,
+    pub fn set_chat_sticker_set(
+        &self,
         chat_id: impl ImplicitChatId,
-        sticker_set_name: impl Into<Cow<'a, str>>,
-    ) -> SetChatStickerSet<'a> {
+        sticker_set_name: impl Into<String>,
+    ) -> SetChatStickerSet<'_> {
         SetChatStickerSet::new(&self.inner, chat_id, sticker_set_name)
     }
 
     /// Sets a group's title.
-    pub fn set_chat_title<'a>(
-        &'a self,
+    pub fn set_chat_title(
+        &self,
         chat_id: impl ImplicitChatId,
-        title: impl Into<Cow<'a, str>>,
-    ) -> SetChatTitle<'a> {
+        title: impl Into<String>,
+    ) -> SetChatTitle<'_> {
         SetChatTitle::new(&self.inner, chat_id, title)
     }
 
@@ -822,21 +822,21 @@ impl Bot {
     }
 
     /// Changes a sticker's position in a sticker set.
-    pub fn set_sticker_position_in_set<'a>(
-        &'a self,
-        sticker: impl Into<Cow<'a, str>>,
+    pub fn set_sticker_position_in_set(
+        &self,
+        sticker: impl Into<String>,
         position: u32,
-    ) -> SetStickerPositionInSet<'a> {
+    ) -> SetStickerPositionInSet<'_> {
         SetStickerPositionInSet::new(&self.inner, sticker, position)
     }
 
     /// Sets the thumb of a sticker set.
-    pub fn set_sticker_set_thumb<'a>(
-        &'a self,
+    pub fn set_sticker_set_thumb(
+        &self,
         user_id: user::Id,
-        name: impl Into<Cow<'a, str>>,
+        name: impl Into<String>,
         thumb: Option<StickerSetThumb>,
-    ) -> SetStickerSetThumb<'a> {
+    ) -> SetStickerSetThumb<'_> {
         SetStickerSetThumb::new(&self.inner, user_id, name, thumb)
     }
 

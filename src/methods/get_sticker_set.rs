@@ -1,7 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors, types::sticker};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Gets a sticker set by its name.
 ///
@@ -13,14 +12,11 @@ use std::borrow::Cow;
 pub struct GetStickerSet<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    name: Cow<'a, str>,
+    name: String,
 }
 
 impl<'a> GetStickerSet<'a> {
-    pub(crate) fn new(
-        bot: &'a InnerBot,
-        name: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub(crate) fn new(bot: &'a InnerBot, name: impl Into<String>) -> Self {
         Self {
             bot,
             name: name.into(),

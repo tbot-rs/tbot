@@ -5,7 +5,6 @@ use crate::{
     types::parameters::{ChatId, ImplicitChatId},
 };
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Sets a group's title.
 ///
@@ -18,14 +17,14 @@ pub struct SetChatTitle<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     chat_id: ChatId,
-    title: Cow<'a, str>,
+    title: String,
 }
 
 impl<'a> SetChatTitle<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
-        title: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
     ) -> Self {
         Self {
             bot,

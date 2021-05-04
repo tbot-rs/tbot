@@ -3,7 +3,6 @@ use crate::{
     types::{pre_checkout_query, OrderInfo, PreCheckoutQuery, User},
     Bot,
 };
-use std::borrow::Cow;
 
 common! {
     /// The context for [`pre_checkout`][handler] handlers.
@@ -50,10 +49,10 @@ impl PreCheckout {
     ///
     /// [`ok`]: #method.ok
     /// [`err`]: #method.err
-    pub fn answer<'a>(
-        &'a self,
-        result: Result<(), impl Into<Cow<'a, str>>>,
-    ) -> AnswerPreCheckoutQuery<'a> {
+    pub fn answer(
+        &self,
+        result: Result<(), impl Into<String>>,
+    ) -> AnswerPreCheckoutQuery<'_> {
         self.bot.answer_pre_checkout_query(self.id.clone(), result)
     }
 
@@ -64,10 +63,10 @@ impl PreCheckout {
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(
-        &'a self,
-        err: impl Into<Cow<'a, str>>,
-    ) -> AnswerPreCheckoutQuery<'a> {
+    pub fn err(
+        &self,
+        err: impl Into<String>,
+    ) -> AnswerPreCheckoutQuery<'_> {
         self.answer(Err(err))
     }
 }

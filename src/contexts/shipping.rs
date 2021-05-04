@@ -45,7 +45,7 @@ impl Shipping {
         &'a self,
         result: Result<
             impl Into<Cow<'a, [shipping::Option]>>,
-            impl Into<Cow<'a, str>>,
+            impl Into<String>,
         >,
     ) -> AnswerShippingQuery<'a> {
         self.bot.answer_shipping_query(self.id.clone(), result)
@@ -61,10 +61,7 @@ impl Shipping {
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err<'a>(
-        &'a self,
-        err: impl Into<Cow<'a, str>>,
-    ) -> AnswerShippingQuery<'a> {
+    pub fn err(&self, err: impl Into<String>) -> AnswerShippingQuery<'_> {
         let answer: Result<Vec<_>, _> = Err(err);
         self.answer(answer)
     }

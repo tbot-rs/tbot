@@ -24,15 +24,15 @@ pub struct SendInvoice<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     chat_id: chat::Id,
-    title: Cow<'a, str>,
-    description: Cow<'a, str>,
-    payload: Cow<'a, str>,
-    provider_token: Cow<'a, str>,
-    start_parameter: Cow<'a, str>,
-    currency: Cow<'a, str>,
+    title: String,
+    description: String,
+    payload: String,
+    provider_token: String,
+    start_parameter: String,
+    currency: String,
     prices: Cow<'a, [LabeledPrice]>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    provider_data: Option<Cow<'a, str>>,
+    provider_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
     photo: Option<Photo>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -63,12 +63,12 @@ impl<'a> SendInvoice<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl Into<chat::Id>,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
         prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> Self {
         Self {
@@ -99,10 +99,7 @@ impl<'a> SendInvoice<'a> {
 
     /// Configures data for your payment provider.
     /// Reflects the `provider_data` parameter.
-    pub fn provider_data(
-        mut self,
-        provider_data: impl Into<Cow<'a, str>>,
-    ) -> Self {
+    pub fn provider_data(mut self, provider_data: impl Into<String>) -> Self {
         self.provider_data = Some(provider_data.into());
         self
     }

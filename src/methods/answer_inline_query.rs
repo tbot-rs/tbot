@@ -20,11 +20,11 @@ pub struct AnswerInlineQuery<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     is_personal: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    next_offset: Option<Cow<'a, str>>,
+    next_offset: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_text: Option<Cow<'a, str>>,
+    switch_pm_text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_parameter: Option<Cow<'a, str>>,
+    switch_pm_parameter: Option<String>,
 }
 
 impl<'a> AnswerInlineQuery<'a> {
@@ -61,7 +61,7 @@ impl<'a> AnswerInlineQuery<'a> {
 
     /// Configures the offset to be sent in the next query.
     /// Reflects the `next_offset` parameter.
-    pub fn next_offset(mut self, offset: impl Into<Cow<'a, str>>) -> Self {
+    pub fn next_offset(mut self, offset: impl Into<String>) -> Self {
         self.next_offset = Some(offset.into());
         self
     }
@@ -71,8 +71,8 @@ impl<'a> AnswerInlineQuery<'a> {
     /// parameters respectively.
     pub fn switch_pm(
         mut self,
-        text: impl Into<Cow<'a, str>>,
-        parameter: impl Into<Cow<'a, str>>,
+        text: impl Into<String>,
+        parameter: impl Into<String>,
     ) -> Self {
         self.switch_pm_text = Some(text.into());
         self.switch_pm_parameter = Some(parameter.into());

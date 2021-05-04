@@ -1,7 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors, types::pre_checkout_query};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Answers a pre-checkout query.
 ///
@@ -16,14 +15,14 @@ pub struct AnswerPreCheckoutQuery<'a> {
     pre_checkout_query_id: pre_checkout_query::Id,
     ok: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    error_message: Option<Cow<'a, str>>,
+    error_message: Option<String>,
 }
 
 impl<'a> AnswerPreCheckoutQuery<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         pre_checkout_query_id: pre_checkout_query::Id,
-        result: Result<(), impl Into<Cow<'a, str>>>,
+        result: Result<(), impl Into<String>>,
     ) -> Self {
         Self {
             bot,

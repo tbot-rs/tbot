@@ -1,7 +1,6 @@
 use super::call_method;
 use crate::{bot::InnerBot, errors};
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Changes a sticker's position in a sticker set.
 ///
@@ -13,14 +12,14 @@ use std::borrow::Cow;
 pub struct SetStickerPositionInSet<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
-    sticker: Cow<'a, str>,
+    sticker: String,
     position: u32,
 }
 
 impl<'a> SetStickerPositionInSet<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
-        sticker: impl Into<Cow<'a, str>>,
+        sticker: impl Into<String>,
         position: u32,
     ) -> Self {
         Self {

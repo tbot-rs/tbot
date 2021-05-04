@@ -216,43 +216,40 @@ pub trait Message: fields::Message {
     }
 
     /// Sends an action to this group.
-    fn send_chat_action(&self, action: chat::Action) -> SendChatAction {
+    fn send_chat_action(&self, action: chat::Action) -> SendChatAction<'_> {
         self.bot().send_chat_action(self.chat().id, action)
     }
 
     /// Sends a contact to this group.
-    fn send_contact<'a>(
-        &'a self,
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
-    ) -> SendContact<'a> {
+    fn send_contact(
+        &self,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
+    ) -> SendContact<'_> {
         self.bot()
             .send_contact(self.chat().id, phone_number, first_name)
     }
 
     /// Sends a contact in reply to this message.
-    fn send_contact_in_reply<'a>(
-        &'a self,
-        phone_number: impl Into<Cow<'a, str>>,
-        first_name: impl Into<Cow<'a, str>>,
-    ) -> SendContact<'a> {
+    fn send_contact_in_reply(
+        &self,
+        phone_number: impl Into<String>,
+        first_name: impl Into<String>,
+    ) -> SendContact<'_> {
         self.send_contact(phone_number, first_name)
             .in_reply_to(self.message_id())
     }
 
     /// Sends a game to this chat.
-    fn send_game<'a>(
-        &'a self,
-        game_short_name: impl Into<Cow<'a, str>>,
-    ) -> SendGame<'a> {
+    fn send_game(&self, game_short_name: impl Into<String>) -> SendGame<'_> {
         self.bot().send_game(self.chat().id, game_short_name)
     }
 
     /// Sends a game in reply to this message.
-    fn send_game_in_reply<'a>(
-        &'a self,
-        game_short_name: impl Into<Cow<'a, str>>,
-    ) -> SendGame<'a> {
+    fn send_game_in_reply(
+        &self,
+        game_short_name: impl Into<String>,
+    ) -> SendGame<'_> {
         self.send_game(game_short_name)
             .in_reply_to(self.message_id())
     }
@@ -281,12 +278,12 @@ pub trait Message: fields::Message {
     #[allow(clippy::too_many_arguments)]
     fn send_invoice<'a>(
         &'a self,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
         prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> SendInvoice<'a> {
         self.bot().send_invoice(
@@ -305,12 +302,12 @@ pub trait Message: fields::Message {
     #[allow(clippy::too_many_arguments)]
     fn send_invoice_in_reply<'a>(
         &'a self,
-        title: impl Into<Cow<'a, str>>,
-        description: impl Into<Cow<'a, str>>,
-        payload: impl Into<Cow<'a, str>>,
-        provider_token: impl Into<Cow<'a, str>>,
-        start_parameter: impl Into<Cow<'a, str>>,
-        currency: impl Into<Cow<'a, str>>,
+        title: impl Into<String>,
+        description: impl Into<String>,
+        payload: impl Into<String>,
+        provider_token: impl Into<String>,
+        start_parameter: impl Into<String>,
+        currency: impl Into<String>,
         prices: impl Into<Cow<'a, [LabeledPrice]>>,
     ) -> SendInvoice<'a> {
         self.send_invoice(
@@ -326,12 +323,12 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a location to this chat.
-    fn send_location(&self, location: (f64, f64)) -> SendLocation {
+    fn send_location(&self, location: (f64, f64)) -> SendLocation<'_> {
         self.bot().send_location(self.chat().id, location)
     }
 
     /// Sends a location in reply to this message.
-    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation {
+    fn send_location_in_reply(&self, location: (f64, f64)) -> SendLocation<'_> {
         self.send_location(location).in_reply_to(self.message_id())
     }
 
@@ -392,23 +389,23 @@ pub trait Message: fields::Message {
     }
 
     /// Sends a venue to this chat.
-    fn send_venue<'a>(
-        &'a self,
+    fn send_venue(
+        &self,
         location: (f64, f64),
-        title: impl Into<Cow<'a, str>>,
-        address: impl Into<Cow<'a, str>>,
-    ) -> SendVenue<'a> {
+        title: impl Into<String>,
+        address: impl Into<String>,
+    ) -> SendVenue<'_> {
         self.bot()
             .send_venue(self.chat().id, location, title, address)
     }
 
     /// Sends a venue in reply to this message.
-    fn send_venue_in_reply<'a>(
-        &'a self,
+    fn send_venue_in_reply(
+        &self,
         location: (f64, f64),
-        title: impl Into<Cow<'a, str>>,
-        address: impl Into<Cow<'a, str>>,
-    ) -> SendVenue<'a> {
+        title: impl Into<String>,
+        address: impl Into<String>,
+    ) -> SendVenue<'_> {
         self.send_venue(location, title, address)
             .in_reply_to(self.message_id())
     }
@@ -448,11 +445,11 @@ pub trait Message: fields::Message {
     }
 
     /// Sets a custom title for an admin in this chat.
-    fn set_chat_administrator_custom_title<'a>(
-        &'a self,
+    fn set_chat_administrator_custom_title(
+        &self,
         user_id: user::Id,
-        custom_title: impl Into<Cow<'a, str>>,
-    ) -> SetChatAdministratorCustomTitle<'a> {
+        custom_title: impl Into<String>,
+    ) -> SetChatAdministratorCustomTitle<'_> {
         self.bot().set_chat_administrator_custom_title(
             self.chat().id,
             user_id,
@@ -461,10 +458,10 @@ pub trait Message: fields::Message {
     }
 
     /// Sets a new description of this chat.
-    fn set_chat_description<'a>(
-        &'a self,
-        description: impl Into<Cow<'a, str>>,
-    ) -> SetChatDescription<'a> {
+    fn set_chat_description(
+        &self,
+        description: impl Into<String>,
+    ) -> SetChatDescription<'_> {
         self.bot().set_chat_description(self.chat().id, description)
     }
 
@@ -482,19 +479,16 @@ pub trait Message: fields::Message {
     }
 
     /// Sets a new sticker set of this chat.
-    fn set_chat_sticker_set<'a>(
-        &'a self,
-        sticker_set_name: impl Into<Cow<'a, str>>,
-    ) -> SetChatStickerSet<'a> {
+    fn set_chat_sticker_set(
+        &self,
+        sticker_set_name: impl Into<String>,
+    ) -> SetChatStickerSet<'_> {
         self.bot()
             .set_chat_sticker_set(self.chat().id, sticker_set_name)
     }
 
     /// Sets a new chat title of this chat.
-    fn set_chat_title<'a>(
-        &'a self,
-        title: impl Into<Cow<'a, str>>,
-    ) -> SetChatTitle<'a> {
+    fn set_chat_title(&self, title: impl Into<String>) -> SetChatTitle<'_> {
         self.bot().set_chat_title(self.chat().id, title)
     }
 

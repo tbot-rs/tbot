@@ -9,7 +9,6 @@ use crate::{
     },
     Multipart,
 };
-use std::borrow::Cow;
 
 /// Sets the thumb of a sticker set.
 ///
@@ -21,7 +20,7 @@ use std::borrow::Cow;
 pub struct SetStickerSetThumb<'a> {
     bot: &'a InnerBot,
     user_id: user::Id,
-    name: Cow<'a, str>,
+    name: String,
     thumb: Option<StickerSetThumb>,
 }
 
@@ -29,7 +28,7 @@ impl<'a> SetStickerSetThumb<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         user_id: user::Id,
-        name: impl Into<Cow<'a, str>>,
+        name: impl Into<String>,
         thumb: Option<StickerSetThumb>,
     ) -> Self {
         Self {
