@@ -20,7 +20,7 @@ pub enum ButtonKind<'a> {
     /// Represents a URL button.
     Url(Cow<'a, str>),
     /// Represents a login button.
-    LoginUrl(LoginUrl<'a>),
+    LoginUrl(LoginUrl),
     /// Represents callback data.
     CallbackData(Cow<'a, str>),
     /// Represents query inserted when switched to inline.
@@ -40,7 +40,7 @@ impl<'a> ButtonKind<'a> {
     }
 
     /// Constructs a `ButtonKind::LoginUrl`.
-    pub const fn with_login_url(login_url: LoginUrl<'a>) -> Self {
+    pub const fn with_login_url(login_url: LoginUrl) -> Self {
         Self::LoginUrl(login_url)
     }
 

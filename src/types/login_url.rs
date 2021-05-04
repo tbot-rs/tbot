@@ -1,24 +1,23 @@
 use serde::Serialize;
-use std::borrow::Cow;
 
 /// Represents a [`LoginUrl`].
 ///
 /// [`LoginUrl`]: https://core.telegram.org/bots/api#loginurl
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Serialize)]
 #[must_use]
-pub struct LoginUrl<'a> {
-    url: Cow<'a, str>,
+pub struct LoginUrl {
+    url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    forward_text: Option<Cow<'a, str>>,
+    forward_text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    bot_username: Option<Cow<'a, str>>,
+    bot_username: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     request_write_access: Option<bool>,
 }
 
-impl<'a> LoginUrl<'a> {
+impl LoginUrl {
     /// Constructs a new `LoginUrl`.
-    pub fn new(url: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new(url: impl Into<String>) -> Self {
         Self {
             url: url.into(),
             forward_text: None,
@@ -28,13 +27,13 @@ impl<'a> LoginUrl<'a> {
     }
 
     /// Configures `forward_text`.
-    pub fn forward_text(mut self, text: impl Into<Cow<'a, str>>) -> Self {
+    pub fn forward_text(mut self, text: impl Into<String>) -> Self {
         self.forward_text = Some(text.into());
         self
     }
 
     /// Configures `bot_username`.
-    pub fn bot_username(mut self, username: impl Into<Cow<'a, str>>) -> Self {
+    pub fn bot_username(mut self, username: impl Into<String>) -> Self {
         self.bot_username = Some(username.into());
         self
     }
