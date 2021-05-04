@@ -1,7 +1,5 @@
 use std::{sync::Arc, time::Duration};
-use tbot::{
-    contexts::Command, prelude::*, types::parameters::LiveLocation, Bot,
-};
+use tbot::{contexts::Command, prelude::*, types::location, Bot};
 use tokio::time::sleep;
 
 const INTERVAL: u64 = 15;
@@ -31,7 +29,7 @@ async fn handle_location(context: Arc<Command>) {
     let first_place = *places.next().unwrap();
     let call_result = context
         .send_location(first_place)
-        .live_location(LiveLocation::new(UPDATE_PERIOD))
+        .live_location(location::Live::new(UPDATE_PERIOD))
         .call()
         .await;
     let location = match call_result {

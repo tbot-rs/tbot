@@ -1,5 +1,5 @@
 use super::Thumb;
-use crate::types::{parameters::LiveLocation, InputMessageContent};
+use crate::types::{location, InputMessageContent};
 use serde::Serialize;
 
 /// Represents an [`InlineQueryResultLocation`][docs].
@@ -14,7 +14,7 @@ pub struct Location {
     #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<f64>,
     #[serde(flatten)]
-    live_location: Option<LiveLocation>,
+    live_location: Option<location::Live>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
@@ -57,7 +57,10 @@ impl Location {
     }
 
     /// Configures a live location.
-    pub const fn live_location(mut self, live_location: LiveLocation) -> Self {
+    pub const fn live_location(
+        mut self,
+        live_location: location::Live,
+    ) -> Self {
         self.live_location = Some(live_location);
         self
     }
