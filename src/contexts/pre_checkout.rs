@@ -63,10 +63,7 @@ impl PreCheckout {
     }
 
     /// Reports that shipping is impossible and shows the error message.
-    pub fn err(
-        &self,
-        err: impl Into<String>,
-    ) -> AnswerPreCheckoutQuery<'_> {
+    pub fn err(&self, err: impl Into<String>) -> AnswerPreCheckoutQuery<'_> {
         self.answer(Err(err))
     }
 }
