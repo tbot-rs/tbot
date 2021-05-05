@@ -3,9 +3,9 @@ use crate::{
     bot::InnerBot,
     errors,
     types::{
-        keyboard,
+        keyboard, location,
         message::{self, Message},
-        parameters::{ChatId, ImplicitChatId, LiveLocation},
+        parameters::{ChatId, ImplicitChatId},
     },
 };
 use serde::Serialize;
@@ -26,7 +26,7 @@ pub struct SendLocation<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<f64>,
     #[serde(flatten)]
-    live_location: Option<LiveLocation>,
+    live_location: Option<location::Live>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -75,7 +75,10 @@ impl<'a> SendLocation<'a> {
     }
 
     /// Confgiures a live location.
-    pub const fn live_location(mut self, live_location: LiveLocation) -> Self {
+    pub const fn live_location(
+        mut self,
+        live_location: location::Live,
+    ) -> Self {
         self.live_location = Some(live_location);
         self
     }

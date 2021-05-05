@@ -1,4 +1,4 @@
-use crate::types::parameters::LiveLocation;
+use crate::types::location;
 use serde::Serialize;
 
 /// Represents an [`InputLocationMessageContent`][docs].
@@ -12,7 +12,7 @@ pub struct Location {
     #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<f64>,
     #[serde(flatten)]
-    live_location: Option<LiveLocation>,
+    live_location: Option<location::Live>,
 }
 
 impl Location {
@@ -46,7 +46,10 @@ impl Location {
     }
 
     /// Configures a live location.
-    pub const fn live_location(mut self, live_location: LiveLocation) -> Self {
+    pub const fn live_location(
+        mut self,
+        live_location: location::Live,
+    ) -> Self {
         self.live_location = Some(live_location);
         self
     }

@@ -1,9 +1,5 @@
 use super::Context;
-use crate::types::{
-    self,
-    message::{self, inline_markup},
-    Chat, User,
-};
+use crate::types::{self, keyboard::inline, message, Chat, User};
 
 /// A general trait for all message contexts.
 pub trait Message: Context {
@@ -24,7 +20,7 @@ pub trait MediaMessage: Message {
     /// The author's signature, if enabled for the channel.
     fn author_signature(&self) -> Option<&str>;
     /// The inline keyboard attached to the message.
-    fn reply_markup(&self) -> Option<&inline_markup::Keyboard>;
+    fn reply_markup(&self) -> Option<&inline::Keyboard>;
     /// The bot via which the message was sent.
     fn via_bot(&self) -> Option<&User>;
 }

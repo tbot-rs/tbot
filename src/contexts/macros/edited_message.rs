@@ -22,7 +22,7 @@ macro_rules! edited_message {
                 /// The last time when the message was edited.
                 edit_date: i64,
                 /// The inline keyboard attached to the message.
-                reply_markup: Option<crate::types::message::inline_markup::Keyboard>,
+                reply_markup: Option<crate::types::keyboard::inline::Keyboard>,
                 /// The bot via which the message was sent.
                 via_bot: Option<crate::types::User>,
                 #[doc = $media_doc]
@@ -66,7 +66,7 @@ macro_rules! edited_message {
             #[must_use]
             fn reply_markup(
                 &self
-            ) -> Option<&crate::types::message::inline_markup::Keyboard> {
+            ) -> Option<&crate::types::keyboard::inline::Keyboard> {
                 self.reply_markup.as_ref()
             }
 

@@ -1,20 +1,12 @@
-//! Types representing inline keyboard markup coming from Telegram.
-//!
-//! The reason that we can't re-use the types from `types::keyboard` is that
-//! those types are meant for serialization, and so they're compoud of
-//! references. These references, however, would be a pain if deserialized.
-//! That's why we mirrored the inline keyboard types coming from Telegram
-//! without references.
+//! Types representing inline keyboard buttons.
 
-use crate::types::callback::Game;
+use crate::types::{callback::Game, LoginUrl};
 use is_macro::Is;
-use serde::de::{
-    self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor,
+use serde::{
+    de::{self, Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor},
+    ser::{Serialize, SerializeMap, Serializer},
 };
 use std::fmt::{self, Formatter};
-
-/// A shorthand for inline markup.
-pub type Markup = Vec<Vec<Button>>;
 
 /// Represents different types an inline button can be.
 ///
@@ -23,9 +15,12 @@ pub type Markup = Vec<Vec<Button>>;
 /// [docs]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
-pub enum ButtonKind {
+#[must_use]
+pub enum Kind {
     /// Represents a URL button.
     Url(String),
+    /// Represents a login button.
+    LoginUrl(LoginUrl),
     /// Represents callback data.
     CallbackData(String),
     /// Represents query inserted when switched to inline.
@@ -34,8 +29,47 @@ pub enum ButtonKind {
     SwitchInlineQueryCurrentChat(String),
     /// Represent a description of the game to be laucnhed.
     CallbackGame(Game),
-    /// if `true`, a pay button.
-    Pay(bool),
+    /// Represents a pay button.
+    Pay,
+}
+
+impl Kind {
+    /// Constructs a `ButtonKind::Url`.
+    pub fn with_url(url: impl Into<String>) -> Self {
+        Self::Url(url.into())
+    }
+
+    /// Constructs a `ButtonKind::LoginUrl`.
+    pub const fn with_login_url(login_url: LoginUrl) -> Self {
+        Self::LoginUrl(login_url)
+    }
+
+    /// Constructs a `ButtonKind::CallbackData`.
+    pub fn with_callback_data(data: impl Into<String>) -> Self {
+        Self::CallbackData(data.into())
+    }
+
+    /// Constructs a `ButtonKind::SwitchInlineQuery`.
+    pub fn with_switch_inline_query(query: impl Into<String>) -> Self {
+        Self::SwitchInlineQuery(query.into())
+    }
+
+    /// Constructs a `ButtonKind::SwitchInlineQueryCurrentChat`.
+    pub fn with_switch_inline_query_current_chat(
+        query: impl Into<String>,
+    ) -> Self {
+        Self::SwitchInlineQueryCurrentChat(query.into())
+    }
+
+    /// Constructs a `ButtonKind::CallbackGame`.
+    pub const fn with_callback_game(game: Game) -> Self {
+        Self::CallbackGame(game)
+    }
+
+    /// Constructs a `ButtonKind::Pay`.
+    pub const fn with_pay() -> Self {
+        Self::Pay
+    }
 }
 
 /// Represents an [`InlineKeyboardButton`].
@@ -43,53 +77,51 @@ pub enum ButtonKind {
 /// [`InlineKeyboardButton`]: https://core.telegram.org/bots/api#inlinekeyboardbutton
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use]
-#[non_exhaustive]
 pub struct Button {
-    /// The text of the button.
-    pub text: String,
-    /// The kind of the button.
-    pub kind: ButtonKind,
+    text: String,
+    kind: Kind,
 }
 
-/// Represents an [`InlineKeyboardMarkup`].
-///
-/// [`InlineKeyboardMarkup`]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct Keyboard(pub Markup);
-
-const INLINE_KEYBOARD: &str = "inline_keyboard";
-
-struct KeyboardVisitor;
-
-impl<'v> Visitor<'v> for KeyboardVisitor {
-    type Value = Keyboard;
-
-    fn expecting(&self, fmt: &mut Formatter) -> fmt::Result {
-        write!(fmt, "struct Keyboard")
-    }
-
-    fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
-    where
-        V: MapAccess<'v>,
-    {
-        if let Some((INLINE_KEYBOARD, markup)) = map.next_entry()? {
-            Ok(Keyboard(markup))
-        } else {
-            Err(de::Error::missing_field(INLINE_KEYBOARD))
+impl Button {
+    /// Constructs an inline `Button`.
+    pub fn new(text: impl Into<String>, kind: Kind) -> Self {
+        Self {
+            text: text.into(),
+            kind,
         }
     }
 }
 
-impl<'de> Deserialize<'de> for Keyboard {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl Serialize for Button {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        D: Deserializer<'de>,
+        S: Serializer,
     {
-        deserializer.deserialize_struct(
-            "Keyboard",
-            &[INLINE_KEYBOARD],
-            KeyboardVisitor,
-        )
+        let mut map = serializer.serialize_map(Some(2))?;
+
+        map.serialize_entry("text", &self.text)?;
+
+        match &self.kind {
+            Kind::Url(url) => map.serialize_entry("url", url),
+            Kind::LoginUrl(login_url) => {
+                map.serialize_entry("login_url", login_url)
+            }
+            Kind::CallbackData(callback_data) => {
+                map.serialize_entry("callback_data", callback_data)
+            }
+            Kind::SwitchInlineQuery(query) => {
+                map.serialize_entry("switch_inline_query", query)
+            }
+            Kind::SwitchInlineQueryCurrentChat(query) => {
+                map.serialize_entry("switch_inline_query_current_chat", query)
+            }
+            Kind::CallbackGame(game) => {
+                map.serialize_entry("callback_game", game)
+            }
+            Kind::Pay => map.serialize_entry("pay", &true),
+        }?;
+
+        map.end()
     }
 }
 
@@ -143,25 +175,21 @@ impl<'v> Visitor<'v> for ButtonVisitor {
         }
 
         let kind = if let Some(url) = url {
-            ButtonKind::Url(url)
+            Kind::Url(url)
         } else if let Some(callback_data) = callback_data {
-            ButtonKind::CallbackData(callback_data)
+            Kind::CallbackData(callback_data)
         } else if let Some(callback_game) = callback_game {
-            ButtonKind::CallbackGame(callback_game)
+            Kind::CallbackGame(callback_game)
         } else if let Some(switch_inline_query) = switch_inline_query {
-            ButtonKind::SwitchInlineQuery(switch_inline_query)
+            Kind::SwitchInlineQuery(switch_inline_query)
         } else if let Some(switch_inline_query_current_chat) =
             switch_inline_query_current_chat
         {
-            ButtonKind::SwitchInlineQueryCurrentChat(
-                switch_inline_query_current_chat,
-            )
-        } else if let Some(pay) = pay {
-            ButtonKind::Pay(pay)
+            Kind::SwitchInlineQueryCurrentChat(switch_inline_query_current_chat)
+        } else if pay.is_some() {
+            Kind::Pay
         } else {
-            return Err(serde::de::Error::custom(
-                "Could not construct Button's kind",
-            ));
+            return Err(de::Error::custom("Could not construct Button's kind"));
         };
 
         Ok(Button {

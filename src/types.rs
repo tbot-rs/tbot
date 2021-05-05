@@ -20,7 +20,7 @@ pub mod input_message_content;
 mod invoice;
 pub mod keyboard;
 mod labeled_price;
-mod location;
+pub mod location;
 mod login_url;
 pub mod message;
 mod order_info;

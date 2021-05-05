@@ -1,6 +1,6 @@
 use tbot::{
     prelude::*,
-    types::keyboard::inline::{Button, ButtonKind},
+    types::keyboard::inline::button::{self, Button},
     Bot,
 };
 
@@ -13,15 +13,15 @@ async fn main() {
     bot.command("keyboard", |context| async move {
         let keyboard = vec![
             vec![
-                Button::new("Cool!", ButtonKind::with_callback_data("cool")),
+                Button::new("Cool!", button::Kind::with_callback_data("cool")),
                 Button::new(
                     "Amazing!",
-                    ButtonKind::with_callback_data("amazing"),
+                    button::Kind::with_callback_data("amazing"),
                 ),
             ],
             vec![Button::new(
                 "I wanna get started with it!",
-                ButtonKind::with_url(TUTORIAL),
+                button::Kind::with_url(TUTORIAL),
             )],
         ];
         let call_result = context

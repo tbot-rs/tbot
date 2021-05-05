@@ -25,11 +25,10 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{
-            poll, AllowedUpdates, BotCommand, CallbackAction, ImplicitChatId,
-            Text,
+            poll, AllowedUpdates, CallbackAction, ImplicitChatId, Text,
         },
-        passport, pre_checkout_query, shipping, user, InlineMessageId,
-        LabeledPrice,
+        passport, pre_checkout_query, shipping, user, BotCommand,
+        InlineMessageId, LabeledPrice,
     },
 };
 use std::{net::IpAddr, num::NonZeroU32, sync::Arc};
