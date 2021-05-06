@@ -41,8 +41,8 @@
 //! As you can see, you can fearlessly pass any strings to formatters
 //! and they'll be automatically properly escaped. Magic!
 //!
-//! Note that methods that support sending markup take `impl Into<Text<'_>>`,
-//! so you don't need to turn formatters into `Text` manually:
+//! Note that methods that support sending markup take `impl Into<`[`Text`]`>`,
+//! so you don't need to turn formatters into [`Text`] manually:
 //!
 //! ```no_run
 //! # async fn foo() {
@@ -57,8 +57,9 @@
 //! }
 //! ```
 //!
-//! [`html`]: ./html/fn.html.html
-//! [`markdown_v2`]: ./markdown_v2/fn.markdown_v2.html
+//! [`html`]: html::html
+//! [`markdown_v2`]: markdown_v2::markdown_v2
+//! [`Text`]: crate::types::parameters::Text
 
 macro_rules! impl_primitive {
     ($trait:ty, $($primitive:ty)+) => {
