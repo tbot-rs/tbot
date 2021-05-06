@@ -97,3 +97,53 @@ where
         })
     }
 }
+
+/// Filters and maps updates: calls `predicate`, and if it returned `Some`,
+/// calls `handler` with that value.
+///
+/// Note that `handler` does **not** receive the state. If you need it,
+/// return it from `mapper` in a tuple.
+///
+/// # Example
+///
+/// ```no_run
+/// use tbot::{Bot, contexts::Text, compositors::state::filter_map};
+/// use std::sync::{Arc, atomic::{AtomicU32, Ordering}};
+///
+/// let mut bot = Bot::from_env("BOT_TOKEN").stateful_event_loop(AtomicU32::new(0));
+/// bot.text(filter_map(
+///     |context: Arc<Text>, state: Arc<AtomicU32>| async move {
+///         (state.fetch_add(1, Ordering::Relaxed) < 10)
+///             .then(|| context.text.clone())
+///     },
+///     |text| async move {
+///         dbg!(text);
+///     },
+/// ));
+/// ```
+pub fn filter_map<C, S, T, M, MF, H, HF>(
+    mapper: M,
+    handler: H,
+) -> impl Fn(Arc<C>, Arc<S>) -> BoxFuture<'static, ()>
+where
+    C: Context,
+    S: Send + Sync + 'static,
+    T: Send + 'static,
+    M: Fn(Arc<C>, Arc<S>) -> MF + Send + Sync + 'static,
+    MF: Future<Output = Option<T>> + Send + 'static,
+    H: Fn(T) -> HF + Send + Sync + 'static,
+    HF: Future<Output = ()> + Send + 'static,
+{
+    let shared = Arc::new((mapper, handler));
+
+    move |context, state| {
+        let shared = Arc::clone(&shared);
+
+        Box::pin(async move {
+            let (mapper, handler) = &*shared;
+            if let Some(mapped) = mapper(context, state).await {
+                handler(mapped).await
+            }
+        })
+    }
+}

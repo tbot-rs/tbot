@@ -152,3 +152,46 @@ where
         })
     }
 }
+
+/// Filters and maps updates: calls `predicate`, and if it returned `Some`,
+/// calls `handler` with that value.
+///
+/// # Example
+///
+/// ```no_run
+/// use tbot::{Bot, contexts::Text, compositors::filter_map};
+/// use std::sync::Arc;
+///
+/// let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
+/// bot.text(filter_map(
+///     |context: Arc<Text>| async move { context.reply_to.clone() },
+///     |reply_to| async move {
+///         println!("Recevied a message in reply to {}", reply_to.id);
+///     },
+/// ));
+/// ```
+pub fn filter_map<C, T, M, MF, H, HF>(
+    mapper: M,
+    handler: H,
+) -> impl Fn(Arc<C>) -> BoxFuture<'static, ()>
+where
+    C: Context,
+    T: Send + 'static,
+    M: Fn(Arc<C>) -> MF + Send + Sync + 'static,
+    MF: Future<Output = Option<T>> + Send + 'static,
+    H: Fn(T) -> HF + Send + Sync + 'static,
+    HF: Future<Output = ()> + Send + 'static,
+{
+    let shared = Arc::new((mapper, handler));
+
+    move |context| {
+        let shared = Arc::clone(&shared);
+
+        Box::pin(async move {
+            let (mapper, handler) = &*shared;
+            if let Some(mapped) = mapper(context).await {
+                handler(mapped).await
+            }
+        })
+    }
+}
