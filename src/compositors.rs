@@ -80,6 +80,7 @@ pub mod state;
 ///
 /// ```no_run
 /// use tbot::{Bot, contexts::Text, compositors::filter, predicates::chat::is_group};
+/// use std::sync::Arc;
 ///
 /// let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 /// bot.text(filter(is_group, |context: Arc<Text>| async move {
