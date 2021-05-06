@@ -3,8 +3,6 @@ macro_rules! handler {
         $context:path,
         $(#[doc = $doc:literal])+
         $name:ident,
-        $(#[doc = $doc_if:literal])+
-        $name_if:ident,
     ) => {
         $(#[doc = $doc])+
         pub fn $name<H, F>(&mut self, handler: H)
@@ -19,36 +17,6 @@ macro_rules! handler {
             });
 
             set(self, handler)
-        }
-
-        $(#[doc = $doc_if])+
-        pub fn $name_if<H, HF, P, PF>(
-            &mut self,
-            predicate: P,
-            handler: H,
-        ) where
-            H: (Fn(Arc<$context>) -> HF)
-                + Send
-                + Sync
-                + 'static,
-            HF: Future<Output = ()> + Send + 'static,
-            P: (Fn(Arc<$context>) -> PF)
-                + Send
-                + Sync
-                + 'static,
-            PF: Future<Output = bool> + Send + 'static,
-        {
-            let predicate = Arc::new(predicate);
-            let handler = Arc::new(handler);
-            self.$name(move |context| {
-                let predicate = Arc::clone(&predicate);
-                let handler = Arc::clone(&handler);
-                async move {
-                    if predicate(Arc::clone(&context)).await {
-                        handler(context).await
-                    }
-                }
-            });
         }
 
         paste::item! {
