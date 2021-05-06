@@ -113,8 +113,11 @@ where
 /// let mut bot = Bot::from_env("BOT_TOKEN").stateful_event_loop(AtomicU32::new(0));
 /// bot.text(filter_map(
 ///     |context: Arc<Text>, state: Arc<AtomicU32>| async move {
-///         (state.fetch_add(1, Ordering::Relaxed) < 10)
-///             .then(|| context.text.clone())
+///         if state.fetch_add(1, Ordering::Relaxed) < 10 {
+///             Some(context.text.clone())
+///         } else {
+///             None
+///         }
 ///     },
 ///     |text| async move {
 ///         dbg!(text);
