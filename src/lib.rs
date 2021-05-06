@@ -79,6 +79,7 @@ mod internal;
 mod multipart;
 mod token;
 
+pub mod compositors;
 mod connectors;
 pub mod contexts;
 pub mod errors;
