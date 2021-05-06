@@ -72,6 +72,8 @@ use crate::contexts::fields::Context;
 use futures::future::BoxFuture;
 use std::{future::Future, sync::Arc};
 
+pub mod state;
+
 /// Filters updates: executes `handler` only if `predicate` returns `true`.
 ///
 /// # Example
