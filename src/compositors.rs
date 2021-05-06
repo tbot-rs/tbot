@@ -112,3 +112,43 @@ where
         })
     }
 }
+
+/// Maps updates: calls `mapper`, and then passes its return value to `handler`.
+///
+/// # Example
+///
+/// ```no_run
+/// use tbot::{Bot, contexts::Text, compositors::map};
+/// use std::sync::Arc;
+///
+/// let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
+/// bot.text(map(
+///     |context: Arc<Text>| async move { context.text.clone() },
+///     |text| async move {
+///         dbg!(text);
+///     },
+/// ));
+/// ```
+pub fn map<C, T, M, MF, H, HF>(
+    mapper: M,
+    handler: H,
+) -> impl Fn(Arc<C>) -> BoxFuture<'static, ()>
+where
+    C: Context,
+    T: Send + 'static,
+    M: Fn(Arc<C>) -> MF + Send + Sync + 'static,
+    MF: Future<Output = T> + Send + 'static,
+    H: Fn(T) -> HF + Send + Sync + 'static,
+    HF: Future<Output = ()> + Send + 'static,
+{
+    let shared = Arc::new((mapper, handler));
+
+    move |context| {
+        let shared = Arc::clone(&shared);
+
+        Box::pin(async move {
+            let (mapper, handler) = &*shared;
+            handler(mapper(context).await).await
+        })
+    }
+}

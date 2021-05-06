@@ -51,3 +51,49 @@ where
         })
     }
 }
+
+/// Maps updates: calls `mapper`, and then passes its return value to `handler`.
+///
+/// Note that `handler` does **not** receive the state. If you need it,
+/// return it from `mapper` in a tuple.
+///
+/// # Example
+///
+/// ```no_run
+/// use tbot::{Bot, contexts::Text, compositors::state::map};
+/// use std::sync::{Arc, atomic::AtomicU32};
+///
+/// let mut bot = Bot::from_env("BOT_TOKEN").stateful_event_loop(AtomicU32::new(0));
+/// bot.text(map(
+///     |context: Arc<Text>, state: Arc<AtomicU32>| async move {
+///         (context.text.clone(), state)
+///     },
+///     |(text, _state)| async move {
+///         dbg!(text);
+///     },
+/// ));
+/// ```
+pub fn map<C, S, T, M, MF, H, HF>(
+    mapper: M,
+    handler: H,
+) -> impl Fn(Arc<C>, Arc<S>) -> BoxFuture<'static, ()>
+where
+    C: Context,
+    S: Send + Sync + 'static,
+    T: Send + 'static,
+    M: Fn(Arc<C>, Arc<S>) -> MF + Send + Sync + 'static,
+    MF: Future<Output = T> + Send + 'static,
+    H: Fn(T) -> HF + Send + Sync + 'static,
+    HF: Future<Output = ()> + Send + 'static,
+{
+    let shared = Arc::new((mapper, handler));
+
+    move |context, state| {
+        let shared = Arc::clone(&shared);
+
+        Box::pin(async move {
+            let (mapper, handler) = &*shared;
+            handler(mapper(context, state).await).await
+        })
+    }
+}
