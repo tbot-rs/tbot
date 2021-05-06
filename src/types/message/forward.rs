@@ -22,6 +22,14 @@ pub enum From {
         /// The author's signature.
         signature: Option<String>,
     },
+    /// The forward is from an anonymous group admin.
+    #[non_exhaustive]
+    AnonymousAdmin {
+        /// Information about the group.
+        chat: Box<Chat>,
+        /// The admin's signature.
+        signature: Option<String>,
+    },
 }
 
 /// Represents forward information.

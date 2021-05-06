@@ -293,6 +293,11 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 message_id,
                 signature: forward_signature,
             })
+        } else if let Some(chat) = forward_from_chat {
+            Some(forward::From::AnonymousAdmin {
+                chat,
+                signature: forward_signature,
+            })
         } else if let Some(user) = forward_from {
             Some(forward::From::User(user))
         } else if let Some(hidden_user) = forward_sender_name {
