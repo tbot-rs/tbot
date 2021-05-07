@@ -40,7 +40,7 @@ impl From<String> for ChatId {
 
 impl<'a> From<&'a String> for ChatId {
     fn from(username: &'a String) -> Self {
-        Self::Username(username.to_owned())
+        Self::Username(username.clone())
     }
 }
 

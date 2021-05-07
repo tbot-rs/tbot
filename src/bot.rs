@@ -958,7 +958,7 @@ impl Sealed for Bot {}
 mod tests {
     #[test]
     fn macro_compiles() {
-        let _ = from_env!("BOT_TOKEN");
-        let _ = from_env!("BOT_TOKEN",);
+        let _bot = from_env!("BOT_TOKEN");
+        let _bot = from_env!("BOT_TOKEN",);
     }
 }

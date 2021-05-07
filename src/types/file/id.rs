@@ -17,7 +17,7 @@ impl From<String> for Id {
 impl<'a> From<&'a String> for Id {
     #[must_use]
     fn from(id: &'a String) -> Self {
-        Self(id.to_owned())
+        Self(id.clone())
     }
 }
 
