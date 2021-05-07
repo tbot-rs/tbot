@@ -18,11 +18,14 @@ async fn main() {
         .event_loop();
 
     bot.text(|context| async move {
-        context
+        let call_result = context
             .send_message_in_reply(&context.text.value)
             .call()
-            .await
-            .unwrap();
+            .await;
+
+        if let Err(error) = call_result {
+            dbg!(error);
+        }
     });
 
     bot.polling().start().await.unwrap();

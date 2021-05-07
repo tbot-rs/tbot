@@ -8,20 +8,24 @@ async fn main() {
         "hello",
         "Sends hello",
         |context| async move {
-            context
-                .send_message_in_reply("Hello!")
-                .call()
-                .await
-                .unwrap();
+            let call_result =
+                context.send_message_in_reply("Hello!").call().await;
+
+            if let Err(error) = call_result {
+                dbg!(error);
+            }
         },
     );
 
     bot.help_with_description("Shows help", |context| async move {
-        context
+        let call_result = context
             .send_message_in_reply("Just send me a /hello")
             .call()
-            .await
-            .unwrap();
+            .await;
+
+        if let Err(error) = call_result {
+            dbg!(error);
+        }
     });
 
     bot.polling().start().await.unwrap();
