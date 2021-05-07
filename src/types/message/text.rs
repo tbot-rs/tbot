@@ -2,7 +2,7 @@
 
 use crate::types::User;
 use is_macro::Is;
-use serde::de::{Deserialize, Deserializer, Error, Visitor};
+use serde::de::{Deserialize, Deserializer, Error, IgnoredAny, Visitor};
 use std::fmt::{self, Formatter};
 
 /// Represents either a text message or a caption.
@@ -114,9 +114,7 @@ impl<'v> Visitor<'v> for EntityVisitor {
                 USER => user = Some(map.next_value()?),
                 LANGUAGE => language = Some(map.next_value()?),
                 TYPE => kind = Some(map.next_value()?),
-                _ => {
-                    let _ = map.next_value::<serde_json::Value>();
-                }
+                _ => drop(map.next_value::<IgnoredAny>()),
             }
         }
 

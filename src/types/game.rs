@@ -61,19 +61,14 @@ impl<'v> Visitor<'v> for GameVisitor {
                 TEXT => text = Some(map.next_value()?),
                 TEXT_ENTITIES => text_entities = Some(map.next_value()?),
                 ANIMATION => animation = Some(map.next_value()?),
-                _ => {
-                    let _ = map.next_value::<IgnoredAny>();
-                }
+                _ => drop(map.next_value::<IgnoredAny>()),
             }
         }
 
-        let text = match text {
-            Some(text) => Some(Text {
-                value: text,
-                entities: text_entities.unwrap_or_default(),
-            }),
-            None => None,
-        };
+        let text = text.map(|text| Text {
+            value: text,
+            entities: text_entities.unwrap_or_default(),
+        });
 
         Ok(Game {
             title: title.ok_or_else(|| de::Error::missing_field(TITLE))?,

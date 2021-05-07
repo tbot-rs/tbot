@@ -1,6 +1,7 @@
 //! Types related to messages.
 
 use crate::types::{keyboard::inline, Chat, User};
+use serde::de::IgnoredAny;
 
 pub mod forward;
 mod from;
@@ -278,13 +279,11 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 PASSPORT_DATA => passport_data = Some(map.next_value()?),
                 REPLY_MARKUP => reply_markup = Some(map.next_value()?),
                 VIA_BOT => via_bot = Some(map.next_value()?),
-                _ => {
-                    let _ = map.next_value::<serde_json::Value>();
-                }
+                _ => drop(map.next_value::<IgnoredAny>()),
             }
         }
 
-        #[allow(clippy::option_if_let_else)]
+        #[allow(clippy::option_if_let_else, clippy::manual_map)]
         let forward_source = if let Some(message_id) = forward_from_message_id {
             Some(forward::From::Channel {
                 chat: forward_from_chat.ok_or_else(|| {
@@ -408,7 +407,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::Unknown
         };
 
-        #[allow(clippy::option_if_let_else)]
+        #[allow(clippy::option_if_let_else, clippy::manual_map)]
         let from = if let Some(chat) = sender_chat {
             Some(From::Chat(chat))
         } else if let Some(user) = from {

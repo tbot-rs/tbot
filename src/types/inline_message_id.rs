@@ -17,7 +17,7 @@ impl From<String> for InlineMessageId {
 impl<'a> From<&'a String> for InlineMessageId {
     #[must_use]
     fn from(id: &'a String) -> Self {
-        Self(id.to_owned())
+        Self(id.clone())
     }
 }
 

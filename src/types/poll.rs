@@ -153,19 +153,14 @@ impl<'v> Visitor<'v> for PollVisitor {
                 }
                 OPEN_PERIOD => open_period = Some(map.next_value()?),
                 CLOSE_DATE => close_date = Some(map.next_value()?),
-                _ => {
-                    let _ = map.next_value::<de::IgnoredAny>();
-                }
+                _ => drop(map.next_value::<de::IgnoredAny>()),
             }
         }
 
-        let explanation = match explanation {
-            Some(explanation) => Some(Text {
-                value: explanation,
-                entities: explanation_entities.unwrap_or_default(),
-            }),
-            None => None,
-        };
+        let explanation = explanation.map(|explanation| Text {
+            value: explanation,
+            entities: explanation_entities.unwrap_or_default(),
+        });
 
         let kind = match kind {
             Some(REGULAR) => Kind::Regular {

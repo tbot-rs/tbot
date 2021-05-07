@@ -73,9 +73,7 @@ impl<'v> Visitor<'v> for DiceVisitor {
             match key {
                 VALUE => value = Some(map.next_value()?),
                 EMOJI => emoji = Some(map.next_value()?),
-                _ => {
-                    let _ = map.next_value::<IgnoredAny>();
-                }
+                _ => drop(map.next_value::<IgnoredAny>()),
             }
         }
 
