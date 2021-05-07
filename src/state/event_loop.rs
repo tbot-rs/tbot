@@ -476,6 +476,12 @@ where
     }
 
     handler! {
+        contexts::ProximityAlert,
+        /// Adds a new handler for proximity alerts.
+        proximity_alert,
+    }
+
+    handler! {
         contexts::Shipping,
         /// Adds a new handler for shipping queries.
         shipping,

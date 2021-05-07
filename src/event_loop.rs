@@ -71,6 +71,7 @@ type PinnedMessageHandler = Handler<contexts::PinnedMessage>;
 type PollHandler = Handler<contexts::Poll>;
 type PollAnswerHandler = Handler<contexts::PollAnswer>;
 type PreCheckoutHandler = Handler<contexts::PreCheckout>;
+type ProximityAlertHandler = Handler<contexts::ProximityAlert>;
 type ShippingHandler = Handler<contexts::Shipping>;
 type StickerHandler = Handler<contexts::Sticker>;
 type TextHandler = Handler<contexts::Text>;
@@ -147,6 +148,7 @@ pub struct EventLoop {
     poll_handlers: Handlers<PollHandler>,
     poll_answer_handlers: Handlers<PollAnswerHandler>,
     pre_checkout_handlers: Handlers<PreCheckoutHandler>,
+    proximity_alert_handlers: Handlers<ProximityAlertHandler>,
     shipping_handlers: Handlers<ShippingHandler>,
     sticker_handlers: Handlers<StickerHandler>,
     text_handlers: Handlers<TextHandler>,
@@ -204,6 +206,7 @@ impl EventLoop {
             poll_handlers: Vec::new(),
             poll_answer_handlers: Vec::new(),
             pre_checkout_handlers: Vec::new(),
+            proximity_alert_handlers: Vec::new(),
             shipping_handlers: Vec::new(),
             sticker_handlers: Vec::new(),
             text_handlers: Vec::new(),
@@ -669,6 +672,12 @@ impl EventLoop {
     }
 
     handler! {
+        contexts::ProximityAlert,
+        /// Adds a new handler for proximity alerts.
+        proximity_alert,
+    }
+
+    handler! {
         contexts::Shipping,
         /// Adds a new handler for shipping queries.
         shipping,
@@ -1076,6 +1085,16 @@ impl EventLoop {
                 let context = contexts::Poll::new(self.bot.clone(), data, poll);
                 self.run_poll_handlers(Arc::new(context));
             }
+            message::Kind::ProximityAlert(alert)
+                if self.will_handle_proximity_alert() =>
+            {
+                let context = contexts::ProximityAlert::new(
+                    self.bot.clone(),
+                    data,
+                    alert,
+                );
+                self.run_proximity_alert_handlers(Arc::new(context));
+            }
             message::Kind::Sticker(sticker) if self.will_handle_sticker() => {
                 let context =
                     contexts::Sticker::new(self.bot.clone(), data, *sticker);
@@ -1184,6 +1203,7 @@ impl EventLoop {
             | message::Kind::Photo { .. }
             | message::Kind::Pinned(..)
             | message::Kind::Poll(..)
+            | message::Kind::ProximityAlert(..)
             | message::Kind::Sticker(..)
             | message::Kind::SuccessfulPayment(..)
             | message::Kind::Text(..)
@@ -1346,6 +1366,7 @@ impl EventLoop {
             | message::Kind::NewChatTitle(..)
             | message::Kind::PassportData(..)
             | message::Kind::Pinned(..)
+            | message::Kind::ProximityAlert(..)
             | message::Kind::SuccessfulPayment(..)
             | message::Kind::SupergroupCreated => warn!(
                 "Unexpected message kind received as an edited message; \

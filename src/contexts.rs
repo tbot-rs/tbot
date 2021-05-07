@@ -109,6 +109,7 @@ mod voice;
 
 pub mod fields;
 pub mod methods;
+mod proximity_alert;
 
 pub use animation::Animation;
 pub use audio::Audio;
@@ -146,6 +147,7 @@ pub use pinned_message::PinnedMessage;
 pub use poll::Poll;
 pub use poll_answer::PollAnswer;
 pub use pre_checkout::PreCheckout;
+pub use proximity_alert::ProximityAlert;
 pub use shipping::Shipping;
 pub use sticker::Sticker;
 pub use text::Text;
