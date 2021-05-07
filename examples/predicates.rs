@@ -22,32 +22,39 @@ async fn main() {
     bot.text(filter(
         is_supergroup.or(is_group).and(is_message_short.not()),
         |context| async move {
-            context
-                .send_message_in_reply("Hello group!")
-                .call()
-                .await
-                .unwrap();
+            let call_result =
+                context.send_message_in_reply("Hello group!").call().await;
+
+            if let Err(error) = call_result {
+                dbg!(error);
+            }
         },
     ));
 
     bot.text(filter(is_message_short, |context| async move {
-        context
+        let call_result = context
             .send_message_in_reply("The message is too short!")
             .call()
-            .await
-            .unwrap();
+            .await;
+
+        if let Err(error) = call_result {
+            dbg!(error);
+        }
     }));
 
     bot.document(filter(
         match_extension(["rs", "toml"]),
         |context: Arc<Document>| async move {
-            context
+            let call_result = context
                 .send_message_in_reply(
                     "I see you're a man of the culture as well!",
                 )
                 .call()
-                .await
-                .unwrap();
+                .await;
+
+            if let Err(error) = call_result {
+                dbg!(error);
+            }
         },
     ));
 

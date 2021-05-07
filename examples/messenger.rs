@@ -2,12 +2,14 @@ use rand::{distributions::Alphanumeric, prelude::*};
 use std::sync::Arc;
 use tbot::{
     contexts::fields,
+    markup::{italic, markdown_v2},
     prelude::*,
     state::{
         messages::{MessageId, Messages},
         Chats,
     },
     types::{chat, parameters::Text},
+    util::entities,
     Bot,
 };
 use tokio::sync::RwLock;
@@ -16,31 +18,35 @@ use tokio::sync::RwLock;
 struct State {
     chats: RwLock<Chats<String>>,
     messages: RwLock<Messages<Vec<MessageId>>>,
+    username: String,
 }
 
 impl State {
+    fn new(username: String) -> Self {
+        Self {
+            chats: Default::default(),
+            messages: Default::default(),
+            username,
+        }
+    }
+
     async fn participants(&self, room: &str) -> Vec<chat::Id> {
-        self.chats
-            .read()
-            .await
-            .iter()
-            .filter_map(
-                |(id, chat_room)| {
-                    if chat_room == room {
-                        Some(id)
-                    } else {
-                        None
-                    }
-                },
-            )
-            .collect::<Vec<_>>()
+        let chats = self.chats.read().await;
+        let participants = chats.iter().filter_map(|(id, chat_room)| {
+            if chat_room == room {
+                Some(id)
+            } else {
+                None
+            }
+        });
+        participants.collect()
     }
 
     async fn join(&self, bot: &Bot, participant: chat::Id, room: String) {
         self.notify(
             bot,
             &room,
-            Text::with_markdown_v2("_A participant has joined the room\\._"),
+            markdown_v2(italic("A participant has joined the room.")),
         )
         .await;
 
@@ -51,14 +57,15 @@ impl State {
             self.notify(
                 bot,
                 &room,
-                Text::with_markdown_v2("_A participant has left the room\\._"),
+                markdown_v2(italic("A participant has left the room.")),
             )
             .await;
         }
     }
 
-    async fn notify(&self, bot: &Bot, room: &str, message: Text) {
+    async fn notify(&self, bot: &Bot, room: &str, message: impl Into<Text>) {
         let participants = self.participants(room).await;
+        let message = message.into();
 
         for id in participants {
             let call_result =
@@ -83,13 +90,11 @@ where
         let mut recipients = state.participants(room).await;
         recipients.retain(|&id| id != sender_id);
         let mut sent_messages = Vec::with_capacity(recipients.len());
+        let text = markdown_v2(entities(context.text()));
 
         for id in recipients {
-            let call_result = context
-                .bot()
-                .send_message(id, &context.text().value)
-                .call()
-                .await;
+            let call_result =
+                context.bot().send_message(id, text.clone()).call().await;
 
             match call_result {
                 Ok(message) => {
@@ -126,6 +131,8 @@ where
     C: fields::Text,
 {
     if let Some(messages) = state.messages.read().await.get(&*context) {
+        let text = markdown_v2(entities(context.text()));
+
         for MessageId {
             chat_id,
             message_id,
@@ -133,7 +140,7 @@ where
         {
             let call_result = context
                 .bot()
-                .edit_message_text(*chat_id, *message_id, &context.text().value)
+                .edit_message_text(*chat_id, *message_id, text.clone())
                 .call()
                 .await;
 
@@ -152,7 +159,7 @@ async fn main() {
         .and_then(|me| me.user.username)
         .expect("Could not get username");
 
-    let mut bot = bot.stateful_event_loop(State::default());
+    let mut bot = bot.stateful_event_loop(State::new(username));
 
     bot.start(|context, state| async move {
         if context.text.value.is_empty() {
@@ -177,9 +184,7 @@ async fn main() {
                 .await;
 
             let call_result = context
-                .send_message(Text::with_markdown_v2(
-                    "_You have joined the room\\._",
-                ))
+                .send_message(markdown_v2(italic("You have joined the room.")))
                 .call()
                 .await;
 
@@ -194,11 +199,12 @@ async fn main() {
             .send_message(
                 "Here are the commands I know:\n\n\
 
-                — /create_room — create rooms;\n\
-                — /send — send messages (you can omit the command if you don't \
-                need to send a command in the beginning of your message);\n\
-                — /leave — leave the current room;\n\
-                — /help — send this message.",
+                 — /create_room — create rooms;\n\
+                 — /send — send messages (you can omit the command if you \
+                   don't need to send a command in the beginning of your \
+                   message);\n\
+                 — /leave — leave the current room;\n\
+                 — /help — send this message.",
             )
             .call()
             .await;
@@ -222,15 +228,13 @@ async fn main() {
                 .notify(
                     &context.bot,
                     &room,
-                    Text::with_markdown_v2(
-                        "_A participant has left the room\\._",
-                    ),
+                    markdown_v2(italic("A participant has left the room.")),
                 )
                 .await;
         }
 
         let call_result = context
-            .send_message(Text::with_markdown_v2("_You have left the room\\._"))
+            .send_message(markdown_v2(italic("You have left the room.")))
             .call()
             .await;
 
@@ -239,32 +243,26 @@ async fn main() {
         }
     });
 
-    bot.command("create_room", move |context, state| {
-        let username = username.clone();
-        async move {
-            let room = rand::thread_rng()
-                .sample_iter(&Alphanumeric)
-                .take(10)
-                .map(char::from)
-                .collect::<String>();
+    bot.command("create_room", |context, state| async move {
+        let room = rand::thread_rng()
+            .sample_iter(&Alphanumeric)
+            .take(10)
+            .map(char::from)
+            .collect::<String>();
 
-            let message = format!(
-                "_You have created a new room\\. Share this link so others \
-                 can join your room:_ t\\.me/{}?start\\={}",
-                username.replace("_", "\\_"),
-                room
-            );
+        let message = markdown_v2((
+            italic(
+                "You have created a new room. Share this link so others can\
+                 join your room:",
+            ),
+            format!(" t.me/{}?start={}", state.username, room),
+        ));
 
-            state.join(&context.bot, context.chat.id, room).await;
+        state.join(&context.bot, context.chat.id, room).await;
 
-            let call_result = context
-                .send_message(Text::with_markdown_v2(&message))
-                .call()
-                .await;
-
-            if let Err(err) = call_result {
-                dbg!(err);
-            }
+        let call_result = context.send_message(message).call().await;
+        if let Err(err) = call_result {
+            dbg!(err);
         }
     });
 

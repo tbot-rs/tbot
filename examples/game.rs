@@ -1,5 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
-use tbot::{errors, prelude::*, types::message::From, Bot};
+use tbot::{errors, prelude::*, state::Chats, types::message::From, Bot};
 use tokio::sync::Mutex;
 
 const GAME: &str = "";
@@ -12,66 +11,56 @@ const SCORE_NOT_MODIFIED: &str = "Bad Request: BOT_SCORE_NOT_MODIFIED";
 
 #[tokio::main]
 async fn main() {
-    let chats = Arc::new(Mutex::new(HashMap::new()));
-    let game_chats_ref = Arc::clone(&chats);
+    let mut bot = Bot::from_env("BOT_TOKEN")
+        .stateful_event_loop(Mutex::new(Chats::new()));
 
-    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
+    bot.command("game", |context, chats| async move {
+        let call_result = context.send_game(GAME).call().await;
+        let message = match call_result {
+            Ok(message) => message,
+            Err(err) => {
+                dbg!(err);
+                return;
+            }
+        };
 
-    bot.command("game", move |context| {
-        let chats = Arc::clone(&game_chats_ref);
-        async move {
-            let call_result = context.send_game(GAME).call().await;
-            let message = match call_result {
-                Ok(message) => message,
-                Err(err) => {
-                    dbg!(err);
-                    return;
-                }
-            };
-
-            chats.lock().await.insert(message.chat.id, message.id);
-        }
+        chats.lock().await.insert(&*context, message.id);
     });
 
-    bot.text(move |context| {
-        let chats = Arc::clone(&chats);
-        async move {
-            let message_id = {
-                let chats = chats.lock().await;
+    bot.text(|context, chats| async move {
+        let message_id = {
+            let chats = chats.lock().await;
 
-                match chats.get(&context.chat.id) {
-                    Some(id) => *id,
-                    None => return,
-                }
-            };
+            match chats.get(&*context) {
+                Some(id) => *id,
+                None => return,
+            }
+        };
 
-            let user = match &context.from {
-                Some(From::User(user)) => user,
-                _ => return,
-            };
+        let user = match &context.from {
+            Some(From::User(user)) => user,
+            _ => return,
+        };
 
-            let text = context.text.value.to_lowercase();
-            let good_score = text.matches(GOOD_PHRASE).count() as i32;
-            let bad_score = text.matches(BAD_PHRASE).count() as i32;
-            let score =
-                GOOD_MULTIPLIER * good_score - BAD_MULTIPLIER * bad_score;
-            let score = score.max(1) as u32;
+        let text = context.text.value.to_lowercase();
+        let good_score = text.matches(GOOD_PHRASE).count() as i32;
+        let bad_score = text.matches(BAD_PHRASE).count() as i32;
+        let score = GOOD_MULTIPLIER * good_score - BAD_MULTIPLIER * bad_score;
+        let score = score.max(1) as u32;
 
-            let call_result = context
-                .set_message_game_score(message_id, user.id, score)
-                .is_forced(true)
-                .call()
-                .await;
+        let call_result = context
+            .set_message_game_score(message_id, user.id, score)
+            .is_forced(true)
+            .call()
+            .await;
 
-            match call_result {
-                Ok(_) => (),
-                Err(errors::MethodCall::RequestError {
-                    ref description,
-                    ..
-                }) if description == SCORE_NOT_MODIFIED => (),
-                Err(err) => {
-                    dbg!(err);
-                }
+        match call_result {
+            Ok(_) => (),
+            Err(errors::MethodCall::RequestError {
+                ref description, ..
+            }) if description == SCORE_NOT_MODIFIED => (),
+            Err(err) => {
+                dbg!(err);
             }
         }
     });

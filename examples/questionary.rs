@@ -44,50 +44,55 @@ async fn main() {
 
         state.lock().await.insert(&*context, questionary);
 
-        context
-            .send_message_in_reply(first_question)
-            .call()
-            .await
-            .unwrap();
+        let call_result =
+            context.send_message_in_reply(first_question).call().await;
+        if let Err(error) = call_result {
+            dbg!(error);
+        }
     });
 
     bot.text(|context, state| async move {
         let mut questionaries = state.lock().await;
-        let questionary =
-            if let Some(questionary) = questionaries.get_mut(&*context) {
-                questionary
-            } else {
+        let questionary = match questionaries.get_mut(&*context) {
+            Some(questionary) => questionary,
+            None => {
                 let questionary = Questionary::default();
                 let first_question = questionary.next_question();
 
                 questionaries.insert(&*context, questionary);
 
-                context
-                    .send_message_in_reply(first_question)
-                    .call()
-                    .await
-                    .unwrap();
+                let call_result =
+                    context.send_message_in_reply(first_question).call().await;
+                if let Err(error) = call_result {
+                    dbg!(error);
+                }
 
                 return;
-            };
+            }
+        };
 
         if questionary.name.is_none() {
             questionary.name.replace(context.text.value.to_owned());
         } else if questionary.planet.is_none() {
             questionary.planet.replace(context.text.value.to_owned());
         } else if questionary.age.is_none() {
-            if let Ok(age) = context.text.value.parse() {
-                questionary.age.replace(age);
-            } else {
-                context
-                    .send_message_in_reply(
-                        "Enter an integer in the range [0; 255].",
-                    )
-                    .call()
-                    .await
-                    .unwrap();
+            match context.text.value.parse() {
+                Ok(age) => {
+                    questionary.age.replace(age);
+                }
+                Err(_) => {
+                    let call_result = context
+                        .send_message_in_reply(
+                            "Enter an integer in the range [0; 255].",
+                        )
+                        .call()
+                        .await;
+                    if let Err(error) = call_result {
+                        dbg!(error);
+                    }
 
-                return;
+                    return;
+                }
             }
         } else if questionary.programming_languages.is_none() {
             let languages = context
@@ -106,23 +111,28 @@ async fn main() {
 
             println!("An applicant's questionary: {:#?}", questionary);
         } else {
-            context
+            let call_result = context
                 .send_message_in_reply(
                     "Your application is already being considered \
                      by Our Lord and Savior.",
                 )
                 .call()
-                .await
-                .unwrap();
+                .await;
+            if let Err(error) = call_result {
+                dbg!(error);
+            }
 
             return;
         }
 
-        context
+        let call_result = context
             .send_message_in_reply(questionary.next_question())
             .call()
-            .await
-            .unwrap();
+            .await;
+
+        if let Err(error) = call_result {
+            dbg!(error);
+        }
     });
 
     bot.polling().start().await.unwrap();

@@ -8,7 +8,10 @@ async fn main() {
         let entities = entities(&context.text);
         let echo = markdown_v2(entities);
 
-        context.send_message(echo).call().await.unwrap();
+        let call_result = context.send_message(echo).call().await;
+        if let Err(error) = call_result {
+            dbg!(error);
+        }
     });
 
     bot.polling().start().await.unwrap();
