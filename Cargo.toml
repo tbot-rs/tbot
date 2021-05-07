@@ -60,9 +60,6 @@ name = "commands"
 name = "download"
 
 [[example]]
-name = "entities"
-
-[[example]]
 name = "echo"
 
 [[example]]
