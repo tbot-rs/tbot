@@ -1,5 +1,5 @@
 default:
-    image: rust:1.48.0 # update `run-tests`
+    image: rust:1.49.0 # update `run-tests`
     before_script:
         - export PATH=$PATH:/root/.cargo/bin/
         - rustup component add clippy
@@ -41,7 +41,7 @@ run-clippy:
 run-tests:
     stage: test
     script:
-        - cargo +1.48.0 test --target-dir=../target --features="proxy"
+        - cargo +1.49.0 test --target-dir=../target --features="proxy"
     only:
         changes:
             - "src/**/*"
