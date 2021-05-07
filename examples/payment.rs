@@ -17,18 +17,19 @@ const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 async fn main() {
     // The one that you'd get from BotFather after connecting a payment provider
     // to your bot.
-    let provider_token: &'static str =
-        Box::leak(Box::new(std::env::var("PROVIDER_TOKEN").unwrap()));
-    let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
+    let provider_token = std::env::var("PROVIDER_TOKEN")
+        .expect("the PROVIDER_TOKEN env variable was not specified");
+    let mut bot =
+        Bot::from_env("BOT_TOKEN").stateful_event_loop(provider_token);
 
-    bot.start(move |context| async move {
+    bot.start(|context, provider_token| async move {
         let call_result = if context.text.value == START_PARAMETER {
-            let price: &[_] = &[LabeledPrice::new(TITLE, 1_00)];
+            let price = [LabeledPrice::new(TITLE, 1_00)];
             let mut invoice = context.send_invoice(
                 TITLE,
                 DESCRIPTION,
                 PAYLOAD,
-                provider_token,
+                &*provider_token,
                 START_PARAMETER,
                 CURRENCY,
                 price,
@@ -53,24 +54,24 @@ async fn main() {
         }
     });
 
-    bot.shipping(|context| async move {
-        let price: &[_] = &[LabeledPrice::new("At your home", 1_00)];
-        let delivery: &[_] =
-            &[shipping::Option::new("crab", "Delivery Crab", price)];
+    bot.shipping(|context, _| async move {
+        let price = [LabeledPrice::new("At your home", 1_00)];
+        let delivery = [shipping::Option::new("crab", "Delivery Crab", price)];
+
         let call_result = context.ok(delivery).call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }
     });
 
-    bot.pre_checkout(|context| async move {
+    bot.pre_checkout(|context, _| async move {
         let call_result = context.ok().call().await;
         if let Err(err) = call_result {
             dbg!(err);
         }
     });
 
-    bot.payment(|context| async move {
+    bot.payment(|context, _| async move {
         let call_result = context.send_message(SUCCESS).call().await;
         if let Err(err) = call_result {
             dbg!(err);
