@@ -4,13 +4,11 @@ use tbot::{
     Bot,
 };
 
-const SEND_IN_REPLY_ERROR: &str = "Please send the command in reply to a poll";
-
 #[tokio::main]
 async fn main() {
     let mut bot = Bot::from_env("BOT_TOKEN").event_loop();
 
-    bot.command("poll", move |context| async move {
+    bot.command("poll", |context| async move {
         let regular = poll::Any::new(
             "Do you like tbot?",
             [
@@ -28,7 +26,7 @@ async fn main() {
         }
     });
 
-    bot.command("quiz", move |context| async move {
+    bot.command("quiz", |context| async move {
         let quiz = poll::Any::new(
             "The best Telegram bot library is...",
             [
@@ -57,7 +55,11 @@ async fn main() {
 
             call_result.err()
         } else {
-            context.send_message(SEND_IN_REPLY_ERROR).call().await.err()
+            context
+                .send_message("Please send the command in reply to a poll")
+                .call()
+                .await
+                .err()
         };
 
         if let Some(err) = err {
@@ -65,19 +67,16 @@ async fn main() {
         }
     });
 
-    bot.poll(|context| {
+    bot.poll(|context| async move {
         println!("Someone sent a poll: {:#?}", context.poll);
-        async {}
     });
 
-    bot.updated_poll(|context| {
+    bot.updated_poll(|context| async move {
         println!("New update on my poll: {:#?}", context.poll);
-        async {}
     });
 
-    bot.poll_answer(|context| {
+    bot.poll_answer(|context| async move {
         println!("New answer in my poll: {:#?}", context.answer);
-        async {}
     });
 
     bot.polling().start().await.unwrap();
