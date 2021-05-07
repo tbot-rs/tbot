@@ -1,8 +1,8 @@
 use super::{Message, Text};
 use crate::types::{
     chat, passport, Animation, Audio, Contact, Dice, Document, Game, Invoice,
-    Location, PhotoSize, Poll, Sticker, SuccessfulPayment, User, Venue, Video,
-    VideoNote, Voice,
+    Location, PhotoSize, Poll, ProximityAlert, Sticker, SuccessfulPayment,
+    User, Venue, Video, VideoNote, Voice,
 };
 use is_macro::Is;
 
@@ -108,6 +108,8 @@ pub enum Kind {
     ConnectedWebsite(String),
     /// Passport data.
     PassportData(passport::Data),
+    /// A proximity alert.
+    ProximityAlert(ProximityAlert),
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }
