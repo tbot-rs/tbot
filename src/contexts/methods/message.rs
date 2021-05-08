@@ -39,6 +39,11 @@ pub trait Message: fields::Message {
             .in_reply_to(self.message_id())
     }
 
+    /// Creates a secondary invite link for this chat.
+    fn create_chat_invite_link(&self) -> CreateChatInviteLink<'_> {
+        self.bot().create_chat_invite_link(self.chat().id)
+    }
+
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&self) -> DeleteChatPhoto<'_> {
         self.bot().delete_chat_photo(self.chat().id)
@@ -57,6 +62,14 @@ pub trait Message: fields::Message {
     /// Deletes the incoming message.
     fn delete_this_message(&self) -> DeleteMessage<'_> {
         self.delete_message(self.message_id())
+    }
+
+    /// Edits a secondary invite link for this chat.
+    fn edit_chat_invite_link(
+        &self,
+        link: impl Into<String>,
+    ) -> EditChatInviteLink<'_> {
+        self.bot().edit_chat_invite_link(self.chat().id, link)
     }
 
     /// Updates the caption of a message in this group.
@@ -188,6 +201,14 @@ pub trait Message: fields::Message {
     ) -> RestrictChatMember<'_> {
         self.bot()
             .restrict_chat_member(self.chat().id, user_id, permissions)
+    }
+
+    /// Revokes an invite link for this chat.
+    fn revoke_chat_invite_link(
+        &self,
+        link: impl Into<String>,
+    ) -> RevokeChatInviteLink<'_> {
+        self.bot().revoke_chat_invite_link(self.chat().id, link)
     }
 
     /// Send an animation to this chat.

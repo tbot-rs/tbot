@@ -222,6 +222,14 @@ impl Bot {
         CopyMessage::new(&self.inner, chat_id, from_chat_id, message_id)
     }
 
+    /// Creates a secondary invite link for a chat.
+    pub fn create_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> CreateChatInviteLink<'_> {
+        CreateChatInviteLink::new(&self.inner, chat_id)
+    }
+
     /// Creates a new sticker set.
     pub fn create_new_sticker_set(
         &self,
@@ -276,6 +284,15 @@ impl Bot {
 
     pub(crate) fn delete_webhook(&self) -> DeleteWebhook<'_> {
         DeleteWebhook::new(&self.inner)
+    }
+
+    /// Edits a secondary invite link for a chat.
+    pub fn edit_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+        link: impl Into<String>,
+    ) -> EditChatInviteLink<'_> {
+        EditChatInviteLink::new(&self.inner, chat_id, link)
     }
 
     /// Edits the caption of a media message sent via the inline mode.
@@ -533,6 +550,15 @@ impl Bot {
         permissions: chat::Permissions,
     ) -> RestrictChatMember<'_> {
         RestrictChatMember::new(&self.inner, chat_id, user_id, permissions)
+    }
+
+    /// Revokes an invite link for a chat.
+    pub fn revoke_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+        link: impl Into<String>,
+    ) -> RevokeChatInviteLink<'_> {
+        RevokeChatInviteLink::new(&self.inner, chat_id, link)
     }
 
     /// Sends an animation.
