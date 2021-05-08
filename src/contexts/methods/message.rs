@@ -39,6 +39,11 @@ pub trait Message: fields::Message {
             .in_reply_to(self.message_id())
     }
 
+    /// Creates a secondary invite link for this chat.
+    fn create_chat_invite_link(&self) -> CreateChatInviteLink<'_> {
+        self.bot().create_chat_invite_link(self.chat().id)
+    }
+
     /// Deletes the photo of this chat.
     fn delete_chat_photo(&self) -> DeleteChatPhoto<'_> {
         self.bot().delete_chat_photo(self.chat().id)

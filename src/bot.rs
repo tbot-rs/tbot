@@ -222,6 +222,14 @@ impl Bot {
         CopyMessage::new(&self.inner, chat_id, from_chat_id, message_id)
     }
 
+    /// Creates a secondary invite link for a chat.
+    pub fn create_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+    ) -> CreateChatInviteLink<'_> {
+        CreateChatInviteLink::new(&self.inner, chat_id)
+    }
+
     /// Creates a new sticker set.
     pub fn create_new_sticker_set(
         &self,
