@@ -50,8 +50,8 @@ impl FormattedText {
 }
 
 /// Represents the semantic meaning of the entity.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
-pub enum Kind<'a> {
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
+pub enum Kind {
     /// A mention.
     Mention,
     /// A hashtag.
@@ -67,35 +67,35 @@ pub enum Kind<'a> {
     /// A phone number.
     PhoneNumber,
     /// A clickable text link.
-    TextLink(&'a str),
+    TextLink(String),
     /// A mention for users without username.
-    TextMention(&'a User),
+    TextMention(User),
 }
 
 /// Represents a semantic entity.
 #[allow(clippy::module_name_repetitions)]
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct SemanticEntity<'a> {
+pub struct SemanticEntity {
     /// The semantic meaning.
-    pub kind: Option<Kind<'a>>,
+    pub kind: Option<Kind>,
     /// A `Vec` of formatted strings.
     pub value: Vec<FormattedText>,
 }
 
 /// Represents a parsed entity.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
-pub enum Entity<'a> {
+pub enum Entity {
     /// Inline code.
     Code(String),
     /// A code block.
     Pre {
         /// The code's programming language.
-        language: Option<&'a str>,
+        language: Option<String>,
         /// The code.
         value: String,
     },
     /// Text that may have semantic meaning.
-    Semantic(SemanticEntity<'a>),
+    Semantic(SemanticEntity),
 }
 
 fn to_formattable<'a>(
@@ -136,13 +136,13 @@ fn to_formattable<'a>(
         .collect()
 }
 
-impl<'a> markdown_v2::Formattable for SemanticEntity<'a> {
+impl markdown_v2::Formattable for SemanticEntity {
     fn format(
         &self,
         formatter: &mut std::fmt::Formatter,
         nesting: markup::Nesting,
     ) -> std::fmt::Result {
-        match self.kind {
+        match &self.kind {
             None
             | Some(Kind::Mention)
             | Some(Kind::Hashtag)
@@ -156,7 +156,7 @@ impl<'a> markdown_v2::Formattable for SemanticEntity<'a> {
                 nesting,
             ),
             Some(Kind::TextLink(url)) => markdown_v2::Formattable::format(
-                &link(to_formattable(&self.value), url),
+                &link(to_formattable(&self.value), url.as_str()),
                 formatter,
                 nesting,
             ),
@@ -169,13 +169,13 @@ impl<'a> markdown_v2::Formattable for SemanticEntity<'a> {
     }
 }
 
-impl<'a> html::Formattable for SemanticEntity<'a> {
+impl html::Formattable for SemanticEntity {
     fn format(
         &self,
         formatter: &mut std::fmt::Formatter,
         nesting: markup::Nesting,
     ) -> std::fmt::Result {
-        match self.kind {
+        match &self.kind {
             None
             | Some(Kind::Mention)
             | Some(Kind::Hashtag)
@@ -189,7 +189,7 @@ impl<'a> html::Formattable for SemanticEntity<'a> {
                 nesting,
             ),
             Some(Kind::TextLink(url)) => html::Formattable::format(
-                &link(to_formattable(&self.value), url),
+                &link(to_formattable(&self.value), url.as_str()),
                 formatter,
                 nesting,
             ),
@@ -202,7 +202,7 @@ impl<'a> html::Formattable for SemanticEntity<'a> {
     }
 }
 
-impl<'a> markdown_v2::Formattable for Entity<'a> {
+impl markdown_v2::Formattable for Entity {
     fn format(
         &self,
         formatter: &mut std::fmt::Formatter,
@@ -218,7 +218,7 @@ impl<'a> markdown_v2::Formattable for Entity<'a> {
                 let mut code = code_block(value.as_str());
 
                 if let Some(language) = language {
-                    code = code.language(*language);
+                    code = code.language(language);
                 }
 
                 markdown_v2::Formattable::format(&code, formatter, nesting)
@@ -230,7 +230,7 @@ impl<'a> markdown_v2::Formattable for Entity<'a> {
     }
 }
 
-impl<'a> html::Formattable for Entity<'a> {
+impl html::Formattable for Entity {
     fn format(
         &self,
         formatter: &mut std::fmt::Formatter,
@@ -246,7 +246,7 @@ impl<'a> html::Formattable for Entity<'a> {
                 let mut code = code_block(value.as_str());
 
                 if let Some(language) = language {
-                    code = code.language(*language);
+                    code = code.language(language);
                 }
 
                 html::Formattable::format(&code, formatter, nesting)
