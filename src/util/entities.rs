@@ -31,7 +31,7 @@ struct Token<'a> {
     token_kind: TokenKind,
 }
 
-fn tokenize(entities: &[RawEntity]) -> Vec<Token> {
+fn tokenize(entities: &[RawEntity]) -> Vec<Token<'_>> {
     let mut tokens = Vec::with_capacity(entities.len() * 2);
 
     entities.iter().for_each(|entity| match &entity.kind {
@@ -86,8 +86,8 @@ fn convert_kind(kind: &RawEntityKind) -> Kind {
         RawEntityKind::Url => Kind::Url,
         RawEntityKind::Email => Kind::Email,
         RawEntityKind::PhoneNumber => Kind::PhoneNumber,
-        RawEntityKind::TextLink(link) => Kind::TextLink(link),
-        RawEntityKind::TextMention(user) => Kind::TextMention(user),
+        RawEntityKind::TextLink(link) => Kind::TextLink(link.clone()),
+        RawEntityKind::TextMention(user) => Kind::TextMention(user.clone()),
         _ => unreachable!(
             "[tbot] Entity parser failed to convert this entity kind into a \
              semantic entity: {:#?}. Please file a bug on our GitLab.",
@@ -361,7 +361,7 @@ pub fn entities(text: &message::Text) -> Vec<Entity> {
                 }
                 (TokenKind::End, RawEntityKind::Pre(language)) => {
                     entities.push(Entity::Pre {
-                        language: language.as_deref(),
+                        language: language.clone(),
                         value: String::from_utf16_lossy(
                             &text[last_start.unwrap()..position],
                         ),
