@@ -286,6 +286,15 @@ impl Bot {
         DeleteWebhook::new(&self.inner)
     }
 
+    /// Edits a secondary invite link for a chat.
+    pub fn edit_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+        link: impl Into<String>,
+    ) -> EditChatInviteLink<'_> {
+        EditChatInviteLink::new(&self.inner, chat_id, link)
+    }
+
     /// Edits the caption of a media message sent via the inline mode.
     pub fn edit_inline_caption(
         &self,

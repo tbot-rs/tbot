@@ -64,6 +64,14 @@ pub trait Message: fields::Message {
         self.delete_message(self.message_id())
     }
 
+    /// Edits a secondary invite link for this chat.
+    fn edit_chat_invite_link(
+        &self,
+        link: impl Into<String>,
+    ) -> EditChatInviteLink<'_> {
+        self.bot().edit_chat_invite_link(self.chat().id, link)
+    }
+
     /// Updates the caption of a message in this group.
     fn edit_message_caption(
         &self,
