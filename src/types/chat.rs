@@ -4,6 +4,7 @@ use serde::Deserialize;
 
 mod action;
 mod id;
+mod invite_link;
 mod kind;
 mod location;
 pub mod member;
@@ -11,8 +12,8 @@ mod permissions;
 mod photo;
 
 pub use {
-    action::Action, id::Id, kind::Kind, location::Location, member::Member,
-    permissions::Permissions, photo::Photo,
+    action::Action, id::Id, invite_link::InviteLink, kind::Kind,
+    location::Location, member::Member, permissions::Permissions, photo::Photo,
 };
 
 /// Represents a [`Chat`].
