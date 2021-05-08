@@ -552,6 +552,15 @@ impl Bot {
         RestrictChatMember::new(&self.inner, chat_id, user_id, permissions)
     }
 
+    /// Revokes an invite link for a chat.
+    pub fn revoke_chat_invite_link(
+        &self,
+        chat_id: impl ImplicitChatId,
+        link: impl Into<String>,
+    ) -> RevokeChatInviteLink<'_> {
+        RevokeChatInviteLink::new(&self.inner, chat_id, link)
+    }
+
     /// Sends an animation.
     pub fn send_animation(
         &self,

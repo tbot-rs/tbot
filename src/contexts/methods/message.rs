@@ -203,6 +203,14 @@ pub trait Message: fields::Message {
             .restrict_chat_member(self.chat().id, user_id, permissions)
     }
 
+    /// Revokes an invite link for this chat.
+    fn revoke_chat_invite_link(
+        &self,
+        link: impl Into<String>,
+    ) -> RevokeChatInviteLink<'_> {
+        self.bot().revoke_chat_invite_link(self.chat().id, link)
+    }
+
     /// Send an animation to this chat.
     fn send_animation(&self, animation: Animation) -> SendAnimation<'_> {
         self.bot().send_animation(self.chat().id, animation)
