@@ -472,6 +472,14 @@ impl EventLoop {
         video_note: VideoNote,
         /// Registers a new handler for voice messages.
         voice: Voice,
+        /// Registers a new handler for when a voice chat is ended.
+        voice_chat_ended: VoiceChatEnded,
+        /// Registers a new handler for when users are invited to a voice chat.
+        voice_chat_participants_invited: VoiceChatParticipantsInvited,
+        /// Registers a new handler for when a voice chat is scheduled.
+        voice_chat_scheduled: VoiceChatScheduled,
+        /// Registers a new handler for when a voice chat is started.
+        voice_chat_started: VoiceChatStarted,
     }
 
     fn handle_unhandled(&self, update: update::Kind) {
@@ -865,6 +873,36 @@ impl EventLoop {
                     Voice::new(self.bot.clone(), data, voice, caption);
                 self.handle(Arc::new(context));
             }
+            message::Kind::VoiceChatEnded(ended)
+                if self.will_handle::<VoiceChatEnded>() =>
+            {
+                let context =
+                    VoiceChatEnded::new(self.bot.clone(), data, ended);
+                self.handle(Arc::new(context));
+            }
+            message::Kind::VoiceChatParticipantsInvited(invited)
+                if self.will_handle::<VoiceChatParticipantsInvited>() =>
+            {
+                let context = VoiceChatParticipantsInvited::new(
+                    self.bot.clone(),
+                    data,
+                    invited,
+                );
+                self.handle(Arc::new(context));
+            }
+            message::Kind::VoiceChatScheduled(scheduled)
+                if self.will_handle::<VoiceChatScheduled>() =>
+            {
+                let context =
+                    VoiceChatScheduled::new(self.bot.clone(), data, scheduled);
+                self.handle(Arc::new(context));
+            }
+            message::Kind::VoiceChatStarted
+                if self.will_handle::<VoiceChatStarted>() =>
+            {
+                let context = VoiceChatStarted::new(self.bot.clone(), data);
+                self.handle(Arc::new(context));
+            }
             message::Kind::SupergroupCreated
             | message::Kind::ChannelCreated => {
                 warn!("Update not expected; skipping it")
@@ -902,6 +940,10 @@ impl EventLoop {
             | message::Kind::Video { .. }
             | message::Kind::VideoNote(..)
             | message::Kind::Voice { .. }
+            | message::Kind::VoiceChatEnded(..)
+            | message::Kind::VoiceChatParticipantsInvited(..)
+            | message::Kind::VoiceChatScheduled(..)
+            | message::Kind::VoiceChatStarted
             | message::Kind::Unknown => (),
         }
     }
@@ -1038,6 +1080,10 @@ impl EventLoop {
             | message::Kind::Venue(..)
             | message::Kind::VideoNote(..)
             | message::Kind::Voice { .. }
+            | message::Kind::VoiceChatEnded(..)
+            | message::Kind::VoiceChatParticipantsInvited(..)
+            | message::Kind::VoiceChatScheduled(..)
+            | message::Kind::VoiceChatStarted
             | message::Kind::ChannelCreated
             | message::Kind::ChatPhotoDeleted
             | message::Kind::ConnectedWebsite(..)
