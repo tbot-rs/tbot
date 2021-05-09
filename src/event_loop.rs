@@ -332,238 +332,97 @@ impl EventLoop {
         }
     }
 
-    handler! {
-        Animation,
+    handlers! {
         /// Adds a new handler for animations.
-        animation,
-    }
-
-    handler! {
-        Audio,
+        animation: Animation,
         /// Adds a new handler for audio.
-        audio,
-    }
-
-    handler! {
-        ChosenInline,
+        audio: Audio,
         /// Adds a new handler for chosen inline results.
-        chosen_inline,
-    }
-
-    handler! {
-        Contact,
+        chosen_inline: ChosenInline,
         /// Adds a new handler for contacts.
-        contact,
-    }
-
-    handler! {
-        ConnectedWebsite,
+        contact: Contact,
         /// Adds a new handler for connected websites.
-        connected_website,
-    }
-
-    handler! {
-        CreatedGroup,
+        connected_website: ConnectedWebsite,
         /// Adds a new handler for created groups.
-        created_group,
-    }
-
-    handler! {
-        MessageDataCallback,
+        created_group: CreatedGroup,
         /// Adds a new handler for data callbacks from chat messages.
-        message_data_callback,
-    }
-
-    handler! {
-        InlineDataCallback,
+        message_data_callback: MessageDataCallback,
         /// Adds a new handler for data callbacks from inline messages.
-        inline_data_callback,
-    }
-
-    handler! {
-        DeletedChatPhoto,
+        inline_data_callback: InlineDataCallback,
         /// Adds a new handler for deleted chat photos.
-        deleted_chat_photo,
-    }
-
-    handler! {
-        Dice,
+        deleted_chat_photo: DeletedChatPhoto,
         /// Adds a new handler for dice.
-        dice,
-    }
-
-    handler! {
-        Document,
+        dice: Dice,
         /// Adds a new handler for documents.
-        document,
-    }
-
-    handler! {
-        EditedAnimation,
+        document: Document,
         /// Adds a new handler for edited animations.
-        edited_animation,
-    }
-
-    handler! {
-        EditedAudio,
+        edited_animation: EditedAnimation,
         /// Adds a new handler for edited audio.
-        edited_audio,
-    }
-
-    handler! {
-        EditedDocument,
+        edited_audio: EditedAudio,
         /// Adds a new handler for edited documents.
-        edited_document,
-    }
-
-    handler! {
-        EditedLocation,
+        edited_document: EditedDocument,
         /// Adds a new handler for edited locations.
-        edited_location,
-    }
-
-    handler! {
-        EditedPhoto,
+        edited_location: EditedLocation,
         /// Adds a new handler for edited photos.
-        edited_photo,
-    }
-
-    handler! {
-        EditedText,
+        edited_photo: EditedPhoto,
         /// Adds a new handler for edited text messages.
-        edited_text,
-    }
-
-    handler! {
-        EditedVideo,
+        edited_text: EditedText,
         /// Adds a new handler for edited videos.
-        edited_video,
-    }
-
-    handler! {
-        MessageGameCallback,
+        edited_video: EditedVideo,
         /// Adds a new handler for game callbacks from chat messages.
-        message_game_callback,
-    }
-
-    handler! {
-        InlineGameCallback,
+        message_game_callback: MessageGameCallback,
         /// Adds a new handler for game callbacks from inline messages.
-        inline_game_callback,
-    }
-
-    handler! {
-        Game,
+        inline_game_callback: InlineGameCallback,
         /// Adds a new handler for game messages.
-        game,
-    }
-
-    handler! {
-        Inline,
+        game: Game,
         /// Adds a new handler for inline queries.
-        inline,
-    }
-
-    handler! {
-        Invoice,
+        inline: Inline,
         /// Adds a new handler for invoices.
-        invoice,
-    }
-
-    handler! {
-        LeftMember,
+        invoice: Invoice,
         /// Adds a new handler for left members.
-        left_member,
-    }
-
-    handler! {
-        Location,
+        left_member: LeftMember,
         /// Adds a new handler for locations.
-        location,
-    }
-
-    handler! {
-        Migration,
+        location: Location,
         /// Adds a new handler for migrations.
-        migration,
-    }
-
-    handler! {
-        NewChatPhoto,
+        migration: Migration,
         /// Adds a new handler for new chat photos.
-        new_chat_photo,
-    }
-
-    handler! {
-        NewChatTitle,
+        new_chat_photo: NewChatPhoto,
         /// Adds a new handler for new chat titles.
-        new_chat_title,
-    }
-
-    handler! {
-        NewMembers,
+        new_chat_title: NewChatTitle,
         /// Adds a new handler for new members.
-        new_members,
-    }
-
-    handler! {
-        Passport,
+        new_members: NewMembers,
         /// Adds a new handler for passport data.
-        passport,
-    }
-
-    handler! {
-        Payment,
+        passport: Passport,
         /// Adds a new handler for successful payments.
-        payment,
-    }
-
-    handler! {
-        Photo,
+        payment: Payment,
         /// Adds a new handler for photos.
-        photo,
-    }
-
-    handler! {
-        PinnedMessage,
+        photo: Photo,
         /// Adds a new handler for pinned messages.
-        pinned_message,
-    }
-
-    handler! {
-        Poll,
+        pinned_message: PinnedMessage,
         /// Adds a new handler for poll messages.
-        poll,
-    }
-
-    handler! {
-        PreCheckout,
+        poll: Poll,
         /// Adds a new handler for pre-checkout queries.
-        pre_checkout,
-    }
-
-    handler! {
-        ProximityAlert,
+        pre_checkout: PreCheckout,
         /// Adds a new handler for proximity alerts.
-        proximity_alert,
-    }
-
-    handler! {
-        Shipping,
+        proximity_alert: ProximityAlert,
         /// Adds a new handler for shipping queries.
-        shipping,
-    }
-
-    handler! {
-        Sticker,
+        shipping: Shipping,
         /// Adds a new handler for stickers.
-        sticker,
-    }
-
-    handler! {
-        Text,
+        sticker: Sticker,
         /// Adds a new handler for text messages.
-        text,
+        text: Text,
+        /// Adds a new handler for new states of polls.
+        updated_poll: UpdatedPoll,
+        /// Adds a new handler for new answers in the poll.
+        poll_answer: PollAnswer,
+        /// Adds a new handler for venues.
+        venue: Venue,
+        /// Adds a new handler for videos.
+        video: Video,
+        /// Adds a new handler for video notes.
+        video_note: VideoNote,
+        /// Adds a new handler for voice messages.
+        voice: Voice,
     }
 
     /// Adds a new handler for unhandled updates.
@@ -578,42 +437,6 @@ impl EventLoop {
     fn handle_unhandled(&self, update: update::Kind) {
         let context = Arc::new(Unhandled::new(self.bot.clone(), update));
         self.handle(context);
-    }
-
-    handler! {
-        UpdatedPoll,
-        /// Adds a new handler for new states of polls.
-        updated_poll,
-    }
-
-    handler! {
-        PollAnswer,
-        /// Adds a new handler for new answers in the poll.
-        poll_answer,
-    }
-
-    handler! {
-        Venue,
-        /// Adds a new handler for venues.
-        venue,
-    }
-
-    handler! {
-        Video,
-        /// Adds a new handler for videos.
-        video,
-    }
-
-    handler! {
-        VideoNote,
-        /// Adds a new handler for video notes.
-        video_note,
-    }
-
-    handler! {
-        Voice,
-        /// Adds a new handler for voice messages.
-        voice,
     }
 
     #[instrument(skip(self, update))]
