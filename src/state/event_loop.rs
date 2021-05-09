@@ -3,25 +3,28 @@ use crate::event_loop::{EventLoop, Webhook};
 use crate::{contexts, errors};
 use std::{future::Future, sync::Arc};
 
-macro_rules! handler {
+macro_rules! handlers {
     (
-        $context:path,
-        $(#[doc = $doc:literal])+
-        $name:ident,
+        $(
+            $(#[doc = $doc:literal])+
+            $name:ident: $context:path,
+        )+
     ) => {
-        $(#[doc = $doc])+
-        pub fn $name<H, F>(&mut self, handler: H)
-        where
-            H: (Fn(Arc<$context>, Arc<S>) -> F)
-                + Send
-                + Sync
-                + 'static,
-            F: Future<Output = ()> + Send + 'static,
-        {
-            let state = Arc::clone(&self.state);
-            self.inner
-                .$name(move |context| handler(context, Arc::clone(&state)));
-        }
+        $(
+            $(#[doc = $doc])+
+            pub fn $name<H, F>(&mut self, handler: H)
+            where
+                H: (Fn(Arc<$context>, Arc<S>) -> F)
+                    + Send
+                    + Sync
+                    + 'static,
+                F: Future<Output = ()> + Send + 'static,
+            {
+                let state = Arc::clone(&self.state);
+                self.inner
+                    .$name(move |context| handler(context, Arc::clone(&state)));
+            }
+        )+
     };
 }
 
@@ -253,292 +256,99 @@ where
         });
     }
 
-    handler! {
-        contexts::Update,
-        /// Adds a new handler which is run after handling an update.
-        after_update,
-    }
-
-    handler! {
-        contexts::Animation,
+    handlers! {
         /// Adds a new handler for animations.
-        animation,
-    }
-
-    handler! {
-        contexts::Audio,
+        animation: contexts::Animation,
         /// Adds a new handler for audio.
-        audio,
-    }
-
-    handler! {
-        contexts::Update,
-        /// Adds a new handler which is run before handling an update.
-        before_update,
-    }
-
-    handler! {
-        contexts::ChosenInline,
+        audio: contexts::Audio,
         /// Adds a new handler for chosen inline results.
-        chosen_inline,
-    }
-
-    handler! {
-        contexts::Contact,
+        chosen_inline: contexts::ChosenInline,
         /// Adds a new handler for contacts.
-        contact,
-    }
-
-    handler! {
-        contexts::ConnectedWebsite,
+        contact: contexts::Contact,
         /// Adds a new handler for connected websites.
-        connected_website,
-    }
-
-    handler! {
-        contexts::CreatedGroup,
+        connected_website: contexts::ConnectedWebsite,
         /// Adds a new handler for created groups.
-        created_group,
-    }
-
-    handler! {
-        contexts::MessageDataCallback,
+        created_group: contexts::CreatedGroup,
         /// Adds a new handler for data callbacks from chat messages.
-        message_data_callback,
-    }
-
-    handler! {
-        contexts::InlineDataCallback,
+        message_data_callback: contexts::MessageDataCallback,
         /// Adds a new handler for data callbacks from inline messages.
-        inline_data_callback,
-    }
-
-    handler! {
-        contexts::DeletedChatPhoto,
+        inline_data_callback: contexts::InlineDataCallback,
         /// Adds a new handler for deleted chat photos.
-        deleted_chat_photo,
-    }
-
-    handler! {
-        contexts::Dice,
+        deleted_chat_photo: contexts::DeletedChatPhoto,
         /// Adds a new handler for dice.
-        dice,
-    }
-
-    handler! {
-        contexts::Document,
+        dice: contexts::Dice,
         /// Adds a new handler for documents.
-        document,
-    }
-
-    handler! {
-        contexts::EditedAnimation,
+        document: contexts::Document,
         /// Adds a new handler for edited animations.
-        edited_animation,
-    }
-
-    handler! {
-        contexts::EditedAudio,
+        edited_animation: contexts::EditedAnimation,
         /// Adds a new handler for edited audio.
-        edited_audio,
-    }
-
-    handler! {
-        contexts::EditedDocument,
+        edited_audio: contexts::EditedAudio,
         /// Adds a new handler for edited documents.
-        edited_document,
-    }
-
-    handler! {
-        contexts::EditedLocation,
+        edited_document: contexts::EditedDocument,
         /// Adds a new handler for edited locations.
-        edited_location,
-    }
-
-    handler! {
-        contexts::EditedPhoto,
+        edited_location: contexts::EditedLocation,
         /// Adds a new handler for edited photos.
-        edited_photo,
-    }
-
-    handler! {
-        contexts::EditedText,
+        edited_photo: contexts::EditedPhoto,
         /// Adds a new handler for edited text messages.
-        edited_text,
-    }
-
-    handler! {
-        contexts::EditedVideo,
+        edited_text: contexts::EditedText,
         /// Adds a new handler for edited videos.
-        edited_video,
-    }
-
-    handler! {
-        contexts::MessageGameCallback,
+        edited_video: contexts::EditedVideo,
         /// Adds a new handler for game callbacks from chat messages.
-        message_game_callback,
-    }
-
-    handler! {
-        contexts::InlineGameCallback,
+        message_game_callback: contexts::MessageGameCallback,
         /// Adds a new handler for game callbacks from inline messages.
-        inline_game_callback,
-    }
-
-    handler! {
-        contexts::Game,
+        inline_game_callback: contexts::InlineGameCallback,
         /// Adds a new handler for game messages.
-        game,
-    }
-
-    handler! {
-        contexts::Inline,
+        game: contexts::Game,
         /// Adds a new handler for inline queries.
-        inline,
-    }
-
-    handler! {
-        contexts::Invoice,
+        inline: contexts::Inline,
         /// Adds a new handler for invoices.
-        invoice,
-    }
-
-    handler! {
-        contexts::LeftMember,
+        invoice: contexts::Invoice,
         /// Adds a new handler for left members.
-        left_member,
-    }
-
-    handler! {
-        contexts::Location,
+        left_member: contexts::LeftMember,
         /// Adds a new handler for locations.
-        location,
-    }
-
-    handler! {
-        contexts::Migration,
+        location: contexts::Location,
         /// Adds a new handler for migrations.
-        migration,
-    }
-
-    handler! {
-        contexts::NewChatPhoto,
+        migration: contexts::Migration,
         /// Adds a new handler for new chat photos.
-        new_chat_photo,
-    }
-
-    handler! {
-        contexts::NewChatTitle,
+        new_chat_photo: contexts::NewChatPhoto,
         /// Adds a new handler for new chat titles.
-        new_chat_title,
-    }
-
-    handler! {
-        contexts::NewMembers,
+        new_chat_title: contexts::NewChatTitle,
         /// Adds a new handler for new members.
-        new_members,
-    }
-
-    handler! {
-        contexts::Passport,
+        new_members: contexts::NewMembers,
         /// Adds a new handler for passport data.
-        passport,
-    }
-
-    handler! {
-        contexts::Payment,
+        passport: contexts::Passport,
         /// Adds a new handler for successful payments.
-        payment,
-    }
-
-    handler! {
-        contexts::Photo,
+        payment: contexts::Payment,
         /// Adds a new handler for photos.
-        photo,
-    }
-
-    handler! {
-        contexts::PinnedMessage,
+        photo: contexts::Photo,
         /// Adds a new handler for pinned messages.
-        pinned_message,
-    }
-
-    handler! {
-        contexts::Poll,
+        pinned_message: contexts::PinnedMessage,
         /// Adds a new handler for poll messages.
-        poll,
-    }
-
-    handler! {
-        contexts::PreCheckout,
+        poll: contexts::Poll,
         /// Adds a new handler for pre-checkout queries.
-        pre_checkout,
-    }
-
-    handler! {
-        contexts::ProximityAlert,
+        pre_checkout: contexts::PreCheckout,
         /// Adds a new handler for proximity alerts.
-        proximity_alert,
-    }
-
-    handler! {
-        contexts::Shipping,
+        proximity_alert: contexts::ProximityAlert,
         /// Adds a new handler for shipping queries.
-        shipping,
-    }
-
-    handler! {
-        contexts::Sticker,
+        shipping: contexts::Shipping,
         /// Adds a new handler for stickers.
-        sticker,
-    }
-
-    handler! {
-        contexts::Text,
+        sticker: contexts::Sticker,
         /// Adds a new handler for text messages.
-        text,
-    }
-
-    handler! {
-        contexts::Unhandled,
+        text: contexts::Text,
         /// Adds a new handler for unhandled updates.
-        unhandled,
-    }
-
-    handler! {
-        contexts::UpdatedPoll,
+        unhandled: contexts::Unhandled,
         /// Adds a new handler for new states of polls.
-        updated_poll,
-    }
-
-    handler! {
-        contexts::PollAnswer,
+        updated_poll: contexts::UpdatedPoll,
         /// Adds a new handler for new answers in the poll.
-        poll_answer,
-    }
-
-    handler! {
-        contexts::Venue,
+        poll_answer: contexts::PollAnswer,
         /// Adds a new handler for venues.
-        venue,
-    }
-
-    handler! {
-        contexts::Video,
+        venue: contexts::Venue,
         /// Adds a new handler for videos.
-        video,
-    }
-
-    handler! {
-        contexts::VideoNote,
+        video: contexts::Video,
         /// Adds a new handler for video notes.
-        video_note,
-    }
-
-    handler! {
-        contexts::Voice,
+        video_note: contexts::VideoNote,
         /// Adds a new handler for voice messages.
-        voice,
+        voice: contexts::Voice,
     }
 }
 
