@@ -451,6 +451,15 @@ impl EventLoop {
         sticker: Sticker,
         /// Registers a new handler for text messages.
         text: Text,
+        /// Registers a new handler for unhandled updates.
+        ///
+        /// Note that regisering [`any_update`] handlers does not affect
+        /// `unhandled` handlers in any way. An `unhandled` handler is spawned
+        /// if a _specialized_ handler corresponding to the incoming update was
+        /// not registered.
+        ///
+        /// [`any_update`]: Self::any_update
+        unhandled: Unhandled,
         /// Registers a new handler for new states of polls.
         updated_poll: UpdatedPoll,
         /// Registers a new handler for new answers in the poll.
@@ -463,22 +472,6 @@ impl EventLoop {
         video_note: VideoNote,
         /// Registers a new handler for voice messages.
         voice: Voice,
-    }
-
-    /// Registers a new handler for unhandled updates.
-    ///
-    /// Note that regisering [`any_update`] handlers does not affect `unhandled`
-    /// handlers in any way. An `unhandled` handler is spawned if a
-    /// _specialized_ handler corresponding to the incoming update was not
-    /// registered.
-    ///
-    /// [`any_update`]: Self::any_update
-    pub fn unhandled<H, F>(&mut self, handler: H)
-    where
-        H: (Fn(Arc<Unhandled>) -> F) + Send + Sync + 'static,
-        F: Future<Output = ()> + Send + 'static,
-    {
-        self.add_handler(handler);
     }
 
     fn handle_unhandled(&self, update: update::Kind) {
