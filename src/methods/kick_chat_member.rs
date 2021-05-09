@@ -23,6 +23,7 @@ pub struct KickChatMember<'a> {
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<i64>,
+    revoke_messages: bool,
 }
 
 impl<'a> KickChatMember<'a> {
@@ -36,6 +37,7 @@ impl<'a> KickChatMember<'a> {
             chat_id: chat_id.into(),
             user_id,
             until_date: None,
+            revoke_messages: false,
         }
     }
 
@@ -43,6 +45,13 @@ impl<'a> KickChatMember<'a> {
     /// Reflects the `until_date` parameter.
     pub const fn until_date(mut self, date: i64) -> Self {
         self.until_date = Some(date);
+        self
+    }
+
+    /// Configures whether the user will be able to see messages sent before
+    /// the user was kicked. Sets the `revoke_messages` parameter to `true`.
+    pub const fn revoke_messages(mut self) -> Self {
+        self.revoke_messages = true;
         self
     }
 }
