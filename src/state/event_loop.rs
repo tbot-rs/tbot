@@ -327,6 +327,8 @@ where
         edited_text: contexts::EditedText,
         /// Registers a new handler for edited videos.
         edited_video: contexts::EditedVideo,
+        /// Registers a new handler for when a voice chat is ended.
+        ended_voice_chat: contexts::EndedVoiceChat,
         /// Registers a new handler for game callbacks from chat messages.
         message_game_callback: contexts::MessageGameCallback,
         /// Registers a new handler for game callbacks from inline messages.
@@ -335,6 +337,8 @@ where
         game: contexts::Game,
         /// Registers a new handler for inline queries.
         inline: contexts::Inline,
+        /// Registers a new handler for when users are invited to a voice chat.
+        invited_voice_chat_participants: contexts::InvitedVoiceChatParticipants,
         /// Registers a new handler for invoices.
         invoice: contexts::Invoice,
         /// Registers a new handler for left members.
@@ -363,8 +367,12 @@ where
         pre_checkout: contexts::PreCheckout,
         /// Registers a new handler for proximity alerts.
         proximity_alert: contexts::ProximityAlert,
+        /// Registers a new handler for when a voice chat is scheduled.
+        scheduled_voice_chat: contexts::ScheduledVoiceChat,
         /// Registers a new handler for shipping queries.
         shipping: contexts::Shipping,
+        /// Registers a new handler for when a voice chat is started.
+        started_voice_chat: contexts::StartedVoiceChat,
         /// Registers a new handler for stickers.
         sticker: contexts::Sticker,
         /// Registers a new handler for text messages.
@@ -390,13 +398,5 @@ where
         video_note: contexts::VideoNote,
         /// Registers a new handler for voice messages.
         voice: contexts::Voice,
-        /// Registers a new handler for when a voice chat is ended.
-        voice_chat_ended: contexts::VoiceChatEnded,
-        /// Registers a new handler for when users are invited to a voice chat.
-        voice_chat_participants_invited: contexts::VoiceChatParticipantsInvited,
-        /// Registers a new handler for when a voice chat is scheduled.
-        voice_chat_scheduled: contexts::VoiceChatScheduled,
-        /// Registers a new handler for when a voice chat is started.
-        voice_chat_started: contexts::VoiceChatStarted,
     }
 }
