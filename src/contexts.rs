@@ -61,6 +61,7 @@
 mod macros;
 
 mod animation;
+mod any_update;
 mod audio;
 mod chosen_inline;
 mod command;
@@ -100,7 +101,6 @@ mod shipping;
 mod sticker;
 mod text;
 mod unhandled;
-mod update;
 mod updated_poll;
 mod venue;
 mod video;
@@ -112,6 +112,7 @@ pub mod methods;
 mod proximity_alert;
 
 pub use animation::Animation;
+pub use any_update::AnyUpdate;
 pub use audio::Audio;
 pub use chosen_inline::ChosenInline;
 pub use command::Command;
@@ -152,7 +153,6 @@ pub use shipping::Shipping;
 pub use sticker::Sticker;
 pub use text::Text;
 pub use unhandled::Unhandled;
-pub use update::Update;
 pub use updated_poll::UpdatedPoll;
 pub use venue::Venue;
 pub use video::Video;

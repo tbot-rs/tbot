@@ -38,6 +38,7 @@ is-macro = "0.1.8"
 tracing = "0.1"
 tracing-futures = "0.2"
 paste = "1"
+type-map = "0.5"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["time", "macros", "rt", "rt-multi-thread", "net", "fs"] }

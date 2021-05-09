@@ -1,7 +1,8 @@
 //! The event loop for handling bot updates.
 
+#[allow(clippy::wildcard_imports)]
 use crate::{
-    contexts,
+    contexts::{fields::Context, *},
     errors::{self, MethodCall},
     state::StatefulEventLoop,
     types::{
@@ -9,7 +10,7 @@ use crate::{
         callback::Query,
         message::{
             self,
-            text::{Entity, EntityKind, Text},
+            text::{Entity, EntityKind},
             Message,
         },
         update, BotCommand,
@@ -18,6 +19,7 @@ use crate::{
 };
 use std::{collections::HashMap, future::Future, sync::Arc};
 use tracing::{error, instrument, trace, warn};
+use type_map::concurrent::TypeMap;
 
 #[macro_use]
 mod handlers_macros;
@@ -27,61 +29,10 @@ pub mod webhook;
 
 pub use {polling::Polling, webhook::Webhook};
 
-type Handlers<T> = Vec<Box<T>>;
-type Map<T> = HashMap<String, Handlers<T>>;
-
 // Wish trait alises came out soon
 type Handler<T> = dyn Fn(Arc<T>) + Send + Sync;
-
-type AnimationHandler = Handler<contexts::Animation>;
-type AudioHandler = Handler<contexts::Audio>;
-type ChosenInlineHandler = Handler<contexts::ChosenInline>;
-type CommandHandler = Handler<contexts::Command>;
-type ConnectedWebsiteHandler = Handler<contexts::ConnectedWebsite>;
-type ContactHandler = Handler<contexts::Contact>;
-type CreatedGroupHandler = Handler<contexts::CreatedGroup>;
-type MessageDataCallbackHandler = Handler<contexts::MessageDataCallback>;
-type InlineDataCallbackHandler = Handler<contexts::InlineDataCallback>;
-type DeletedChatPhotoHandler = Handler<contexts::DeletedChatPhoto>;
-type DiceHandler = Handler<contexts::Dice>;
-type DocumentHandler = Handler<contexts::Document>;
-type EditedAnimationHandler = Handler<contexts::EditedAnimation>;
-type EditedAudioHandler = Handler<contexts::EditedAudio>;
-type EditedCommandHandler = Handler<contexts::EditedCommand>;
-type EditedDocumentHandler = Handler<contexts::EditedDocument>;
-type EditedLocationHandler = Handler<contexts::EditedLocation>;
-type EditedPhotoHandler = Handler<contexts::EditedPhoto>;
-type EditedTextHandler = Handler<contexts::EditedText>;
-type EditedVideoHandler = Handler<contexts::EditedVideo>;
-type MessageGameCallbackHandler = Handler<contexts::MessageGameCallback>;
-type InlineGameCallbackHandler = Handler<contexts::InlineGameCallback>;
-type GameHandler = Handler<contexts::Game>;
-type InlineHandler = Handler<contexts::Inline>;
-type InvoiceHandler = Handler<contexts::Invoice>;
-type LeftMemberHandler = Handler<contexts::LeftMember>;
-type LocationHandler = Handler<contexts::Location>;
-type MigrationHandler = Handler<contexts::Migration>;
-type NewChatPhotoHandler = Handler<contexts::NewChatPhoto>;
-type NewChatTitleHandler = Handler<contexts::NewChatTitle>;
-type NewMembersHandler = Handler<contexts::NewMembers>;
-type PassportHandler = Handler<contexts::Passport>;
-type PaymentHandler = Handler<contexts::Payment>;
-type PhotoHandler = Handler<contexts::Photo>;
-type PinnedMessageHandler = Handler<contexts::PinnedMessage>;
-type PollHandler = Handler<contexts::Poll>;
-type PollAnswerHandler = Handler<contexts::PollAnswer>;
-type PreCheckoutHandler = Handler<contexts::PreCheckout>;
-type ProximityAlertHandler = Handler<contexts::ProximityAlert>;
-type ShippingHandler = Handler<contexts::Shipping>;
-type StickerHandler = Handler<contexts::Sticker>;
-type TextHandler = Handler<contexts::Text>;
-type UnhandledHandler = Handler<contexts::Unhandled>;
-type UpdatedPollHandler = Handler<contexts::UpdatedPoll>;
-type UpdateHandler = Handler<contexts::Update>;
-type VenueHandler = Handler<contexts::Venue>;
-type VideoHandler = Handler<contexts::Video>;
-type VideoNoteHandler = Handler<contexts::VideoNote>;
-type VoiceHandler = Handler<contexts::Voice>;
+type Handlers<T> = Vec<Box<Handler<T>>>;
+type Map<T> = HashMap<String, Handlers<T>>;
 
 /// Provides an event loop for handling Telegram updates.
 ///
@@ -107,57 +58,10 @@ pub struct EventLoop {
     bot: Bot,
     username: Option<String>,
 
-    command_handlers: Map<CommandHandler>,
+    command_handlers: Map<Command>,
     command_description: HashMap<String, String>,
-    edited_command_handlers: Map<EditedCommandHandler>,
-    after_update_handlers: Handlers<UpdateHandler>,
-    animation_handlers: Handlers<AnimationHandler>,
-    audio_handlers: Handlers<AudioHandler>,
-    before_update_handlers: Handlers<UpdateHandler>,
-    chosen_inline_handlers: Handlers<ChosenInlineHandler>,
-    contact_handlers: Handlers<ContactHandler>,
-    connected_website_handlers: Handlers<ConnectedWebsiteHandler>,
-    created_group_handlers: Handlers<CreatedGroupHandler>,
-    deleted_chat_photo_handlers: Handlers<DeletedChatPhotoHandler>,
-    dice_handlers: Handlers<DiceHandler>,
-    document_handlers: Handlers<DocumentHandler>,
-    edited_animation_handlers: Handlers<EditedAnimationHandler>,
-    edited_audio_handlers: Handlers<EditedAudioHandler>,
-    edited_document_handlers: Handlers<EditedDocumentHandler>,
-    edited_location_handlers: Handlers<EditedLocationHandler>,
-    edited_photo_handlers: Handlers<EditedPhotoHandler>,
-    edited_text_handlers: Handlers<EditedTextHandler>,
-    edited_video_handlers: Handlers<EditedVideoHandler>,
-    game_handlers: Handlers<GameHandler>,
-    inline_handlers: Handlers<InlineHandler>,
-    inline_data_callback_handlers: Handlers<InlineDataCallbackHandler>,
-    inline_game_callback_handlers: Handlers<InlineGameCallbackHandler>,
-    invoice_handlers: Handlers<InvoiceHandler>,
-    left_member_handlers: Handlers<LeftMemberHandler>,
-    location_handlers: Handlers<LocationHandler>,
-    message_data_callback_handlers: Handlers<MessageDataCallbackHandler>,
-    message_game_callback_handlers: Handlers<MessageGameCallbackHandler>,
-    migration_handlers: Handlers<MigrationHandler>,
-    new_chat_photo_handlers: Handlers<NewChatPhotoHandler>,
-    new_chat_title_handlers: Handlers<NewChatTitleHandler>,
-    new_members_handlers: Handlers<NewMembersHandler>,
-    passport_handlers: Handlers<PassportHandler>,
-    payment_handlers: Handlers<PaymentHandler>,
-    photo_handlers: Handlers<PhotoHandler>,
-    pinned_message_handlers: Handlers<PinnedMessageHandler>,
-    poll_handlers: Handlers<PollHandler>,
-    poll_answer_handlers: Handlers<PollAnswerHandler>,
-    pre_checkout_handlers: Handlers<PreCheckoutHandler>,
-    proximity_alert_handlers: Handlers<ProximityAlertHandler>,
-    shipping_handlers: Handlers<ShippingHandler>,
-    sticker_handlers: Handlers<StickerHandler>,
-    text_handlers: Handlers<TextHandler>,
-    unhandled_handlers: Handlers<UnhandledHandler>,
-    updated_poll_handlers: Handlers<UpdatedPollHandler>,
-    venue_handlers: Handlers<VenueHandler>,
-    video_handlers: Handlers<VideoHandler>,
-    video_note_handlers: Handlers<VideoNoteHandler>,
-    voice_handlers: Handlers<VoiceHandler>,
+    edited_command_handlers: Map<EditedCommand>,
+    update_handlers: TypeMap,
 }
 
 impl EventLoop {
@@ -168,54 +72,7 @@ impl EventLoop {
             command_handlers: HashMap::new(),
             command_description: HashMap::new(),
             edited_command_handlers: HashMap::new(),
-            after_update_handlers: Vec::new(),
-            animation_handlers: Vec::new(),
-            audio_handlers: Vec::new(),
-            before_update_handlers: Vec::new(),
-            chosen_inline_handlers: Vec::new(),
-            contact_handlers: Vec::new(),
-            connected_website_handlers: Vec::new(),
-            created_group_handlers: Vec::new(),
-            deleted_chat_photo_handlers: Vec::new(),
-            dice_handlers: Vec::new(),
-            document_handlers: Vec::new(),
-            edited_animation_handlers: Vec::new(),
-            edited_audio_handlers: Vec::new(),
-            edited_document_handlers: Vec::new(),
-            edited_location_handlers: Vec::new(),
-            edited_photo_handlers: Vec::new(),
-            edited_text_handlers: Vec::new(),
-            edited_video_handlers: Vec::new(),
-            game_handlers: Vec::new(),
-            inline_handlers: Vec::new(),
-            inline_data_callback_handlers: Vec::new(),
-            inline_game_callback_handlers: Vec::new(),
-            invoice_handlers: Vec::new(),
-            left_member_handlers: Vec::new(),
-            location_handlers: Vec::new(),
-            message_data_callback_handlers: Vec::new(),
-            message_game_callback_handlers: Vec::new(),
-            migration_handlers: Vec::new(),
-            new_chat_photo_handlers: Vec::new(),
-            new_chat_title_handlers: Vec::new(),
-            new_members_handlers: Vec::new(),
-            passport_handlers: Vec::new(),
-            payment_handlers: Vec::new(),
-            photo_handlers: Vec::new(),
-            pinned_message_handlers: Vec::new(),
-            poll_handlers: Vec::new(),
-            poll_answer_handlers: Vec::new(),
-            pre_checkout_handlers: Vec::new(),
-            proximity_alert_handlers: Vec::new(),
-            shipping_handlers: Vec::new(),
-            sticker_handlers: Vec::new(),
-            text_handlers: Vec::new(),
-            unhandled_handlers: Vec::new(),
-            updated_poll_handlers: Vec::new(),
-            venue_handlers: Vec::new(),
-            video_handlers: Vec::new(),
-            video_note_handlers: Vec::new(),
-            voice_handlers: Vec::new(),
+            update_handlers: TypeMap::new(),
         }
     }
 
@@ -236,6 +93,22 @@ impl EventLoop {
         self.username = Some(username);
     }
 
+    /// Fetches the bot's username.
+    ///
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
+    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
+        let me = self.bot.get_me().call().await?;
+
+        let username = me
+            .user
+            .username
+            .expect("[tbot] Expected the bot to have a username");
+        self.username(username);
+
+        Ok(())
+    }
+
     /// Starts polling configuration.
     pub fn polling(self) -> Polling {
         Polling::new(self)
@@ -250,7 +123,37 @@ impl EventLoop {
         Webhook::new(self, url, port)
     }
 
-    /// Adds a new handler for a command.
+    fn add_handler<C, H, F>(&mut self, handler: H)
+    where
+        C: Context,
+        H: Fn(Arc<C>) -> F + Send + Sync + 'static,
+        F: Future<Output = ()> + Send + 'static,
+    {
+        self.update_handlers
+            .entry::<Handlers<C>>()
+            .or_insert_with(Vec::new)
+            .push(Box::new(move |context| {
+                tokio::spawn(handler(context));
+            }));
+    }
+
+    fn will_handle<C: Context>(&self) -> bool {
+        self.update_handlers.contains::<Handlers<C>>()
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    fn handle<C: Context>(&self, context: Arc<C>) {
+        let handlers = match self.update_handlers.get::<Handlers<C>>() {
+            Some(handlers) => handlers,
+            None => return,
+        };
+
+        handlers
+            .iter()
+            .for_each(|handler| handler(Arc::clone(&context)));
+    }
+
+    /// Registers a new handler for a command.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -260,7 +163,7 @@ impl EventLoop {
     /// [`fetch_username`]: #method.fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_handlers
@@ -271,7 +174,7 @@ impl EventLoop {
             }));
     }
 
-    /// Adds a new handler for a command and sets its description.
+    /// Registers a new handler for a command and sets its description.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -285,7 +188,7 @@ impl EventLoop {
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_description
@@ -293,7 +196,7 @@ impl EventLoop {
         self.command(command, handler);
     }
 
-    /// Adds a new handler for a sequence of commands.
+    /// Registers a new handler for a sequence of commands.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -305,7 +208,7 @@ impl EventLoop {
     where
         Cm: IntoIterator<Item = &'static str>,
         F: Future<Output = ()> + Send + 'static,
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
     {
         let handler = Arc::new(handler);
 
@@ -324,11 +227,7 @@ impl EventLoop {
         self.command_handlers.contains_key(command)
     }
 
-    fn run_command_handlers(
-        &self,
-        command: &str,
-        context: &Arc<contexts::Command>,
-    ) {
+    fn handle_command(&self, command: &str, context: &Arc<Command>) {
         if let Some(handlers) = self.command_handlers.get(command) {
             for handler in handlers {
                 handler(context.clone());
@@ -336,73 +235,76 @@ impl EventLoop {
         }
     }
 
-    /// Adds a new handler for the `/start` command.
+    /// Registers a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("start", handler);
     }
 
-    /// Adds a new handler for the `/start` command and sets its description.
+    /// Registers a new handler for the `/start` command and sets its
+    /// description.
     pub fn start_with_description<H, F>(
         &mut self,
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("start", description, handler);
     }
 
-    /// Adds a new handler for the `/settings` command.
+    /// Registers a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("settings", handler);
     }
 
-    /// Adds a new handler for the `/settings` command and sets its description.
+    /// Registers a new handler for the `/settings` command and sets its
+    /// description.
     pub fn settings_with_description<H, F>(
         &mut self,
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("settings", description, handler);
     }
 
-    /// Adds a new handler for the `/help` command.
+    /// Registers a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command("help", handler);
     }
 
-    /// Adds a new handler for the `/help` command and sets its description.
+    /// Registers a new handler for the `/help` command and sets its
+    /// description.
     pub fn help_with_description<H, F>(
         &mut self,
         description: &'static str,
         handler: H,
     ) where
-        H: (Fn(Arc<contexts::Command>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.command_with_description("help", description, handler);
     }
 
-    /// Adds a new handler for an edited command.
+    /// Registers a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
-        H: (Fn(Arc<contexts::EditedCommand>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<EditedCommand>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
         self.edited_command_handlers
@@ -413,12 +315,12 @@ impl EventLoop {
             }));
     }
 
-    /// Adds a new handler for an edited command from sequence of commands.
+    /// Registers a new handler for an edited command from sequence of commands.
     pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
         F: Future<Output = ()> + Send + 'static,
-        H: (Fn(Arc<contexts::EditedCommand>) -> F) + Send + Sync + 'static,
+        H: (Fn(Arc<EditedCommand>) -> F) + Send + Sync + 'static,
     {
         let handler = Arc::new(handler);
 
@@ -437,10 +339,10 @@ impl EventLoop {
         self.edited_command_handlers.contains_key(command)
     }
 
-    fn run_edited_command_handlers(
+    fn handle_edited_command(
         &self,
         command: &str,
-        context: &Arc<contexts::EditedCommand>,
+        context: &Arc<EditedCommand>,
     ) {
         if let Some(handlers) = self.edited_command_handlers.get(command) {
             for handler in handlers {
@@ -449,320 +351,142 @@ impl EventLoop {
         }
     }
 
-    handler! {
-        contexts::Update,
-        /// Adds a new handler which is run after handling an update.
-        after_update,
+    handlers! {
+        /// Registers a new handler for all incoming updates.
+        ///
+        /// `any_update` handlers are spawned before specialized handlers,
+        /// for every update that could be deserialized (this means that
+        /// processing new updates on old versions of `tbot` is not possible
+        /// even via `any_update`).
+        ///
+        /// Note “spawned”: every handler is executed using [`tokio::spawn`],
+        /// and `tbot` won't wait for them to finish. As such, `any_update` is
+        /// not suitable for running some code before every specialized handler.
+        ///
+        /// Also, `any_update` does not affect [`unhandled`] in any way. It's
+        /// executed if a _specialized_ handler corresponding to the incoming
+        /// update wasn't registered.
+        ///
+        /// Registering specialized handler is still preferred. if at least
+        /// one `any_update` handler is registered, `tbot` will have to clone
+        /// every update in order to execute these and specialized handlers.
+        ///
+        /// [`unhandled`]: Self::unhandled
+        any_update: AnyUpdate,
+        /// Registers a new handler for animations.
+        animation: Animation,
+        /// Registers a new handler for audio.
+        audio: Audio,
+        /// Registers a new handler for chosen inline results.
+        chosen_inline: ChosenInline,
+        /// Registers a new handler for contacts.
+        contact: Contact,
+        /// Registers a new handler for connected websites.
+        connected_website: ConnectedWebsite,
+        /// Registers a new handler for created groups.
+        created_group: CreatedGroup,
+        /// Registers a new handler for data callbacks from chat messages.
+        message_data_callback: MessageDataCallback,
+        /// Registers a new handler for data callbacks from inline messages.
+        inline_data_callback: InlineDataCallback,
+        /// Registers a new handler for deleted chat photos.
+        deleted_chat_photo: DeletedChatPhoto,
+        /// Registers a new handler for dice.
+        dice: Dice,
+        /// Registers a new handler for documents.
+        document: Document,
+        /// Registers a new handler for edited animations.
+        edited_animation: EditedAnimation,
+        /// Registers a new handler for edited audio.
+        edited_audio: EditedAudio,
+        /// Registers a new handler for edited documents.
+        edited_document: EditedDocument,
+        /// Registers a new handler for edited locations.
+        edited_location: EditedLocation,
+        /// Registers a new handler for edited photos.
+        edited_photo: EditedPhoto,
+        /// Registers a new handler for edited text messages.
+        edited_text: EditedText,
+        /// Registers a new handler for edited videos.
+        edited_video: EditedVideo,
+        /// Registers a new handler for game callbacks from chat messages.
+        message_game_callback: MessageGameCallback,
+        /// Registers a new handler for game callbacks from inline messages.
+        inline_game_callback: InlineGameCallback,
+        /// Registers a new handler for game messages.
+        game: Game,
+        /// Registers a new handler for inline queries.
+        inline: Inline,
+        /// Registers a new handler for invoices.
+        invoice: Invoice,
+        /// Registers a new handler for left members.
+        left_member: LeftMember,
+        /// Registers a new handler for locations.
+        location: Location,
+        /// Registers a new handler for migrations.
+        migration: Migration,
+        /// Registers a new handler for new chat photos.
+        new_chat_photo: NewChatPhoto,
+        /// Registers a new handler for new chat titles.
+        new_chat_title: NewChatTitle,
+        /// Registers a new handler for new members.
+        new_members: NewMembers,
+        /// Registers a new handler for passport data.
+        passport: Passport,
+        /// Registers a new handler for successful payments.
+        payment: Payment,
+        /// Registers a new handler for photos.
+        photo: Photo,
+        /// Registers a new handler for pinned messages.
+        pinned_message: PinnedMessage,
+        /// Registers a new handler for poll messages.
+        poll: Poll,
+        /// Registers a new handler for pre-checkout queries.
+        pre_checkout: PreCheckout,
+        /// Registers a new handler for proximity alerts.
+        proximity_alert: ProximityAlert,
+        /// Registers a new handler for shipping queries.
+        shipping: Shipping,
+        /// Registers a new handler for stickers.
+        sticker: Sticker,
+        /// Registers a new handler for text messages.
+        text: Text,
+        /// Registers a new handler for unhandled updates.
+        ///
+        /// Note that regisering [`any_update`] handlers does not affect
+        /// `unhandled` handlers in any way. An `unhandled` handler is spawned
+        /// if a _specialized_ handler corresponding to the incoming update was
+        /// not registered.
+        ///
+        /// [`any_update`]: Self::any_update
+        unhandled: Unhandled,
+        /// Registers a new handler for new states of polls.
+        updated_poll: UpdatedPoll,
+        /// Registers a new handler for new answers in the poll.
+        poll_answer: PollAnswer,
+        /// Registers a new handler for venues.
+        venue: Venue,
+        /// Registers a new handler for videos.
+        video: Video,
+        /// Registers a new handler for video notes.
+        video_note: VideoNote,
+        /// Registers a new handler for voice messages.
+        voice: Voice,
     }
 
-    handler! {
-        contexts::Animation,
-        /// Adds a new handler for animations.
-        animation,
-    }
-
-    handler! {
-        contexts::Audio,
-        /// Adds a new handler for audio.
-        audio,
-    }
-
-    handler! {
-        contexts::Update,
-        /// Adds a new handler which is run before handling an update.
-        before_update,
-    }
-
-    handler! {
-        contexts::ChosenInline,
-        /// Adds a new handler for chosen inline results.
-        chosen_inline,
-    }
-
-    handler! {
-        contexts::Contact,
-        /// Adds a new handler for contacts.
-        contact,
-    }
-
-    handler! {
-        contexts::ConnectedWebsite,
-        /// Adds a new handler for connected websites.
-        connected_website,
-    }
-
-    handler! {
-        contexts::CreatedGroup,
-        /// Adds a new handler for created groups.
-        created_group,
-    }
-
-    handler! {
-        contexts::MessageDataCallback,
-        /// Adds a new handler for data callbacks from chat messages.
-        message_data_callback,
-    }
-
-    handler! {
-        contexts::InlineDataCallback,
-        /// Adds a new handler for data callbacks from inline messages.
-        inline_data_callback,
-    }
-
-    handler! {
-        contexts::DeletedChatPhoto,
-        /// Adds a new handler for deleted chat photos.
-        deleted_chat_photo,
-    }
-
-    handler! {
-        contexts::Dice,
-        /// Adds a new handler for dice.
-        dice,
-    }
-
-    handler! {
-        contexts::Document,
-        /// Adds a new handler for documents.
-        document,
-    }
-
-    handler! {
-        contexts::EditedAnimation,
-        /// Adds a new handler for edited animations.
-        edited_animation,
-    }
-
-    handler! {
-        contexts::EditedAudio,
-        /// Adds a new handler for edited audio.
-        edited_audio,
-    }
-
-    handler! {
-        contexts::EditedDocument,
-        /// Adds a new handler for edited documents.
-        edited_document,
-    }
-
-    handler! {
-        contexts::EditedLocation,
-        /// Adds a new handler for edited locations.
-        edited_location,
-    }
-
-    handler! {
-        contexts::EditedPhoto,
-        /// Adds a new handler for edited photos.
-        edited_photo,
-    }
-
-    handler! {
-        contexts::EditedText,
-        /// Adds a new handler for edited text messages.
-        edited_text,
-    }
-
-    handler! {
-        contexts::EditedVideo,
-        /// Adds a new handler for edited videos.
-        edited_video,
-    }
-
-    handler! {
-        contexts::MessageGameCallback,
-        /// Adds a new handler for game callbacks from chat messages.
-        message_game_callback,
-    }
-
-    handler! {
-        contexts::InlineGameCallback,
-        /// Adds a new handler for game callbacks from inline messages.
-        inline_game_callback,
-    }
-
-    handler! {
-        contexts::Game,
-        /// Adds a new handler for game messages.
-        game,
-    }
-
-    handler! {
-        contexts::Inline,
-        /// Adds a new handler for inline queries.
-        inline,
-    }
-
-    handler! {
-        contexts::Invoice,
-        /// Adds a new handler for invoices.
-        invoice,
-    }
-
-    handler! {
-        contexts::LeftMember,
-        /// Adds a new handler for left members.
-        left_member,
-    }
-
-    handler! {
-        contexts::Location,
-        /// Adds a new handler for locations.
-        location,
-    }
-
-    handler! {
-        contexts::Migration,
-        /// Adds a new handler for migrations.
-        migration,
-    }
-
-    handler! {
-        contexts::NewChatPhoto,
-        /// Adds a new handler for new chat photos.
-        new_chat_photo,
-    }
-
-    handler! {
-        contexts::NewChatTitle,
-        /// Adds a new handler for new chat titles.
-        new_chat_title,
-    }
-
-    handler! {
-        contexts::NewMembers,
-        /// Adds a new handler for new members.
-        new_members,
-    }
-
-    handler! {
-        contexts::Passport,
-        /// Adds a new handler for passport data.
-        passport,
-    }
-
-    handler! {
-        contexts::Payment,
-        /// Adds a new handler for successful payments.
-        payment,
-    }
-
-    handler! {
-        contexts::Photo,
-        /// Adds a new handler for photos.
-        photo,
-    }
-
-    handler! {
-        contexts::PinnedMessage,
-        /// Adds a new handler for pinned messages.
-        pinned_message,
-    }
-
-    handler! {
-        contexts::Poll,
-        /// Adds a new handler for poll messages.
-        poll,
-    }
-
-    handler! {
-        contexts::PreCheckout,
-        /// Adds a new handler for pre-checkout queries.
-        pre_checkout,
-    }
-
-    handler! {
-        contexts::ProximityAlert,
-        /// Adds a new handler for proximity alerts.
-        proximity_alert,
-    }
-
-    handler! {
-        contexts::Shipping,
-        /// Adds a new handler for shipping queries.
-        shipping,
-    }
-
-    handler! {
-        contexts::Sticker,
-        /// Adds a new handler for stickers.
-        sticker,
-    }
-
-    handler! {
-        contexts::Text,
-        /// Adds a new handler for text messages.
-        text,
-    }
-
-    /// Adds a new handler for unhandled updates.
-    pub fn unhandled<H, F>(&mut self, handler: H)
-    where
-        H: (Fn(Arc<contexts::Unhandled>) -> F) + Send + Sync + 'static,
-        F: Future<Output = ()> + Send + 'static,
-    {
-        self.unhandled_handlers.push(Box::new(move |context| {
-            tokio::spawn(handler(context));
-        }))
-    }
-
-    fn will_handle_unhandled(&self) -> bool {
-        !self.unhandled_handlers.is_empty()
-    }
-
-    fn run_unhandled_handlers(&self, update: update::Kind) {
-        let context =
-            Arc::new(contexts::Unhandled::new(self.bot.clone(), update));
-
-        for handler in &self.unhandled_handlers {
-            handler(context.clone());
-        }
-    }
-
-    handler! {
-        contexts::UpdatedPoll,
-        /// Adds a new handler for new states of polls.
-        updated_poll,
-    }
-
-    handler! {
-        contexts::PollAnswer,
-        /// Adds a new handler for new answers in the poll.
-        poll_answer,
-    }
-
-    handler! {
-        contexts::Venue,
-        /// Adds a new handler for venues.
-        venue,
-    }
-
-    handler! {
-        contexts::Video,
-        /// Adds a new handler for videos.
-        video,
-    }
-
-    handler! {
-        contexts::VideoNote,
-        /// Adds a new handler for video notes.
-        video_note,
-    }
-
-    handler! {
-        contexts::Voice,
-        /// Adds a new handler for voice messages.
-        voice,
+    fn handle_unhandled(&self, update: update::Kind) {
+        let context = Arc::new(Unhandled::new(self.bot.clone(), update));
+        self.handle(context);
     }
 
     #[instrument(skip(self, update))]
     fn handle_update(&self, update: types::Update) {
         trace!(?update);
 
-        let update_context =
-            Arc::new(contexts::Update::new(self.bot.clone(), update.id));
-
-        self.run_before_update_handlers(update_context.clone());
+        if self.will_handle::<AnyUpdate>() {
+            let context = AnyUpdate::new(self.bot.clone(), update.clone());
+            self.handle(Arc::new(context));
+        }
 
         match update.kind {
             update::Kind::CallbackQuery(query) => match query {
@@ -772,8 +496,8 @@ impl EventLoop {
                     id,
                     from,
                     chat_instance,
-                } if self.will_handle_message_data_callback() => {
-                    let context = contexts::MessageDataCallback::new(
+                } if self.will_handle::<MessageDataCallback>() => {
+                    let context = MessageDataCallback::new(
                         self.bot.clone(),
                         id,
                         from,
@@ -781,7 +505,7 @@ impl EventLoop {
                         chat_instance,
                         data,
                     );
-                    self.run_message_data_callback_handlers(Arc::new(context));
+                    self.handle(Arc::new(context));
                 }
                 Query {
                     kind: callback::Kind::Data(data),
@@ -789,8 +513,8 @@ impl EventLoop {
                     id,
                     from,
                     chat_instance,
-                } if self.will_handle_inline_data_callback() => {
-                    let context = contexts::InlineDataCallback::new(
+                } if self.will_handle::<InlineDataCallback>() => {
+                    let context = InlineDataCallback::new(
                         self.bot.clone(),
                         id,
                         from,
@@ -798,7 +522,7 @@ impl EventLoop {
                         chat_instance,
                         data,
                     );
-                    self.run_inline_data_callback_handlers(Arc::new(context));
+                    self.handle(Arc::new(context));
                 }
                 Query {
                     kind: callback::Kind::Game(game),
@@ -806,8 +530,8 @@ impl EventLoop {
                     id,
                     from,
                     chat_instance,
-                } if self.will_handle_message_game_callback() => {
-                    let context = contexts::MessageGameCallback::new(
+                } if self.will_handle::<MessageGameCallback>() => {
+                    let context = MessageGameCallback::new(
                         self.bot.clone(),
                         id,
                         from,
@@ -815,7 +539,7 @@ impl EventLoop {
                         chat_instance,
                         game,
                     );
-                    self.run_message_game_callback_handlers(Arc::new(context));
+                    self.handle(Arc::new(context));
                 }
                 Query {
                     kind: callback::Kind::Game(game),
@@ -823,8 +547,8 @@ impl EventLoop {
                     id,
                     from,
                     chat_instance,
-                } if self.will_handle_inline_game_callback() => {
-                    let context = contexts::InlineGameCallback::new(
+                } if self.will_handle::<InlineGameCallback>() => {
+                    let context = InlineGameCallback::new(
                         self.bot.clone(),
                         id,
                         from,
@@ -832,11 +556,11 @@ impl EventLoop {
                         chat_instance,
                         game,
                     );
-                    self.run_inline_game_callback_handlers(Arc::new(context));
+                    self.handle(Arc::new(context));
                 }
-                query if self.will_handle_unhandled() => {
+                query if self.will_handle::<Unhandled>() => {
                     let update = update::Kind::CallbackQuery(query);
-                    self.run_unhandled_handlers(update);
+                    self.handle_unhandled(update);
                 }
                 Query {
                     kind: callback::Kind::Data(..),
@@ -860,51 +584,49 @@ impl EventLoop {
                 } => (),
             },
             update::Kind::ChosenInlineResult(result)
-                if self.will_handle_chosen_inline() =>
+                if self.will_handle::<ChosenInline>() =>
             {
-                let context =
-                    contexts::ChosenInline::new(self.bot.clone(), result);
-                self.run_chosen_inline_handlers(Arc::new(context));
+                let context = ChosenInline::new(self.bot.clone(), result);
+                self.handle(Arc::new(context));
             }
             update::Kind::EditedMessage(message)
             | update::Kind::EditedChannelPost(message) => {
                 self.handle_message_edit_update(message);
             }
-            update::Kind::InlineQuery(query) if self.will_handle_inline() => {
-                let context = contexts::Inline::new(self.bot.clone(), query);
-                self.run_inline_handlers(Arc::new(context));
+            update::Kind::InlineQuery(query)
+                if self.will_handle::<Inline>() =>
+            {
+                let context = Inline::new(self.bot.clone(), query);
+                self.handle(Arc::new(context));
             }
             update::Kind::Message(message)
             | update::Kind::ChannelPost(message) => {
                 self.handle_message_update(message);
             }
             update::Kind::PreCheckoutQuery(query)
-                if self.will_handle_pre_checkout() =>
+                if self.will_handle::<PreCheckout>() =>
             {
-                let context =
-                    contexts::PreCheckout::new(self.bot.clone(), query);
-                self.run_pre_checkout_handlers(Arc::new(context));
+                let context = PreCheckout::new(self.bot.clone(), query);
+                self.handle(Arc::new(context));
             }
-            update::Kind::Poll(poll) if self.will_handle_updated_poll() => {
-                let context =
-                    contexts::UpdatedPoll::new(self.bot.clone(), poll);
-                self.run_updated_poll_handlers(Arc::new(context));
+            update::Kind::Poll(poll) if self.will_handle::<UpdatedPoll>() => {
+                let context = UpdatedPoll::new(self.bot.clone(), poll);
+                self.handle(Arc::new(context));
             }
             update::Kind::PollAnswer(answer)
-                if self.will_handle_poll_answer() =>
+                if self.will_handle::<PollAnswer>() =>
             {
-                let context =
-                    contexts::PollAnswer::new(self.bot.clone(), answer);
-                self.run_poll_answer_handlers(Arc::new(context));
+                let context = PollAnswer::new(self.bot.clone(), answer);
+                self.handle(Arc::new(context));
             }
             update::Kind::ShippingQuery(query)
-                if self.will_handle_shipping() =>
+                if self.will_handle::<Shipping>() =>
             {
-                let context = contexts::Shipping::new(self.bot.clone(), query);
-                self.run_shipping_handlers(Arc::new(context));
+                let context = Shipping::new(self.bot.clone(), query);
+                self.handle(Arc::new(context));
             }
-            update if self.will_handle_unhandled() => {
-                self.run_unhandled_handlers(update);
+            update if self.will_handle::<Unhandled>() => {
+                self.handle_unhandled(update);
             }
             update::Kind::ChosenInlineResult(..)
             | update::Kind::InlineQuery(..)
@@ -914,8 +636,6 @@ impl EventLoop {
             | update::Kind::ShippingQuery(..)
             | update::Kind::Unknown => (),
         }
-
-        self.run_after_update_handlers(update_context);
     }
 
     #[allow(clippy::cognitive_complexity)]
@@ -925,187 +645,166 @@ impl EventLoop {
 
         match kind {
             message::Kind::Animation { animation, caption }
-                if self.will_handle_animation() =>
+                if self.will_handle::<Animation>() =>
             {
-                let context = contexts::Animation::new(
-                    self.bot.clone(),
-                    data,
-                    *animation,
-                    caption,
-                );
-                self.run_animation_handlers(Arc::new(context));
+                let context =
+                    Animation::new(self.bot.clone(), data, *animation, caption);
+                self.handle(Arc::new(context));
             }
             message::Kind::Audio {
                 audio,
                 caption,
                 media_group_id,
-            } if self.will_handle_audio() => {
-                let context = contexts::Audio::new(
+            } if self.will_handle::<Audio>() => {
+                let context = Audio::new(
                     self.bot.clone(),
                     data,
                     *audio,
                     caption,
                     media_group_id,
                 );
-                self.run_audio_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::ChatPhotoDeleted
-                if self.will_handle_deleted_chat_photo() =>
+                if self.will_handle::<DeletedChatPhoto>() =>
             {
-                let context =
-                    contexts::DeletedChatPhoto::new(self.bot.clone(), data);
-                self.run_deleted_chat_photo_handlers(Arc::new(context));
+                let context = DeletedChatPhoto::new(self.bot.clone(), data);
+                self.handle(Arc::new(context));
             }
             message::Kind::ConnectedWebsite(website)
-                if self.will_handle_connected_website() =>
+                if self.will_handle::<ConnectedWebsite>() =>
             {
-                let context = contexts::ConnectedWebsite::new(
-                    self.bot.clone(),
-                    data,
-                    website,
-                );
-                self.run_connected_website_handlers(Arc::new(context));
-            }
-            message::Kind::Contact(contact) if self.will_handle_contact() => {
                 let context =
-                    contexts::Contact::new(self.bot.clone(), data, contact);
-                self.run_contact_handlers(Arc::new(context));
+                    ConnectedWebsite::new(self.bot.clone(), data, website);
+                self.handle(Arc::new(context));
             }
-            message::Kind::Dice(dice) if self.will_handle_dice() => {
-                let context = contexts::Dice::new(self.bot.clone(), data, dice);
-                self.run_dice_handlers(Arc::new(context));
+            message::Kind::Contact(contact)
+                if self.will_handle::<Contact>() =>
+            {
+                let context = Contact::new(self.bot.clone(), data, contact);
+                self.handle(Arc::new(context));
+            }
+            message::Kind::Dice(dice) if self.will_handle::<Dice>() => {
+                let context = Dice::new(self.bot.clone(), data, dice);
+                self.handle(Arc::new(context));
             }
             message::Kind::Document {
                 document,
                 caption,
                 media_group_id,
-            } if self.will_handle_document() => {
-                let context = contexts::Document::new(
+            } if self.will_handle::<Document>() => {
+                let context = Document::new(
                     self.bot.clone(),
                     data,
                     *document,
                     caption,
                     media_group_id,
                 );
-                self.run_document_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
-            message::Kind::Game(game) if self.will_handle_game() => {
-                let context =
-                    contexts::Game::new(self.bot.clone(), data, *game);
-                self.run_game_handlers(Arc::new(context));
+            message::Kind::Game(game) if self.will_handle::<Game>() => {
+                let context = Game::new(self.bot.clone(), data, *game);
+                self.handle(Arc::new(context));
             }
-            message::Kind::GroupCreated if self.will_handle_created_group() => {
-                let context =
-                    contexts::CreatedGroup::new(self.bot.clone(), data);
-                self.run_created_group_handlers(Arc::new(context));
+            message::Kind::GroupCreated
+                if self.will_handle::<CreatedGroup>() =>
+            {
+                let context = CreatedGroup::new(self.bot.clone(), data);
+                self.handle(Arc::new(context));
             }
-            message::Kind::Invoice(invoice) if self.will_handle_invoice() => {
-                let context =
-                    contexts::Invoice::new(self.bot.clone(), data, invoice);
-                self.run_invoice_handlers(Arc::new(context));
+            message::Kind::Invoice(invoice)
+                if self.will_handle::<Invoice>() =>
+            {
+                let context = Invoice::new(self.bot.clone(), data, invoice);
+                self.handle(Arc::new(context));
             }
             message::Kind::LeftChatMember(member)
-                if self.will_handle_left_member() =>
+                if self.will_handle::<LeftMember>() =>
             {
-                let context =
-                    contexts::LeftMember::new(self.bot.clone(), data, member);
-                self.run_left_member_handlers(Arc::new(context));
+                let context = LeftMember::new(self.bot.clone(), data, member);
+                self.handle(Arc::new(context));
             }
             message::Kind::Location(location)
-                if self.will_handle_location() =>
+                if self.will_handle::<Location>() =>
             {
-                let context =
-                    contexts::Location::new(self.bot.clone(), data, location);
-                self.run_location_handlers(Arc::new(context));
+                let context = Location::new(self.bot.clone(), data, location);
+                self.handle(Arc::new(context));
             }
             message::Kind::MigrateFrom(old_id)
-                if self.will_handle_migration() =>
+                if self.will_handle::<Migration>() =>
             {
-                let context =
-                    contexts::Migration::new(self.bot.clone(), data, old_id);
-                self.run_migration_handlers(Arc::new(context));
+                let context = Migration::new(self.bot.clone(), data, old_id);
+                self.handle(Arc::new(context));
             }
             message::Kind::MigrateTo(..) => (), // ignored on purpose
             message::Kind::NewChatMembers(members)
-                if self.will_handle_new_members() =>
+                if self.will_handle::<NewMembers>() =>
             {
-                let context =
-                    contexts::NewMembers::new(self.bot.clone(), data, members);
-                self.run_new_members_handlers(Arc::new(context));
+                let context = NewMembers::new(self.bot.clone(), data, members);
+                self.handle(Arc::new(context));
             }
             message::Kind::NewChatPhoto(photo)
-                if self.will_handle_new_chat_photo() =>
+                if self.will_handle::<NewChatPhoto>() =>
             {
-                let context =
-                    contexts::NewChatPhoto::new(self.bot.clone(), data, photo);
-                self.run_new_chat_photo_handlers(Arc::new(context));
+                let context = NewChatPhoto::new(self.bot.clone(), data, photo);
+                self.handle(Arc::new(context));
             }
             message::Kind::NewChatTitle(title)
-                if self.will_handle_new_chat_title() =>
+                if self.will_handle::<NewChatTitle>() =>
             {
-                let context =
-                    contexts::NewChatTitle::new(self.bot.clone(), data, title);
-                self.run_new_chat_title_handlers(Arc::new(context));
+                let context = NewChatTitle::new(self.bot.clone(), data, title);
+                self.handle(Arc::new(context));
             }
             message::Kind::PassportData(passport_data)
-                if self.will_handle_passport() =>
+                if self.will_handle::<Passport>() =>
             {
-                let context = contexts::Passport::new(
-                    self.bot.clone(),
-                    data,
-                    passport_data,
-                );
-                self.run_passport_handlers(Arc::new(context));
+                let context =
+                    Passport::new(self.bot.clone(), data, passport_data);
+                self.handle(Arc::new(context));
             }
             message::Kind::Photo {
                 photo,
                 caption,
                 media_group_id,
-            } if self.will_handle_photo() => {
-                let context = contexts::Photo::new(
+            } if self.will_handle::<Photo>() => {
+                let context = Photo::new(
                     self.bot.clone(),
                     data,
                     photo,
                     caption,
                     media_group_id,
                 );
-                self.run_photo_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::Pinned(message)
-                if self.will_handle_pinned_message() =>
+                if self.will_handle::<PinnedMessage>() =>
             {
-                let context = contexts::PinnedMessage::new(
-                    self.bot.clone(),
-                    data,
-                    *message,
-                );
-                self.run_pinned_message_handlers(Arc::new(context));
+                let context =
+                    PinnedMessage::new(self.bot.clone(), data, *message);
+                self.handle(Arc::new(context));
             }
-            message::Kind::Poll(poll) if self.will_handle_poll() => {
-                let context = contexts::Poll::new(self.bot.clone(), data, poll);
-                self.run_poll_handlers(Arc::new(context));
+            message::Kind::Poll(poll) if self.will_handle::<Poll>() => {
+                let context = Poll::new(self.bot.clone(), data, poll);
+                self.handle(Arc::new(context));
             }
             message::Kind::ProximityAlert(alert)
-                if self.will_handle_proximity_alert() =>
+                if self.will_handle::<ProximityAlert>() =>
             {
-                let context = contexts::ProximityAlert::new(
-                    self.bot.clone(),
-                    data,
-                    alert,
-                );
-                self.run_proximity_alert_handlers(Arc::new(context));
-            }
-            message::Kind::Sticker(sticker) if self.will_handle_sticker() => {
                 let context =
-                    contexts::Sticker::new(self.bot.clone(), data, *sticker);
-                self.run_sticker_handlers(Arc::new(context));
+                    ProximityAlert::new(self.bot.clone(), data, alert);
+                self.handle(Arc::new(context));
+            }
+            message::Kind::Sticker(sticker)
+                if self.will_handle::<Sticker>() =>
+            {
+                let context = Sticker::new(self.bot.clone(), data, *sticker);
+                self.handle(Arc::new(context));
             }
             message::Kind::SuccessfulPayment(payment)
-                if self.will_handle_payment() =>
+                if self.will_handle::<Payment>() =>
             {
-                let context =
-                    contexts::Payment::new(self.bot.clone(), data, *payment);
-                self.run_payment_handlers(Arc::new(context));
+                let context = Payment::new(self.bot.clone(), data, *payment);
+                self.handle(Arc::new(context));
             }
             message::Kind::Text(text) if is_command(&text) => {
                 let (command, username) = parse_command(&text);
@@ -1116,72 +815,64 @@ impl EventLoop {
 
                 if self.will_handle_command(&command) {
                     let text = trim_command(text);
-                    let context = contexts::Command::new(
+                    let context = Command::new(
                         self.bot.clone(),
                         data,
                         text,
                         command.clone(),
                     );
-                    self.run_command_handlers(&command, &Arc::new(context));
-                } else if self.will_handle_unhandled() {
+                    self.handle_command(&command, &Arc::new(context));
+                } else if self.will_handle::<Unhandled>() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
                     let update = update::Kind::Message(message);
-                    self.run_unhandled_handlers(update);
+                    self.handle_unhandled(update);
                 }
             }
-            message::Kind::Text(text) if self.will_handle_text() => {
-                let context = contexts::Text::new(self.bot.clone(), data, text);
-                self.run_text_handlers(Arc::new(context));
+            message::Kind::Text(text) if self.will_handle::<Text>() => {
+                let context = Text::new(self.bot.clone(), data, text);
+                self.handle(Arc::new(context));
             }
-            message::Kind::Venue(venue) if self.will_handle_venue() => {
-                let context =
-                    contexts::Venue::new(self.bot.clone(), data, venue);
-                self.run_venue_handlers(Arc::new(context));
+            message::Kind::Venue(venue) if self.will_handle::<Venue>() => {
+                let context = Venue::new(self.bot.clone(), data, venue);
+                self.handle(Arc::new(context));
             }
             message::Kind::Video {
                 video,
                 caption,
                 media_group_id,
-            } if self.will_handle_video() => {
-                let context = contexts::Video::new(
+            } if self.will_handle::<Video>() => {
+                let context = Video::new(
                     self.bot.clone(),
                     data,
                     *video,
                     caption,
                     media_group_id,
                 );
-                self.run_video_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::VideoNote(video_note)
-                if self.will_handle_video_note() =>
+                if self.will_handle::<VideoNote>() =>
             {
-                let context = contexts::VideoNote::new(
-                    self.bot.clone(),
-                    data,
-                    video_note,
-                );
-                self.run_video_note_handlers(Arc::new(context));
+                let context =
+                    VideoNote::new(self.bot.clone(), data, video_note);
+                self.handle(Arc::new(context));
             }
             message::Kind::Voice { voice, caption }
-                if self.will_handle_voice() =>
+                if self.will_handle::<Voice>() =>
             {
-                let context = contexts::Voice::new(
-                    self.bot.clone(),
-                    data,
-                    voice,
-                    caption,
-                );
-                self.run_voice_handlers(Arc::new(context));
+                let context =
+                    Voice::new(self.bot.clone(), data, voice, caption);
+                self.handle(Arc::new(context));
             }
             message::Kind::SupergroupCreated
             | message::Kind::ChannelCreated => {
                 warn!("Update not expected; skipping it")
             }
-            kind if self.will_handle_unhandled() => {
+            kind if self.will_handle::<Unhandled>() => {
                 let message = Message::new(data, kind);
                 let update = update::Kind::Message(message);
-                self.run_unhandled_handlers(update);
+                self.handle_unhandled(update);
             }
             message::Kind::Animation { .. }
             | message::Kind::Audio { .. }
@@ -1227,23 +918,23 @@ impl EventLoop {
 
         match kind {
             message::Kind::Animation { animation, caption }
-                if self.will_handle_edited_animation() =>
+                if self.will_handle::<EditedAnimation>() =>
             {
-                let context = contexts::EditedAnimation::new(
+                let context = EditedAnimation::new(
                     self.bot.clone(),
                     data,
                     edit_date,
                     *animation,
                     caption,
                 );
-                self.run_edited_animation_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::Audio {
                 audio,
                 caption,
                 media_group_id,
-            } if self.will_handle_edited_audio() => {
-                let context = contexts::EditedAudio::new(
+            } if self.will_handle::<EditedAudio>() => {
+                let context = EditedAudio::new(
                     self.bot.clone(),
                     data,
                     edit_date,
@@ -1251,14 +942,14 @@ impl EventLoop {
                     caption,
                     media_group_id,
                 );
-                self.run_edited_audio_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::Document {
                 document,
                 caption,
                 media_group_id,
-            } if self.will_handle_edited_document() => {
-                let context = contexts::EditedDocument::new(
+            } if self.will_handle::<EditedDocument>() => {
+                let context = EditedDocument::new(
                     self.bot.clone(),
                     data,
                     edit_date,
@@ -1266,25 +957,25 @@ impl EventLoop {
                     caption,
                     media_group_id,
                 );
-                self.run_edited_document_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::Location(location)
-                if self.will_handle_edited_location() =>
+                if self.will_handle::<EditedLocation>() =>
             {
-                let context = contexts::EditedLocation::new(
+                let context = EditedLocation::new(
                     self.bot.clone(),
                     data,
                     edit_date,
                     location,
                 );
-                self.run_edited_location_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::Photo {
                 photo,
                 caption,
                 media_group_id,
-            } if self.will_handle_edited_photo() => {
-                let context = contexts::EditedPhoto::new(
+            } if self.will_handle::<EditedPhoto>() => {
+                let context = EditedPhoto::new(
                     self.bot.clone(),
                     data,
                     edit_date,
@@ -1292,7 +983,7 @@ impl EventLoop {
                     caption,
                     media_group_id,
                 );
-                self.run_edited_photo_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
             message::Kind::Text(text) if is_command(&text) => {
                 let (command, username) = parse_command(&text);
@@ -1302,39 +993,32 @@ impl EventLoop {
 
                 if self.will_handle_edited_command(&command) {
                     let text = trim_command(text);
-                    let context = contexts::EditedCommand::new(
+                    let context = EditedCommand::new(
                         self.bot.clone(),
                         data,
                         edit_date,
                         text,
                         command.clone(),
                     );
-                    self.run_edited_command_handlers(
-                        &command,
-                        &Arc::new(context),
-                    );
-                } else if self.will_handle_unhandled() {
+                    self.handle_edited_command(&command, &Arc::new(context));
+                } else if self.will_handle::<Unhandled>() {
                     let kind = message::Kind::Text(text);
                     let message = Message::new(data, kind);
                     let update = update::Kind::EditedMessage(message);
-                    self.run_unhandled_handlers(update);
+                    self.handle_unhandled(update);
                 }
             }
-            message::Kind::Text(text) if self.will_handle_edited_text() => {
-                let context = contexts::EditedText::new(
-                    self.bot.clone(),
-                    data,
-                    edit_date,
-                    text,
-                );
-                self.run_edited_text_handlers(Arc::new(context));
+            message::Kind::Text(text) if self.will_handle::<EditedText>() => {
+                let context =
+                    EditedText::new(self.bot.clone(), data, edit_date, text);
+                self.handle(Arc::new(context));
             }
             message::Kind::Video {
                 video,
                 caption,
                 media_group_id,
-            } if self.will_handle_edited_video() => {
-                let context = contexts::EditedVideo::new(
+            } if self.will_handle::<EditedVideo>() => {
+                let context = EditedVideo::new(
                     self.bot.clone(),
                     data,
                     edit_date,
@@ -1342,7 +1026,7 @@ impl EventLoop {
                     caption,
                     media_group_id,
                 );
-                self.run_edited_video_handlers(Arc::new(context));
+                self.handle(Arc::new(context));
             }
 
             message::Kind::Contact(..)
@@ -1373,10 +1057,10 @@ impl EventLoop {
                 skipping it"
             ),
 
-            kind if self.will_handle_unhandled() => {
+            kind if self.will_handle::<Unhandled>() => {
                 let message = Message::new(data, kind);
                 let update = update::Kind::EditedMessage(message);
-                self.run_unhandled_handlers(update)
+                self.handle_unhandled(update)
             }
             message::Kind::Animation { .. }
             | message::Kind::Audio { .. }
@@ -1412,31 +1096,15 @@ impl EventLoop {
 
         Ok(())
     }
-
-    /// Fetches the bot's username.
-    ///
-    /// The username is used when checking if a command such as
-    /// `/command@username` was directed to the bot.
-    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
-        let me = self.bot.get_me().call().await?;
-
-        let username = me
-            .user
-            .username
-            .expect("[tbot] Expected the bot to have a username");
-        self.username(username);
-
-        Ok(())
-    }
 }
 
-fn is_command(text: &Text) -> bool {
+fn is_command(text: &message::Text) -> bool {
     text.entities.get(0).map(|entity| {
         entity.kind == EntityKind::BotCommand && entity.offset == 0
     }) == Some(true)
 }
 
-fn parse_command(text: &Text) -> (String, Option<&str>) {
+fn parse_command(text: &message::Text) -> (String, Option<&str>) {
     let mut iter =
         // As this function is only run when a message starts with `/`,
         // the first value will always be yielded.
@@ -1449,7 +1117,7 @@ fn parse_command(text: &Text) -> (String, Option<&str>) {
     (command.to_string(), username)
 }
 
-fn trim_command(text: Text) -> Text {
+fn trim_command(text: message::Text) -> message::Text {
     let mut entities = text.entities.into_iter();
     // As this function is only called when the message is a command, the first
     // entity will always exist.
@@ -1472,5 +1140,5 @@ fn trim_command(text: Text) -> Text {
         })
         .collect();
 
-    Text { value, entities }
+    message::Text { value, entities }
 }
