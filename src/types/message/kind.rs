@@ -1,4 +1,4 @@
-use super::{Message, Text};
+use super::{AutoDeleteTimerChanged, Message, Text};
 use crate::types::{
     chat, passport, voice_chat, Animation, Audio, Contact, Dice, Document,
     Game, Invoice, Location, PhotoSize, Poll, ProximityAlert, Sticker,
@@ -118,6 +118,8 @@ pub enum Kind {
     VoiceChatEnded(voice_chat::Ended),
     /// A voice chat was scheduled.
     VoiceChatScheduled(voice_chat::Scheduled),
+    /// The auto-delete time was changed.
+    AutoDeleteTimerChanged(AutoDeleteTimerChanged),
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }

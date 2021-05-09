@@ -377,6 +377,8 @@ impl EventLoop {
         animation: Animation,
         /// Registers a new handler for audio.
         audio: Audio,
+        /// Registers a new handler for changed auto-delete timers.
+        changed_auto_delete_timer: ChangedAutoDeleteTimer,
         /// Registers a new handler for chosen inline results.
         chosen_inline: ChosenInline,
         /// Registers a new handler for contacts.
@@ -673,6 +675,13 @@ impl EventLoop {
                 );
                 self.handle(Arc::new(context));
             }
+            message::Kind::AutoDeleteTimerChanged(change)
+                if self.will_handle::<ChangedAutoDeleteTimer>() =>
+            {
+                let context =
+                    ChangedAutoDeleteTimer::new(self.bot.clone(), data, change);
+                self.handle(Arc::new(context));
+            }
             message::Kind::ChatPhotoDeleted
                 if self.will_handle::<DeletedChatPhoto>() =>
             {
@@ -914,6 +923,7 @@ impl EventLoop {
             }
             message::Kind::Animation { .. }
             | message::Kind::Audio { .. }
+            | message::Kind::AutoDeleteTimerChanged(..)
             | message::Kind::ChatPhotoDeleted
             | message::Kind::ConnectedWebsite(..)
             | message::Kind::Contact(..)
@@ -1098,6 +1108,7 @@ impl EventLoop {
             | message::Kind::Pinned(..)
             | message::Kind::ProximityAlert(..)
             | message::Kind::SuccessfulPayment(..)
+            | message::Kind::AutoDeleteTimerChanged(..)
             | message::Kind::SupergroupCreated => warn!(
                 "Unexpected message kind received as an edited message; \
                 skipping it"

@@ -8,8 +8,12 @@ mod from;
 mod id;
 mod kind;
 pub mod text;
+mod timer;
 
-pub use {forward::Forward, from::From, id::Id, kind::Kind, text::Text};
+pub use {
+    forward::Forward, from::From, id::Id, kind::Kind, text::Text,
+    timer::AutoDeleteTimerChanged,
+};
 
 /// Represents a message.
 #[derive(Debug, PartialEq, Clone)]
@@ -131,6 +135,7 @@ const DELETE_CHAT_PHOTO: &str = "delete_chat_photo";
 const GROUP_CHAT_CREATED: &str = "group_chat_created";
 const SUPERGROUP_CHAT_CREATED: &str = "supergroup_chat_created";
 const CHANNEL_CHAT_CREATED: &str = "channel_chat_created";
+const AUTO_DELETE_TIMER_CHANGED: &str = "message_auto_delete_timer_changed";
 const MIGRATE_TO_CHAT_ID: &str = "migrate_to_chat_id";
 const MIGRATE_FROM_CHAT_ID: &str = "migrate_from_chat_id";
 const PINNED_MESSAGE: &str = "pinned_message";
@@ -202,6 +207,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         let mut group_chat_created = false;
         let mut supergroup_chat_created = false;
         let mut channel_chat_created = false;
+        let mut auto_delete_timer_changed = None;
         let mut migrate_to_chat_id = None;
         let mut migrate_from_chat_id = None;
         let mut pinned_message = None;
@@ -271,6 +277,9 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 }
                 CHANNEL_CHAT_CREATED => {
                     channel_chat_created = map.next_value()?
+                }
+                AUTO_DELETE_TIMER_CHANGED => {
+                    auto_delete_timer_changed = Some(map.next_value()?)
                 }
                 MIGRATE_TO_CHAT_ID => {
                     migrate_to_chat_id = Some(map.next_value()?)
@@ -437,6 +446,8 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::VoiceChatScheduled(scheduled)
         } else if let Some(dice) = dice {
             Kind::Dice(dice)
+        } else if let Some(change) = auto_delete_timer_changed {
+            Kind::AutoDeleteTimerChanged(change)
         } else {
             Kind::Unknown
         };
