@@ -153,7 +153,7 @@ impl EventLoop {
             .for_each(|handler| handler(Arc::clone(&context)));
     }
 
-    /// Adds a new handler for a command.
+    /// Registers a new handler for a command.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -174,7 +174,7 @@ impl EventLoop {
             }));
     }
 
-    /// Adds a new handler for a command and sets its description.
+    /// Registers a new handler for a command and sets its description.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -196,7 +196,7 @@ impl EventLoop {
         self.command(command, handler);
     }
 
-    /// Adds a new handler for a sequence of commands.
+    /// Registers a new handler for a sequence of commands.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -235,7 +235,7 @@ impl EventLoop {
         }
     }
 
-    /// Adds a new handler for the `/start` command.
+    /// Registers a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
@@ -244,7 +244,8 @@ impl EventLoop {
         self.command("start", handler);
     }
 
-    /// Adds a new handler for the `/start` command and sets its description.
+    /// Registers a new handler for the `/start` command and sets its
+    /// description.
     pub fn start_with_description<H, F>(
         &mut self,
         description: &'static str,
@@ -256,7 +257,7 @@ impl EventLoop {
         self.command_with_description("start", description, handler);
     }
 
-    /// Adds a new handler for the `/settings` command.
+    /// Registers a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
@@ -265,7 +266,8 @@ impl EventLoop {
         self.command("settings", handler);
     }
 
-    /// Adds a new handler for the `/settings` command and sets its description.
+    /// Registers a new handler for the `/settings` command and sets its
+    /// description.
     pub fn settings_with_description<H, F>(
         &mut self,
         description: &'static str,
@@ -277,7 +279,7 @@ impl EventLoop {
         self.command_with_description("settings", description, handler);
     }
 
-    /// Adds a new handler for the `/help` command.
+    /// Registers a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
@@ -286,7 +288,8 @@ impl EventLoop {
         self.command("help", handler);
     }
 
-    /// Adds a new handler for the `/help` command and sets its description.
+    /// Registers a new handler for the `/help` command and sets its
+    /// description.
     pub fn help_with_description<H, F>(
         &mut self,
         description: &'static str,
@@ -298,7 +301,7 @@ impl EventLoop {
         self.command_with_description("help", description, handler);
     }
 
-    /// Adds a new handler for an edited command.
+    /// Registers a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<EditedCommand>) -> F) + Send + Sync + 'static,
@@ -312,7 +315,7 @@ impl EventLoop {
             }));
     }
 
-    /// Adds a new handler for an edited command from sequence of commands.
+    /// Registers a new handler for an edited command from sequence of commands.
     pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
@@ -370,95 +373,95 @@ impl EventLoop {
         ///
         /// [`unhandled`]: Self::unhandled
         any_update: AnyUpdate,
-        /// Adds a new handler for animations.
+        /// Registers a new handler for animations.
         animation: Animation,
-        /// Adds a new handler for audio.
+        /// Registers a new handler for audio.
         audio: Audio,
-        /// Adds a new handler for chosen inline results.
+        /// Registers a new handler for chosen inline results.
         chosen_inline: ChosenInline,
-        /// Adds a new handler for contacts.
+        /// Registers a new handler for contacts.
         contact: Contact,
-        /// Adds a new handler for connected websites.
+        /// Registers a new handler for connected websites.
         connected_website: ConnectedWebsite,
-        /// Adds a new handler for created groups.
+        /// Registers a new handler for created groups.
         created_group: CreatedGroup,
-        /// Adds a new handler for data callbacks from chat messages.
+        /// Registers a new handler for data callbacks from chat messages.
         message_data_callback: MessageDataCallback,
-        /// Adds a new handler for data callbacks from inline messages.
+        /// Registers a new handler for data callbacks from inline messages.
         inline_data_callback: InlineDataCallback,
-        /// Adds a new handler for deleted chat photos.
+        /// Registers a new handler for deleted chat photos.
         deleted_chat_photo: DeletedChatPhoto,
-        /// Adds a new handler for dice.
+        /// Registers a new handler for dice.
         dice: Dice,
-        /// Adds a new handler for documents.
+        /// Registers a new handler for documents.
         document: Document,
-        /// Adds a new handler for edited animations.
+        /// Registers a new handler for edited animations.
         edited_animation: EditedAnimation,
-        /// Adds a new handler for edited audio.
+        /// Registers a new handler for edited audio.
         edited_audio: EditedAudio,
-        /// Adds a new handler for edited documents.
+        /// Registers a new handler for edited documents.
         edited_document: EditedDocument,
-        /// Adds a new handler for edited locations.
+        /// Registers a new handler for edited locations.
         edited_location: EditedLocation,
-        /// Adds a new handler for edited photos.
+        /// Registers a new handler for edited photos.
         edited_photo: EditedPhoto,
-        /// Adds a new handler for edited text messages.
+        /// Registers a new handler for edited text messages.
         edited_text: EditedText,
-        /// Adds a new handler for edited videos.
+        /// Registers a new handler for edited videos.
         edited_video: EditedVideo,
-        /// Adds a new handler for game callbacks from chat messages.
+        /// Registers a new handler for game callbacks from chat messages.
         message_game_callback: MessageGameCallback,
-        /// Adds a new handler for game callbacks from inline messages.
+        /// Registers a new handler for game callbacks from inline messages.
         inline_game_callback: InlineGameCallback,
-        /// Adds a new handler for game messages.
+        /// Registers a new handler for game messages.
         game: Game,
-        /// Adds a new handler for inline queries.
+        /// Registers a new handler for inline queries.
         inline: Inline,
-        /// Adds a new handler for invoices.
+        /// Registers a new handler for invoices.
         invoice: Invoice,
-        /// Adds a new handler for left members.
+        /// Registers a new handler for left members.
         left_member: LeftMember,
-        /// Adds a new handler for locations.
+        /// Registers a new handler for locations.
         location: Location,
-        /// Adds a new handler for migrations.
+        /// Registers a new handler for migrations.
         migration: Migration,
-        /// Adds a new handler for new chat photos.
+        /// Registers a new handler for new chat photos.
         new_chat_photo: NewChatPhoto,
-        /// Adds a new handler for new chat titles.
+        /// Registers a new handler for new chat titles.
         new_chat_title: NewChatTitle,
-        /// Adds a new handler for new members.
+        /// Registers a new handler for new members.
         new_members: NewMembers,
-        /// Adds a new handler for passport data.
+        /// Registers a new handler for passport data.
         passport: Passport,
-        /// Adds a new handler for successful payments.
+        /// Registers a new handler for successful payments.
         payment: Payment,
-        /// Adds a new handler for photos.
+        /// Registers a new handler for photos.
         photo: Photo,
-        /// Adds a new handler for pinned messages.
+        /// Registers a new handler for pinned messages.
         pinned_message: PinnedMessage,
-        /// Adds a new handler for poll messages.
+        /// Registers a new handler for poll messages.
         poll: Poll,
-        /// Adds a new handler for pre-checkout queries.
+        /// Registers a new handler for pre-checkout queries.
         pre_checkout: PreCheckout,
-        /// Adds a new handler for proximity alerts.
+        /// Registers a new handler for proximity alerts.
         proximity_alert: ProximityAlert,
-        /// Adds a new handler for shipping queries.
+        /// Registers a new handler for shipping queries.
         shipping: Shipping,
-        /// Adds a new handler for stickers.
+        /// Registers a new handler for stickers.
         sticker: Sticker,
-        /// Adds a new handler for text messages.
+        /// Registers a new handler for text messages.
         text: Text,
-        /// Adds a new handler for new states of polls.
+        /// Registers a new handler for new states of polls.
         updated_poll: UpdatedPoll,
-        /// Adds a new handler for new answers in the poll.
+        /// Registers a new handler for new answers in the poll.
         poll_answer: PollAnswer,
-        /// Adds a new handler for venues.
+        /// Registers a new handler for venues.
         venue: Venue,
-        /// Adds a new handler for videos.
+        /// Registers a new handler for videos.
         video: Video,
-        /// Adds a new handler for video notes.
+        /// Registers a new handler for video notes.
         video_note: VideoNote,
-        /// Adds a new handler for voice messages.
+        /// Registers a new handler for voice messages.
         voice: Voice,
     }
 

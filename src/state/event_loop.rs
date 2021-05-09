@@ -108,7 +108,7 @@ impl<S> StatefulEventLoop<S>
 where
     S: Send + Sync + 'static,
 {
-    /// Adds a new handler for a command.
+    /// Registers a new handler for a command.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -127,7 +127,7 @@ where
         });
     }
 
-    /// Adds a new handler for a command and sets its description.
+    /// Registers a new handler for a command and sets its description.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -152,7 +152,7 @@ where
         );
     }
 
-    /// Adds a new handler for a sequence of commands.
+    /// Registers a new handler for a sequence of commands.
     ///
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
@@ -172,7 +172,7 @@ where
         });
     }
 
-    /// Adds a new handler for the `/start` command.
+    /// Registers a new handler for the `/start` command.
     pub fn start<H, F>(&mut self, handler: H)
     where
         H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
@@ -181,7 +181,8 @@ where
         self.command("start", handler);
     }
 
-    /// Adds a new handler for the `/start` command and sets its description.
+    /// Registers a new handler for the `/start` command and sets its
+    /// description.
     pub fn start_with_description<H, F>(
         &mut self,
         description: &'static str,
@@ -193,7 +194,7 @@ where
         self.command_with_description("start", description, handler);
     }
 
-    /// Adds a new handler for the `/help` command.
+    /// Registers a new handler for the `/help` command.
     pub fn help<H, F>(&mut self, handler: H)
     where
         H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
@@ -202,7 +203,8 @@ where
         self.command("help", handler);
     }
 
-    /// Adds a new handler for the `/help` command and sets its description.
+    /// Registers a new handler for the `/help` command and sets its
+    /// description.
     pub fn help_with_description<H, F>(
         &mut self,
         description: &'static str,
@@ -214,7 +216,7 @@ where
         self.command_with_description("help", description, handler);
     }
 
-    /// Adds a new handler for the `/settings` command.
+    /// Registers a new handler for the `/settings` command.
     pub fn settings<H, F>(&mut self, handler: H)
     where
         H: (Fn(Arc<contexts::Command>, Arc<S>) -> F) + Send + Sync + 'static,
@@ -223,7 +225,8 @@ where
         self.command("settings", handler);
     }
 
-    /// Adds a new handler for the `/settings` command and sets its description.
+    /// Registers a new handler for the `/settings` command and sets its
+    /// description.
     pub fn settings_with_description<H, F>(
         &mut self,
         description: &'static str,
@@ -235,7 +238,7 @@ where
         self.command_with_description("settings", description, handler);
     }
 
-    /// Adds a new handler for an edited command.
+    /// Registers a new handler for an edited command.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<contexts::EditedCommand>, Arc<S>) -> F)
@@ -250,7 +253,7 @@ where
         });
     }
 
-    /// Adds a new handler for a sequence of edited commands.
+    /// Registers a new handler for a sequence of edited commands.
     pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
@@ -267,97 +270,97 @@ where
     }
 
     handlers! {
-        /// Adds a new handler for animations.
+        /// Registers a new handler for animations.
         animation: contexts::Animation,
-        /// Adds a new handler for audio.
+        /// Registers a new handler for audio.
         audio: contexts::Audio,
-        /// Adds a new handler for chosen inline results.
+        /// Registers a new handler for chosen inline results.
         chosen_inline: contexts::ChosenInline,
-        /// Adds a new handler for contacts.
+        /// Registers a new handler for contacts.
         contact: contexts::Contact,
-        /// Adds a new handler for connected websites.
+        /// Registers a new handler for connected websites.
         connected_website: contexts::ConnectedWebsite,
-        /// Adds a new handler for created groups.
+        /// Registers a new handler for created groups.
         created_group: contexts::CreatedGroup,
-        /// Adds a new handler for data callbacks from chat messages.
+        /// Registers a new handler for data callbacks from chat messages.
         message_data_callback: contexts::MessageDataCallback,
-        /// Adds a new handler for data callbacks from inline messages.
+        /// Registers a new handler for data callbacks from inline messages.
         inline_data_callback: contexts::InlineDataCallback,
-        /// Adds a new handler for deleted chat photos.
+        /// Registers a new handler for deleted chat photos.
         deleted_chat_photo: contexts::DeletedChatPhoto,
-        /// Adds a new handler for dice.
+        /// Registers a new handler for dice.
         dice: contexts::Dice,
-        /// Adds a new handler for documents.
+        /// Registers a new handler for documents.
         document: contexts::Document,
-        /// Adds a new handler for edited animations.
+        /// Registers a new handler for edited animations.
         edited_animation: contexts::EditedAnimation,
-        /// Adds a new handler for edited audio.
+        /// Registers a new handler for edited audio.
         edited_audio: contexts::EditedAudio,
-        /// Adds a new handler for edited documents.
+        /// Registers a new handler for edited documents.
         edited_document: contexts::EditedDocument,
-        /// Adds a new handler for edited locations.
+        /// Registers a new handler for edited locations.
         edited_location: contexts::EditedLocation,
-        /// Adds a new handler for edited photos.
+        /// Registers a new handler for edited photos.
         edited_photo: contexts::EditedPhoto,
-        /// Adds a new handler for edited text messages.
+        /// Registers a new handler for edited text messages.
         edited_text: contexts::EditedText,
-        /// Adds a new handler for edited videos.
+        /// Registers a new handler for edited videos.
         edited_video: contexts::EditedVideo,
-        /// Adds a new handler for game callbacks from chat messages.
+        /// Registers a new handler for game callbacks from chat messages.
         message_game_callback: contexts::MessageGameCallback,
-        /// Adds a new handler for game callbacks from inline messages.
+        /// Registers a new handler for game callbacks from inline messages.
         inline_game_callback: contexts::InlineGameCallback,
-        /// Adds a new handler for game messages.
+        /// Registers a new handler for game messages.
         game: contexts::Game,
-        /// Adds a new handler for inline queries.
+        /// Registers a new handler for inline queries.
         inline: contexts::Inline,
-        /// Adds a new handler for invoices.
+        /// Registers a new handler for invoices.
         invoice: contexts::Invoice,
-        /// Adds a new handler for left members.
+        /// Registers a new handler for left members.
         left_member: contexts::LeftMember,
-        /// Adds a new handler for locations.
+        /// Registers a new handler for locations.
         location: contexts::Location,
-        /// Adds a new handler for migrations.
+        /// Registers a new handler for migrations.
         migration: contexts::Migration,
-        /// Adds a new handler for new chat photos.
+        /// Registers a new handler for new chat photos.
         new_chat_photo: contexts::NewChatPhoto,
-        /// Adds a new handler for new chat titles.
+        /// Registers a new handler for new chat titles.
         new_chat_title: contexts::NewChatTitle,
-        /// Adds a new handler for new members.
+        /// Registers a new handler for new members.
         new_members: contexts::NewMembers,
-        /// Adds a new handler for passport data.
+        /// Registers a new handler for passport data.
         passport: contexts::Passport,
-        /// Adds a new handler for successful payments.
+        /// Registers a new handler for successful payments.
         payment: contexts::Payment,
-        /// Adds a new handler for photos.
+        /// Registers a new handler for photos.
         photo: contexts::Photo,
-        /// Adds a new handler for pinned messages.
+        /// Registers a new handler for pinned messages.
         pinned_message: contexts::PinnedMessage,
-        /// Adds a new handler for poll messages.
+        /// Registers a new handler for poll messages.
         poll: contexts::Poll,
-        /// Adds a new handler for pre-checkout queries.
+        /// Registers a new handler for pre-checkout queries.
         pre_checkout: contexts::PreCheckout,
-        /// Adds a new handler for proximity alerts.
+        /// Registers a new handler for proximity alerts.
         proximity_alert: contexts::ProximityAlert,
-        /// Adds a new handler for shipping queries.
+        /// Registers a new handler for shipping queries.
         shipping: contexts::Shipping,
-        /// Adds a new handler for stickers.
+        /// Registers a new handler for stickers.
         sticker: contexts::Sticker,
-        /// Adds a new handler for text messages.
+        /// Registers a new handler for text messages.
         text: contexts::Text,
-        /// Adds a new handler for unhandled updates.
+        /// Registers a new handler for unhandled updates.
         unhandled: contexts::Unhandled,
-        /// Adds a new handler for new states of polls.
+        /// Registers a new handler for new states of polls.
         updated_poll: contexts::UpdatedPoll,
-        /// Adds a new handler for new answers in the poll.
+        /// Registers a new handler for new answers in the poll.
         poll_answer: contexts::PollAnswer,
-        /// Adds a new handler for venues.
+        /// Registers a new handler for venues.
         venue: contexts::Venue,
-        /// Adds a new handler for videos.
+        /// Registers a new handler for videos.
         video: contexts::Video,
-        /// Adds a new handler for video notes.
+        /// Registers a new handler for video notes.
         video_note: contexts::VideoNote,
-        /// Adds a new handler for voice messages.
+        /// Registers a new handler for voice messages.
         voice: contexts::Voice,
     }
 }
