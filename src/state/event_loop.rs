@@ -390,6 +390,8 @@ where
         video_note: contexts::VideoNote,
         /// Registers a new handler for voice messages.
         voice: contexts::Voice,
+        /// Registers a new handler for when a voice chat is ended.
+        voice_chat_ended: contexts::VoiceChatEnded,
         /// Registers a new handler for when users are invited to a voice chat.
         voice_chat_participants_invited: contexts::VoiceChatParticipantsInvited,
         /// Registers a new handler for when a voice chat is started.

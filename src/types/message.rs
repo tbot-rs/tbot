@@ -141,6 +141,7 @@ const PASSPORT_DATA: &str = "passport_data";
 const PROXIMITY_ALERT_TRIGGERED: &str = "proximity_alert_triggered";
 const VOICE_CHAT_STARTED: &str = "voice_chat_started";
 const VOICE_CHAT_PARTICIPANTS_INVITED: &str = "voice_chat_participants_invited";
+const VOICE_CHAT_ENDED: &str = "voice_chat_ended";
 const REPLY_MARKUP: &str = "reply_markup";
 const VIA_BOT: &str = "via_bot";
 
@@ -210,6 +211,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
         let mut proximity_alert = None;
         let mut voice_chat_started = false;
         let mut voice_chat_participants_invited = None;
+        let mut voice_chat_ended = None;
         let mut reply_markup = None;
         let mut via_bot = None;
 
@@ -295,6 +297,7 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
                 VOICE_CHAT_PARTICIPANTS_INVITED => {
                     voice_chat_participants_invited = Some(map.next_value()?)
                 }
+                VOICE_CHAT_ENDED => voice_chat_ended = Some(map.next_value()?),
                 _ => drop(map.next_value::<IgnoredAny>()),
             }
         }
@@ -423,6 +426,8 @@ impl<'v> serde::de::Visitor<'v> for MessageVisitor {
             Kind::VoiceChatStarted
         } else if let Some(invited) = voice_chat_participants_invited {
             Kind::VoiceChatParticipantsInvited(invited)
+        } else if let Some(ended) = voice_chat_ended {
+            Kind::VoiceChatEnded(ended)
         } else if let Some(dice) = dice {
             Kind::Dice(dice)
         } else {
