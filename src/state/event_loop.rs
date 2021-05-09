@@ -79,6 +79,16 @@ impl<S> StatefulEventLoop<S> {
         self.inner.username(username);
     }
 
+    /// Fetches the bot's username.
+    ///
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
+    // `StatefulEventLoop` can be constructed only if `S: Send + Sync`
+    #[allow(clippy::future_not_send)]
+    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
+        self.inner.fetch_username().await
+    }
+
     /// Starts polling configuration.
     pub fn polling(self) -> Polling<S> {
         Polling::new(self.inner, Arc::clone(&self.state))
@@ -349,17 +359,5 @@ where
         video_note: contexts::VideoNote,
         /// Adds a new handler for voice messages.
         voice: contexts::Voice,
-    }
-}
-
-impl<S> StatefulEventLoop<S> {
-    /// Fetches the bot's username.
-    ///
-    /// The username is used when checking if a command such as
-    /// `/command@username` was directed to the bot.
-    // `StatefulEventLoop` can be constructed only if `S: Send + Sync`
-    #[allow(clippy::future_not_send)]
-    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
-        self.inner.fetch_username().await
     }
 }

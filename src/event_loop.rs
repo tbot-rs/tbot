@@ -93,6 +93,22 @@ impl EventLoop {
         self.username = Some(username);
     }
 
+    /// Fetches the bot's username.
+    ///
+    /// The username is used when checking if a command such as
+    /// `/command@username` was directed to the bot.
+    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
+        let me = self.bot.get_me().call().await?;
+
+        let username = me
+            .user
+            .username
+            .expect("[tbot] Expected the bot to have a username");
+        self.username(username);
+
+        Ok(())
+    }
+
     /// Starts polling configuration.
     pub fn polling(self) -> Polling {
         Polling::new(self)
@@ -1081,22 +1097,6 @@ impl EventLoop {
             .collect();
 
         self.bot.set_my_commands(commands).call().await?;
-
-        Ok(())
-    }
-
-    /// Fetches the bot's username.
-    ///
-    /// The username is used when checking if a command such as
-    /// `/command@username` was directed to the bot.
-    pub async fn fetch_username(&mut self) -> Result<(), errors::MethodCall> {
-        let me = self.bot.get_me().call().await?;
-
-        let username = me
-            .user
-            .username
-            .expect("[tbot] Expected the bot to have a username");
-        self.username(username);
 
         Ok(())
     }
