@@ -53,7 +53,7 @@ pub enum Kind {
 }
 
 /// Represents an update from Telegram.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[non_exhaustive]
 pub struct Update {
     /// The ID of the update.
