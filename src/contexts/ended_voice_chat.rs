@@ -1,10 +1,10 @@
 use crate::types::voice_chat;
 
 message_base! {
-    struct VoiceChatEnded {
+    struct EndedVoiceChat {
         /// The duration of the voice chat in seconds.
         duration: u64,
-    } -> EventLoop::voice_chat_ended
+    } -> EventLoop::ended_voice_chat
 
     fn new(ended: voice_chat::Ended,) -> Self {
         Self {

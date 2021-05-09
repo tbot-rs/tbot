@@ -411,6 +411,8 @@ impl EventLoop {
         edited_text: EditedText,
         /// Registers a new handler for edited videos.
         edited_video: EditedVideo,
+        /// Registers a new handler for when a voice chat is ended.
+        ended_voice_chat: EndedVoiceChat,
         /// Registers a new handler for game callbacks from chat messages.
         message_game_callback: MessageGameCallback,
         /// Registers a new handler for game callbacks from inline messages.
@@ -419,6 +421,8 @@ impl EventLoop {
         game: Game,
         /// Registers a new handler for inline queries.
         inline: Inline,
+        /// Registers a new handler for when users are invited to a voice chat.
+        invited_voice_chat_participants: InvitedVoiceChatParticipants,
         /// Registers a new handler for invoices.
         invoice: Invoice,
         /// Registers a new handler for left members.
@@ -447,8 +451,12 @@ impl EventLoop {
         pre_checkout: PreCheckout,
         /// Registers a new handler for proximity alerts.
         proximity_alert: ProximityAlert,
+        /// Registers a new handler for when a voice chat is scheduled.
+        scheduled_voice_chat: ScheduledVoiceChat,
         /// Registers a new handler for shipping queries.
         shipping: Shipping,
+        /// Registers a new handler for when a voice chat is started.
+        started_voice_chat: StartedVoiceChat,
         /// Registers a new handler for stickers.
         sticker: Sticker,
         /// Registers a new handler for text messages.
@@ -474,14 +482,6 @@ impl EventLoop {
         video_note: VideoNote,
         /// Registers a new handler for voice messages.
         voice: Voice,
-        /// Registers a new handler for when a voice chat is ended.
-        voice_chat_ended: VoiceChatEnded,
-        /// Registers a new handler for when users are invited to a voice chat.
-        voice_chat_participants_invited: VoiceChatParticipantsInvited,
-        /// Registers a new handler for when a voice chat is scheduled.
-        voice_chat_scheduled: VoiceChatScheduled,
-        /// Registers a new handler for when a voice chat is started.
-        voice_chat_started: VoiceChatStarted,
     }
 
     fn handle_unhandled(&self, update: update::Kind) {
@@ -883,16 +883,16 @@ impl EventLoop {
                 self.handle(Arc::new(context));
             }
             message::Kind::VoiceChatEnded(ended)
-                if self.will_handle::<VoiceChatEnded>() =>
+                if self.will_handle::<EndedVoiceChat>() =>
             {
                 let context =
-                    VoiceChatEnded::new(self.bot.clone(), data, ended);
+                    EndedVoiceChat::new(self.bot.clone(), data, ended);
                 self.handle(Arc::new(context));
             }
             message::Kind::VoiceChatParticipantsInvited(invited)
-                if self.will_handle::<VoiceChatParticipantsInvited>() =>
+                if self.will_handle::<InvitedVoiceChatParticipants>() =>
             {
-                let context = VoiceChatParticipantsInvited::new(
+                let context = InvitedVoiceChatParticipants::new(
                     self.bot.clone(),
                     data,
                     invited,
@@ -900,16 +900,16 @@ impl EventLoop {
                 self.handle(Arc::new(context));
             }
             message::Kind::VoiceChatScheduled(scheduled)
-                if self.will_handle::<VoiceChatScheduled>() =>
+                if self.will_handle::<ScheduledVoiceChat>() =>
             {
                 let context =
-                    VoiceChatScheduled::new(self.bot.clone(), data, scheduled);
+                    ScheduledVoiceChat::new(self.bot.clone(), data, scheduled);
                 self.handle(Arc::new(context));
             }
             message::Kind::VoiceChatStarted
-                if self.will_handle::<VoiceChatStarted>() =>
+                if self.will_handle::<StartedVoiceChat>() =>
             {
-                let context = VoiceChatStarted::new(self.bot.clone(), data);
+                let context = StartedVoiceChat::new(self.bot.clone(), data);
                 self.handle(Arc::new(context));
             }
             message::Kind::SupergroupCreated

@@ -1,10 +1,10 @@
 use crate::types::voice_chat;
 
 message_base! {
-    struct VoiceChatScheduled {
+    struct ScheduledVoiceChat {
     /// Timestamp when the voice chat will be started.
         start_date: i64,
-    } -> EventLoop::voice_chat_scheduled
+    } -> EventLoop::scheduled_voice_chat
 
     fn new(scheduled: voice_chat::Scheduled,) -> Self {
         Self {

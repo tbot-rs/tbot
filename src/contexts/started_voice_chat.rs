@@ -1,5 +1,5 @@
 message_base! {
-    struct VoiceChatStarted {} -> EventLoop::voice_chat_started
+    struct StartedVoiceChat {} -> EventLoop::started_voice_chat
 
     fn new() -> Self {
         Self {}
