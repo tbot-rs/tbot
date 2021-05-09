@@ -270,6 +270,27 @@ where
     }
 
     handlers! {
+        /// Registers a new handler for all incoming updates.
+        ///
+        /// `any_update` handlers are spawned before specialized handlers,
+        /// for every update that could be deserialized (this means that
+        /// processing new updates on old versions of `tbot` is not possible
+        /// even via `any_update`).
+        ///
+        /// Note “spawned”: every handler is executed using [`tokio::spawn`],
+        /// and `tbot` won't wait for them to finish. As such, `any_update` is
+        /// not suitable for running some code before every specialized handler.
+        ///
+        /// Also, `any_update` does not affect [`unhandled`] in any way. It's
+        /// executed if a _specialized_ handler corresponding to the incoming
+        /// update wasn't registered.
+        ///
+        /// Registering specialized handler is still preferred. if at least
+        /// one `any_update` handler is registered, `tbot` will have to clone
+        /// every update in order to execute these and specialized handlers.
+        ///
+        /// [`unhandled`]: Self::unhandled
+        any_update: contexts::AnyUpdate,
         /// Registers a new handler for animations.
         animation: contexts::Animation,
         /// Registers a new handler for audio.
@@ -349,6 +370,13 @@ where
         /// Registers a new handler for text messages.
         text: contexts::Text,
         /// Registers a new handler for unhandled updates.
+        ///
+        /// Note that regisering [`any_update`] handlers does not affect
+        /// `unhandled` handlers in any way. An `unhandled` handler is spawned
+        /// if a _specialized_ handler corresponding to the incoming update was
+        /// not registered.
+        ///
+        /// [`any_update`]: Self::any_update
         unhandled: contexts::Unhandled,
         /// Registers a new handler for new states of polls.
         updated_poll: contexts::UpdatedPoll,
