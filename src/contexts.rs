@@ -109,6 +109,7 @@ mod video_note;
 mod voice;
 mod voice_chat_ended;
 mod voice_chat_participants_invited;
+mod voice_chat_scheduled;
 mod voice_chat_started;
 
 pub mod fields;
@@ -163,4 +164,5 @@ pub use video_note::VideoNote;
 pub use voice::Voice;
 pub use voice_chat_ended::VoiceChatEnded;
 pub use voice_chat_participants_invited::VoiceChatParticipantsInvited;
+pub use voice_chat_scheduled::VoiceChatScheduled;
 pub use voice_chat_started::VoiceChatStarted;

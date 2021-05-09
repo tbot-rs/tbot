@@ -394,6 +394,8 @@ where
         voice_chat_ended: contexts::VoiceChatEnded,
         /// Registers a new handler for when users are invited to a voice chat.
         voice_chat_participants_invited: contexts::VoiceChatParticipantsInvited,
+        /// Registers a new handler for when a voice chat is scheduled.
+        voice_chat_scheduled: contexts::VoiceChatScheduled,
         /// Registers a new handler for when a voice chat is started.
         voice_chat_started: contexts::VoiceChatStarted,
     }

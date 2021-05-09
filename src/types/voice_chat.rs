@@ -26,3 +26,15 @@ pub struct Ended {
     /// The duration of the voice chat in seconds.
     pub duration: u64,
 }
+
+/// Represents a service message about a scheduled voice chat.
+///
+/// See [`VoiceChatScheduled`] from Bot API docs.
+///
+/// [`VoiceChatScheduled`]: https://core.telegram.org/bots/api#voicechatscheduled
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
+#[non_exhaustive]
+pub struct Scheduled {
+    /// Timestamp when the voice chat will be started.
+    pub start_date: i64,
+}

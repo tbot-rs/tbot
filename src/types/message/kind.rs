@@ -116,6 +116,8 @@ pub enum Kind {
     VoiceChatParticipantsInvited(voice_chat::ParticipantsInvited),
     /// A voice chat was ended.
     VoiceChatEnded(voice_chat::Ended),
+    /// A voice chat was scheduled.
+    VoiceChatScheduled(voice_chat::Scheduled),
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }
