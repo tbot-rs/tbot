@@ -97,6 +97,7 @@ mod pinned_message;
 mod poll;
 mod poll_answer;
 mod pre_checkout;
+mod proximity_alert;
 mod shipping;
 mod sticker;
 mod text;
@@ -106,10 +107,10 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
+mod voice_chat_started;
 
 pub mod fields;
 pub mod methods;
-mod proximity_alert;
 
 pub use animation::Animation;
 pub use any_update::AnyUpdate;
@@ -158,3 +159,4 @@ pub use venue::Venue;
 pub use video::Video;
 pub use video_note::VideoNote;
 pub use voice::Voice;
+pub use voice_chat_started::VoiceChatStarted;

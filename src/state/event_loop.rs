@@ -390,5 +390,7 @@ where
         video_note: contexts::VideoNote,
         /// Registers a new handler for voice messages.
         voice: contexts::Voice,
+        /// Registers a new handler for when a voice chat is started.
+        voice_chat_started: contexts::VoiceChatStarted,
     }
 }

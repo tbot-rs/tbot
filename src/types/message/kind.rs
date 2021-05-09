@@ -110,6 +110,8 @@ pub enum Kind {
     PassportData(passport::Data),
     /// A proximity alert.
     ProximityAlert(ProximityAlert),
+    /// A voice chat was started.
+    VoiceChatStarted,
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }

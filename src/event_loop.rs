@@ -472,6 +472,8 @@ impl EventLoop {
         video_note: VideoNote,
         /// Registers a new handler for voice messages.
         voice: Voice,
+        /// Registers a new handler for when a voice chat is started.
+        voice_chat_started: VoiceChatStarted,
     }
 
     fn handle_unhandled(&self, update: update::Kind) {
@@ -865,6 +867,12 @@ impl EventLoop {
                     Voice::new(self.bot.clone(), data, voice, caption);
                 self.handle(Arc::new(context));
             }
+            message::Kind::VoiceChatStarted
+                if self.will_handle::<VoiceChatStarted>() =>
+            {
+                let context = VoiceChatStarted::new(self.bot.clone(), data);
+                self.handle(Arc::new(context));
+            }
             message::Kind::SupergroupCreated
             | message::Kind::ChannelCreated => {
                 warn!("Update not expected; skipping it")
@@ -902,6 +910,7 @@ impl EventLoop {
             | message::Kind::Video { .. }
             | message::Kind::VideoNote(..)
             | message::Kind::Voice { .. }
+            | message::Kind::VoiceChatStarted
             | message::Kind::Unknown => (),
         }
     }
@@ -1038,6 +1047,7 @@ impl EventLoop {
             | message::Kind::Venue(..)
             | message::Kind::VideoNote(..)
             | message::Kind::Voice { .. }
+            | message::Kind::VoiceChatStarted
             | message::Kind::ChannelCreated
             | message::Kind::ChatPhotoDeleted
             | message::Kind::ConnectedWebsite(..)
