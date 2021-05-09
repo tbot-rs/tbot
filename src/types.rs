@@ -39,6 +39,7 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
+pub mod voice_chat;
 pub mod webhook_info;
 
 pub use animation::Animation;

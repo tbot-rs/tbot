@@ -107,6 +107,7 @@ mod venue;
 mod video;
 mod video_note;
 mod voice;
+mod voice_chat_participants_invited;
 mod voice_chat_started;
 
 pub mod fields;
@@ -159,4 +160,5 @@ pub use venue::Venue;
 pub use video::Video;
 pub use video_note::VideoNote;
 pub use voice::Voice;
+pub use voice_chat_participants_invited::VoiceChatParticipantsInvited;
 pub use voice_chat_started::VoiceChatStarted;

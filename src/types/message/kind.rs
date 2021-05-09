@@ -1,8 +1,8 @@
 use super::{Message, Text};
 use crate::types::{
-    chat, passport, Animation, Audio, Contact, Dice, Document, Game, Invoice,
-    Location, PhotoSize, Poll, ProximityAlert, Sticker, SuccessfulPayment,
-    User, Venue, Video, VideoNote, Voice,
+    chat, passport, voice_chat, Animation, Audio, Contact, Dice, Document,
+    Game, Invoice, Location, PhotoSize, Poll, ProximityAlert, Sticker,
+    SuccessfulPayment, User, Venue, Video, VideoNote, Voice,
 };
 use is_macro::Is;
 
@@ -112,6 +112,8 @@ pub enum Kind {
     ProximityAlert(ProximityAlert),
     /// A voice chat was started.
     VoiceChatStarted,
+    /// Participants were invited to a voice chat.
+    VoiceChatParticipantsInvited(voice_chat::ParticipantsInvited),
     /// Some unkonwn message kind. Probably means `tbot` is outdated.
     Unknown,
 }

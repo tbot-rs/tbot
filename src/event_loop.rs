@@ -472,6 +472,8 @@ impl EventLoop {
         video_note: VideoNote,
         /// Registers a new handler for voice messages.
         voice: Voice,
+        /// Registers a new handler for when users are invited to a voice chat.
+        voice_chat_participants_invited: VoiceChatParticipantsInvited,
         /// Registers a new handler for when a voice chat is started.
         voice_chat_started: VoiceChatStarted,
     }
@@ -867,6 +869,16 @@ impl EventLoop {
                     Voice::new(self.bot.clone(), data, voice, caption);
                 self.handle(Arc::new(context));
             }
+            message::Kind::VoiceChatParticipantsInvited(invited)
+                if self.will_handle::<VoiceChatParticipantsInvited>() =>
+            {
+                let context = VoiceChatParticipantsInvited::new(
+                    self.bot.clone(),
+                    data,
+                    invited,
+                );
+                self.handle(Arc::new(context));
+            }
             message::Kind::VoiceChatStarted
                 if self.will_handle::<VoiceChatStarted>() =>
             {
@@ -910,6 +922,7 @@ impl EventLoop {
             | message::Kind::Video { .. }
             | message::Kind::VideoNote(..)
             | message::Kind::Voice { .. }
+            | message::Kind::VoiceChatParticipantsInvited(..)
             | message::Kind::VoiceChatStarted
             | message::Kind::Unknown => (),
         }
@@ -1047,6 +1060,7 @@ impl EventLoop {
             | message::Kind::Venue(..)
             | message::Kind::VideoNote(..)
             | message::Kind::Voice { .. }
+            | message::Kind::VoiceChatParticipantsInvited(..)
             | message::Kind::VoiceChatStarted
             | message::Kind::ChannelCreated
             | message::Kind::ChatPhotoDeleted
