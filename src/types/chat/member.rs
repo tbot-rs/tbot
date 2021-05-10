@@ -23,6 +23,8 @@ pub enum Status {
     Administrator {
         /// Custom title of the admin.
         custom_title: Option<String>,
+        /// `true` if the admin can perform any administrative actions.
+        can_manage_chat: bool,
         /// `true` if the bot can edit this admin's rights.
         can_be_edited: bool,
         /// `true` if the admin can change the group's info.
@@ -41,6 +43,8 @@ pub enum Status {
         can_pin_messages: Option<bool>,
         /// `true` if the admin can promote members.
         can_promote_members: bool,
+        /// `true` if the admin can manage voice chats.
+        can_manage_voice_chats: bool,
         /// `true` if the admin is anonymous.
         is_anonymous: bool,
     },
@@ -96,6 +100,7 @@ const USER: &str = "user";
 const STATUS: &str = "status";
 const CUSTOM_TITLE: &str = "custom_title";
 const UNTIL_DATE: &str = "until_date";
+const CAN_MANAGE_CHAT: &str = "can_manage_chat";
 const CAN_BE_EDITED: &str = "can_be_edited";
 const CAN_CHANGE_INFO: &str = "can_change_info";
 const CAN_POST_MESSAGES: &str = "can_post_messages";
@@ -111,6 +116,7 @@ const CAN_SEND_MEDIA_MESSAGES: &str = "can_send_media_messages";
 const CAN_SEND_OTHER_MESSAGES: &str = "can_send_other_messages";
 const CAN_SEND_POLLS: &str = "can_send_polls";
 const CAN_ADD_WEB_PAGE_PREVIEWS: &str = "can_add_web_page_previews";
+const CAN_MANAGE_VOICE_CHATS: &str = "can_manage_voice_chats";
 const IS_ANONYMOUS: &str = "is_anonymous";
 
 const CREATOR: &str = "creator";
@@ -138,6 +144,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
         let mut status = None;
         let mut custom_title = None;
         let mut until_date = None;
+        let mut can_manage_chat = None;
         let mut can_be_edited = None;
         let mut can_change_info = None;
         let mut can_post_messages = None;
@@ -153,6 +160,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
         let mut can_send_other_messages = None;
         let mut can_send_polls = None;
         let mut can_add_web_page_previews = None;
+        let mut can_manage_voice_chats = None;
         let mut is_anonymous = None;
 
         while let Some(key) = map.next_key()? {
@@ -161,6 +169,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 STATUS => status = Some(map.next_value()?),
                 CUSTOM_TITLE => custom_title = Some(map.next_value()?),
                 UNTIL_DATE => until_date = Some(map.next_value()?),
+                CAN_MANAGE_CHAT => can_manage_chat = Some(map.next_value()?),
                 CAN_BE_EDITED => can_be_edited = Some(map.next_value()?),
                 CAN_CHANGE_INFO => can_change_info = Some(map.next_value()?),
                 CAN_POST_MESSAGES => {
@@ -194,6 +203,9 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 CAN_ADD_WEB_PAGE_PREVIEWS => {
                     can_add_web_page_previews = Some(map.next_value()?)
                 }
+                CAN_MANAGE_VOICE_CHATS => {
+                    can_manage_voice_chats = Some(map.next_value()?)
+                }
                 IS_ANONYMOUS => is_anonymous = Some(map.next_value()?),
                 _ => {
                     let _ = map.next_value::<IgnoredAny>()?;
@@ -209,6 +221,8 @@ impl<'v> Visitor<'v> for MemberVisitor {
             },
             Some(ADMINISTRATOR) => Status::Administrator {
                 custom_title,
+                can_manage_chat: can_manage_chat
+                    .ok_or_else(|| Error::missing_field(CAN_MANAGE_CHAT))?,
                 can_be_edited: can_be_edited
                     .ok_or_else(|| Error::missing_field(CAN_BE_EDITED))?,
                 can_change_info: can_change_info
@@ -225,6 +239,9 @@ impl<'v> Visitor<'v> for MemberVisitor {
                 can_pin_messages,
                 can_promote_members: can_promote_members
                     .ok_or_else(|| Error::missing_field(CAN_PROMOTE_MEMBERS))?,
+                can_manage_voice_chats: can_manage_voice_chats.ok_or_else(
+                    || Error::missing_field(CAN_MANAGE_VOICE_CHATS),
+                )?,
                 is_anonymous: is_anonymous
                     .ok_or_else(|| Error::missing_field(IS_ANONYMOUS))?,
             },
