@@ -38,6 +38,20 @@ run-clippy:
             - branches
             - merge_requests
 
+check-docs:
+    stage: test
+    image: rust:latest
+    script:
+        - cargo +stable rustdoc --target-dir=../target -- -D warnings
+    only:
+        changes:
+            - "src/**/*"
+            - Cargo.toml
+            - .gitlab-ci.yml
+        refs:
+            - branches
+            - merge_requests
+
 run-tests:
     stage: test
     script:
