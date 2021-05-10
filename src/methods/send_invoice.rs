@@ -54,6 +54,16 @@ impl<'a> SendInvoice<'a> {
         }
     }
 
+    /// Configures unique deep-linking parameter for "Pay button" to redirect.
+    /// Reflects the `start_parameter` parameter.
+    pub fn start_parameter(
+        mut self,
+        start_parameter: impl Into<String>,
+    ) -> Self {
+        self.start_parameter = Some(start_parameter.into());
+        self
+    }
+
     /// Configures whether the message is sent silently.
     /// Reflects the `disable_notification` parameter.
     pub const fn is_notification_disabled(mut self, is_disabled: bool) -> Self {
@@ -81,16 +91,6 @@ impl<'a> SendInvoice<'a> {
     #[allow(clippy::missing_const_for_fn)]
     pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
-        self
-    }
-
-    /// Configures unique deep-linking parameter for "Pay button" to redirect.
-    /// Reflects the `start_parameter` parameter.
-    pub fn start_parameter(
-        mut self,
-        start_parameter: impl Into<String>,
-    ) -> Self {
-        self.start_parameter = Some(start_parameter.into());
         self
     }
 }

@@ -4,6 +4,7 @@ use serde::Serialize;
 
 /// Represents tip parameters.
 #[derive(Debug, Clone, Serialize, Eq, PartialEq, Hash)]
+#[must_use]
 pub struct Tip {
     max_tip_amount: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13,7 +14,6 @@ pub struct Tip {
 impl Tip {
     /// Constructs a `Tip` with the given max tip amount.
     /// Reflects the `max_tip_amount` parameter.
-    #[must_use]
     pub const fn with_max(max_tip: u32) -> Self {
         Self {
             max_tip_amount: max_tip,

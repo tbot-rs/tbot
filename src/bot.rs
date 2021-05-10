@@ -622,7 +622,6 @@ impl Bot {
     }
 
     /// Sends an invoice.
-    #[allow(clippy::too_many_arguments)]
     pub fn send_invoice(
         &self,
         chat_id: impl Into<chat::Id>,

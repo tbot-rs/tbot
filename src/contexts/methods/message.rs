@@ -295,13 +295,11 @@ pub trait Message: fields::Message {
     }
 
     /// Sends an invoice to this chat.
-    #[allow(clippy::too_many_arguments)]
     fn send_invoice(&self, invoice: Invoice) -> SendInvoice<'_> {
         self.bot().send_invoice(self.chat().id, invoice)
     }
 
     /// Sends an invoice in reply to this message.
-    #[allow(clippy::too_many_arguments)]
     fn send_invoice_in_reply(&self, invoice: Invoice) -> SendInvoice<'_> {
         self.send_invoice(invoice).in_reply_to(self.message_id())
     }
