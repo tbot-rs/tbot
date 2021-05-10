@@ -153,7 +153,7 @@ impl<'v> Visitor<'v> for ButtonVisitor {
         let mut switch_inline_query = None;
         let mut switch_inline_query_current_chat = None;
         let mut callback_game = None;
-        let mut pay = None;
+        let mut pay = false;
 
         while let Some(key) = map.next_key()? {
             match key {
@@ -167,7 +167,7 @@ impl<'v> Visitor<'v> for ButtonVisitor {
                     switch_inline_query_current_chat = Some(map.next_value()?)
                 }
                 CALLBACK_GAME => callback_game = Some(map.next_value()?),
-                PAY => pay = Some(map.next_value()?),
+                PAY => pay = map.next_value()?,
                 _ => {
                     let _ = map.next_value::<IgnoredAny>()?;
                 }
@@ -186,7 +186,7 @@ impl<'v> Visitor<'v> for ButtonVisitor {
             switch_inline_query_current_chat
         {
             Kind::SwitchInlineQueryCurrentChat(switch_inline_query_current_chat)
-        } else if pay.is_some() {
+        } else if pay {
             Kind::Pay
         } else {
             return Err(de::Error::custom("Could not construct Button's kind"));
