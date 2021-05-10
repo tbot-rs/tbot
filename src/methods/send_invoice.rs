@@ -12,6 +12,42 @@ use crate::{
 };
 use serde::Serialize;
 
+/// Represents tip parameters.
+#[derive(Debug, Clone, Serialize)]
+pub struct Tip {
+    max_tip_amount: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    suggested_tip_amounts: Option<Vec<u32>>,
+}
+
+impl Tip {
+    pub fn with_max(max_tip: u32) -> Self {
+        Self {
+            max_tip_amount: max_tip,
+            suggested_tip_amounts: None,
+        }
+    }
+
+    /// Configures suggested tip amounts for the invoice.
+    /// At most 4 suggestions can be specified.
+    /// Reflects the `suggested_tip_amounts` parameter.
+    ///
+    /// # Panics
+    ///
+    /// Panics if there are more than 4 elements.
+    pub fn suggested_tips(mut self, suggested: impl Into<Vec<u32>>) -> Self {
+        let mut suggested = suggested.into();
+        assert!(
+            (1..=4).contains(&suggested.len()),
+            "[tbot] Received invalid `suggested` in \
+             `Tip::suggested_tips` must have at most 4 elements.",
+        );
+        suggested.sort();
+        self.suggested_tip_amounts = Some(suggested);
+        self
+    }
+}
+
 /// Sends an invoice.
 ///
 /// Reflects the [`sendInvoice`][docs] method.
@@ -27,9 +63,10 @@ pub struct SendInvoice<'a> {
     description: String,
     payload: String,
     provider_token: String,
-    start_parameter: String,
     currency: String,
     prices: Vec<LabeledPrice>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    start_parameter: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     provider_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", flatten)]
@@ -55,6 +92,8 @@ pub struct SendInvoice<'a> {
     allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard>,
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    tip: Option<Tip>,
 }
 
 impl<'a> SendInvoice<'a> {
@@ -66,7 +105,6 @@ impl<'a> SendInvoice<'a> {
         description: impl Into<String>,
         payload: impl Into<String>,
         provider_token: impl Into<String>,
-        start_parameter: impl Into<String>,
         currency: impl Into<String>,
         prices: impl Into<Vec<LabeledPrice>>,
     ) -> Self {
@@ -77,9 +115,9 @@ impl<'a> SendInvoice<'a> {
             description: description.into(),
             payload: payload.into(),
             provider_token: provider_token.into(),
-            start_parameter: start_parameter.into(),
             currency: currency.into(),
             prices: prices.into(),
+            start_parameter: None,
             provider_data: None,
             photo: None,
             need_name: None,
@@ -93,6 +131,7 @@ impl<'a> SendInvoice<'a> {
             reply_to_message_id: None,
             allow_sending_without_reply: false,
             reply_markup: None,
+            tip: None,
         }
     }
 
@@ -193,6 +232,23 @@ impl<'a> SendInvoice<'a> {
     #[allow(clippy::missing_const_for_fn)]
     pub fn reply_markup(mut self, markup: inline::Keyboard) -> Self {
         self.reply_markup = Some(markup);
+        self
+    }
+
+    /// Configures unique deep-linking parameter for "Pay button" to redirect.
+    /// Reflects the `start_parameter` parameter.
+    pub fn start_parameter(
+        mut self,
+        start_parameter: impl Into<String>,
+    ) -> Self {
+        self.start_parameter = Some(start_parameter.into());
+        self
+    }
+
+    /// Configures tip for the invoice.
+    /// Reflects the `tip` field (`max_tip_amount`, `suggested_tip_amounts`).
+    pub fn tip(mut self, tip: Tip) -> Self {
+        self.tip = Some(tip);
         self
     }
 }

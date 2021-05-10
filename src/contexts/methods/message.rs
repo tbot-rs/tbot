@@ -302,7 +302,6 @@ pub trait Message: fields::Message {
         description: impl Into<String>,
         payload: impl Into<String>,
         provider_token: impl Into<String>,
-        start_parameter: impl Into<String>,
         currency: impl Into<String>,
         prices: impl Into<Vec<LabeledPrice>>,
     ) -> SendInvoice<'_> {
@@ -312,7 +311,6 @@ pub trait Message: fields::Message {
             description,
             payload,
             provider_token,
-            start_parameter,
             currency,
             prices,
         )
@@ -326,7 +324,6 @@ pub trait Message: fields::Message {
         description: impl Into<String>,
         payload: impl Into<String>,
         provider_token: impl Into<String>,
-        start_parameter: impl Into<String>,
         currency: impl Into<String>,
         prices: impl Into<Vec<LabeledPrice>>,
     ) -> SendInvoice<'_> {
@@ -335,7 +332,6 @@ pub trait Message: fields::Message {
             description,
             payload,
             provider_token,
-            start_parameter,
             currency,
             prices,
         )

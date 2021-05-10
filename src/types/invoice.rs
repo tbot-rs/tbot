@@ -11,7 +11,7 @@ pub struct Invoice {
     /// The description of the invoice.
     pub description: String,
     /// The start parameter of the invoice.
-    pub start_parameter: String,
+    pub start_parameter: Option<String>,
     /// The currency of the invoice.
     pub currency: String,
     /// The total amount of the invoice.
