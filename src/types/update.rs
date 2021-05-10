@@ -1,8 +1,8 @@
 //! Types related to updates.
 
 use super::{
-    callback, poll::Answer, shipping, ChosenInlineResult, InlineQuery, Message,
-    Poll, PreCheckoutQuery,
+    callback, chat, poll::Answer, shipping, ChosenInlineResult, InlineQuery,
+    Message, Poll, PreCheckoutQuery,
 };
 use is_macro::Is;
 use serde::{
@@ -48,6 +48,10 @@ pub enum Kind {
     ShippingQuery(shipping::Query),
     /// A pre-checkout query.
     PreCheckoutQuery(PreCheckoutQuery),
+    /// The bot's chat member status was updated.
+    MyChatMember(chat::member::Updated),
+    /// A user's chat member status was updated.
+    ChatMember(chat::member::Updated),
     /// Unknown update kind.
     Unknown,
 }
@@ -89,6 +93,8 @@ const CALLBACK_QUERY: &str = "callback_query";
 const CHOSEN_INLINE_RESULT: &str = "chosen_inline_result";
 const SHIPPING_QUERY: &str = "shipping_query";
 const PRE_CHECKOUT_QUERY: &str = "pre_checkout_query";
+const CHAT_MEMBER: &str = "chat_member";
+const MY_CHAT_MEMBER: &str = "my_chat_member";
 const POLL: &str = "poll";
 const POLL_ANSWER: &str = "poll_answer";
 
@@ -131,6 +137,8 @@ impl<'v> Visitor<'v> for RawUpdateVisitor {
                 }
                 POLL => map.next_value().map(Kind::Poll),
                 POLL_ANSWER => map.next_value().map(Kind::PollAnswer),
+                CHAT_MEMBER => map.next_value().map(Kind::ChatMember),
+                MY_CHAT_MEMBER => map.next_value().map(Kind::MyChatMember),
                 _ => {
                     let _: IgnoredAny = map.next_value()?;
                     Ok(Kind::Unknown)

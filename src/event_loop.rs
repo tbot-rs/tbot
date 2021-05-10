@@ -379,6 +379,8 @@ impl EventLoop {
         audio: Audio,
         /// Registers a new handler for changed auto-delete timers.
         changed_auto_delete_timer: ChangedAutoDeleteTimer,
+        /// Registers a new handler for chat members' updated information.
+        chat_member: ChatMember,
         /// Registers a new handler for chosen inline results.
         chosen_inline: ChosenInline,
         /// Registers a new handler for contacts.
@@ -431,6 +433,8 @@ impl EventLoop {
         location: Location,
         /// Registers a new handler for migrations.
         migration: Migration,
+        /// Registers a new handler for the bot's update chat member status.
+        my_chat_member: MyChatMember,
         /// Registers a new handler for new chat photos.
         new_chat_photo: NewChatPhoto,
         /// Registers a new handler for new chat titles.
@@ -635,6 +639,18 @@ impl EventLoop {
                 let context = Shipping::new(self.bot.clone(), query);
                 self.handle(Arc::new(context));
             }
+            update::Kind::ChatMember(update)
+                if self.will_handle::<ChatMember>() =>
+            {
+                let context = ChatMember::new(self.bot.clone(), update);
+                self.handle(Arc::new(context));
+            }
+            update::Kind::MyChatMember(update)
+                if self.will_handle::<MyChatMember>() =>
+            {
+                let context = MyChatMember::new(self.bot.clone(), update);
+                self.handle(Arc::new(context));
+            }
             update if self.will_handle::<Unhandled>() => {
                 self.handle_unhandled(update);
             }
@@ -644,6 +660,8 @@ impl EventLoop {
             | update::Kind::PollAnswer(..)
             | update::Kind::PreCheckoutQuery(..)
             | update::Kind::ShippingQuery(..)
+            | update::Kind::ChatMember(..)
+            | update::Kind::MyChatMember(..)
             | update::Kind::Unknown => (),
         }
     }
