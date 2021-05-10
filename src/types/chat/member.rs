@@ -2,9 +2,12 @@
 
 use crate::types::User;
 use is_macro::Is;
-use serde::de::{
-    Deserialize, Deserializer, Error, IgnoredAny, MapAccess, Visitor,
+use serde::{
+    de::{Deserializer, Error, IgnoredAny, MapAccess, Visitor},
+    Deserialize,
 };
+
+use super::{Chat, InviteLink};
 
 /// Represents the status of a member.
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
@@ -94,6 +97,29 @@ pub struct Member {
     pub user: User,
     /// Status of the member.
     pub status: Status,
+}
+
+/// Represents changes about a chat member's status.
+///
+/// See [`ChatMemberUpdated`] from Bot API docs.
+///
+/// [`ChatMemberUpdated`]: https://core.telegram.org/bots/api#chatmemberupdated
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+pub struct Updated {
+    /// The chat in which the change occured.
+    pub chat: Chat,
+    /// The user who caused the change.
+    pub from: User,
+    /// Timestamp when this change occured.
+    pub date: i64,
+    /// Previous information about the member.
+    #[serde(rename = "old_chat_member")]
+    pub before: Member,
+    /// New information about the member.
+    #[serde(rename = "new_chat_member")]
+    pub after: Member,
+    /// The invite link which the user used to join the chat.
+    pub invite_link: Option<InviteLink>,
 }
 
 const USER: &str = "user";
