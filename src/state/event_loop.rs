@@ -295,6 +295,10 @@ where
         animation: contexts::Animation,
         /// Registers a new handler for audio.
         audio: contexts::Audio,
+        /// Registers a new handler for changed auto-delete timers.
+        changed_auto_delete_timer: contexts::ChangedAutoDeleteTimer,
+        /// Registers a new handler for chat members' updated information.
+        chat_member: contexts::ChatMember,
         /// Registers a new handler for chosen inline results.
         chosen_inline: contexts::ChosenInline,
         /// Registers a new handler for contacts.
@@ -347,6 +351,8 @@ where
         location: contexts::Location,
         /// Registers a new handler for migrations.
         migration: contexts::Migration,
+        /// Registers a new handler for the bot's update chat member status.
+        my_chat_member: contexts::MyChatMember,
         /// Registers a new handler for new chat photos.
         new_chat_photo: contexts::NewChatPhoto,
         /// Registers a new handler for new chat titles.
