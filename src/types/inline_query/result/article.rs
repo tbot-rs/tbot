@@ -1,6 +1,6 @@
-//! Types for representing [`InlineQueryResult::Article`][docs].
+//! Types for representing [`inline_query::result::Kind::Article`].
 //!
-//! [docs]: ../enum.InlineQueryResult.html#variant.Article
+//! [`inline_query::result::Kind::Article`]: super::Kind::Article
 
 use super::Thumb;
 use crate::types::InputMessageContent;

@@ -41,7 +41,7 @@
 //! [tutorial]: https://gitlab.com/SnejUgal/tbot/wikis/Tutorial
 //! [how-to]: https://gitlab.com/SnejUgal/tbot/wikis/How-to
 //! [api-docs]: https://docs.rs/tbot
-//! [master-docs]: https://snejugal.gitlab.io/tbot/tbot/index.html
+//! [master-docs]: https://docs.tbot.rs
 //!
 //! [our group]: https://t.me/tbot_group
 //! [gitlab]: https://gitlab.com/SnejUgal/tbot

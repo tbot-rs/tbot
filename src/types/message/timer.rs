@@ -4,7 +4,7 @@ use serde::Deserialize;
 ///
 /// See [`MessageAutoDeleteTimerChanged`] from Bot API docs.
 ///
-// [`MessageAutoDeleteTimerChanged`]: https://core.telegram.org/bots/api#messageautodeletetimerchanged
+/// [`MessageAutoDeleteTimerChanged`]: https://core.telegram.org/bots/api#messageautodeletetimerchanged
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Deserialize)]
 pub struct AutoDeleteTimerChanged {
     /// The new auto-delete timer value.

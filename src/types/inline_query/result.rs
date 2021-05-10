@@ -42,9 +42,9 @@ pub use {
     voice::Voice,
 };
 
-/// Represents different kinds of [`InlineQueryResult`].
+/// Represents different kinds of [`inline_query::Result`].
 ///
-/// [`InlineQueryResult`]: ./struct.InlineQueryResult.html
+/// [`inline_query::Result`]: Result
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, PartialEq, Clone, Serialize, Is)]
 #[serde(tag = "type", rename_all = "snake_case")]

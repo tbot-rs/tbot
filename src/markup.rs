@@ -13,9 +13,9 @@
 //! ));
 //! ```
 //!
-//! [`bold`]: ./fn.bold.html
-//! [`italic`]: ./fn.italic.html
-//! [`link`]: ./fn.link.html
+//! [`bold`]: bold()
+//! [`italic`]: italic()
+//! [`link`]: link()
 //!
 //! However, you can't use their return values directly — indeed, how do they
 //! know if they need to format their inputs as HTML or MarkdownV2? That's where

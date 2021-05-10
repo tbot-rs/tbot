@@ -3,7 +3,7 @@ use is_macro::Is;
 
 /// Represents different kinds of [`Element`].
 ///
-/// [`Element`]: ./struct.Element.html
+/// [`Element`]: super::Element
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 #[must_use]

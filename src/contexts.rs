@@ -12,18 +12,18 @@
 //!
 //! bot.text(|context| async move {
 //!     let reversed: String = context.text.value.chars().rev().collect();
-//!     context.send_message_in_reply(&reversed).call().await.unwrap();
+//!     context.send_message_in_reply(reversed).call().await.unwrap();
 //! });
 //! # }
 //! ```
 //!
-//! Here, we set a [`text`][text-handler] handler for our bot. Whenever we get
-//! a text message, the handler is called with a reference to
-//! a [`Text`][text-context] context that contains data about the incoming data,
-//! e.g. the text of the message. Then we call the [`send_message_in_reply`]
-//! method on the context, which does what its name says: sends a message
-//! in the same chat in reply to the incoming message, inferring your bot's
-//! token and IDs of the chat and the message.
+//! Here, we set a [`text`][`EventLoop::text`] handler for our bot. Whenever we
+//! get a text message, the handler is called with a reference to a [`Text`]
+//! context that contains data about the incoming data, e.g. the text of the
+//! message. Then we call the [`send_message_in_reply`] method on the context,
+//! which does what its name says: sends a message in the same chat in reply to
+//! the incoming message, inferring your bot's token and IDs of the chat and the
+//! message.
 //!
 //! All contexts have one common field named `bot`. Through this field, you can
 //! call any method using a [`Bot`]:
@@ -46,16 +46,15 @@
 //! # }
 //! ```
 //!
-//! Most contexts implement certain traits, such as [`ChatMethods`]
-//! or [`Pinnable`]. These traits share common methods between contexts,
+//! Most contexts implement certain traits, such as [`Message`] or [`Pinnable`].
+//! These traits share common methods between contexts,
 //! e.g. [`send_message_in_reply`] you have seen above.
 //!
-//! [text-handler]: ../bot/struct.Bot.html#method.text
-//! [text-context]: ./struct.Text.html
-//! [`send_message_in_reply`]: ./traits/trait.ChatMethods.html#method.send_message_in_reply
-//! [`Bot`]: ../bot/struct.Bot.html
-//! [`ChatMethods`]: ./traits/trait.ChatMethods.html
-//! [`Pinnable`]: ./traits/trait.Pinnable.html
+//! [`EventLoop::text`]: crate::EventLoop::text
+//! [`send_message_in_reply`]: methods::Message::send_message_in_reply
+//! [`Bot`]: crate::Bot
+//! [`Message`]: methods::Message
+//! [`Pinnable`]: methods::Pinnable
 
 #[macro_use]
 mod macros;

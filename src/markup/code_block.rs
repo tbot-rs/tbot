@@ -5,8 +5,6 @@ use std::{
 };
 
 /// Formats a block of code. Can be created with [`code_block`].
-///
-/// [`code_block`]: ./fn.code_block.html
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 #[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct CodeBlock<C> {

@@ -1,6 +1,6 @@
-//! Types for representing [`InlineQueryResult::Document`][docs].
+//! Types for representing [`inline_query::result::Kind::Document`].
 //!
-//! [docs]: ../enum.InlineQueryResult.html#variant.Document
+//! [`inline_query::result::Kind::Document`]: super::Kind::Document
 
 use super::Thumb;
 use crate::types::{

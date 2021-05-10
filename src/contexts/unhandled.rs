@@ -3,7 +3,7 @@ use crate::{types::update, Bot};
 common! {
     /// The context for [`unhandled`] handlers.
     ///
-    /// [`unhandled`]: ../event_loop/struct.EventLoop.html#method.unhandled
+    /// [`unhandled`]: crate::EventLoop::unhandled
     struct Unhandled {
         /// The unhandled update.
         update: update::Kind,

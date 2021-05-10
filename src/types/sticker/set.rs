@@ -8,7 +8,7 @@ use std::fmt::{self, Formatter};
 
 /// Represents different kinds of a [`sticker::Set`].
 ///
-/// [`sticker::Set`]: ./struct.Set.html
+/// [`sticker::Set`]: Set
 #[derive(Debug, PartialEq, Clone, Copy, Is)]
 #[non_exhaustive]
 pub enum Kind {

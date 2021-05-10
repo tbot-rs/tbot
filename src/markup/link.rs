@@ -12,9 +12,6 @@ enum Kind<T> {
 }
 
 /// Formats a link. Can be created with [`link`] or [`mention`].
-///
-/// [`link`]: ./fn.link.html
-/// [`mention`]: ./fn.mention.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct Link<T, L = &'static str> {

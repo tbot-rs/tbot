@@ -1,6 +1,6 @@
-//! Types for representing [`InlineQueryResult::Photo`][docs].
+//! Types for representing [`inline_query::result::Kind::Photo`].
 //!
-//! [docs]: ../enum.InlineQueryResult.html#variant.Photo
+//! [`inline_query::result::Kind::Photo`]: super::Kind::Photo
 
 use crate::types::{
     file,

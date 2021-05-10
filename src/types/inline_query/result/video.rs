@@ -1,6 +1,6 @@
-//! Types for representing [`InlineQueryResult::Video`][docs].
+//! Types for representing [`inline_query::result::Kind::Video`].
 //!
-//! [docs]: ../enum.InlineQueryResult.html#variant.Video
+//! [`inline_query::result::Kind::Video`]: super::Kind::Video
 
 use crate::types::{
     file,

@@ -18,8 +18,7 @@ macro_rules! message_base {
             #[doc = concat!(
                 "The context for [`", stringify!($handler), "`][handler] ",
                 "handlers.\n\n",
-                "[handler]: ../event_loop/struct.EventLoop.html#method.",
-                stringify!($handler),
+                "[handler]: crate::EventLoop::", stringify!($handler),
             )]
             struct $name {
                 /// ID of the message.

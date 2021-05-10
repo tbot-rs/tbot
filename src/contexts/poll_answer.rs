@@ -1,9 +1,9 @@
 use crate::{types::poll::Answer, Bot};
 
 common! {
-    /// The context for [`poll_answer`][handler] handlers.
+    /// The context for [`poll_answer`] handlers.
     ///
-    /// [handler]: ../event_loop/struct.EventLoop.html#method.poll_answer
+    /// [`poll_answer`]: crate::EventLoop::poll_answer
     struct PollAnswer {
         /// The new answer in the poll.
         answer: Answer,

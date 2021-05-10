@@ -84,8 +84,6 @@ impl<T: Formattable + ?Sized> Formattable for Box<T> {
 }
 
 /// Represents HTML text. Can be created with [`html`].
-///
-/// [`html`]: ./fn.html.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use = "HTML needs to be turned into a `Text` instance"]
 pub struct Html<T>(T);
