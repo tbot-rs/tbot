@@ -8,8 +8,6 @@ use std::fmt;
 use std::option;
 
 /// Represents the kind of a [`Poll`].
-///
-/// [`Poll`]: ./struct.Poll.html
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[non_exhaustive]
 pub enum Kind {

@@ -24,8 +24,8 @@
 //!     .stateful_event_loop(initial_state);
 //! ```
 //!
-//! [`stateful_event_loop`]: ../bot/struct.Bot.html#method.stateful_event_loop
-//! [`event_loop`]: ../bot/struct.Bot.html#method.event_loop
+//! [`stateful_event_loop`]: crate::Bot::stateful_event_loop
+//! [`event_loop`]: crate::Bot::event_loop
 //!
 //! What should `initial_state` be? It can actually be any value (that can be
 //! shared across threads). You'd think that, as we only have a counter,
@@ -45,12 +45,12 @@
 //!     .stateful_event_loop(RwLock::new(0));
 //! ```
 //!
-//! [`RwLock`]: https://docs.rs/tokio/0.2.*/tokio/sync/struct.RwLock.html
+//! [`RwLock`]: tokio::sync::RwLock
 //!
 //! Now, if we would have gone with the stateless event loop, we'd write this:
 //!
-//! ```
-//! # let mut bot = tbot::Bot::new(String::new()).event_loop();
+//! ```compile_fail
+//! # let mut bot = tbot::Bot::new(String::new()).stateful_event_loop(());
 //! bot.command("increase", |context| async move { /* .. */ });
 //! ```
 //!
@@ -62,8 +62,8 @@
 //! ```
 //!
 //! The state is passed being wrapped in an `Arc`, that is, this handler
-//! receives `Arc<RwLock<i32>>` as the second argument. This allows concurrent
-//! access to the state. Now you only need to use the state:
+//! receives [`Arc`]`<`[`RwLock`]`<i32>>` as the second argument. This allows
+//! parallel access to the state. Now you only need to use the state:
 //!
 //! ```
 //! # struct RwLock(std::sync::RwLock<i32>);
@@ -86,6 +86,8 @@
 //!     }
 //! });
 //! ```
+//!
+//! [`Arc`]: std::sync::Arc
 //!
 //! `tbot` also provides a few utility state storages for common patterns.
 //! You can combine them with other state storages or with your own storage

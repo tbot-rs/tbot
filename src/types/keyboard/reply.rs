@@ -10,8 +10,6 @@ const REGULAR: &str = "regular";
 const QUIZ: &str = "quiz";
 
 /// Represents different kinds of poll that a [`Button`] can request.
-///
-/// [`Button`]: ./struct.Button.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum RequestPollKind {
@@ -39,8 +37,6 @@ impl serde::Serialize for RequestPollKind {
 }
 
 /// Represents different information that a [`Button`] can request.
-///
-/// [`Button`]: ./struct.Button.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, Is)]
 #[must_use]
 pub enum RequestKind {

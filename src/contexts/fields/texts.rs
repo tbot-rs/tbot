@@ -14,9 +14,6 @@ pub trait Caption: MediaMessage {
 }
 
 /// Unites [`Text`] and [`Caption`].
-///
-/// [`Text`]: ./trait.Text.html
-/// [`Caption`]: ./trait.Caption.html
 pub trait AnyText: MediaMessage {
     /// The text or the caption of the message.
     fn text(&self) -> &message::Text;

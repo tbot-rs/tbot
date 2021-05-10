@@ -9,8 +9,7 @@ macro_rules! callback {
             #[doc = concat!(
                 "Context for the [`", stringify!($handler), "`][handler] ", "handler.\n\n",
 
-                "[handler]: ../event_loop/struct.EventLoop.html#method.",
-                stringify!($handler),
+                "[handler]: crate::EventLoop::", stringify!($handler),
             )]
             struct $name {
                 /// The ID of the callback.

@@ -11,10 +11,10 @@ pub trait Callback: fields::Callback {
     /// methods will be more convenient: [`ignore`], [`open_url`], [`notify`]
     /// and [`alert`].
     ///
-    /// [`ignore`]: #method.ignore
-    /// [`open_url`]: #method.open_url
-    /// [`notify`]: #method.notify
-    /// [`alert`]: #method.alert
+    /// [`ignore`]: Self::ignore
+    /// [`open_url`]: Self::open_url
+    /// [`notify`]: Self::notify
+    /// [`alert`]: Self::alert
     fn answer(
         &self,
         action: Option<CallbackAction>,

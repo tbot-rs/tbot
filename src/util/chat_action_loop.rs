@@ -28,17 +28,17 @@ async fn send_chat_action_in_loop(
 
 /// An utility trait for [`Bot`] with a method to send a chat action in a loop.
 ///
-/// [`Bot`]: ../bot/struct.Bot.html
+/// [`Bot`]: crate::Bot
 #[allow(clippy::module_name_repetitions)]
 pub trait ChatActionLoopBotExt: Sealed {
     /// Sends a chat action in an infinite loop, returning only if failed
     /// to send the action.
     ///
-    /// This utility is suppoed to be [`select!`]ed with another future.
+    /// This utility is supposed to be [`select!`]ed with another future.
     /// As soon as the other future completes, this future is dropped
     /// and the chat action is no longer sent.
     ///
-    /// [`select!`]: https://docs.rs/tokio/0.2.*/tokio/macro.select.html
+    /// [`select!`]: tokio::select
     fn send_chat_action_in_loop(
         &self,
         chat_id: impl ImplicitChatId,
@@ -62,11 +62,11 @@ pub trait ChatActionLoop: Message {
     /// Sends a chat action in an infinite loop, returning only if failed
     /// to send the action.
     ///
-    /// This utility is suppoed to be [`select!`]ed with another future.
+    /// This utility is supposed to be [`select!`]ed with another future.
     /// As soon as the other future completes, this future is dropped
     /// and the chat action is no longer sent.
     ///
-    /// [`select!`]: https://docs.rs/tokio/0.2.*/tokio/macro.select.html
+    /// [`select!`]: tokio::select
     fn send_chat_action_in_loop(
         &self,
         action: chat::Action,

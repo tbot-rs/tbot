@@ -5,9 +5,9 @@ use crate::{
 };
 
 common! {
-    /// The context for [`pre_checkout`][handler] handlers.
+    /// The context for [`pre_checkout`] handlers.
     ///
-    /// [handler]: ../event_loop/struct.EventLoop.html#method.pre_checkout
+    /// [`pre_checkout`]: crate::EventLoop::pre_checkout
     struct PreCheckout {
         /// The ID of the query.
         id: pre_checkout_query::Id,
@@ -47,8 +47,8 @@ impl PreCheckout {
     /// an `Option`. You might also want to use the [`ok`] and [`err`]
     /// methods from this context.
     ///
-    /// [`ok`]: #method.ok
-    /// [`err`]: #method.err
+    /// [`ok`]: Self::ok
+    /// [`err`]: Self::err
     pub fn answer(
         &self,
         result: Result<(), impl Into<String>>,

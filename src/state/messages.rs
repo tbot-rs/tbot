@@ -16,12 +16,10 @@
 //! the specified chat (which is inferred from the context in the case of this
 //! method; [`len_in_chat_by_id`], on the other hand, takes a chat ID directly).
 //!
-//! [`Messages`]: ./struct.Messages.html
-//! [`MessageId`]: ./struct.MessageId.html
-//! [`Chats`]: ../chats/struct.Chats.html
-//! [`len`]: ./struct.Messages.html#method.len
-//! [`len_in_chat`]: ./struct.Messages.html#method.len_in_chat
-//! [`len_in_chat_by_id`]: ./struct.Messages.html#method.len_in_chat_by_id
+//! [`Chats`]: super::Chats
+//! [`len`]: Messages::len
+//! [`len_in_chat`]: Messages::len_in_chat
+//! [`len_in_chat_by_id`]: Messages::len_in_chat_by_id
 
 use crate::{
     contexts::fields::Message,
@@ -68,7 +66,7 @@ impl MessageId {
 /// A storage of state per message. See [the module's docs] to learn
 /// how to use it.
 ///
-/// [the module's docs]: ./index.html
+/// [the module's docs]: self
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Messages<S> {
@@ -432,8 +430,6 @@ impl<S> IntoIterator for Messages<S> {
 }
 
 /// An iterator over the entries of [`Messages`].
-///
-/// [`Messages`]: ./struct.Messages.html
 pub struct Iter<'a, S>(hash_map::Iter<'a, MessageId, S>);
 
 impl<'a, S> Iterator for Iter<'a, S> {
@@ -454,8 +450,6 @@ impl<'a, S> IntoIterator for &'a Messages<S> {
 }
 
 /// A mutable iterator over the entries of [`Messages`].
-///
-/// [`Messages`]: ./struct.Messages.html
 pub struct IterMut<'a, S>(hash_map::IterMut<'a, MessageId, S>);
 
 impl<'a, S> Iterator for IterMut<'a, S> {

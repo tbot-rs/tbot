@@ -11,8 +11,6 @@ pub mod set;
 pub use {mask_position::MaskPosition, set::Set};
 
 /// Represents different kinds of a [`Sticker`].
-///
-/// [`Sticker`]: ./struct.Sticker.html
 #[derive(Debug, PartialEq, Clone, Copy, Is)]
 #[non_exhaustive]
 pub enum Kind {

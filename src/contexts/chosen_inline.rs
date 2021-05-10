@@ -4,9 +4,9 @@ use crate::{
 };
 
 common! {
-    /// The context for [`chosen_inline`][handler] handlers.
+    /// The context for [`chosen_inline`] handlers.
     ///
-    /// [handler]: ../event_loop/struct.EventLoop.html#method.chosen_inline
+    /// [`chosen_inline`]: crate::EventLoop::chosen_inline
     struct ChosenInline {
         /// ID of the chosen result.
         result_id: String,

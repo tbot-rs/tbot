@@ -22,8 +22,6 @@ pub use https::Https;
 /// Configures webhook and starts a server.
 ///
 /// To construct a `Webhook`, use [`EventLoop::webhook`].
-///
-/// [`EventLoop::webhook`]: ./struct.Bot.html#method.webhook
 #[must_use = "webhook does not start unless `start` is called"]
 pub struct Webhook<'a> {
     event_loop: EventLoop,
@@ -123,7 +121,7 @@ impl<'a> Webhook<'a> {
     /// Configures a webhook server over HTTP. For HTTPS, see the [`https`]
     /// method.
     ///
-    /// [`https`]: #method.https
+    /// [`https`]: Self::https
     pub const fn http(self) -> Http<'a> {
         Http::new(self)
     }
@@ -131,7 +129,7 @@ impl<'a> Webhook<'a> {
     /// Configures a webhook server over HTTPS. For HTTP, see the [`http`]
     /// method.
     ///
-    /// [`http`]: #method.http
+    /// [`http`]: Self::http
     pub const fn https(
         self,
         #[cfg(feature = "tls")] identity: https::Identity,

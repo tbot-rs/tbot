@@ -1,9 +1,9 @@
 use super::User;
 use serde::Deserialize;
 
-/// Represents a Bot object that returned in [`GetMe`] method.
+/// Represents a Bot object returned from the [`GetMe`] method.
 ///
-/// [`GetMe`]: ../../methods/struct.GetMe.html
+/// [`GetMe`]: crate::methods::GetMe
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize)]
 #[non_exhaustive]
 pub struct Me {

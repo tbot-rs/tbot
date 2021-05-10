@@ -5,10 +5,10 @@ use is_macro::Is;
 /// Though you can consturct variants directly, there are convenient methods
 /// to do that: [`with_notification`], [`with_alert`] and [`with_url`].
 ///
-/// [`AnswerCallbackQuery`]: ./struct.AnswerCallbackQuery.html
-/// [`with_notification`]: #method.with_notification
-/// [`with_alert`]: #method.with_alert
-/// [`with_url`]: #method.with_url
+/// [`AnswerCallbackQuery`]: crate::methods::AnswerCallbackQuery
+/// [`with_notification`]: Self::with_notification
+/// [`with_alert`]: Self::with_alert
+/// [`with_url`]: Self::with_url
 #[derive(Debug, PartialEq, Eq, Clone, Hash, Is)]
 #[must_use]
 pub enum CallbackAction {

@@ -50,9 +50,9 @@ type Map<T> = HashMap<String, Handlers<T>>;
 /// `tbot` has many update handlers, such as [`text`] you have seen
 /// in the example. You can find all of them below on this page.
 ///
-/// [polling]: #method.polling
-/// [webhook]: #method.webhook
-/// [`text`]: #method.text
+/// [polling]: Self::polling
+/// [webhook]: Self::webhook
+/// [`text`]: Self::text
 #[must_use]
 pub struct EventLoop {
     bot: Bot,
@@ -159,8 +159,8 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
-    /// [`username`]: #method.username
-    /// [`fetch_username`]: #method.fetch_username
+    /// [`username`]: Self::username
+    /// [`fetch_username`]: Self::fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
@@ -180,8 +180,8 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
-    /// [`username`]: #method.username
-    /// [`fetch_username`]: #method.fetch_username
+    /// [`username`]: Self::username
+    /// [`fetch_username`]: Self::fetch_username
     pub fn command_with_description<H, F>(
         &mut self,
         command: &'static str,
@@ -202,8 +202,8 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
-    /// [`username`]: #method.username
-    /// [`fetch_username`]: #method.fetch_username
+    /// [`username`]: Self::username
+    /// [`fetch_username`]: Self::fetch_username
     pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,

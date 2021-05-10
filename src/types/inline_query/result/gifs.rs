@@ -222,9 +222,9 @@ macro_rules! gif_base {
 }
 
 pub mod gif {
-    //! Types for representing [`InlineQueryResult::Gif`][docs].
+    //! Types for representing [`inline_query::result::Kind::Gif`].
     //!
-    //! [docs]: ../enum.InlineQueryResult.html#variant.Gif
+    //! [`inline_query::result::Kind::Gif`]: super::super::Kind::Gif
 
     gif_base! {
         url: "gif_url",
@@ -238,9 +238,9 @@ pub mod gif {
 }
 
 pub mod mpeg4 {
-    //! Types for representing [`InlineQueryResult::Mpeg4Gif`][docs].
+    //! Types for representing [`inline_query::result::Kind::Mpeg4Gif`].
     //!
-    //! [docs]: ../enum.InlineQueryResult.html#variant.Mpeg4Gif
+    //! [`inline_query::result::Kind::Mpeg4Gif`]: super::super::Kind::Mpeg4Gif
 
     gif_base! {
         url: "mpeg4_url",
