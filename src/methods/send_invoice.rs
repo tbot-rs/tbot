@@ -36,7 +36,6 @@ pub struct SendInvoice<'a> {
 }
 
 impl<'a> SendInvoice<'a> {
-    #[allow(clippy::too_many_arguments)] // I know, brother
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl Into<chat::Id>,

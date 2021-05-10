@@ -1,8 +1,8 @@
 //! Types related to inline queries.
 
 use crate::types::{Location, User};
-use serde::Deserialize;
 use is_macro::Is;
+use serde::Deserialize;
 
 mod id;
 pub mod result;

@@ -23,12 +23,13 @@ impl Tip {
 
     /// Configures suggested tip amounts for the invoice.
     /// At most 4 suggestions can be specified.
+    /// This method automatically sorts the data given.
     /// Reflects the `suggested_tip_amounts` parameter.
     ///
     /// # Panics
     ///
     /// Panics if:
-    /// - there are more than 4 elements.
+    /// - the value consists of more than 4 elements.
     /// - the value contains duplicates.
     /// - the biggest element is exceeding `max_tip_amount`.
     pub fn suggested_tips(mut self, suggested: impl Into<Vec<u32>>) -> Self {

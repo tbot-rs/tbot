@@ -1,7 +1,10 @@
 use tbot::{
     markup::{inline_code, markdown_v2},
     prelude::*,
-    types::{parameters::Photo, shipping, LabeledPrice},
+    types::{
+        parameters::{Invoice, Photo, Tip},
+        shipping, LabeledPrice,
+    },
     Bot,
 };
 
@@ -24,22 +27,27 @@ async fn main() {
 
     bot.start(|context, provider_token| async move {
         let call_result = if context.text.value == START_PARAMETER {
-            let price = [LabeledPrice::new(TITLE, 1_00)];
-            let mut invoice = context.send_invoice(
+            let price = [LabeledPrice::new(TITLE, 10_000)];
+            let mut invoice = Invoice::new(
                 TITLE,
                 DESCRIPTION,
                 PAYLOAD,
                 &*provider_token,
-                START_PARAMETER,
                 CURRENCY,
                 price,
             );
             let photo = Photo::new(
                 "https://www.rustacean.net/assets/rustacean-flat-happy.png",
             );
-            invoice = invoice.photo(photo).is_flexible(true);
+            let tip = Tip::with_max(20_00).suggested_tips([19_06, 20_00]);
 
-            invoice.call().await
+            invoice = invoice.photo(photo).is_flexible(true).tip(tip);
+
+            context
+                .send_invoice(invoice)
+                .start_parameter(START_PARAMETER)
+                .call()
+                .await
         } else {
             let error_message = markdown_v2((
                 "Send ",
