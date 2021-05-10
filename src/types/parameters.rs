@@ -6,6 +6,7 @@ mod chat_id;
 mod photo;
 pub mod poll;
 mod text;
+pub mod tip;
 
 pub(crate) use text::ParseMode;
 pub use {

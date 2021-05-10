@@ -6,47 +6,11 @@ use crate::{
         chat,
         keyboard::inline,
         message::{self, Message},
-        parameters::Photo,
+        parameters::{tip, Photo},
         LabeledPrice,
     },
 };
 use serde::Serialize;
-
-/// Represents tip parameters.
-#[derive(Debug, Clone, Serialize)]
-pub struct Tip {
-    max_tip_amount: u32,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    suggested_tip_amounts: Option<Vec<u32>>,
-}
-
-impl Tip {
-    pub fn with_max(max_tip: u32) -> Self {
-        Self {
-            max_tip_amount: max_tip,
-            suggested_tip_amounts: None,
-        }
-    }
-
-    /// Configures suggested tip amounts for the invoice.
-    /// At most 4 suggestions can be specified.
-    /// Reflects the `suggested_tip_amounts` parameter.
-    ///
-    /// # Panics
-    ///
-    /// Panics if there are more than 4 elements.
-    pub fn suggested_tips(mut self, suggested: impl Into<Vec<u32>>) -> Self {
-        let mut suggested = suggested.into();
-        assert!(
-            (1..=4).contains(&suggested.len()),
-            "[tbot] Received invalid `suggested` in \
-             `Tip::suggested_tips` must have at most 4 elements.",
-        );
-        suggested.sort();
-        self.suggested_tip_amounts = Some(suggested);
-        self
-    }
-}
 
 /// Sends an invoice.
 ///
@@ -92,8 +56,8 @@ pub struct SendInvoice<'a> {
     allow_sending_without_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<inline::Keyboard>,
-    #[serde(flatten, skip_serializing_if = "Option::is_none")]
-    tip: Option<Tip>,
+    #[serde(flatten)]
+    tip: Option<tip::Tip>,
 }
 
 impl<'a> SendInvoice<'a> {
@@ -246,8 +210,9 @@ impl<'a> SendInvoice<'a> {
     }
 
     /// Configures tip for the invoice.
-    /// Reflects the `tip` field (`max_tip_amount`, `suggested_tip_amounts`).
-    pub fn tip(mut self, tip: Tip) -> Self {
+    /// Reflects the `tip` parameter.
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn tip(mut self, tip: tip::Tip) -> Self {
         self.tip = Some(tip);
         self
     }
