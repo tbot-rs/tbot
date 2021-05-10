@@ -11,7 +11,8 @@ pub struct Tip {
 }
 
 impl Tip {
-    /// Initialize a `Tip` with a given max tip amount.
+    /// Constructs a `Tip` with the given max tip amount.
+    /// Reflects the `max_tip_amount` parameter.
     #[must_use]
     pub const fn with_max(max_tip: u32) -> Self {
         Self {
@@ -26,7 +27,10 @@ impl Tip {
     ///
     /// # Panics
     ///
-    /// Panics if there are more than 4 elements.
+    /// Panics if:
+    /// - there are more than 4 elements.
+    /// - the value contains duplicates.
+    /// - the biggest element is exceeding `max_tip_amount`.
     pub fn suggested_tips(mut self, suggested: impl Into<Vec<u32>>) -> Self {
         let mut suggested = suggested.into();
         assert!(
@@ -43,11 +47,12 @@ impl Tip {
              `Tip::suggested_tips`: value most consist of unique elements.",
         );
         assert!(
-            suggested[3] <= self.max_tip_amount,
+            // this is a safe unwrap, since we've checked the length earlier
+            *suggested.last().unwrap() < self.max_tip_amount,
             "[tbot] Received invalid `suggested` in \
              `Tip::suggested_tips`: the maximum value {} \
              is exceeding `max_tip_amount` which was set to {}.",
-            suggested[3],
+            suggested.last().unwrap(),
             self.max_tip_amount,
         );
         self.suggested_tip_amounts = Some(suggested);
