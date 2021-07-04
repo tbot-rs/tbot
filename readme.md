@@ -71,8 +71,8 @@ of `tokio` if you're going to start the runtime using `#[tokio::main]`.
 ## Minimum supported Rust version
 
 `tbot` inherits `tokio`'s MSRV policy: the last three minor versions are
-supported. Last time this paragraph was updated, the latest version was 1.52,
-therefore `tbot`'s MSRV is 1.49. You can also look up it in our
+supported. Last time this paragraph was updated, the latest version was 1.53,
+therefore `tbot`'s MSRV is 1.50. You can also look up it in our
 [`.gitlab-ci.yml`], as it shows what version we're actually testing on.
 
 [`.gitlab-ci.yml`]: ./.gitlab-ci.yml
