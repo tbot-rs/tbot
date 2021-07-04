@@ -131,261 +131,252 @@ pub fn entities(text: &message::Text) -> Vec<Entity> {
         });
     }
 
-    tokens.into_iter().for_each(
-        |Token {
-             position,
-             kind,
-             token_kind,
-             ..
-         }| {
-            match (token_kind, kind) {
-                (TokenKind::Start, RawEntityKind::Bold) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-
-                        last_start = Some(position);
-                    }
-
-                    state.is_bold = true;
-
-                    if last_start.is_none() {
-                        last_start = Some(position);
-                    }
-                }
-                (TokenKind::Start, RawEntityKind::Italic) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-
-                        last_start = Some(position);
-                    }
-
-                    state.is_italic = true;
-
-                    if last_start.is_none() {
-                        last_start = Some(position);
-                    }
-                }
-                (TokenKind::Start, RawEntityKind::Strikethrough) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-
-                        last_start = Some(position);
-                    }
-
-                    state.is_strikethrough = true;
-
-                    if last_start.is_none() {
-                        last_start = Some(position);
-                    }
-                }
-                (TokenKind::Start, RawEntityKind::Underline) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-
-                        last_start = Some(position);
-                    }
-
-                    state.id_underline = true;
-
-                    if last_start.is_none() {
-                        last_start = Some(position);
-                    }
-                }
-                (TokenKind::Start, RawEntityKind::Pre(_))
-                | (TokenKind::Start, RawEntityKind::Code) => {
-                    if let Some(semantic) = last_semantic.take() {
-                        entities.push(Entity::Semantic(semantic));
-                    }
-
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let text = FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        );
-
-                        let semantic = SemanticEntity {
+    for Token {
+        position,
+        kind,
+        token_kind,
+        ..
+    } in tokens
+    {
+        match (token_kind, kind) {
+            (TokenKind::Start, RawEntityKind::Bold) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
                             kind: None,
-                            value: vec![text],
-                        };
-
-                        entities.push(Entity::Semantic(semantic));
-                    }
-
-                    last_start = Some(position);
-                    last_semantic = None;
-                }
-                (TokenKind::Start, kind) => {
-                    if let Some(semantic) = last_semantic.take() {
-                        entities.push(Entity::Semantic(semantic));
-                    }
-
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let text = FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        );
-
-                        let semantic = SemanticEntity {
-                            kind: None,
-                            value: vec![text],
-                        };
-
-                        entities.push(Entity::Semantic(semantic));
-                    }
-
-                    last_start = Some(position);
-                    last_semantic = Some(SemanticEntity {
-                        kind: Some(convert_kind(kind)),
-                        value: Vec::new(),
-                    });
-                }
-                (TokenKind::End, RawEntityKind::Bold) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
+                            value: Vec::with_capacity(1),
                         });
 
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-                    }
-
-                    last_start = Some(position);
-                    state.is_bold = false;
-                }
-                (TokenKind::End, RawEntityKind::Italic) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-                    }
-
-                    last_start = Some(position);
-                    state.is_italic = false;
-                }
-                (TokenKind::End, RawEntityKind::Strikethrough) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-                    }
-
-                    last_start = Some(position);
-                    state.is_strikethrough = false;
-                }
-                (TokenKind::End, RawEntityKind::Underline) => {
-                    if let Some(start) = last_start.filter(|x| *x != position) {
-                        let semantic = last_semantic.get_or_insert_with(|| {
-                            SemanticEntity {
-                                kind: None,
-                                value: Vec::with_capacity(1),
-                            }
-                        });
-
-                        semantic.value.push(FormattedText::from_state(
-                            String::from_utf16_lossy(&text[start..position]),
-                            &state,
-                        ));
-                    }
-
-                    last_start = Some(position);
-                    state.id_underline = false;
-                }
-                (TokenKind::End, RawEntityKind::Code) => {
-                    let text = String::from_utf16_lossy(
-                        &text[last_start.unwrap()..position],
-                    );
-                    entities.push(Entity::Code(text));
-
-                    last_start = Some(position);
-                }
-                (TokenKind::End, RawEntityKind::Pre(language)) => {
-                    entities.push(Entity::Pre {
-                        language: language.clone(),
-                        value: String::from_utf16_lossy(
-                            &text[last_start.unwrap()..position],
-                        ),
-                    });
-
-                    last_start = Some(position);
-                }
-                (TokenKind::End, _) => {
-                    let mut semantic = last_semantic.take().unwrap();
                     semantic.value.push(FormattedText::from_state(
-                        String::from_utf16_lossy(
-                            &text[last_start.unwrap()..position],
-                        ),
+                        String::from_utf16_lossy(&text[start..position]),
                         &state,
                     ));
 
-                    entities.push(Entity::Semantic(semantic));
-
                     last_start = Some(position);
-                    last_semantic = None;
+                }
+
+                state.is_bold = true;
+
+                if last_start.is_none() {
+                    last_start = Some(position);
                 }
             }
-        },
-    );
+            (TokenKind::Start, RawEntityKind::Italic) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+
+                    last_start = Some(position);
+                }
+
+                state.is_italic = true;
+
+                if last_start.is_none() {
+                    last_start = Some(position);
+                }
+            }
+            (TokenKind::Start, RawEntityKind::Strikethrough) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+
+                    last_start = Some(position);
+                }
+
+                state.is_strikethrough = true;
+
+                if last_start.is_none() {
+                    last_start = Some(position);
+                }
+            }
+            (TokenKind::Start, RawEntityKind::Underline) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+
+                    last_start = Some(position);
+                }
+
+                state.id_underline = true;
+
+                if last_start.is_none() {
+                    last_start = Some(position);
+                }
+            }
+            (TokenKind::Start, RawEntityKind::Pre(_))
+            | (TokenKind::Start, RawEntityKind::Code) => {
+                if let Some(semantic) = last_semantic.take() {
+                    entities.push(Entity::Semantic(semantic));
+                }
+
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let text = FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    );
+
+                    let semantic = SemanticEntity {
+                        kind: None,
+                        value: vec![text],
+                    };
+
+                    entities.push(Entity::Semantic(semantic));
+                }
+
+                last_start = Some(position);
+                last_semantic = None;
+            }
+            (TokenKind::Start, kind) => {
+                if let Some(semantic) = last_semantic.take() {
+                    entities.push(Entity::Semantic(semantic));
+                }
+
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let text = FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    );
+
+                    let semantic = SemanticEntity {
+                        kind: None,
+                        value: vec![text],
+                    };
+
+                    entities.push(Entity::Semantic(semantic));
+                }
+
+                last_start = Some(position);
+                last_semantic = Some(SemanticEntity {
+                    kind: Some(convert_kind(kind)),
+                    value: Vec::new(),
+                });
+            }
+            (TokenKind::End, RawEntityKind::Bold) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+                }
+
+                last_start = Some(position);
+                state.is_bold = false;
+            }
+            (TokenKind::End, RawEntityKind::Italic) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+                }
+
+                last_start = Some(position);
+                state.is_italic = false;
+            }
+            (TokenKind::End, RawEntityKind::Strikethrough) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+                }
+
+                last_start = Some(position);
+                state.is_strikethrough = false;
+            }
+            (TokenKind::End, RawEntityKind::Underline) => {
+                if let Some(start) = last_start.filter(|x| *x != position) {
+                    let semantic =
+                        last_semantic.get_or_insert_with(|| SemanticEntity {
+                            kind: None,
+                            value: Vec::with_capacity(1),
+                        });
+
+                    semantic.value.push(FormattedText::from_state(
+                        String::from_utf16_lossy(&text[start..position]),
+                        &state,
+                    ));
+                }
+
+                last_start = Some(position);
+                state.id_underline = false;
+            }
+            (TokenKind::End, RawEntityKind::Code) => {
+                let text = String::from_utf16_lossy(
+                    &text[last_start.unwrap()..position],
+                );
+                entities.push(Entity::Code(text));
+
+                last_start = Some(position);
+            }
+            (TokenKind::End, RawEntityKind::Pre(language)) => {
+                entities.push(Entity::Pre {
+                    language: language.clone(),
+                    value: String::from_utf16_lossy(
+                        &text[last_start.unwrap()..position],
+                    ),
+                });
+
+                last_start = Some(position);
+            }
+            (TokenKind::End, _) => {
+                let mut semantic = last_semantic.take().unwrap();
+                semantic.value.push(FormattedText::from_state(
+                    String::from_utf16_lossy(
+                        &text[last_start.unwrap()..position],
+                    ),
+                    &state,
+                ));
+
+                entities.push(Entity::Semantic(semantic));
+
+                last_start = Some(position);
+                last_semantic = None;
+            }
+        }
+    }
 
     if let Some(start) = last_start.filter(|x| *x != text.len()) {
         let semantic = last_semantic.get_or_insert_with(|| SemanticEntity {
