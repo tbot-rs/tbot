@@ -13,6 +13,8 @@ const START_PARAMETER: &str = "crab";
 const TITLE: &str = "A crab";
 const DESCRIPTION: &str = "Have you ever come across a heisenbug in your \
 program? No more! Our crab will take all bugs out of your program for you.";
+const PHOTO_URL: &str =
+    "https://www.rustacean.net/assets/rustacean-flat-happy.png";
 const CURRENCY: &str = "USD";
 const SUCCESS: &str = "Thanks! Your crab is already on its way.";
 
@@ -27,21 +29,18 @@ async fn main() {
 
     bot.start(|context, provider_token| async move {
         let call_result = if context.text.value == START_PARAMETER {
-            let price = [LabeledPrice::new(TITLE, 10_000)];
-            let mut invoice = Invoice::new(
+            let price = [LabeledPrice::new(TITLE, 100_00)];
+            let invoice = Invoice::new(
                 TITLE,
                 DESCRIPTION,
                 PAYLOAD,
                 &*provider_token,
                 CURRENCY,
                 price,
-            );
-            let photo = Photo::new(
-                "https://www.rustacean.net/assets/rustacean-flat-happy.png",
-            );
-            let tip = Tip::with_max(20_00).suggested_tips([19_06, 20_00]);
-
-            invoice = invoice.photo(photo).is_flexible(true).tip(tip);
+            )
+            .photo(Photo::new(PHOTO_URL))
+            .is_flexible(true)
+            .tip(Tip::with_max(20_00).suggested_tips([19_06, 20_00]));
 
             context
                 .send_invoice(invoice)
