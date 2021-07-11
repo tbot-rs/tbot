@@ -21,42 +21,41 @@ impl Tip {
         }
     }
 
-    /// Configures suggested tip amounts for the invoice.
-    /// At most 4 suggestions can be specified.
-    /// This method automatically sorts the data given.
+    /// Configures suggested tip amounts for the invoice. At most 4 suggestions
+    /// can be specified; this method automatically sorts them.
     /// Reflects the `suggested_tip_amounts` parameter.
     ///
     /// # Panics
     ///
     /// Panics if:
-    /// - the value consists of more than 4 elements.
-    /// - the value contains duplicates.
-    /// - the biggest element is exceeding `max_tip_amount`.
-    pub fn suggested_tips(mut self, suggested: impl Into<Vec<u32>>) -> Self {
-        let mut suggested = suggested.into();
+    /// - there are 0 or more than 4 tips;
+    /// - there are duplicated tips;
+    /// - the biggest tip exceeds `max_tip_amount`.
+    pub fn suggested_tips(mut self, tips: impl Into<Vec<u32>>) -> Self {
+        let mut tips = tips.into();
         assert!(
-            (1..=4).contains(&suggested.len()),
-            "[tbot] Received invalid `suggested` in \
-             `Tip::suggested_tips`: must contain from 1 to 4 elements, \
-             contains {} elements instead.",
-            suggested.len(),
+            (1..=4).contains(&tips.len()),
+            "[tbot] Received invalid `tips` in `Tip::suggested_tips`: \
+             must contain 1..=4 tips, contains {} instead.",
+            tips.len(),
         );
-        suggested.sort_unstable();
+
+        tips.sort_unstable();
         assert!(
-            suggested.windows(2).all(|win| win[0] != win[1]),
-            "[tbot] Received invalid `suggested` in \
-             `Tip::suggested_tips`: value most consist of unique elements.",
+            tips.windows(2).all(|win| win[0] != win[1]),
+            "[tbot] Received invalid `tips` in `Tip::suggested_tips`: \
+            must contain only unique tips.",
         );
         assert!(
             // this is a safe unwrap, since we've checked the length earlier
-            *suggested.last().unwrap() < self.max_tip_amount,
-            "[tbot] Received invalid `suggested` in \
-             `Tip::suggested_tips`: the maximum value {} \
-             is exceeding `max_tip_amount` which was set to {}.",
-            suggested.last().unwrap(),
+            *tips.last().unwrap() <= self.max_tip_amount,
+            "[tbot] Received invalid `tips` in `Tip::suggested_tips`: \
+             the maximum value {} exceeds `max_tip_amount` ({}).",
+            tips.last().unwrap(),
             self.max_tip_amount,
         );
-        self.suggested_tip_amounts = Some(suggested);
+
+        self.suggested_tip_amounts = Some(tips);
         self
     }
 }
