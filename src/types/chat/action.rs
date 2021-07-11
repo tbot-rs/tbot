@@ -15,10 +15,10 @@ pub enum Action {
     RecordVideo,
     /// About to send a video.
     UploadVideo,
-    /// About to send a generated audio.
-    RecordAudio,
-    /// About to send an audio.
-    UploadAudio,
+    /// About to send a generated voice message.
+    RecordVoice,
+    /// About to send a voice message.
+    UploadVoice,
     /// About to send a document.
     UploadDocument,
     /// About to send a location.

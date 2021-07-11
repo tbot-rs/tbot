@@ -23,10 +23,10 @@ use crate::{
         keyboard::inline,
         message,
         parameters::{
-            poll, AllowedUpdates, CallbackAction, ImplicitChatId, Text,
+            poll, AllowedUpdates, CallbackAction, ImplicitChatId, Invoice, Text,
         },
         passport, pre_checkout_query, shipping, user, BotCommand,
-        InlineMessageId, LabeledPrice,
+        InlineMessageId,
     },
 };
 use std::{net::IpAddr, num::NonZeroU32, sync::Arc};
@@ -614,29 +614,12 @@ impl Bot {
     }
 
     /// Sends an invoice.
-    #[allow(clippy::too_many_arguments)]
     pub fn send_invoice(
         &self,
         chat_id: impl Into<chat::Id>,
-        title: impl Into<String>,
-        description: impl Into<String>,
-        payload: impl Into<String>,
-        provider_token: impl Into<String>,
-        start_parameter: impl Into<String>,
-        currency: impl Into<String>,
-        prices: impl Into<Vec<LabeledPrice>>,
+        invoice: Invoice,
     ) -> SendInvoice<'_> {
-        SendInvoice::new(
-            &self.inner,
-            chat_id,
-            title,
-            description,
-            payload,
-            provider_token,
-            start_parameter,
-            currency,
-            prices,
-        )
+        SendInvoice::new(&self.inner, chat_id, invoice)
     }
 
     /// Sends a location.

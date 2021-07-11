@@ -1,12 +1,29 @@
 //! Types related to inline queries.
 
 use crate::types::{Location, User};
+use is_macro::Is;
 use serde::Deserialize;
 
 mod id;
 pub mod result;
 
 pub use {id::Id, result::Result};
+
+/// Represents the kind of a chat.
+#[derive(Debug, Eq, PartialEq, Hash, Clone, Copy, Is, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ChatKind {
+    /// The chat is private.
+    Sender,
+    /// The chat is private.
+    Private,
+    /// The chat is a channel.
+    Channel,
+    /// The chat is a group.
+    Group,
+    /// The chat is a supergroup.
+    Supergroup,
+}
 
 /// Represents an [`InlineQuery`].
 ///
@@ -24,4 +41,7 @@ pub struct InlineQuery {
     pub query: String,
     /// The offset of the result to be returned.
     pub offset: String,
+    /// The type of chat inline query was sent from.
+    #[serde(rename = "chat_type")]
+    pub chat_kind: Option<ChatKind>,
 }
