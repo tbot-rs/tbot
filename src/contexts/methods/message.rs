@@ -156,8 +156,8 @@ pub trait Message: fields::Message {
     }
 
     /// Gets the number of members in this chat.
-    fn get_chat_members_count(&self) -> GetChatMembersCount<'_> {
-        self.bot().get_chat_members_count(self.chat().id)
+    fn get_chat_member_count(&self) -> GetChatMemberCount<'_> {
+        self.bot().get_chat_member_count(self.chat().id)
     }
 
     /// Gets infomation about high scores in a game sent in this chat.

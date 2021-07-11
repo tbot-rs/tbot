@@ -443,11 +443,11 @@ impl Bot {
     }
 
     /// Gets a chat's member count.
-    pub fn get_chat_members_count(
+    pub fn get_chat_member_count(
         &self,
         chat_id: impl ImplicitChatId,
-    ) -> GetChatMembersCount<'_> {
-        GetChatMembersCount::new(&self.inner, chat_id)
+    ) -> GetChatMemberCount<'_> {
+        GetChatMemberCount::new(&self.inner, chat_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent by the bot
