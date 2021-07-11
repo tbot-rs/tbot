@@ -29,7 +29,7 @@ async fn main() {
 
     bot.start(|context, provider_token| async move {
         let call_result = if context.text.value == START_PARAMETER {
-            let price = [LabeledPrice::new(TITLE, 100_00)];
+            let price = [LabeledPrice::new(TITLE, 42 * 100)];
             let invoice = Invoice::new(
                 TITLE,
                 DESCRIPTION,
