@@ -1,5 +1,4 @@
-use crate::types::parameters::Invoice as InvoiceParams;
-
+use crate::types::parameters;
 use serde::Serialize;
 
 /// Represents an [`InputInvoiceMessageContent`][docs].
@@ -9,12 +8,12 @@ use serde::Serialize;
 #[must_use]
 pub struct Invoice {
     #[serde(flatten)]
-    invoice: InvoiceParams,
+    invoice: parameters::Invoice,
 }
 
 impl Invoice {
     /// Construct an `Invoice`.
-    pub const fn new(invoice: InvoiceParams) -> Self {
+    pub const fn new(invoice: parameters::Invoice) -> Self {
         Self { invoice }
     }
 }
