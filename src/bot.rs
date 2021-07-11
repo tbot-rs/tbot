@@ -502,13 +502,13 @@ impl Bot {
         GetWebhookInfo::new(&self.inner)
     }
 
-    /// Kicks a member out of a chat.
-    pub fn kick_chat_member(
+    /// Bans a member in a chat.
+    pub fn ban_chat_member(
         &self,
         chat_id: impl ImplicitChatId,
         user_id: user::Id,
-    ) -> KickChatMember<'_> {
-        KickChatMember::new(&self.inner, chat_id, user_id)
+    ) -> BanChatMember<'_> {
+        BanChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Leaves a chat.

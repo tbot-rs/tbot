@@ -173,9 +173,9 @@ pub trait Message: fields::Message {
         )
     }
 
-    /// Kicks a member of this chat.
-    fn kick_chat_member(&self, user_id: user::Id) -> KickChatMember<'_> {
-        self.bot().kick_chat_member(self.chat().id, user_id)
+    /// Bans a member of this chat.
+    fn ban_chat_member(&self, user_id: user::Id) -> BanChatMember<'_> {
+        self.bot().ban_chat_member(self.chat().id, user_id)
     }
 
     /// Leaves this chat.

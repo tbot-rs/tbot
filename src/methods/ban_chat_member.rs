@@ -9,14 +9,14 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Kicks a member out of a chat.
+/// Bans a member in a chat.
 ///
-/// Reflects the [`kickChatMember`][docs] method.
+/// Reflects the [`banChatMember`][docs] method.
 ///
-/// [docs]: https://core.telegram.org/bots/api#kickchatmember
+/// [docs]: https://core.telegram.org/bots/api#banchatmember
 #[derive(Serialize, Debug, Clone)]
 #[must_use = "methods do nothing unless turned into a future"]
-pub struct KickChatMember<'a> {
+pub struct BanChatMember<'a> {
     #[serde(skip)]
     bot: &'a InnerBot,
     chat_id: ChatId,
@@ -26,7 +26,7 @@ pub struct KickChatMember<'a> {
     revoke_messages: bool,
 }
 
-impl<'a> KickChatMember<'a> {
+impl<'a> BanChatMember<'a> {
     pub(crate) fn new(
         bot: &'a InnerBot,
         chat_id: impl ImplicitChatId,
@@ -56,12 +56,12 @@ impl<'a> KickChatMember<'a> {
     }
 }
 
-impl KickChatMember<'_> {
+impl BanChatMember<'_> {
     /// Calls the method.
     pub async fn call(self) -> Result<(), errors::MethodCall> {
         call_method::<bool>(
             self.bot,
-            "kickChatMember",
+            "banChatMember",
             None,
             serde_json::to_vec(&self).unwrap(),
         )
