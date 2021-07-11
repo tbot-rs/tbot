@@ -22,6 +22,8 @@ pub struct PromoteChatMember<'a> {
     chat_id: ChatId,
     user_id: user::Id,
     #[serde(skip_serializing_if = "Option::is_none")]
+    can_manage_chat: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     can_change_info: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_post_messages: Option<bool>,
@@ -38,6 +40,8 @@ pub struct PromoteChatMember<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     can_promote_members: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    can_manage_voice_chats: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     is_anonymous: Option<bool>,
 }
 
@@ -51,6 +55,7 @@ impl<'a> PromoteChatMember<'a> {
             bot,
             chat_id: chat_id.into(),
             user_id,
+            can_manage_chat: None,
             can_change_info: None,
             can_post_messages: None,
             can_edit_messages: None,
@@ -59,8 +64,16 @@ impl<'a> PromoteChatMember<'a> {
             can_restrict_members: None,
             can_pin_messages: None,
             can_promote_members: None,
+            can_manage_voice_chats: None,
             is_anonymous: None,
         }
+    }
+
+    /// Configures if the user will be able to perform administrative actions.
+    /// Reflects the `can_manage_chat` parameter.
+    pub const fn can_manage_chat(mut self, can_manage: bool) -> Self {
+        self.can_manage_chat = Some(can_manage);
+        self
     }
 
     /// Configures if the user will be able to change the group's information.
@@ -116,6 +129,13 @@ impl<'a> PromoteChatMember<'a> {
     /// Reflects the `can_promote_members` parameter.
     pub const fn can_promote_members(mut self, can_promote: bool) -> Self {
         self.can_promote_members = Some(can_promote);
+        self
+    }
+
+    /// Configures if the user will be able to manage voice chats.
+    /// Reflects the `can_manage_voice_chats` parameter.
+    pub const fn can_manage_voice_chats(mut self, can_manage: bool) -> Self {
+        self.can_manage_voice_chats = Some(can_manage);
         self
     }
 

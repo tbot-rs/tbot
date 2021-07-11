@@ -9,8 +9,6 @@ use crate::{
 use std::sync::Arc;
 
 /// A builder for a [`Bot`] with advanced configuration.
-///
-/// [`Bot`]: ./struct.Bot.html
 #[derive(Debug)]
 #[must_use]
 pub struct Builder(InnerBot);
@@ -110,8 +108,6 @@ impl Builder {
     /// # }
     /// ```
     ///
-    /// [`log_out`]: #method.log_out
-    ///
     /// If you're moving from one local server to another, you're going to call
     /// this method twice:
     ///
@@ -139,8 +135,9 @@ impl Builder {
     /// before calling [`close`] to ensure that your bot isn't launched
     /// on the old server when it restarts.
     ///
-    /// [`close`]: #method.close
-    /// [`delete_webhook`]: #method.delete_webhook
+    /// [`log_out`]: Self::log_out
+    /// [`close`]: Self::close
+    /// [`delete_webhook`]: Self::delete_webhook
     pub fn server_uri(mut self, uri: hyper::Uri) -> Self {
         self.0.set_uri(uri);
         self
@@ -152,12 +149,10 @@ impl Builder {
     /// makes requests to your local Bot API server using [`server_uri`]. Once
     /// you log out, you cannot log back in the cloud server for 10 minutes.
     ///
-    /// [`server_uri`]: #method.server_uri
+    /// [`server_uri`]: Self::server_uri
     ///
     /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
     /// returned in case you expect an error and can recover from it.
-    ///
-    /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
     pub async fn log_out(self) -> Result<Self, (errors::MethodCall, Self)> {
         match LogOut::new(&self.0).call().await {
             Ok(()) => Ok(self),
@@ -173,13 +168,11 @@ impl Builder {
     /// also need to call [`delete_webhook`] before calling this method
     /// to ensure that the bot isn't launched on the old server if it restarts.
     ///
-    /// [`server_uri`]: #method.server_uri
-    /// [`delete_webhook`]: #method.delete_webhook
+    /// [`server_uri`]: Self::server_uri
+    /// [`delete_webhook`]: Self::delete_webhook
     ///
     /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
     /// returned in case you expect an error and can recover from it.
-    ///
-    /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
     pub async fn close(self) -> Result<Self, (errors::MethodCall, Self)> {
         match Close::new(&self.0).call().await {
             Ok(()) => Ok(self),
@@ -193,7 +186,7 @@ impl Builder {
     /// delete the bot's webhook to ensure that, when that server is restarted,
     /// your bot isn't laucnhed there.
     ///
-    /// [`close`]: #method.close
+    /// [`close`]: Self::close
     ///
     /// You might want to call this method if you're switching from webhooks
     /// to polling. Though this method can be used this way, this isn't
@@ -202,8 +195,6 @@ impl Builder {
     ///
     /// In case of an error, a tuple of `(`[`errors::MethodCall`]`, Self)` is
     /// returned in case you expect an error and can recover from it.
-    ///
-    /// [`errors::MethodCall`]: ../errors/enum.MethodCall.html
     pub async fn delete_webhook(
         self,
     ) -> Result<Self, (errors::MethodCall, Self)> {
@@ -214,8 +205,6 @@ impl Builder {
     }
 
     /// Finishes constructing the [`Bot`].
-    ///
-    /// [`Bot`]: ./struct.Bot.html
     pub fn build(self) -> Bot {
         Bot {
             inner: Arc::new(self.0),

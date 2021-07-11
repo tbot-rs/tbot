@@ -34,10 +34,9 @@ native-tls = { version = "0.2", optional = true }
 hyper-rustls = { version = "0.22", optional = true }
 tokio-rustls = { version = "0.22", optional = true }
 hyper-socks2 = { version = "0.6", default-features = false }
-is-macro = "0.1.8"
+is-macro = "0.1.9"
 tracing = "0.1"
 tracing-futures = "0.2"
-paste = "1"
 type-map = "0.5"
 
 [dev-dependencies]

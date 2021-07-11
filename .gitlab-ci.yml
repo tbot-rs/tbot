@@ -1,5 +1,5 @@
 default:
-    image: rust:1.49.0 # update `run-tests`
+    image: rust:1.50.0 # update `run-tests`
     before_script:
         - export PATH=$PATH:/root/.cargo/bin/
         - rustup component add clippy
@@ -38,10 +38,24 @@ run-clippy:
             - branches
             - merge_requests
 
+check-docs:
+    stage: test
+    image: rust:latest
+    script:
+        - cargo +stable rustdoc --target-dir=../target -- -D warnings
+    only:
+        changes:
+            - "src/**/*"
+            - Cargo.toml
+            - .gitlab-ci.yml
+        refs:
+            - branches
+            - merge_requests
+
 run-tests:
     stage: test
     script:
-        - cargo +1.49.0 test --target-dir=../target --features="proxy"
+        - cargo +1.50.0 test --target-dir=../target --features="proxy"
     only:
         changes:
             - "src/**/*"

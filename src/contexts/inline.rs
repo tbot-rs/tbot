@@ -5,9 +5,9 @@ use crate::{
 };
 
 common! {
-    /// The context for [`inline`][handler] handlers.
+    /// The context for [`inline`] handlers.
     ///
-    /// [handler]: ../event_loop/struct.EventLoop.html#method.inline
+    /// [`inline`]: crate::EventLoop::inline
     struct Inline {
         /// The ID of the query.
         id: inline_query::Id,

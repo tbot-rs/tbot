@@ -5,8 +5,6 @@ use std::{
 };
 
 /// Formats an inline piece of code. Can be created with [`inline_code`].
-///
-/// [`inline_code`]: ./fn.inline_code.html
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 #[must_use = "formatters need to be formatted with `markdown_v2` or `html`"]
 pub struct InlineCode<T>(T);

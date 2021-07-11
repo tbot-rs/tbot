@@ -33,9 +33,8 @@
 //! # let _: std::sync::Arc<Mutex<Chats<()>>> = bot.get_state();
 //! ```
 //!
-//! [`Chats`]: ./struct.Chats.html
-//! [`state`]: ../index.html
-//! [`Mutex`]: https://docs.rs/tokio/0.2.*/tokio/sync/struct.Mutex.html
+//! [`state`]: super
+//! [`Mutex`]: tokio::sync::Mutex
 //!
 //! Let's start our questionary once the user starts the bot:
 //!
@@ -63,16 +62,14 @@
 //! });
 //! ```
 //!
-//!
 //! You can see that the [`insert`] method can figure out the chat ID from
 //! the context, but there's still [`insert_by_id`] if you need it. In fact,
 //! [`Chats`]'s API is very similar to the API of `std`'s [`HashMap`],
 //! but instead of the key you need to provide the context or use the equivalent
 //! method with the `_by_id` postfix.
 //!
-//! [`insert`]: ./struct.Chats.html#method.insert
-//! [`insert_by_id`]: ./struct.Chats.html#method.insert_by_id
-//! [`HashMap`]: https://doc.rust-lang.org/std/collections/struct.HashMap.html
+//! [`insert`]: Chats::insert
+//! [`insert_by_id`]: Chats::insert_by_id
 //!
 //! If you need to, you can combine [`Chats`] with other state stores like this:
 //!
@@ -105,7 +102,7 @@ use std::{
 
 /// A storage of state per chat. See [the module's docs] to learn how to use it.
 ///
-/// [the module's docs]: ./index.html
+/// [the module's docs]: self
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Chats<S> {
@@ -296,8 +293,6 @@ impl<S> IntoIterator for Chats<S> {
 }
 
 /// An iterator over the entries of [`Chats`].
-///
-/// [`Chats`]: ./struct.Chats.html
 pub struct Iter<'a, S>(hash_map::Iter<'a, chat::Id, S>);
 
 impl<'a, S> Iterator for Iter<'a, S> {
@@ -318,8 +313,6 @@ impl<'a, S> IntoIterator for &'a Chats<S> {
 }
 
 /// A mutable iterator over the entries of [`Chats`].
-///
-/// [`Chats`]: ./struct.Chats.html
 pub struct IterMut<'a, S>(hash_map::IterMut<'a, chat::Id, S>);
 
 impl<'a, S> Iterator for IterMut<'a, S> {

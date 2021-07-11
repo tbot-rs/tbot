@@ -14,8 +14,6 @@ type ErrorHandler = dyn Fn(errors::Polling) + Send + Sync;
 /// Configures and starts polling.
 ///
 /// To construct `Polling`, use [`EventLoop::polling`].
-///
-/// [`EventLoop::polling`]: ./struct.EventLoop.html#method.polling
 #[must_use = "polling does nothing unless `start` is called"]
 pub struct Polling {
     event_loop: EventLoop,
@@ -94,11 +92,11 @@ impl Polling {
     }
 
     /// Configures for how long `tbot` should wait for `getUpdates`. If this
-    /// timeout is exceeded, an [error handler] is triggered. If you don't
+    /// timeout is exceeded, the [error handler] is triggered. If you don't
     /// configure this value, it is set to
     /// `Duration::from_secs(timeout.unwrap_or(0) + 60)`.
     ///
-    /// [error handler]: #method.error_handler
+    /// [error handler]: Self::error_handler
     pub const fn request_timeout(mut self, timeout: Duration) -> Self {
         self.request_timeout = Some(timeout);
         self

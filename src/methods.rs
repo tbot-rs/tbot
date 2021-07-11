@@ -35,13 +35,10 @@
 //! brings a type-safer API wrapper, unlike if we only had one method
 //! which would resolve to `(() | types::Message)`.
 //!
-//! [`Bot`]: ../bot/struct.Bot.html
-//! [contexts]: ../contexts/
-//! [`SendMessage`]: ./struct.SendMessage.html
+//! [`Bot`]: crate::Bot
+//! [contexts]: crate::contexts
 //! [tg-doc]: https://core.telegram.org/bots/api#editmessagetext
-//! [`EditMessageText`]: ./struct.EditMessageText.html
-//! [`EditInlineText`]: ./struct.EditInlineText.html
-//! [`types::Message`]: ../types/struct.Message.html
+//! [`types::Message`]: crate::types::Message
 
 #![allow(clippy::wrong_self_convention, clippy::missing_panics_doc)]
 

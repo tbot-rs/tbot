@@ -50,9 +50,9 @@ type Map<T> = HashMap<String, Handlers<T>>;
 /// `tbot` has many update handlers, such as [`text`] you have seen
 /// in the example. You can find all of them below on this page.
 ///
-/// [polling]: #method.polling
-/// [webhook]: #method.webhook
-/// [`text`]: #method.text
+/// [polling]: Self::polling
+/// [webhook]: Self::webhook
+/// [`text`]: Self::text
 #[must_use]
 pub struct EventLoop {
     bot: Bot,
@@ -159,8 +159,8 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
-    /// [`username`]: #method.username
-    /// [`fetch_username`]: #method.fetch_username
+    /// [`username`]: Self::username
+    /// [`fetch_username`]: Self::fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
@@ -180,8 +180,8 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
-    /// [`username`]: #method.username
-    /// [`fetch_username`]: #method.fetch_username
+    /// [`username`]: Self::username
+    /// [`fetch_username`]: Self::fetch_username
     pub fn command_with_description<H, F>(
         &mut self,
         command: &'static str,
@@ -202,8 +202,8 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
-    /// [`username`]: #method.username
-    /// [`fetch_username`]: #method.fetch_username
+    /// [`username`]: Self::username
+    /// [`fetch_username`]: Self::fetch_username
     pub fn commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
@@ -379,6 +379,8 @@ impl EventLoop {
         audio: Audio,
         /// Registers a new handler for changed auto-delete timers.
         changed_auto_delete_timer: ChangedAutoDeleteTimer,
+        /// Registers a new handler for chat members' updated information.
+        chat_member: ChatMember,
         /// Registers a new handler for chosen inline results.
         chosen_inline: ChosenInline,
         /// Registers a new handler for contacts.
@@ -431,6 +433,8 @@ impl EventLoop {
         location: Location,
         /// Registers a new handler for migrations.
         migration: Migration,
+        /// Registers a new handler for the bot's update chat member status.
+        my_chat_member: MyChatMember,
         /// Registers a new handler for new chat photos.
         new_chat_photo: NewChatPhoto,
         /// Registers a new handler for new chat titles.
@@ -635,6 +639,18 @@ impl EventLoop {
                 let context = Shipping::new(self.bot.clone(), query);
                 self.handle(Arc::new(context));
             }
+            update::Kind::ChatMember(update)
+                if self.will_handle::<ChatMember>() =>
+            {
+                let context = ChatMember::new(self.bot.clone(), update);
+                self.handle(Arc::new(context));
+            }
+            update::Kind::MyChatMember(update)
+                if self.will_handle::<MyChatMember>() =>
+            {
+                let context = MyChatMember::new(self.bot.clone(), update);
+                self.handle(Arc::new(context));
+            }
             update if self.will_handle::<Unhandled>() => {
                 self.handle_unhandled(update);
             }
@@ -644,6 +660,8 @@ impl EventLoop {
             | update::Kind::PollAnswer(..)
             | update::Kind::PreCheckoutQuery(..)
             | update::Kind::ShippingQuery(..)
+            | update::Kind::ChatMember(..)
+            | update::Kind::MyChatMember(..)
             | update::Kind::Unknown => (),
         }
     }

@@ -36,9 +36,9 @@
 //! }
 //! ```
 //!
-//! [`contexts::Photo`]: ../struct.Photo.html
-//! [`contexts::EditedPhoto`]: ../struct.EditedPhoto.html
-//! [`fields::Photo`]: ./trait.Photo.html
+//! [`contexts::Photo`]: super::Photo
+//! [`contexts::EditedPhoto`]: super::EditedPhoto
+//! [`fields::Photo`]: Photo
 
 mod album;
 mod attachments;

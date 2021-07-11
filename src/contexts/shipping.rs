@@ -5,9 +5,9 @@ use crate::{
 };
 
 common! {
-    /// The context for [`shipping`][handler] handlers.
+    /// The context for [`shipping`] handlers.
     ///
-    /// [handler]: ../event_loop/struct.EventLoop.html#method.shipping
+    /// [`shipping`]: crate::EventLoop::shipping
     struct Shipping {
         /// The ID of the query.
         id: shipping::query::Id,
@@ -38,8 +38,8 @@ impl Shipping {
     /// an `Option`. You might also want to use the [`ok`] and [`err`]
     /// methods from this context.
     ///
-    /// [`ok`]: #method.ok
-    /// [`err`]: #method.err
+    /// [`ok`]: Self::ok
+    /// [`err`]: Self::err
     pub fn answer(
         &self,
         result: Result<impl Into<Vec<shipping::Option>>, impl Into<String>>,

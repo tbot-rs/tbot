@@ -9,7 +9,7 @@ use std::{convert::Infallible, num::NonZeroUsize, sync::Arc, time::Duration};
 ///
 /// To construct `Polling`, use [`StatefulEventLoop::polling`].
 ///
-/// [`StatefulEventLoop::polling`]: ./struct.StatefulEventLoop.html#method.polling
+/// [`StatefulEventLoop::polling`]: super::StatefulEventLoop::polling
 #[must_use = "polling does nothing unless `start` is called"]
 pub struct Polling<S> {
     inner: event_loop::Polling,
@@ -77,11 +77,11 @@ impl<S> Polling<S> {
     }
 
     /// Configures for how long `tbot` should wait for `getUpdates`. If this
-    /// timeout is exceeded, an [error handler] is triggered. If you don't
+    /// timeout is exceeded, the [error handler] is triggered. If you don't
     /// configure this value, it is set to
     /// `Duration::from_secs(timeout.unwrap_or(0) + 60)`.
     ///
-    /// [error handler]: #method.error_handler
+    /// [error handler]: Self::error_handler
     #[allow(clippy::missing_const_for_fn)] // https://github.com/rust-lang/rust-clippy/issues/4979
     pub fn request_timeout(mut self, timeout: Duration) -> Self {
         self.inner = self.inner.request_timeout(timeout);

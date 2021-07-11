@@ -153,10 +153,6 @@ pub enum ParseMode {
 /// [`tbot::markup`]: crate::markup
 /// [`markup::bold`]: crate::markup::bold
 /// [`markup::link`]: crate::markup::link
-/// [`Text::with_plain`]: Self::with_plain
-/// [`Text::with_markdown_v2`]: Self::with_markdown_v2
-/// [`Text::with_markdown`]: Self::with_markdown
-/// [`Text::with_html`]: Self::with_html
 /// [`message::text::Entity`]: crate::types::message::text::Entity
 /// [`tbot::util::entities`]: crate::util::entities::entities
 /// [gitlab]: https://gitlab.com/SnejUgal/tbot
@@ -197,8 +193,6 @@ impl Text {
     /// `MarkdownV2`, which supports more formatting options and better works
     /// with escaping. If you want to use the newer version, call
     /// [`Text::with_markdown_v2`] instead.
-    ///
-    /// [`Text::with_markdown_v2`]: Self::with_markdown_v2
     pub fn with_markdown(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
@@ -219,7 +213,6 @@ impl Text {
     /// look into [`Text::with_markdown`] instead.
     ///
     /// [`tbot::markup::markdown_v2`]: crate::markup::markdown_v2::markdown_v2
-    /// [`Text::markdown`]: Self::with_markdown
     pub fn with_markdown_v2(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),

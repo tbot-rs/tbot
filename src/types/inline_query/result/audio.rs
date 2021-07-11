@@ -1,6 +1,6 @@
-//! Types for representing [`InlineQueryResult::Audio`][docs].
+//! Types for representing [`inline_query::result::Kind::Audio`].
 //!
-//! [docs]: ../enum.InlineQueryResult.html#variant.Audio
+//! [`inline_query::result::Kind::Audio`]: super::Kind::Audio
 
 use crate::types::{
     file,
