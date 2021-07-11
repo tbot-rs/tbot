@@ -42,5 +42,6 @@ pub struct InlineQuery {
     /// The offset of the result to be returned.
     pub offset: String,
     /// The type of chat inline query was sent from.
-    pub chat_type: Option<ChatKind>,
+    #[serde(rename = "chat_type")]
+    pub chat_kind: Option<ChatKind>,
 }

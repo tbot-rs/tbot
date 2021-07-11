@@ -20,7 +20,7 @@ common! {
         /// The offset of the result to be returned.
         offset: String,
         /// The type of chat inline query was sent from.
-        chat_type: Option<inline_query::ChatKind>,
+        chat_kind: Option<inline_query::ChatKind>,
     }
 }
 
@@ -34,7 +34,7 @@ impl Inline {
             location: inline_query.location,
             query: inline_query.query,
             offset: inline_query.offset,
-            chat_type: inline_query.chat_type,
+            chat_kind: inline_query.chat_kind,
         }
     }
 
