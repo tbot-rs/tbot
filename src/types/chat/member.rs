@@ -273,7 +273,7 @@ impl<'v> Visitor<'v> for MemberVisitor {
             },
             Some(MEMBER) => Status::Member,
             Some(RESTRICTED) => Status::Restricted {
-                until_date,
+                until_date: until_date.filter(|&date| date > 0),
                 is_member: is_member
                     .ok_or_else(|| Error::missing_field(IS_MEMBER))?,
                 can_send_mesages: can_send_messages
@@ -298,7 +298,9 @@ impl<'v> Visitor<'v> for MemberVisitor {
                     .ok_or_else(|| Error::missing_field(CAN_PIN_MESSAGES))?,
             },
             Some(LEFT) => Status::Left,
-            Some(KICKED) => Status::Kicked { until_date },
+            Some(KICKED) => Status::Kicked {
+                until_date: until_date.filter(|&date| date > 0),
+            },
             Some(unknown_status) => {
                 return Err(Error::unknown_variant(
                     unknown_status,
