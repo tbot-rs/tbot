@@ -156,8 +156,8 @@ pub trait Message: fields::Message {
     }
 
     /// Gets the number of members in this chat.
-    fn get_chat_members_count(&self) -> GetChatMembersCount<'_> {
-        self.bot().get_chat_members_count(self.chat().id)
+    fn get_chat_member_count(&self) -> GetChatMemberCount<'_> {
+        self.bot().get_chat_member_count(self.chat().id)
     }
 
     /// Gets infomation about high scores in a game sent in this chat.
@@ -173,9 +173,9 @@ pub trait Message: fields::Message {
         )
     }
 
-    /// Kicks a member of this chat.
-    fn kick_chat_member(&self, user_id: user::Id) -> KickChatMember<'_> {
-        self.bot().kick_chat_member(self.chat().id, user_id)
+    /// Bans a member of this chat.
+    fn ban_chat_member(&self, user_id: user::Id) -> BanChatMember<'_> {
+        self.bot().ban_chat_member(self.chat().id, user_id)
     }
 
     /// Leaves this chat.

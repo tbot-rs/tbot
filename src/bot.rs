@@ -443,11 +443,11 @@ impl Bot {
     }
 
     /// Gets a chat's member count.
-    pub fn get_chat_members_count(
+    pub fn get_chat_member_count(
         &self,
         chat_id: impl ImplicitChatId,
-    ) -> GetChatMembersCount<'_> {
-        GetChatMembersCount::new(&self.inner, chat_id)
+    ) -> GetChatMemberCount<'_> {
+        GetChatMemberCount::new(&self.inner, chat_id)
     }
 
     /// Gets an excerpt from the high score table of a game sent by the bot
@@ -502,13 +502,13 @@ impl Bot {
         GetWebhookInfo::new(&self.inner)
     }
 
-    /// Kicks a member out of a chat.
-    pub fn kick_chat_member(
+    /// Bans a member in a chat.
+    pub fn ban_chat_member(
         &self,
         chat_id: impl ImplicitChatId,
         user_id: user::Id,
-    ) -> KickChatMember<'_> {
-        KickChatMember::new(&self.inner, chat_id, user_id)
+    ) -> BanChatMember<'_> {
+        BanChatMember::new(&self.inner, chat_id, user_id)
     }
 
     /// Leaves a chat.
