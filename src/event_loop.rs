@@ -169,7 +169,7 @@ impl EventLoop {
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
-        let command = normalize_command(command);
+        let command = normalize_cmd_name(command);
         self.command_handlers
             .entry(command.to_string())
             .or_insert_with(Vec::new)
@@ -198,7 +198,7 @@ impl EventLoop {
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
-        let command = normalize_command(command);
+        let command = normalize_cmd_name(command);
         self.command_description
             .insert(command.to_string(), description.to_string());
         self.command(command, handler);
@@ -225,7 +225,7 @@ impl EventLoop {
 
         for command in commands {
             let handler = Arc::clone(&handler);
-            let command = normalize_command(command);
+            let command = normalize_cmd_name(command);
             self.command_handlers
                 .entry(command.to_string())
                 .or_insert_with(Vec::new)
@@ -322,7 +322,7 @@ impl EventLoop {
         H: (Fn(Arc<EditedCommand>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
-        let command = normalize_command(command);
+        let command = normalize_cmd_name(command);
         self.edited_command_handlers
             .entry(command.to_string())
             .or_insert_with(Vec::new)
@@ -345,7 +345,7 @@ impl EventLoop {
 
         for command in commands {
             let handler = Arc::clone(&handler);
-            let command = normalize_command(command);
+            let command = normalize_cmd_name(command);
             self.edited_command_handlers
                 .entry(command.to_string())
                 .or_insert_with(Vec::new)
@@ -1238,7 +1238,7 @@ fn trim_command(text: message::Text) -> message::Text {
     message::Text { value, entities }
 }
 
-fn normalize_command(command: &str) -> &str {
+fn normalize_cmd_name(command: &str) -> &str {
     if command.starts_with('/') {
         tracing::warn!(
             ?command,
