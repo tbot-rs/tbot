@@ -64,6 +64,15 @@ pub struct EventLoop {
     update_handlers: TypeMap,
 }
 
+fn normalize_command(command: &str) -> &str {
+    if command.starts_with('/') {
+        tracing::warn!(?command, "Commands should not start with `/`!");
+        &command[1..]
+    } else {
+        command
+    }
+}
+
 impl EventLoop {
     pub(crate) fn new(bot: Bot) -> Self {
         Self {
@@ -166,6 +175,7 @@ impl EventLoop {
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
+        let command = normalize_command(command);
         self.command_handlers
             .entry(command.to_string())
             .or_insert_with(Vec::new)
@@ -214,6 +224,7 @@ impl EventLoop {
 
         for command in commands {
             let handler = Arc::clone(&handler);
+            let command = normalize_command(command);
             self.command_handlers
                 .entry(command.to_string())
                 .or_insert_with(Vec::new)
@@ -307,6 +318,7 @@ impl EventLoop {
         H: (Fn(Arc<EditedCommand>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
+        let command = normalize_command(command);
         self.edited_command_handlers
             .entry(command.to_string())
             .or_insert_with(Vec::new)
@@ -326,6 +338,7 @@ impl EventLoop {
 
         for command in commands {
             let handler = Arc::clone(&handler);
+            let command = normalize_command(command);
             self.edited_command_handlers
                 .entry(command.to_string())
                 .or_insert_with(Vec::new)
