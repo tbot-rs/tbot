@@ -64,15 +64,6 @@ pub struct EventLoop {
     update_handlers: TypeMap,
 }
 
-fn normalize_command(command: &str) -> &str {
-    if command.starts_with('/') {
-        tracing::warn!(?command, "Commands should not start with `/`!");
-        &command[1..]
-    } else {
-        command
-    }
-}
-
 impl EventLoop {
     pub(crate) fn new(bot: Bot) -> Self {
         Self {
@@ -168,6 +159,9 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
+    /// It is idiomatic to omit the leading `/` in the command. Even though
+    /// keeping it will work as expected, `tbot` will emit a warning in this case.
+    ///
     /// [`username`]: Self::username
     /// [`fetch_username`]: Self::fetch_username
     pub fn command<H, F>(&mut self, command: &'static str, handler: H)
@@ -190,6 +184,9 @@ impl EventLoop {
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
     ///
+    /// It is idiomatic to omit the leading `/` in the command. Even though
+    /// keeping it will work as expected, `tbot` will emit a warning in this case.
+    ///
     /// [`username`]: Self::username
     /// [`fetch_username`]: Self::fetch_username
     pub fn command_with_description<H, F>(
@@ -201,6 +198,7 @@ impl EventLoop {
         H: (Fn(Arc<Command>) -> F) + Send + Sync + 'static,
         F: Future<Output = ()> + Send + 'static,
     {
+        let command = normalize_command(command);
         self.command_description
             .insert(command.to_string(), description.to_string());
         self.command(command, handler);
@@ -211,6 +209,9 @@ impl EventLoop {
     /// Note that commands such as `/command@username` will be completely
     /// ignored unless you configure the event loop with your bot's username
     /// with either [`username`] or [`fetch_username`].
+    ///
+    /// It is idiomatic to omit the leading `/` in the commands. Even though
+    /// keeping it will work as expected, `tbot` will emit a warning in this case.
     ///
     /// [`username`]: Self::username
     /// [`fetch_username`]: Self::fetch_username
@@ -313,6 +314,9 @@ impl EventLoop {
     }
 
     /// Registers a new handler for an edited command.
+    ///
+    /// It is idiomatic to omit the leading `/` in the commands. Even though
+    /// keeping it will work as expected, `tbot` will emit a warning in this case.
     pub fn edited_command<H, F>(&mut self, command: &'static str, handler: H)
     where
         H: (Fn(Arc<EditedCommand>) -> F) + Send + Sync + 'static,
@@ -328,6 +332,9 @@ impl EventLoop {
     }
 
     /// Registers a new handler for an edited command from sequence of commands.
+    ///
+    /// It is idiomatic to omit the leading `/` in the commands. Even though
+    /// keeping it will work as expected, `tbot` will emit a warning in this case.
     pub fn edited_commands<Cm, H, F>(&mut self, commands: Cm, handler: H)
     where
         Cm: IntoIterator<Item = &'static str>,
@@ -1229,4 +1236,16 @@ fn trim_command(text: message::Text) -> message::Text {
         .collect();
 
     message::Text { value, entities }
+}
+
+fn normalize_command(command: &str) -> &str {
+    if command.starts_with('/') {
+        tracing::warn!(
+            ?command,
+            "Commands should not start with `/`. `tbot` will strip it, but it is idiomatic to omit it in the source code.",
+        );
+        &command[1..]
+    } else {
+        command
+    }
 }
